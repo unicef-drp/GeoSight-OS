@@ -8,6 +8,11 @@
     margin: 0 !important;
   }
 
+  .dragIcon {
+    cursor: grab;
+    margin-left: 0;
+  }
+
   .MuiAccordionSummary-root {
     border: 1px solid #ddd;
     min-height: unset !important;
@@ -17,6 +22,7 @@
 
   .MuiAccordionSummary-content {
     margin: 0 !important;
+    align-items: center;
 
     svg {
       height: 1rem;

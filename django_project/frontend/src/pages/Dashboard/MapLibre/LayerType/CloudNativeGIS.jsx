@@ -17,89 +17,97 @@ import {
   addPopup,
   getBeforeLayerId,
   hasSource,
-  loadImageToMap
+  loadImageToMap,
 } from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
 import { dictDeepCopy } from "../../../../utils/main";
 
-
 /***
  * Render CloudNativeGIS
  */
-export default function cloudNativeGISLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
-  (
-    async () => {
-      if (!data.cloud_native_gis_layer_id) {
-        return
-      }
+export default function cloudNativeGISLayer(
+  map,
+  id,
+  data,
+  contextLayerData,
+  popupFeatureFn,
+  contextLayerOrder,
+) {
+  (async () => {
+    if (!data.cloud_native_gis_layer_id) {
+      return;
+    }
 
-      const info = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer_id)
-      if (!info.tile_url) {
-        return
-      }
-      const url = info.tile_url
+    const info = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(
+      data.cloud_native_gis_layer_id,
+    );
+    if (!info.tile_url) {
+      return;
+    }
+    const url = info.tile_url;
 
-      // We find the before layers
-      let before = null
-      if (contextLayerOrder) {
-        const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
-        if (beforeOrder) {
-          before = beforeOrder
-        }
-      }
-
-      if (!hasSource(map, id)) {
-        const params = Object.assign({}, data.params, {
-          tiles: [url],
-          type: 'vector',
-          token: data.token,
-          minZoom: 0
-        })
-        map.addSource(id, params);
-      }
-      const popupFeature = (properties) => {
-        return popupFeatureFn(properties, data?.data?.fields)
-      }
-      try {
-        let layers = []
-        contextLayerData = dictDeepCopy(contextLayerData)
-        if (contextLayerData.styles) {
-          layers = contextLayerData.styles
-          if (typeof layers === 'string') {
-            layers = JSON.parse(layers)
-          }
-        } else if (info.default_style?.style_url) {
-          layers = await (await fetch(info.default_style?.style_url)).json()
-          layers = layers.layers
-        }
-        layers.reverse().map(layer => {
-          (async () => {
-            if (
-              layer.type === "symbol" &&
-              layer.layout &&
-              layer.layout["icon-image"]
-            ) {
-              await loadImageToMap(map, layer.layout["icon-image"]);
-            }
-            layer.id = id + "-" + layer.id;
-            layer.source = id;
-            layer["source-layer"] = "default";
-            addLayerWithOrder(
-              map,
-              layer,
-              Variables.LAYER_CATEGORY.CONTEXT_LAYER,
-              before,
-            );
-            before = layer.id;
-            addPopup(map, layer.id, popupFeature);
-          })();
-        })
-      } catch (e) {
-        console.log(e)
+    // We find the before layers
+    let before = null;
+    if (contextLayerOrder) {
+      const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder);
+      if (beforeOrder) {
+        before = beforeOrder;
       }
     }
-  )()
 
+    if (!hasSource(map, id)) {
+      const params = Object.assign({}, data.params, {
+        tiles: [url],
+        type: "vector",
+        token: data.token,
+        minZoom: 0,
+      });
+      map.addSource(id, params);
+    }
+    const popupFeature = (properties) => {
+      return popupFeatureFn(properties, data?.data?.fields);
+    };
+    try {
+      let layers = [];
+      contextLayerData = dictDeepCopy(contextLayerData);
+      if (contextLayerData.styles) {
+        layers = contextLayerData.styles;
+        if (typeof layers === "string") {
+          layers = JSON.parse(layers);
+        }
+      } else if (info.default_style?.style_url) {
+        layers = await (await fetch(info.default_style?.style_url)).json();
+        layers = layers.layers;
+      }
+      (async () => {
+        for (const layer of layers) {
+          if (
+            layer.type === "symbol" &&
+            layer.layout &&
+            layer.layout["icon-image"]
+          ) {
+            await loadImageToMap(map, layer.layout["icon-image"]);
+          }
+
+          layer.id = id + "-" + layer.id;
+          layer.source = id;
+          layer["source-layer"] = "default";
+
+          addLayerWithOrder(
+            map,
+            layer,
+            Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+            before,
+          );
+
+          before = layer.id;
+          addPopup(map, layer.id, popupFeature);
+        }
+      })();
+    } catch (e) {
+      console.log(e);
+    }
+  })();
 }

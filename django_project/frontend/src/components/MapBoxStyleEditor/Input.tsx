@@ -66,7 +66,7 @@ export function NumberInput({
             const newLayer = { ...layer };
             if (evt.target.value) {
               // @ts-ignore
-              newLayer[layerAttr][styleKey] = evt.target.value;
+              newLayer[layerAttr][styleKey] = parseFloat(evt.target.value);
             } else {
               // @ts-ignore
               delete newLayer[layerAttr][styleKey];

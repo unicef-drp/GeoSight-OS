@@ -83,8 +83,8 @@ export default function relatedTableLayer(
       try {
         const layers = JSON.parse(contextLayerData.styles);
         let before = getBeforeLayerId(map, id, contextLayerOrder);
-        layers.map((layer) => {
-          (async () => {
+        (async () => {
+          for (const layer of layers) {
             if (
               layer.type === "symbol" &&
               layer.layout &&
@@ -103,8 +103,8 @@ export default function relatedTableLayer(
             );
             before = layer.id;
             addPopup(map, layer.id, popupFeature);
-          })();
-        });
+          }
+        })();
       } catch (e) {
         console.log(e);
       }

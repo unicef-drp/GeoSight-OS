@@ -21,111 +21,15 @@ import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import type { LayerSpecification, SourceSpecification } from "maplibre-gl";
-import { Circle } from "./Circle";
-import { Symbol } from "./Symbol";
-import { Line } from "./Line";
-import { Fill } from "./Fill";
-import { AddIcon, DeleteIcon, MaputnikIcon } from "../Icons";
+import { AddIcon, MaputnikIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import {
   defaultPointStyle
 } from "../../pages/Admin/ContextLayer/StyleConfig/layerStyles";
 import { DEFAULT_STYLES } from "./style";
-
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Accordion from "@mui/material/Accordion";
-import { IconButton } from "@mui/material";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import StyleForm from "./Form";
 
 import "./style.scss";
-
-interface MapBoxStyleEditorProps {
-  layers: LayerSpecification[];
-  setLayers: (layer: LayerSpecification[]) => void;
-}
-
-interface MapBoxStyleEditorMemberProps {
-  layer: LayerSpecification;
-  idx: number;
-}
-
-export function MapBoxStyleEditor({
-  layers,
-  setLayers,
-}: MapBoxStyleEditorProps) {
-  const setLayer = (layer: LayerSpecification, idx: number) => {
-    const newLayers = [...layers];
-    newLayers[idx] = { ...layer };
-    setLayers(newLayers);
-  };
-  const Render = ({ layer, idx }: MapBoxStyleEditorMemberProps) => {
-    switch (layer.type) {
-      case "circle":
-        return (
-          <Circle
-            key={idx}
-            layer={layer}
-            setLayer={(layer) => setLayer(layer, idx)}
-          />
-        );
-      case "fill":
-        return (
-          <Fill
-            key={idx}
-            layer={layer}
-            setLayer={(layer) => setLayer(layer, idx)}
-          />
-        );
-      case "line":
-        return (
-          <Line
-            key={idx}
-            layer={layer}
-            setLayer={(layer) => setLayer(layer, idx)}
-          />
-        );
-      case "symbol":
-        return (
-          <Symbol
-            key={idx}
-            layer={layer}
-            setLayer={(layer) => setLayer(layer, idx)}
-          />
-        );
-      default:
-        return <div>This type does not have editor</div>;
-    }
-  };
-  return layers.map((layer, idx) => (
-    <Accordion key={idx}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <div>{layer.id}</div>
-          {/* @ts-ignore */}
-          <IconButton
-            size="small"
-            onClick={(e: MouseEvent) => {
-              e.stopPropagation();
-              setLayers(layers.filter((l) => l.id !== layer.id));
-            }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </div>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Render layer={layer} idx={idx} key={idx} />
-      </AccordionDetails>
-    </Accordion>
-  ));
-}
 
 interface Props {
   layers: LayerSpecification[];
@@ -249,10 +153,7 @@ export function Editor({ layers, setLayers, source, sourceLayer }: Props) {
       {mode === EDITOR && (
         <div style={{ flexGrow: 1 }}>
           <div className="MapBoxStyleEditor">
-            <MapBoxStyleEditor
-              layers={layers ? layers : []}
-              setLayers={setLayers}
-            />
+            <StyleForm layers={layers ? layers : []} setLayers={setLayers} />
             <div className="AdditonalStyleEditor">
               <div onClick={() => onAdd("fill")}>
                 <AddIcon />
