@@ -66,6 +66,7 @@ export { default as LeftPanelUncheckedIcon } from "./left-panel-unchecked.svg";
 export { default as LeftPanelIcon } from "./left-sidepanel-toggle.svg";
 export { default as ListIcon } from "./list.svg";
 export { default as MagnifyIcon } from "./magnify.svg";
+export { default as MaputnikIcon } from "./maputnik.svg";
 export { default as MeasurementOffIcon } from "./measurement-off.svg";
 export { default as MeasurementOnIcon } from "./measurement-on.svg";
 export { default as MapIcon } from "./map.svg";

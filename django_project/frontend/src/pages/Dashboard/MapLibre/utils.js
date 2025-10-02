@@ -67,16 +67,23 @@ export const removeSource = (map, id) => {
 /**
  * Load image to map
  */
-export const loadImageToMap = (map, id, callback) => {
+export const loadImageToMap = async (map, id, callback) => {
   if (map.listImages().includes(id)) {
     map.removeImage(id);
   }
-  map.loadImage(id, function (error, image) {
-    if (!error) {
-      map.addImage(id, image);
-    }
+  const url = id;
+  let image = null;
+  let error = null;
+  try {
+    image = await map.loadImage(url);
+    map.addImage(url, image.data);
+  } catch (err) {
+    error = err;
+  }
+  if (callback) {
     callback(error, image);
-  });
+  }
+  return image;
 };
 
 /**
