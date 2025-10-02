@@ -31,6 +31,27 @@ import { Fill } from "./Form/Fill";
 import { Line } from "./Form/Line";
 import { Symbol } from "./Form/Symbol";
 
+export const Render = ({
+  layer,
+  onUpdate,
+}: {
+  layer: LayerSpecification;
+  onUpdate: (layer: LayerSpecification) => void;
+}) => {
+  switch (layer.type) {
+    case "circle":
+      return <Circle layer={layer} setLayer={onUpdate} />;
+    case "fill":
+      return <Fill layer={layer} setLayer={onUpdate} />;
+    case "line":
+      return <Line layer={layer} setLayer={onUpdate} />;
+    case "symbol":
+      return <Symbol layer={layer} setLayer={onUpdate} />;
+    default:
+      return <div>This type does not have editor</div>;
+  }
+};
+
 function SortableAccordionItem({
   id,
   layer,
@@ -62,24 +83,8 @@ function SortableAccordionItem({
     zIndex: isDragging ? 9999 : undefined,
     mb: 1,
   } as React.CSSProperties;
-  console.log("RERENDER ID" + id);
 
   const isOpen = expanded === id;
-  const Render = ({ layer }: { layer: LayerSpecification }) => {
-    switch (layer.type) {
-      case "circle":
-        return <Circle layer={layer} setLayer={(layer) => onUpdate(layer)} />;
-      case "fill":
-        return <Fill layer={layer} setLayer={(layer) => onUpdate(layer)} />;
-      case "line":
-        return <Line layer={layer} setLayer={(layer) => onUpdate(layer)} />;
-      case "symbol":
-        return <Symbol layer={layer} setLayer={(layer) => onUpdate(layer)} />;
-      default:
-        return <div>This type does not have editor</div>;
-    }
-  };
-
   return (
     <Accordion
       expanded={isOpen}
@@ -122,7 +127,7 @@ function SortableAccordionItem({
         </IconButton>
       </AccordionSummary>
       <AccordionDetails>
-        <Render layer={layer} />
+        <Render layer={layer} onUpdate={onUpdate} />
       </AccordionDetails>
     </Accordion>
   );
