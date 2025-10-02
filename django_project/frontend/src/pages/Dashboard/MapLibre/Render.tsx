@@ -38,5 +38,4 @@ export function addLayerWithOrder(
       break
   }
   map.addLayer(layerConfig, beforeId);
-  console.log(map.getStyle().layers)
 }

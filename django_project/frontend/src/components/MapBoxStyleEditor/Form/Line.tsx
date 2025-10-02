@@ -18,10 +18,10 @@
    ========================================================================== */
 
 import React from "react";
-import { EditorProps } from "./type";
-import { ColorSelectorStyle, NumberInput } from "./Input";
+import { EditorProps } from "../type";
+import { ColorSelectorStyle, NumberInput } from "../Input";
 
-export function Circle({ layer, setLayer }: EditorProps) {
+export function Line({ layer, setLayer }: EditorProps) {
   const layerAttr = "paint";
   if (!layer[layerAttr]) {
     return (
@@ -36,13 +36,13 @@ export function Circle({ layer, setLayer }: EditorProps) {
         layer={layer}
         setLayer={setLayer}
         layerAttr={layerAttr}
-        styleKey="circle-color"
+        styleKey="line-color"
       />
       <NumberInput
         layer={layer}
         setLayer={setLayer}
         layerAttr={layerAttr}
-        styleKey="circle-radius"
+        styleKey="line-width"
         min={0}
         max={100}
         step={1}
@@ -51,36 +51,10 @@ export function Circle({ layer, setLayer }: EditorProps) {
         layer={layer}
         setLayer={setLayer}
         layerAttr={layerAttr}
-        styleKey="circle-opacity"
+        styleKey="line-opacity"
         min={0}
         max={1}
         step={0.1}
-      />
-
-      {/* STROKE */}
-      <ColorSelectorStyle
-        layer={layer}
-        setLayer={setLayer}
-        layerAttr={layerAttr}
-        styleKey="circle-stroke-color"
-      />
-      <NumberInput
-        layer={layer}
-        setLayer={setLayer}
-        layerAttr={layerAttr}
-        styleKey="circle-stroke-opacity"
-        min={0}
-        max={1}
-        step={0.1}
-      />
-      <NumberInput
-        layer={layer}
-        setLayer={setLayer}
-        layerAttr={layerAttr}
-        styleKey="circle-stroke-width"
-        min={0}
-        max={100}
-        step={1}
       />
     </>
   );

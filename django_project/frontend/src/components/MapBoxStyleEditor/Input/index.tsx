@@ -18,10 +18,10 @@
    ========================================================================== */
 
 import React from "react";
-import { EditorProps } from "./type";
+import { EditorProps } from "../type";
 import { useTranslation } from "react-i18next";
-import { capitalize } from "../../utils/main";
-import ColorSelector from "../Input/ColorSelector/index";
+import { capitalize } from "../../../utils/main";
+import ColorSelector from "../../Input/ColorSelector/index";
 
 interface Props extends EditorProps {
   layerAttr: string;

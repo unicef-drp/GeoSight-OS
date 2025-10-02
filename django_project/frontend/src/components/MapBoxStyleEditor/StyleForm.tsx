@@ -26,15 +26,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import type { LayerSpecification } from "maplibre-gl";
 import { DeleteIcon } from "../Icons";
-import { Circle } from "./Circle";
-import { Fill } from "./Fill";
-import { Line } from "./Line";
-import { Symbol } from "./Symbol";
+import { Circle } from "./Form/Circle";
+import { Fill } from "./Form/Fill";
+import { Line } from "./Form/Line";
+import { Symbol } from "./Form/Symbol";
 
 function SortableAccordionItem({
   id,
   layer,
-  setLayers,
   onUpdate,
   onDelete,
   expanded,
@@ -42,7 +41,6 @@ function SortableAccordionItem({
 }: {
   id: string;
   layer: LayerSpecification;
-  setLayers: (layers: LayerSpecification[]) => void;
   onUpdate: (layer: LayerSpecification) => void;
   onDelete: (layer: LayerSpecification) => void;
   expanded: string | null;
@@ -64,6 +62,7 @@ function SortableAccordionItem({
     zIndex: isDragging ? 9999 : undefined,
     mb: 1,
   } as React.CSSProperties;
+  console.log("RERENDER ID" + id);
 
   const isOpen = expanded === id;
   const Render = ({ layer }: { layer: LayerSpecification }) => {
@@ -170,7 +169,6 @@ export default function StyleForm({
             key={layer.id}
             id={layer.id}
             layer={layer}
-            setLayers={setLayers}
             expanded={expanded}
             setExpanded={setExpanded}
             onUpdate={(layer: LayerSpecification) => {

@@ -27,7 +27,7 @@ import {
   defaultPointStyle
 } from "../../pages/Admin/ContextLayer/StyleConfig/layerStyles";
 import { DEFAULT_STYLES } from "./style";
-import StyleForm from "./Form";
+import StyleForm from "./StyleForm";
 
 import "./style.scss";
 

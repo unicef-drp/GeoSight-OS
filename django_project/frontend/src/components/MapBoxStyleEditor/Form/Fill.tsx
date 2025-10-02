@@ -18,34 +18,42 @@
    ========================================================================== */
 
 import React from "react";
-import { EditorProps } from "./type";
-import { ImageInput, NumberInput } from "./Input";
+import { EditorProps } from "../type";
+import { ColorSelectorStyle, NumberInput } from "../Input";
 
-export function Symbol({ layer, setLayer }: EditorProps) {
-  const layerAttr = "layout";
+export function Fill({ layer, setLayer }: EditorProps) {
+  const layerAttr = "paint";
   if (!layer[layerAttr]) {
     return (
       <div>
-        No layout attributes on this layer. Please delete and recreate this.
+        No paint attributes on this layer. Please delete and recreate this.
       </div>
     );
   }
   return (
     <>
-      <ImageInput
+      <ColorSelectorStyle
         layer={layer}
         setLayer={setLayer}
         layerAttr={layerAttr}
-        styleKey="icon-image"
+        styleKey="fill-color"
       />
       <NumberInput
         layer={layer}
         setLayer={setLayer}
         layerAttr={layerAttr}
-        styleKey="icon-size"
+        styleKey="fill-opacity"
         min={0}
-        max={100}
+        max={1}
         step={0.1}
+      />
+
+      {/* Outline */}
+      <ColorSelectorStyle
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="fill-outline-color"
       />
     </>
   );
