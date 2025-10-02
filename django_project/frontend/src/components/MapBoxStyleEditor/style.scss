@@ -3,6 +3,11 @@
   width: 100%;
   overflow-y: auto;
 
+  svg {
+    height: 1rem;
+    width: 1rem;
+  }
+
   .MuiPaper-root {
     box-shadow: unset !important;
     margin: 0 !important;
@@ -23,11 +28,6 @@
   .MuiAccordionSummary-content {
     margin: 0 !important;
     align-items: center;
-
-    svg {
-      height: 1rem;
-      width: 1rem;
-    }
   }
 
   .MuiCollapse-root {
@@ -67,6 +67,63 @@
     }
   }
 
+  .FilterStyle {
+    label {
+      font-weight: 700;
+    }
+
+    .ActionButton {
+      margin-top: 1rem;
+      width: fit-content;
+    }
+
+    .MuiInputSliderWithInput {
+      display: flex;
+
+      input[disabled] {
+        display: none;
+      }
+
+      .MuiInputSlider {
+        display: none;
+      }
+    }
+
+    .FilterStyleContent {
+      border: 1px solid #ddd;
+      padding: 1rem;
+
+      .MuiToggleButtonGroup-grouped {
+        padding: 3px 1rem;
+      }
+
+      & > div {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+      }
+
+      .MuiToggleButtonGroup-root {
+        padding: 0;
+        border: unset;
+      }
+    }
+
+    .WhereConfigurationQuery {
+      .WhereConfigurationOperatorValue input {
+        height: 100%;
+      }
+
+      .MuiSelect-select {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    .WhereConfigurationQuery {
+      display: flex;
+    }
+  }
+
   .AdditonalStyleEditor {
     border: unset;
     display: flex;
@@ -74,20 +131,20 @@
     justify-content: center;
     height: 100px;
     gap: 0.5rem;
+  }
 
-    & > div {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px solid var(--black);
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      opacity: 0.5;
-      cursor: pointer;
+  .ActionButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--black);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    opacity: 0.5;
+    cursor: pointer;
 
-      &:hover {
-        opacity: 1;
-      }
+    &:hover {
+      opacity: 1;
     }
   }
 }

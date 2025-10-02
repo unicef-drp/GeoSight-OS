@@ -383,6 +383,20 @@ export function WhereInputValue({
       </div>
     );
   } else {
+    if (operator === "=" && fieldType === "string") {
+      return (
+        <Input
+          type="text"
+          className="WhereConfigurationOperatorValue"
+          placeholder="Put the value"
+          value={value ? value : ""}
+          onChange={(evt) => {
+            setValue(evt.target.value);
+          }}
+          disabled={disabled}
+        />
+      );
+    }
     if (!isNaN(min) || !isNaN(max)) {
       const moreThan = [">", ">="].includes(operator);
       const isEqual = ["="].includes(operator);
@@ -454,8 +468,10 @@ export default function WhereInput({
   updateWhere,
   fields,
   disabledChanges = {},
+  onDelete,
   ...props
 }) {
+  console.log(where);
   // UPDATE THE OPERATOR
   // If it has :interval, it is last x (time)
   const value = where.value;
@@ -594,11 +610,15 @@ export default function WhereInput({
         <RemoveCircleIcon
           className="RemoveIcon"
           onClick={() => {
-            const index = upperWhere.queries.indexOf(where);
-            if (index > -1) {
-              upperWhere.queries.splice(index, 1);
+            if (onDelete) {
+              onDelete();
+            } else {
+              const index = upperWhere.queries.indexOf(where);
+              if (index > -1) {
+                upperWhere.queries.splice(index, 1);
+              }
+              updateWhere();
             }
-            updateWhere();
           }}
         />
       )}

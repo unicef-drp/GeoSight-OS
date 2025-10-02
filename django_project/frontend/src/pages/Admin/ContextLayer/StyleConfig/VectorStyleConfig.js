@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { toJson } from "../../../../utils/main";
+import { capitalize, toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
 import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 import MapboxStyleInformation from "../../../../components/Buttons/MapboxStyleInformation";
@@ -23,6 +23,7 @@ import { Variables } from "../../../../utils/Variables";
 
 export default function VectorStyleConfig({ data, setData, setError }) {
   const [inputStyle, setInputStyle] = useState(null);
+  const [fields, setFields] = useState([]);
 
   useEffect(() => {
     if (data.styles !== inputStyle) {
@@ -31,7 +32,70 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       } else {
         setInputStyle(data.styles);
       }
+
+      // --------------------------------------------
+      // Fetch the attributes
+      // --------------------------------------------
+      // TODO:
+      //  Related table has it's own attributes
+      // if (data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE) {
+      //   if (data.related_table) {
+      //     setFields(null);
+      //     (async () => {
+      //       try {
+      //         const response = await fetch(
+      //           `/api/v1/related-tables/${data.related_table}/`,
+      //         );
+      //
+      //         if (!response.ok) {
+      //           setFields([]);
+      //         }
+      //         const jsonData = await response.json();
+      //         setFields(jsonData.fields_definition);
+      //       } catch (error) {
+      //         setFields([]);
+      //       }
+      //     })();
+      //   }
+      // }
+      if (data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS) {
+        if (data.cloud_native_gis_layer_id) {
+          setFields(null);
+          (async () => {
+            try {
+              const response = await fetch(
+                `/cloud-native-gis/api/layer/${data.cloud_native_gis_layer_id}/attributes/`,
+              );
+
+              if (!response.ok) {
+                setFields([]);
+              }
+              const jsonData = await response.json();
+              const fields = jsonData.results.map((field) => {
+                return {
+                  name: field.attribute_name,
+                  label: field.attribute_label
+                    ? field.attribute_label
+                    : capitalize(field.attribute_name),
+                  type:
+                    field.attribute_type.includes("int") ||
+                    field.attribute_type.includes("double")
+                      ? "number"
+                      : field.attribute_type.includes("timestamp")
+                        ? "date"
+                        : "string",
+                };
+              });
+              setFields(fields);
+            } catch (error) {
+              setFields([]);
+            }
+          })();
+        }
+      }
+      // --------------------------------------------
     }
+
     if (data.cloud_native_gis_layer_id && !data.mapbox_style) {
       (async () => {
         const newData = await updateDataWithMapbox(data);
@@ -58,6 +122,10 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       setError((e + "").split("at")[0]);
     }
   };
+
+  if (fields === null) {
+    return <div>Loading attributes...</div>;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -102,6 +170,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
         sourceLayer={
           data.type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ? "default" : null
         }
+        fields={fields}
       />
     </div>
   );

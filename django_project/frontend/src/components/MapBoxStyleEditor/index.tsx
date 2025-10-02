@@ -28,6 +28,7 @@ import {
 } from "../../pages/Admin/ContextLayer/StyleConfig/layerStyles";
 import { DEFAULT_STYLES } from "./style";
 import StyleForm from "./StyleForm";
+import { FieldAttribute } from "../../types/Field";
 
 import "./style.scss";
 
@@ -36,12 +37,19 @@ interface Props {
   setLayers: (layers: LayerSpecification[]) => void;
   source?: SourceSpecification;
   sourceLayer: string;
+  fields: FieldAttribute[];
 }
 
 const FREE_TEXT_FORM = "Free text form";
 const EDITOR = "Editor";
 
-export function Editor({ layers, setLayers, source, sourceLayer }: Props) {
+export function Editor({
+  layers,
+  setLayers,
+  source,
+  sourceLayer,
+  fields,
+}: Props) {
   const { t } = useTranslation();
   const [textArea, setTextArea] = useState<string>(null);
   const [mode, setMode] = useState<string>(EDITOR);
@@ -153,21 +161,25 @@ export function Editor({ layers, setLayers, source, sourceLayer }: Props) {
       {mode === EDITOR && (
         <div style={{ flexGrow: 1 }}>
           <div className="MapBoxStyleEditor">
-            <StyleForm layers={layers ? layers : []} setLayers={setLayers} />
+            <StyleForm
+              layers={layers ? layers : []}
+              setLayers={setLayers}
+              fields={fields}
+            />
             <div className="AdditonalStyleEditor">
-              <div onClick={() => onAdd("fill")}>
+              <div className="ActionButton" onClick={() => onAdd("fill")}>
                 <AddIcon />
                 Add fill
               </div>
-              <div onClick={() => onAdd("circle")}>
+              <div className="ActionButton" onClick={() => onAdd("circle")}>
                 <AddIcon />
                 Add circle
               </div>
-              <div onClick={() => onAdd("line")}>
+              <div className="ActionButton" onClick={() => onAdd("line")}>
                 <AddIcon />
                 Add line
               </div>
-              <div onClick={() => onAdd("symbol")}>
+              <div className="ActionButton" onClick={() => onAdd("symbol")}>
                 <AddIcon />
                 Add symbol
               </div>

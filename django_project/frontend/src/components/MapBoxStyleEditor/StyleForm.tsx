@@ -30,6 +30,8 @@ import { Circle } from "./Form/Circle";
 import { Fill } from "./Form/Fill";
 import { Line } from "./Form/Line";
 import { Symbol } from "./Form/Symbol";
+import { FieldAttribute } from "../../types/Field";
+import { Filter } from "./Filter";
 
 export const Render = ({
   layer,
@@ -55,6 +57,7 @@ export const Render = ({
 function SortableAccordionItem({
   id,
   layer,
+  fields,
   onUpdate,
   onDelete,
   expanded,
@@ -62,6 +65,7 @@ function SortableAccordionItem({
 }: {
   id: string;
   layer: LayerSpecification;
+  fields: FieldAttribute[];
   onUpdate: (layer: LayerSpecification) => void;
   onDelete: (layer: LayerSpecification) => void;
   expanded: string | null;
@@ -85,6 +89,7 @@ function SortableAccordionItem({
   } as React.CSSProperties;
 
   const isOpen = expanded === id;
+  // @ts-ignore
   return (
     <Accordion
       expanded={isOpen}
@@ -127,6 +132,25 @@ function SortableAccordionItem({
         </IconButton>
       </AccordionSummary>
       <AccordionDetails>
+        <Filter
+          layerType={layer.type}
+          /* @ts-ignore */
+          filter={layer.filter}
+          setFilter={(filter) => {
+            console.log(filter);
+            const newLayer = { ...layer };
+            /* @ts-ignore */
+            newLayer.filter = filter;
+            onUpdate(newLayer);
+          }}
+          fields={fields}
+          onAdd={() => {
+            const newLayer = { ...layer };
+            /* @ts-ignore */
+            newLayer.filter.push(["==", fields[0].name, "Value"]);
+            onUpdate(newLayer);
+          }}
+        />
         <Render layer={layer} onUpdate={onUpdate} />
       </AccordionDetails>
     </Accordion>
@@ -136,9 +160,11 @@ function SortableAccordionItem({
 export default function StyleForm({
   layers,
   setLayers,
+  fields,
 }: {
   layers: LayerSpecification[];
   setLayers: (layers: LayerSpecification[]) => void;
+  fields?: FieldAttribute[];
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
@@ -174,6 +200,7 @@ export default function StyleForm({
             key={layer.id}
             id={layer.id}
             layer={layer}
+            fields={fields}
             expanded={expanded}
             setExpanded={setExpanded}
             onUpdate={(layer: LayerSpecification) => {
