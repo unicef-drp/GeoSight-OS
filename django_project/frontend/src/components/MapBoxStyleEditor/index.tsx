@@ -32,6 +32,12 @@ import {
 } from "../../pages/Admin/ContextLayer/StyleConfig/layerStyles";
 import { DEFAULT_STYLES } from "./style";
 
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Accordion from "@mui/material/Accordion";
+import { IconButton } from "@mui/material";
+import AccordionDetails from "@mui/material/AccordionDetails";
+
 import "./style.scss";
 
 interface MapBoxStyleEditorProps {
@@ -92,26 +98,32 @@ export function MapBoxStyleEditor({
     }
   };
   return layers.map((layer, idx) => (
-    <div key={idx}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div className="LayerId">{layer.id}</div>
+    <Accordion key={idx}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <div
-          className="LayerDelete"
-          onClick={() => setLayers(layers.filter((l) => l.id !== layer.id))}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
         >
-          <DeleteIcon />
+          <div>{layer.id}</div>
+          {/* @ts-ignore */}
+          <IconButton
+            size="small"
+            onClick={(e: MouseEvent) => {
+              e.stopPropagation();
+              setLayers(layers.filter((l) => l.id !== layer.id));
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
         </div>
-      </div>
-      <div className="LayerStyleForm">
+      </AccordionSummary>
+      <AccordionDetails>
         <Render layer={layer} idx={idx} key={idx} />
-      </div>
-    </div>
+      </AccordionDetails>
+    </Accordion>
   ));
 }
 
