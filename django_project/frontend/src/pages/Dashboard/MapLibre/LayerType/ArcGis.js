@@ -42,7 +42,7 @@ class CustomFeatureService extends FeatureService {
 }
 
 /*** Arcgis style */
-function ArcGisStyle(map, id, layer) {
+const ArcGisStyle = async (map, id, layer) => {
   const casesByType = {}
   const lineId = id + '-line'
   const fillId = id + '-fill'
@@ -59,6 +59,7 @@ function ArcGisStyle(map, id, layer) {
   /**
    * Assign Cases
    */
+  const layers = []
   const assignCases = (styleType, propertyType, cases) => {
     let layerId = null
     switch (styleType) {
@@ -82,6 +83,7 @@ function ArcGisStyle(map, id, layer) {
       }
     }
     if (layerId) {
+      layers.push(layerId)
       casesByType[layerId] = casesByType[layerId] ? casesByType[layerId] : {}
       casesByType[layerId][propertyType] = casesByType[layerId][propertyType] ? casesByType[layerId][propertyType] : []
       casesByType[layerId][propertyType] = casesByType[layerId][propertyType].concat(cases)
@@ -316,12 +318,13 @@ function ArcGisStyle(map, id, layer) {
             let paint = defaultValue
             if (cases.length === 1) {
               paint = cases[0]
-              loadImageToMap(map, paint, (error, image) => {
+              await loadImageToMap(map, paint, (error, image) => {
                 if (!error) {
                   const iconSize = values.iconSize
                   map.setLayoutProperty(layerId, 'icon-image', paint);
                   if (iconSize && iconSize[0]) {
-                    const scale = iconSize[0][0] / image.width
+                    const scale = iconSize[0][0] / image.data.width;
+                    console.log(scale)
                     map.setLayoutProperty(layerId, 'icon-size', scale);
                   }
                 }
@@ -343,16 +346,17 @@ function ArcGisStyle(map, id, layer) {
                   finish()
                 }
               }
-              const loadImagesFromCases = (idx) => {
+              const loadImagesFromCases = async (idx) => {
                 if (idx % 2 === 1) {
                   const icon = cases[idx]
                   if (icon) {
-                    loadImageToMap(map, icon, (error, image) => {
+                    await loadImageToMap(map, icon, (error, image) => {
                       if (!error) {
                         const iconSize = values?.iconSize[idx]
                         if (iconSize && iconSize[0]) {
                           if (cases[idx - 1]) {
-                            const scale = iconSize[0] / image.width
+                            const scale = iconSize[0] / image.data.width
+                            console.log(scale)
                             sizeCases.push(cases[idx - 1])
                             sizeCases.push(scale)
                           }
@@ -367,7 +371,7 @@ function ArcGisStyle(map, id, layer) {
                   next(idx)
                 }
               }
-              loadImagesFromCases(0)
+              await loadImagesFromCases(0)
             }
             break
           }
@@ -390,6 +394,13 @@ function ArcGisStyle(map, id, layer) {
       }
     }
   }
+  [lineId, fillId, outlineId, circleId, symbolId].map((layerId) => {
+    if (!layers.includes(layerId)) {
+      map.setLayoutProperty(layerId, "visibility", "none");
+    } else {
+      map.setLayoutProperty(layerId, "visibility", "visible");
+    }
+  });
   return null;
 }
 

@@ -19,9 +19,21 @@
 
 .mapboxgl-ctrl-legend {
   gap: 0;
+  width: 100%;
+  max-width: unset;
 
   summary {
-    display: none !important;
+    text-transform: capitalize;
+  }
+
+  .list li {
+    text-transform: unset;
+  }
+
+  .mapboxgl-ctrl-legend-pane {
+    border: 1px solid #eee;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   br {
@@ -30,7 +42,7 @@
 
   .list--color {
     li {
-      margin-left: 0;
+      margin-left: 0.5rem;
     }
   }
 }

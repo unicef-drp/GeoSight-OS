@@ -1,0 +1,190 @@
+/**
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '01/10/2025'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
+
+/* ==========================================================================
+   Mapbox style editor
+   ========================================================================== */
+
+import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useTranslation } from "react-i18next";
+import type { LayerSpecification, SourceSpecification } from "maplibre-gl";
+import { AddIcon, MaputnikIcon } from "../Icons";
+import { ThemeButton } from "../Elements/Button";
+import {
+  defaultPointStyle
+} from "../../pages/Admin/ContextLayer/StyleConfig/layerStyles";
+import { DEFAULT_STYLES } from "./style";
+import StyleForm from "./StyleForm";
+import { FieldAttribute } from "../../types/Field";
+
+import "./style.scss";
+
+interface Props {
+  layers: LayerSpecification[];
+  setLayers: (layers: LayerSpecification[]) => void;
+  source?: SourceSpecification;
+  sourceLayer: string;
+  fields: FieldAttribute[];
+}
+
+const FREE_TEXT_FORM = "Raw input";
+const EDITOR = "Editor";
+
+export function Editor({
+  layers,
+  setLayers,
+  source,
+  sourceLayer,
+  fields,
+}: Props) {
+  const { t } = useTranslation();
+  const [textArea, setTextArea] = useState<string>(null);
+  const [mode, setMode] = useState<string>(EDITOR);
+
+  useEffect(() => {
+    if (textArea !== JSON.stringify(layers)) {
+      setTextArea(JSON.stringify(layers, null, 4));
+    }
+  }, [layers]);
+
+  const onAdd = (layerType: string) => {
+    // @ts-ignore
+    const style = JSON.parse(JSON.stringify(DEFAULT_STYLES[layerType]));
+    if (sourceLayer) {
+      style["source-layer"] = sourceLayer;
+    }
+    if (source && Object.keys(source)[0]) {
+      style.source = Object.keys(source)[0];
+    } else {
+      style.source = "source";
+    }
+    if (style?.layout && style?.layout["icon-image"]) {
+      style.layout["icon-image"] =
+        window.location.origin + style?.layout["icon-image"];
+    }
+
+    const maxId = Math.max(
+      ...layers.map((l) => Number(l.id)).filter((n) => !isNaN(n)),
+    );
+    style.id = (
+      Number.isFinite(maxId) ? maxId + 1 : layers.length + 1
+    ).toString();
+    setLayers([...layers, style]);
+  };
+
+  return (
+    <>
+      {/* Extra button */}
+      <div style={{ display: "flex" }}>
+        <ThemeButton
+          variant={"primary " + (mode !== EDITOR ? "Reverse" : "")}
+          onClick={() => setMode(EDITOR)}
+        >
+          {t(EDITOR)}
+        </ThemeButton>
+        <ThemeButton
+          variant={"primary " + (mode !== FREE_TEXT_FORM ? "Reverse" : "")}
+          onClick={() => setMode(FREE_TEXT_FORM)}
+        >
+          {t(FREE_TEXT_FORM)}
+        </ThemeButton>
+        <div style={{ flexGrow: 1 }} />
+        {/* MAPUTNIK EDITOR */}
+        {source ? (
+          <ThemeButton
+            variant="primary Reverse"
+            onClick={() => {
+              let uuid = uuidv4();
+              const _window = window.open(
+                "/cloud-native-gis/maputnik/",
+                uuid,
+                "popup=true",
+              );
+              // @ts-ignore
+              _window.inputStyle = JSON.stringify({
+                id: 1,
+                name: "Layer",
+                sources: source,
+                layers: layers,
+                version: 8,
+              });
+              window.addEventListener(
+                "message",
+                (event) => {
+                  // @ts-ignore
+                  if (event.source?.name === uuid) {
+                    const layers = event.data.layers.filter(
+                      (layer: LayerSpecification) =>
+                        layer.id !== "openstreetmap",
+                    );
+                    setLayers(layers);
+                  }
+                },
+                false,
+              );
+            }}
+          >
+            <MaputnikIcon /> Maputnik editor
+          </ThemeButton>
+        ) : null}
+      </div>
+      {mode === FREE_TEXT_FORM && (
+        <textarea
+          style={{ flexGrow: 1 }}
+          placeholder={`Fill with style, which is list if Mapbox Layer specification. e.g: ${JSON.stringify(
+            defaultPointStyle,
+            null,
+            4,
+          )}`}
+          value={textArea}
+          onChange={(evt) => {
+            setTextArea(evt.target.value);
+            try {
+              setLayers(JSON.parse(evt.target.value));
+            } catch (err) {}
+          }}
+        />
+      )}
+      <div style={{ flexGrow: 1, display: mode === EDITOR ? "block" : "none" }}>
+        <div className="MapBoxStyleEditor">
+          <StyleForm
+            layers={layers ? layers : []}
+            setLayers={setLayers}
+            fields={fields}
+          />
+          <div className="AdditonalStyleEditor">
+            <div className="ActionButton" onClick={() => onAdd("fill")}>
+              <AddIcon />
+              Add fill
+            </div>
+            <div className="ActionButton" onClick={() => onAdd("circle")}>
+              <AddIcon />
+              Add circle
+            </div>
+            <div className="ActionButton" onClick={() => onAdd("line")}>
+              <AddIcon />
+              Add line
+            </div>
+            <div className="ActionButton" onClick={() => onAdd("symbol")}>
+              <AddIcon />
+              Add symbol
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

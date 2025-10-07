@@ -25,71 +25,83 @@ import { dictDeepCopy, toJson } from "../../../../../utils/main";
 import { fetchingData } from "../../../../../Requests";
 import { vectorTileLegend } from "../../../../../utils/Legend/VectorTile";
 
-import 'mapboxgl-legend/dist/style.css';
-import './style.scss'
-
+import "mapboxgl-legend/dist/style.css";
+import "./style.scss";
 
 /** ------- Vector tile layer ------- **/
 export function VectorTileLayer(
-  layerData, layerFn, legendFn, errorFn, onEachFeature
+  layerData,
+  layerFn,
+  legendFn,
+  errorFn,
+  onEachFeature,
 ) {
   // If there is url legend, use the image
-  const urlLegend = layerData.url_legend
-  if (urlLegend?.includes('http')) {
-    legendFn(`<img src="${urlLegend}"/>`)
+  const urlLegend = layerData.url_legend;
+  if (urlLegend?.includes("http")) {
+    legendFn(`<img src="${urlLegend}"/>`);
   } else {
     try {
-      let layers = toJson(layerData.styles)
-      if (!Array.isArray(layers)) {
-        layers = []
+      if (layerData.styles) {
+        let layers = toJson(layerData.styles);
+        if (!Array.isArray(layers)) {
+          layers = [];
+        }
+        const legend = vectorTileLegend(layers);
+        legendFn(`<div class="mapboxgl-ctrl-legend">${legend}</div>`);
       }
-      const legend = vectorTileLegend(layers)
-      legendFn(
-        `<div class="mapboxgl-ctrl-legend">${legend}</div>`
-      )
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
-  layerData.parameters['maxNativeZoom'] = 19;
-  layerData.parameters['maxZoom'] = maxZoom;
-  layerFn(layerData)
+  layerData.parameters["maxNativeZoom"] = 19;
+  layerData.parameters["maxZoom"] = maxZoom;
+  layerFn(layerData);
 }
-
 
 /** ------- Raster tile layer ------- **/
 export function RasterTileLayer(
-  layerData, layerFn, legendFn, errorFn, onEachFeature
+  layerData,
+  layerFn,
+  legendFn,
+  errorFn,
+  onEachFeature,
 ) {
   if (layerData.url_legend) {
-    legendFn(`<img src="${layerData.url_legend}"/>`)
+    legendFn(`<img src="${layerData.url_legend}"/>`);
   }
-  layerData.parameters['maxNativeZoom'] = 19;
-  layerData.parameters['maxZoom'] = maxZoom;
-  layerFn(layerData)
+  layerData.parameters["maxNativeZoom"] = 19;
+  layerData.parameters["maxZoom"] = maxZoom;
+  layerFn(layerData);
 }
-
 
 /** --------- Arcgis layer --------- **/
 export async function ArcgisLayer(
-  layerData, layerFn, legendFn, errorFn, onEachFeature, objectFn
+  layerData,
+  layerFn,
+  legendFn,
+  errorFn,
+  onEachFeature,
+  objectFn,
 ) {
-
-  let url = layerData.url
+  let url = layerData.url;
   if (layerData.arcgis_config) {
-    layerData.parameters['url'] = encodeURIComponent(layerData.url)
-    url = `/api/arcgis/${layerData.arcgis_config}/proxy`
+    layerData.parameters["url"] = encodeURIComponent(layerData.url);
+    url = `/api/arcgis/${layerData.arcgis_config}/proxy`;
   }
 
   const options = {
-    token: layerData.token
+    token: layerData.token,
   };
   const esriData = new EsriData(
-    layerData.name, url,
-    layerData.parameters, options,
-    layerData.styles, onEachFeature
+    layerData.name,
+    url,
+    layerData.parameters,
+    options,
+    layerData.styles,
+    onEachFeature,
   );
-  esriData.load().then(output => {
+  esriData.load().then((output) => {
     if (output.layer) {
       layerFn(output.layer);
       const legend = esriData.getLegend();
@@ -98,21 +110,23 @@ export async function ArcgisLayer(
       errorFn(output.error);
     }
     if (objectFn) {
-      objectFn(esriData)
+      objectFn(esriData);
     }
   });
-  return esriData
+  return esriData;
 }
 
 /** --------- Geojson layer --------- **/
 export function GeojsonLayer(
-  layerData, layerFn, legendFn, errorFn, onEachFeature
+  layerData,
+  layerFn,
+  legendFn,
+  errorFn,
+  onEachFeature,
 ) {
-  fetchingData(
-    layerData.url, layerData.params, {}, (data) => {
-      layerFn(data);
-    }
-  )
+  fetchingData(layerData.url, layerData.params, {}, (data) => {
+    layerFn(data);
+  });
 }
 
 /**
@@ -125,63 +139,73 @@ export function GeojsonLayer(
  * @param dispatch Dispatcher.
  */
 export const getLayer = function (
-  layerData, setLayer,
-  setLegend, setError, dispatch, setObject = null
+  layerData,
+  setLayer,
+  setLegend,
+  setError,
+  dispatch,
+  setObject = null,
 ) {
   const layerType = layerData.layer_type;
 
   // this is for each feature
   const onEachFeature = (feature, layer, fields) => {
-    let properties = dictDeepCopy(feature.properties)
+    let properties = dictDeepCopy(feature.properties);
     if (layerData.data_fields.length) {
-      fields = layerData.data_fields
+      fields = layerData.data_fields;
     }
     if (fields) {
-      properties = []
-      const tooltip = []
-      fields.map(field => {
+      properties = [];
+      const tooltip = [];
+      fields.map((field) => {
         if (field.visible !== false) {
-          properties[field.alias] = feature.properties[field.name]
-          if (field.type === 'date') {
+          properties[field.alias] = feature.properties[field.name];
+          if (field.type === "date") {
             try {
-              properties[field.alias] = new Date(feature.properties[field.name]).toString()
-            } catch (err) {
-
-            }
+              properties[field.alias] = new Date(
+                feature.properties[field.name],
+              ).toString();
+            } catch (err) {}
           }
         }
 
         if (field.as_label) {
-          tooltip.push(`<div>${feature.properties[field.name]}</div>`)
+          tooltip.push(`<div>${feature.properties[field.name]}</div>`);
         }
-      })
+      });
 
       if (tooltip.length) {
-        const style = Object.assign({}, {
-          minZoom: 0,
-          maxZoom: 24,
-          fontFamily: '"Rubik", sans-serif',
-          fontSize: 14,
-          fontColor: '#000000',
-          fontWeight: 300,
-          strokeColor: '#FFFFFF',
-          strokeWeight: 0
-        }, layerData.label_styles);
+        const style = Object.assign(
+          {},
+          {
+            minZoom: 0,
+            maxZoom: 24,
+            fontFamily: '"Rubik", sans-serif',
+            fontSize: 14,
+            fontColor: "#000000",
+            fontWeight: 300,
+            strokeColor: "#FFFFFF",
+            strokeWeight: 0,
+          },
+          layerData.label_styles,
+        );
 
         const styles = [
-          'font-size: ' + style.fontSize + 'px',
-          'font-weight: ' + style.fontWeight,
-          'font-family: ' + style.fontFamily + '!important',
-          '-webkit-text-fill-color: ' + style.fontColor,
-          '-webkit-text-stroke-color: ' + style.strokeColor,
-          '-webkit-text-stroke-width: ' + style.strokeWeight + 'px',
-        ]
+          "font-size: " + style.fontSize + "px",
+          "font-weight: " + style.fontWeight,
+          "font-family: " + style.fontFamily + "!important",
+          "-webkit-text-fill-color: " + style.fontColor,
+          "-webkit-text-stroke-color: " + style.strokeColor,
+          "-webkit-text-stroke-width: " + style.strokeWeight + "px",
+        ];
         if (style.haloWeight) {
-          styles.push(`text-shadow : 0px 0px ${style.haloWeight}px ${style.haloColor}, 0px 0px ${style.haloWeight}px ${style.haloColor}`)
+          styles.push(
+            `text-shadow : 0px 0px ${style.haloWeight}px ${style.haloColor}, 0px 0px ${style.haloWeight}px ${style.haloColor}`,
+          );
         }
         layer.bindTooltip(
-          `<div style='${styles.join(';')}'>
-            ${tooltip.join('')}
+          `<div style='${styles.join(";")}'>
+            ${tooltip.join("")}
             </div>`,
           {
             permanent: true,
@@ -189,8 +213,8 @@ export const getLayer = function (
             direction: "top",
             offset: [0, 0],
             minZoom: style.minZoom,
-            maxZoom: style.maxZoom
-          }
+            maxZoom: style.maxZoom,
+          },
         );
       }
     }
@@ -198,18 +222,20 @@ export const getLayer = function (
     layer.bindPopup(
       popupTemplate(null, properties, {
         name: layerData.name,
-        color: '#eee'
-      })
+        color: "#eee",
+      }),
     );
 
     if (dispatch) {
-      layer.on('click', function (event) {
-        dispatch(
-          Actions.Map.updateCenter(event.latlng)
-        )
-      }, this);
+      layer.on(
+        "click",
+        function (event) {
+          dispatch(Actions.Map.updateCenter(event.latlng));
+        },
+        this,
+      );
     }
-  }
+  };
   switch (layerType) {
     case Variables.LAYER.TYPE.RASTER_TILE: {
       return RasterTileLayer(
@@ -217,8 +243,8 @@ export const getLayer = function (
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
         (error) => setError(error),
-        onEachFeature
-      )
+        onEachFeature,
+      );
     }
     case Variables.LAYER.TYPE.ARCGIS: {
       const ArcGisData = ArcgisLayer(
@@ -227,13 +253,13 @@ export const getLayer = function (
         (legend) => setLegend(legend),
         (error) => setError(error),
         (feature, layer) => {
-          return onEachFeature(feature, layer, ArcGisData?.data?.fields)
+          return onEachFeature(feature, layer, ArcGisData?.data?.fields);
         },
         (obj) => {
-          setObject ? setObject(obj) : null
-        }
-      )
-      return ArcGisData
+          setObject ? setObject(obj) : null;
+        },
+      );
+      return ArcGisData;
     }
     case Variables.LAYER.TYPE.RELATED_TABLE: {
       return VectorTileLayer(
@@ -241,8 +267,8 @@ export const getLayer = function (
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
         (error) => setError(error),
-        onEachFeature
-      )
+        onEachFeature,
+      );
     }
     case Variables.LAYER.TYPE.GEOJSON: {
       return GeojsonLayer(
@@ -250,8 +276,8 @@ export const getLayer = function (
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
         (error) => setError(error),
-        onEachFeature
-      )
+        onEachFeature,
+      );
     }
     case Variables.LAYER.TYPE.VECTOR_TILE: {
       return VectorTileLayer(
@@ -259,8 +285,8 @@ export const getLayer = function (
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
         (error) => setError(error),
-        onEachFeature
-      )
+        onEachFeature,
+      );
     }
     case Variables.LAYER.TYPE.CLOUD_NATIVE_GIS: {
       return VectorTileLayer(
@@ -268,8 +294,8 @@ export const getLayer = function (
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
         (error) => setError(error),
-        onEachFeature
-      )
+        onEachFeature,
+      );
     }
     case Variables.LAYER.TYPE.RASTER_COG: {
       return RasterTileLayer(
@@ -277,8 +303,8 @@ export const getLayer = function (
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
         (error) => setError(error),
-        onEachFeature
-      )
+        onEachFeature,
+      );
     }
   }
-}
+};
