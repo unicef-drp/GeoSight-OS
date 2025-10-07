@@ -160,9 +160,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       <Editor
         layers={layers}
         setLayers={(_layers) => {
-          if (JSON.stringify(layers) !== JSON.stringify(_layers)) {
-            updateStyle(JSON.stringify(_layers));
-          }
+          updateStyle(JSON.stringify(_layers));
         }}
         source={data.mapbox_style?.sources}
         sourceLayer={

@@ -22,6 +22,14 @@
   width: 100%;
   max-width: unset;
 
+  summary {
+    text-transform: capitalize;
+  }
+
+  .list li {
+    text-transform: unset;
+  }
+
   .mapboxgl-ctrl-legend-pane {
     border: 1px solid #eee;
     width: 100%;

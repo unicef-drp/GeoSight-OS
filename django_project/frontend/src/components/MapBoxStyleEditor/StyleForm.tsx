@@ -106,11 +106,20 @@ function SortableAccordionItem({
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
             width: "100%",
+            alignItems: "center",
           }}
         >
-          <div>{layer.id}</div>
+          <IconButton
+            className="dragIcon"
+            aria-label="drag"
+            {...attributes}
+            {...listeners}
+            sx={{ ml: 1 }}
+          >
+            <DragIndicatorIcon />
+          </IconButton>
+          <div style={{ textAlign: "left", flexGrow: 1 }}>{layer.id}</div>
           {/* @ts-ignore */}
           <IconButton
             size="small"
@@ -122,15 +131,6 @@ function SortableAccordionItem({
             <DeleteIcon fontSize="small" />
           </IconButton>
         </div>
-        <IconButton
-          className="dragIcon"
-          aria-label="drag"
-          {...attributes}
-          {...listeners}
-          sx={{ ml: 1 }}
-        >
-          <DragIndicatorIcon />
-        </IconButton>
       </AccordionSummary>
       <AccordionDetails>
         <TextInput
