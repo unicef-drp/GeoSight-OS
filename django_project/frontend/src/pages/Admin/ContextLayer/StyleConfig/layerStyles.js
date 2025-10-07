@@ -13,61 +13,31 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-export const defaultVectorTyleStyle = [
-    {
-        id: "country-line",
-        type: "line",
-        source: "source",
-        "source-layer": "countries",
-        filter: [
-            "==",
-            "$type",
-            "Polygon"
-        ],
-        paint: {
-            "line-width": 1,
-            "line-color": "#AAAAAA"
-        }
+export const defaultPointStyle = [
+  {
+    id: "pointLayer",
+    type: "circle",
+    source: "source",
+    paint: {
+      "circle-color": "#ff7800",
+      "circle-opacity": 0.6,
     },
-    {
-        id: "country-fill",
-        type: "fill",
-        source: "source",
-        "source-layer": "countries",
-        filter: [
-            "==",
-            "$type",
-            "Polygon"
-        ],
-        paint: {
-            "fill-opacity": 0
-        }
-    }
+    filter: ["==", "$type", "Point"],
+  },
 ];
 
-export const defaultPointStyle = [{
-    id: 'pointLayer',
-    type: 'circle',
-    source: 'source',
-    paint: {
-        'circle-color': '#ff7800',
-        'circle-opacity': 0.6
-    },
-    'filter': ['==', '$type', 'Point']
-}];
-
-export const defaultAggregationStyle =  [
+export const defaultAggregationStyle = [
   {
-    "id": "clusterLabel",
-    "type": "symbol",
-    "source": "source",
-    "filter": ["has", "point_count"],
-    "layout": {
+    id: "clusterLabel",
+    type: "symbol",
+    source: "source-cluster",
+    filter: ["has", "point_count"],
+    layout: {
       "text-field": ["format", ["get", "_value_text_"]],
       "text-font": ["Rubik", "Rubik"],
-      "text-size": 10
+      "text-size": 10,
     },
-    "paint": {
+    paint: {
       "text-color": [
         "step",
         ["get", "_value_"],
@@ -79,16 +49,16 @@ export const defaultAggregationStyle =  [
         750,
         "#FFFFFF",
         1000,
-        "#FFFFFF"
-      ]
-    }
+        "#FFFFFF",
+      ],
+    },
   },
   {
-    "id": "clusterLayer",
-    "type": "circle",
-    "source": "source",
-    "filter": ["has", "point_count"],
-    "paint": {
+    id: "clusterLayer",
+    type: "circle",
+    source: "source-cluster",
+    filter: ["has", "point_count"],
+    paint: {
       "circle-color": [
         "step",
         ["get", "_value_"],
@@ -100,7 +70,7 @@ export const defaultAggregationStyle =  [
         750,
         "#21831d",
         1000,
-        "#004b00"
+        "#004b00",
       ],
       "circle-radius": [
         "step",
@@ -113,22 +83,22 @@ export const defaultAggregationStyle =  [
         750,
         25,
         1000,
-        30
+        30,
       ],
       "circle-stroke-width": 1,
-      "circle-stroke-color": "#004b00"
-    }
+      "circle-stroke-color": "#004b00",
+    },
   },
   {
-    "id": "unclusterLayer",
-    "type": "circle",
-    "source": "source",
-    "filter": ["!", ["has", "point_count"]],
-    "paint": {
+    id: "unclusterLayer",
+    type: "circle",
+    source: "source-cluster",
+    filter: ["!", ["has", "point_count"]],
+    paint: {
       "circle-color": "#0000FF",
       "circle-radius": 4,
       "circle-stroke-width": 1,
-      "circle-stroke-color": "#000000"
-    }
-  }
-]
+      "circle-stroke-color": "#000000",
+    },
+  },
+];
