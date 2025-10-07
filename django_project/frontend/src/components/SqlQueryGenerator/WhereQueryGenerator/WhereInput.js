@@ -43,6 +43,7 @@ import {
   SelectWithSearch,
 } from "../../Input/SelectWithSearch";
 import { INTERNEXT_IDENTIFIER, INTERVAL_IDENTIFIER } from "./index";
+import { MapboxOperator } from "../../MapBoxStyleEditor/style";
 
 // VARIABLES
 // export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
@@ -81,6 +82,7 @@ export function WhereInputValue({
         placeholder="Put the value"
         value={value ? value : ""}
         onChange={(evt) => {
+          console.log(evt.target.value);
           if ([IS_IN, IS_NOT_IN].includes(operator)) {
             setValue(evt.target.value.split(","));
           } else {
@@ -383,7 +385,7 @@ export function WhereInputValue({
       </div>
     );
   } else {
-    if (operator === "=" && fieldType === "string") {
+    if (fieldType === "string") {
       return (
         <Input
           type="text"
@@ -471,7 +473,6 @@ export default function WhereInput({
   onDelete,
   ...props
 }) {
-  console.log(where);
   // UPDATE THE OPERATOR
   // If it has :interval, it is last x (time)
   const value = where.value;
@@ -506,6 +507,9 @@ export default function WhereInput({
   }
 
   let UPDATED_OPERATOR = getOperators(fieldType, props.isSimplified);
+  if (props.operators) {
+    UPDATED_OPERATOR = props.operators;
+  }
 
   let showOperator = false;
   let isDate = fieldType?.toLowerCase() === "date";
@@ -598,6 +602,7 @@ export default function WhereInput({
         operator={operator}
         value={value}
         setValue={(value) => {
+          console.log(value);
           where.value = value;
           updateWhere();
         }}

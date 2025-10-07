@@ -32,6 +32,7 @@ import { Line } from "./Form/Line";
 import { Symbol } from "./Form/Symbol";
 import { FieldAttribute } from "../../types/Field";
 import { Filter } from "./Filter";
+import { TextInput } from "./Input";
 
 export const Render = ({
   layer,
@@ -132,22 +133,25 @@ function SortableAccordionItem({
         </IconButton>
       </AccordionSummary>
       <AccordionDetails>
+        <TextInput
+          layer={layer}
+          setLayer={onUpdate}
+          layerAttr="metadata"
+          styleKey="label"
+        />
         <Filter
           layerType={layer.type}
           /* @ts-ignore */
           filter={layer.filter}
           setFilter={(filter) => {
-            console.log(filter);
-            const newLayer = { ...layer };
-            /* @ts-ignore */
-            newLayer.filter = filter;
-            onUpdate(newLayer);
+            // @ts-ignore
+            onUpdate({ ...layer, filter: filter });
           }}
           fields={fields}
           onAdd={() => {
             const newLayer = { ...layer };
             /* @ts-ignore */
-            newLayer.filter.push(["==", fields[0].name, "Value"]);
+            newLayer.filter.push(["==", fields[0].name, ""]);
             onUpdate(newLayer);
           }}
         />

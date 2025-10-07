@@ -133,7 +133,7 @@ function AggregationJsonGuide() {
   </>
 }
 
-export default function AggregationStyleGuide({ data, styleChanged }) {
+export default function AggregationStyleGuide({ styleChanged }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [aggregationMethod, setAggregationMethod] = useState('point_count');
 

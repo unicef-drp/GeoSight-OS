@@ -46,6 +46,7 @@ export function Symbol({ layer, setLayer }: EditorProps) {
         min={0}
         max={100}
         step={0.1}
+        help={"(percentage)"}
       />
     </>
   );

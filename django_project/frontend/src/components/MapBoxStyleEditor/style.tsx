@@ -26,7 +26,7 @@ export const DEFAULT_STYLES = {
   symbol: {
     type: "symbol",
     source: "source",
-    filter: ["==", "$type", "Point"],
+    filter: ["all", ["==", "$type", "Point"]],
     layout: {
       "icon-image": "/static/img/point.png",
       "icon-size": 0.1,
@@ -50,4 +50,13 @@ export const DEFAULT_STYLES = {
       "fill-opacity": 1,
     },
   },
+};
+
+export const MapboxOperator = {
+  "==": "equals",
+  "!=": "not equals",
+  "<": "less than",
+  "<=": "less than or equal to",
+  ">": "greater than",
+  ">=": "greater than or equal to",
 };

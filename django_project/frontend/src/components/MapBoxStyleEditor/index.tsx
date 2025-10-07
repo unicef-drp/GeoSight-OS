@@ -40,7 +40,7 @@ interface Props {
   fields: FieldAttribute[];
 }
 
-const FREE_TEXT_FORM = "Free text form";
+const FREE_TEXT_FORM = "Raw input";
 const EDITOR = "Editor";
 
 export function Editor({
@@ -62,7 +62,7 @@ export function Editor({
 
   const onAdd = (layerType: string) => {
     // @ts-ignore
-    const style = DEFAULT_STYLES[layerType];
+    const style = JSON.parse(JSON.stringify(DEFAULT_STYLES[layerType]));
     if (sourceLayer) {
       style["source-layer"] = sourceLayer;
     }
@@ -90,16 +90,16 @@ export function Editor({
       {/* Extra button */}
       <div style={{ display: "flex" }}>
         <ThemeButton
-          variant={"primary " + (mode !== FREE_TEXT_FORM ? "Reverse" : "")}
-          onClick={() => setMode(FREE_TEXT_FORM)}
-        >
-          {t(FREE_TEXT_FORM)}
-        </ThemeButton>
-        <ThemeButton
           variant={"primary " + (mode !== EDITOR ? "Reverse" : "")}
           onClick={() => setMode(EDITOR)}
         >
           {t(EDITOR)}
+        </ThemeButton>
+        <ThemeButton
+          variant={"primary " + (mode !== FREE_TEXT_FORM ? "Reverse" : "")}
+          onClick={() => setMode(FREE_TEXT_FORM)}
+        >
+          {t(FREE_TEXT_FORM)}
         </ThemeButton>
         <div style={{ flexGrow: 1 }} />
         {/* MAPUTNIK EDITOR */}
@@ -158,35 +158,33 @@ export function Editor({
           }}
         />
       )}
-      {mode === EDITOR && (
-        <div style={{ flexGrow: 1 }}>
-          <div className="MapBoxStyleEditor">
-            <StyleForm
-              layers={layers ? layers : []}
-              setLayers={setLayers}
-              fields={fields}
-            />
-            <div className="AdditonalStyleEditor">
-              <div className="ActionButton" onClick={() => onAdd("fill")}>
-                <AddIcon />
-                Add fill
-              </div>
-              <div className="ActionButton" onClick={() => onAdd("circle")}>
-                <AddIcon />
-                Add circle
-              </div>
-              <div className="ActionButton" onClick={() => onAdd("line")}>
-                <AddIcon />
-                Add line
-              </div>
-              <div className="ActionButton" onClick={() => onAdd("symbol")}>
-                <AddIcon />
-                Add symbol
-              </div>
+      <div style={{ flexGrow: 1, display: mode === EDITOR ? "block" : "none" }}>
+        <div className="MapBoxStyleEditor">
+          <StyleForm
+            layers={layers ? layers : []}
+            setLayers={setLayers}
+            fields={fields}
+          />
+          <div className="AdditonalStyleEditor">
+            <div className="ActionButton" onClick={() => onAdd("fill")}>
+              <AddIcon />
+              Add fill
+            </div>
+            <div className="ActionButton" onClick={() => onAdd("circle")}>
+              <AddIcon />
+              Add circle
+            </div>
+            <div className="ActionButton" onClick={() => onAdd("line")}>
+              <AddIcon />
+              Add line
+            </div>
+            <div className="ActionButton" onClick={() => onAdd("symbol")}>
+              <AddIcon />
+              Add symbol
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }

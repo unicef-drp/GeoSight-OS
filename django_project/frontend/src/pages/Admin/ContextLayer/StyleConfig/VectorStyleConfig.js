@@ -36,28 +36,26 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       // --------------------------------------------
       // Fetch the attributes
       // --------------------------------------------
-      // TODO:
-      //  Related table has it's own attributes
-      // if (data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE) {
-      //   if (data.related_table) {
-      //     setFields(null);
-      //     (async () => {
-      //       try {
-      //         const response = await fetch(
-      //           `/api/v1/related-tables/${data.related_table}/`,
-      //         );
-      //
-      //         if (!response.ok) {
-      //           setFields([]);
-      //         }
-      //         const jsonData = await response.json();
-      //         setFields(jsonData.fields_definition);
-      //       } catch (error) {
-      //         setFields([]);
-      //       }
-      //     })();
-      //   }
-      // }
+      if (data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE) {
+        if (data.related_table) {
+          setFields(null);
+          (async () => {
+            try {
+              const response = await fetch(
+                `/api/v1/related-tables/${data.related_table}/`,
+              );
+
+              if (!response.ok) {
+                setFields([]);
+              }
+              const jsonData = await response.json();
+              setFields(jsonData.fields_definition);
+            } catch (error) {
+              setFields([]);
+            }
+          })();
+        }
+      }
       if (data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS) {
         if (data.cloud_native_gis_layer_id) {
           setFields(null);
@@ -95,7 +93,6 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       }
       // --------------------------------------------
     }
-
     if (data.cloud_native_gis_layer_id && !data.mapbox_style) {
       (async () => {
         const newData = await updateDataWithMapbox(data);
@@ -110,6 +107,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
   const { field_aggregation } = toJson(data.configuration);
 
   const updateStyle = (newStyle) => {
+    console.log("UPDATE");
     setInputStyle(newStyle);
     try {
       setError(null);
@@ -127,6 +125,9 @@ export default function VectorStyleConfig({ data, setData, setError }) {
     return <div>Loading attributes...</div>;
   }
 
+  const layers = inputStyle?.length
+    ? JSON.parse(inputStyle)
+    : data.mapbox_style?.layers;
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div>
@@ -135,7 +136,6 @@ export default function VectorStyleConfig({ data, setData, setError }) {
         </div>
         {field_aggregation ? (
           <AggregationStyleGuide
-            data={data}
             styleChanged={(val) => {
               setInputStyle(val);
               setData({
@@ -158,13 +158,11 @@ export default function VectorStyleConfig({ data, setData, setError }) {
         <br />
       </div>
       <Editor
-        layers={
-          inputStyle?.length
-            ? JSON.parse(inputStyle)
-            : data.mapbox_style?.layers
-        }
-        setLayers={(layers) => {
-          updateStyle(JSON.stringify(layers));
+        layers={layers}
+        setLayers={(_layers) => {
+          if (JSON.stringify(layers) !== JSON.stringify(_layers)) {
+            updateStyle(JSON.stringify(_layers));
+          }
         }}
         source={data.mapbox_style?.sources}
         sourceLayer={

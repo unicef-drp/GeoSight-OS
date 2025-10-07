@@ -32,6 +32,46 @@ interface NumberProps extends Props {
   min: number;
   max: number;
   step: number;
+  help?: string;
+}
+
+export function TextInput({ layer, setLayer, layerAttr, styleKey }: Props) {
+  const { t } = useTranslation();
+  // @ts-ignore
+  if (!layer[layerAttr]) {
+    // @ts-ignore
+    layer[layerAttr] = {};
+  }
+  // @ts-ignore
+  const value = layer[layerAttr][styleKey];
+
+  return (
+    <div>
+      <div>
+        <label className="form-label">
+          {t(capitalize(styleKey.replaceAll("-", " ")))}
+        </label>
+      </div>
+      <div>
+        <input
+          type="text"
+          /* @ts-ignore */
+          value={value}
+          onChange={(evt) => {
+            const newLayer = { ...layer };
+            if (evt.target.value) {
+              // @ts-ignore
+              newLayer[layerAttr][styleKey] = evt.target.value;
+            } else {
+              // @ts-ignore
+              delete newLayer[layerAttr][styleKey];
+            }
+            setLayer(newLayer);
+          }}
+        />
+      </div>
+    </div>
+  );
 }
 
 export function NumberInput({
@@ -42,6 +82,7 @@ export function NumberInput({
   min,
   max,
   step,
+  help,
 }: NumberProps) {
   const { t } = useTranslation();
   // @ts-ignore
@@ -51,7 +92,7 @@ export function NumberInput({
     <div>
       <div>
         <label className="form-label">
-          {t(capitalize(styleKey.replaceAll("-", " ")))}
+          {t(capitalize(styleKey.replaceAll("-", " ")))} {t(help)}
         </label>
       </div>
       <div>
