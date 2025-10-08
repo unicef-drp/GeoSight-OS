@@ -38,12 +38,7 @@ interface NumberProps extends Props {
 export function TextInput({ layer, setLayer, layerAttr, styleKey }: Props) {
   const { t } = useTranslation();
   // @ts-ignore
-  if (!layer[layerAttr]) {
-    // @ts-ignore
-    layer[layerAttr] = {};
-  }
-  // @ts-ignore
-  const value = layer[layerAttr][styleKey];
+  const value = layer[layerAttr] ? layer[layerAttr][styleKey] : null;
 
   return (
     <div>
@@ -59,6 +54,11 @@ export function TextInput({ layer, setLayer, layerAttr, styleKey }: Props) {
           value={value}
           onChange={(evt) => {
             const newLayer = { ...layer };
+            // @ts-ignore
+            if (!newLayer[layerAttr]) {
+              // @ts-ignore
+              newLayer[layerAttr] = {};
+            }
             if (evt.target.value) {
               // @ts-ignore
               newLayer[layerAttr][styleKey] = evt.target.value;

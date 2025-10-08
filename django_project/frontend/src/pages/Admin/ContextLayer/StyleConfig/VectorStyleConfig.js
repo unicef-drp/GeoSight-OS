@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { capitalize, toJson } from "../../../../utils/main";
+import { capitalize, dictDeepCopy, toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
 import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 import MapboxStyleInformation from "../../../../components/Buttons/MapboxStyleInformation";
@@ -106,8 +106,12 @@ export default function VectorStyleConfig({ data, setData, setError }) {
 
   const { field_aggregation } = toJson(data.configuration);
 
+  const layers = inputStyle?.length
+    ? JSON.parse(inputStyle)
+    : data.mapbox_style?.layers;
+
   const updateStyle = (newStyle) => {
-    console.log("UPDATE");
+    if (newStyle === JSON.stringify(layers)) return;
     setInputStyle(newStyle);
     try {
       setError(null);
@@ -124,10 +128,6 @@ export default function VectorStyleConfig({ data, setData, setError }) {
   if (fields === null) {
     return <div>Loading attributes...</div>;
   }
-
-  const layers = inputStyle?.length
-    ? JSON.parse(inputStyle)
-    : data.mapbox_style?.layers;
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div>
@@ -158,7 +158,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
         <br />
       </div>
       <Editor
-        layers={layers}
+        layers={dictDeepCopy(layers)}
         setLayers={(_layers) => {
           updateStyle(JSON.stringify(_layers));
         }}
