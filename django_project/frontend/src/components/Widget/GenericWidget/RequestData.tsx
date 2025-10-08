@@ -130,14 +130,17 @@ export default function RequestData({ data, applyData }: Props) {
         );
       }
       const dateTimeConfig = timeParameter.dateTimeConfig;
-      if (dateTimeConfig) {
+      if (dateTimeConfig && dateTimeConfig.minDateFilter) {
         params["date__gte"] = dateTimeConfig.minDateFilter.split("T")[0];
         if (dateTimeConfig.maxDateFilter) {
           // @ts-ignore
           params["date__lte"] = dateTimeConfig.maxDateFilter.split("T")[0];
         }
       }
-      // We
+      // Don't request if parameter with date
+      if (!params["date__gte"]) {
+        return;
+      }
       const session = new Session("Widget request " + data.name);
       setLayerData({
         fetching: true,

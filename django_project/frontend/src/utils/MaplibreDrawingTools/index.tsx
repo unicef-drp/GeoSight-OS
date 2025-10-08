@@ -31,7 +31,6 @@ import {
 } from "@turf/turf";
 import polygonToLine from '@turf/polygon-to-line';
 import { Variables } from "../Variables";
-import { customDrawStyles } from "./Styles";
 import { BufferDrawing } from "./Buffer";
 
 export class MaplibreDrawingTools {
@@ -40,8 +39,8 @@ export class MaplibreDrawingTools {
   private map: maplibregl.Map;
   private mode: string;
   private setDrawState: () => void;
-  private setBufferCalculating: (value: boolean) => void;
   private bufferDraw: BufferDrawing;
+
 
   constructor(
     map: maplibregl.Map, defaultMode: string, setDrawState: () => void,
@@ -51,53 +50,41 @@ export class MaplibreDrawingTools {
     this.mode = defaultMode;
     this.setDrawState = setDrawState;
     this.bufferDraw = new BufferDrawing(map, setBufferCalculating);
-
-    this.draw = new MapboxDraw(
-      {
-        displayControlsDefault: false,
-        styles: customDrawStyles,
-        controls: {
-          polygon: true,
-          line_string: true,
-          trash: true
-        },
-        defaultMode: defaultMode
-      }
-    )
-    const that = this;
-    map.on('draw.create', (e) => {
-      try {
-        if (!that.isDrawing) {
-          e.features.map((feature: {
-            id: string;
-          }) => that.draw.delete(feature.id))
-        }
-        that.stopDrawing(true)
-      } catch (err) {
-
-      }
-    });
-    map.on('draw.delete', () => {
-      that.setDrawState()
-    });
-    map.on('draw.update', () => {
-      that.setDrawState()
-
-    });
-    map.on('draw.selectionchange', (e) => {
-      if (!that.draw) {
-        return
-      }
-      that.setDrawState()
-      that.stopDrawing()
-    });
-    map.addControl(this.draw as any, 'top-left')
+    this.draw = map._controls.find(c => c instanceof MapboxDraw);
+    this.deleteFeatures()
+    this.draw.changeMode(defaultMode);
+    map.on('draw.create', this.onDrawCreate);
+    map.on('draw.delete', this.setDrawState);
+    map.on('draw.update', this.setDrawState);
+    map.on('draw.selectionchange', this.onSelectionChange);
     this.start()
 
     // @ts-ignore
     map.drawingMode = true;
     this.bufferDraw.createLayer()
   }
+
+  onDrawCreate = (e: any) => {
+    const that = this;
+    try {
+      if (!this.isDrawing) {
+        e.features.map((feature: { id: string }) =>
+          that.draw.delete(feature.id),
+        );
+      }
+      this.stopDrawing(true);
+    } catch (err) {
+
+    }
+  };
+
+  onSelectionChange = (e: any) => {
+    if (!this.draw) {
+      return;
+    }
+    this.setDrawState();
+    this.stopDrawing();
+  };
 
   redraw(features: any) {
     this.draw.deleteAll();
@@ -107,9 +94,11 @@ export class MaplibreDrawingTools {
   }
 
   destroy() {
+    this.map.off('draw.create', this.onDrawCreate);
+    this.map.off('draw.selectionchange', this.onSelectionChange);
     this.map.off('draw.delete', this.setDrawState);
     this.map.off('draw.update', this.setDrawState);
-    this.map.removeControl(this.draw as any)
+    this.deleteFeatures()
     this.stopDrawing()
     this.bufferDraw.destroy()
     delete this.bufferDraw

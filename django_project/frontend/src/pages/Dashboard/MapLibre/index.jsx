@@ -57,12 +57,14 @@ import { TransparencyControl } from "./Transparency";
 import { isDashboardToolEnabled } from "../../../selectors/dashboard";
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
+import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -157,6 +159,18 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
           500,
         );
       });
+      newMap.addControl(
+        new MapboxDraw({
+          displayControlsDefault: false,
+          styles: customDrawStyles,
+          controls: {
+            polygon: true,
+            line_string: true,
+            trash: true,
+          },
+        }),
+        "bottom-right",
+      );
       newMap.addControl(new maplibregl.NavigationControl(), "bottom-left");
       newMap.on("styledata", () => {
         const currentIds = newMap.getStyle().layers.map((layer) => layer.id);
