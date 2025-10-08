@@ -21,7 +21,7 @@ import React, { memo, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 // Widgets
-import { DateTimeConfig, WidgetConfig, } from "../../../types/Widget";
+import { DateTimeConfig, WidgetConfig } from "../../../types/Widget";
 import { TimeType } from "../Definition";
 
 export interface TimeParametersProps {

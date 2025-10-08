@@ -22,6 +22,9 @@ import { isArray } from "chart.js/helpers";
  * Deep copy of dictionary
  */
 export function dictDeepCopy(dict, moreDeep = true) {
+  if (dict === undefined) {
+    return dict;
+  }
   if (moreDeep) {
     return JSON.parse(JSON.stringify(dict))
   }

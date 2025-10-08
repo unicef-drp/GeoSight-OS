@@ -13,20 +13,46 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
-import ReactAutocomplete from '@mui/material/Autocomplete';
-import { ArrowDownwardIcon } from "../Icons";
+import React from "react";
 import { isArray } from "chart.js/helpers";
+import ReactAutocomplete from "@mui/material/Autocomplete";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { Grow, Popper } from "@mui/material";
 
 export default function Autocomplete({ ...props }) {
-  if (!isArray((props.value))) {
+  if (!isArray(props.value)) {
     if (props.value && !props.options.includes(props.value)) {
-      props.options.push(props.value)
+      props.options.push(props.value);
     }
   }
-  return <ReactAutocomplete
-    {...props}
-    className={"ReactAutocomplete " + (props.className ? props.className : '')}
-    popupIcon={<ArrowDownwardIcon/>}
-  />
+  return (
+    <ReactAutocomplete
+      {...props}
+      PopperComponent={(popperProps) => (
+        <Popper
+          {...popperProps}
+          transition
+          modifiers={[{ name: "offset", options: { offset: [0, 0] } }]}
+        >
+          {({ TransitionProps }) => (
+            <Grow {...TransitionProps} timeout={300}>
+              <div>{popperProps.children}</div>
+            </Grow>
+          )}
+        </Popper>
+      )}
+      className={
+        "ReactAutocomplete " + (props.className ? props.className : "")
+      }
+      popupIcon={<ArrowDropDownIcon />}
+      slotProps={{
+        paper: {
+          sx: {
+            mt: 0,
+            borderRadius: 0,
+          },
+        },
+      }}
+    />
+  );
 }
