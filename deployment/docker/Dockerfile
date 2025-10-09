@@ -14,7 +14,7 @@
 
 FROM ubuntu:22.04 AS prod
 
-ENV CACHE_BUSTER=09.10.2025
+ENV CACHE_BUSTER=08.10.2025
 # ----------------------------------------------------------------
 # NOTE: If you forgot to run setup.sh and you are arm architecture
 #  And comment above FROM
