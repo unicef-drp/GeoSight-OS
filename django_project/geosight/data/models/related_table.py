@@ -33,8 +33,7 @@ from geosight.permission.models.manager import PermissionManager
 class RelatedTableException(Exception):
     """Error class for RelatedTable."""
 
-    def init(self, message):
-        """init."""
+    def init(self, message):  # noqa
         self.message = message
         super().__init__(self.message)
 
@@ -49,23 +48,38 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
     permissions = PermissionManager()
 
     def able_to_edit(self, user):
-        """If able to delete."""
+        """
+        Check if a user has permission to edit the table.
+
+        :param user: Django user instance.
+        :type user: django.contrib.auth.models.User
+        :return: ``True`` if the user can edit, otherwise ``False``.
+        :rtype: bool
+        """
         return user.is_staff or user == self.creator
 
-    def __str__(self):
+    def __str__(self):  # noqa: D105
         return f'{self.name} ({self.unique_id})'
 
-    def save(self, *args, **kwargs):
-        """On save method."""
+    def save(self, *args, **kwargs):  # noqa
         super(RelatedTable, self).save(*args, **kwargs)
         # Update dashboard version
         for dashboard_rt in self.dashboardrelatedtable_set.all():
             dashboard_rt.dashboard.increase_version()
 
     def insert_row(self, data: dict, row_id=None, replace=False):
-        """Insert row.
+        """
+        Insert or update a single row in the related table.
 
-        It will be inserted as latest row.
+        :param data: Data dictionary representing the row.
+        :type data: dict
+        :param row_id: Existing row ID to update (optional).
+        :type row_id: int or None
+        :param replace: Whether to replace existing data.
+        :type replace: bool
+        :return: The inserted or updated :class:`RelatedTableRow`.
+        :rtype: RelatedTableRow
+        :raises RelatedTableException: If required data keys are missing.
         """
         if row_id is not None:
             replace = True
@@ -95,7 +109,17 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             raise RelatedTableException(f'{e} is required.')
 
     def insert_rows(self, data_list: list, replace=False):
-        """Insert rows."""
+        """
+        Insert multiple rows into the related table.
+
+        :param data_list: List of row data dictionaries.
+        :type data_list: list
+        :param replace: Whether to delete existing rows first.
+        :type replace: bool
+        :return: Dictionary of errors (if any) with index as key.
+        :rtype: dict
+        :raises Exception: Raised if one or more rows fail to insert.
+        """
         errors = {}
         try:
             with transaction.atomic():
@@ -115,7 +139,12 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
 
     @property
     def related_fields(self):
-        """Return fields of table."""
+        """
+        Retrieve the names of all fields in the related table.
+
+        :return: List of field names.
+        :rtype: list[str]
+        """
         if not self.relatedtablefield_set.count():
             self.set_fields()
         return list(
@@ -125,7 +154,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         )
 
     def check_relation(self):
-        """Check relation."""
+        """
+        Validate and update relationships with dashboards.
+
+        Removes or updates related fields in dashboards if mismatched.
+        """
         from geosight.data.models.dashboard import DashboardRelatedTable
         related_fields = self.related_fields
         for rel_obj in DashboardRelatedTable.objects.filter(object=self):
@@ -145,7 +178,12 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
 
     @property
     def data(self):
-        """Return data of related table."""
+        """
+        Return all data rows of the related table.
+
+        :return: List of data dictionaries including row IDs.
+        :rtype: list[dict]
+        """
         query = self.relatedtablerow_set.all()
         output = []
         for row in query:
@@ -156,7 +194,12 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
 
     @property
     def fields_definition(self):
-        """Return fields with it's definition."""
+        """
+        Return all fields with their definitions and examples.
+
+        :return: Serialized field definitions.
+        :rtype: list[dict]
+        """
         from geosight.data.serializer.related_table import (
             RelatedTableFieldSerializer
         )
@@ -174,6 +217,12 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
 
     @fields_definition.setter
     def fields_definition(self, fields):
+        """
+        Replace all field definitions with the given list.
+
+        :param fields: List of field definition dictionaries.
+        :type fields: list[dict]
+        """
         self.relatedtablefield_set.all().delete()
         for field in fields:
             self.add_field(
@@ -186,7 +235,22 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             self, select, order_by, country_geom_ids, geo_field,
             geo_type='ucode'
     ):
-        """Return the query."""
+        """
+        Build a SQL query string for retrieving related table data.
+
+        :param select: SQL select clause.
+        :type select: str
+        :param order_by: SQL order by clause.
+        :type order_by: str
+        :param country_geom_ids: List of country geometry IDs.
+        :type country_geom_ids: list
+        :param geo_field: Field name in data representing the geographic key.
+        :type geo_field: str
+        :param geo_type: Type of geographic code (default 'ucode').
+        :type geo_type: str
+        :return: SQL query string or None.
+        :rtype: str or None
+        """
         from geosight.georepo.models.entity import Entity
         countries = [
             f'{country}' for country in list(
@@ -241,7 +305,25 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             country_geom_ids=None,
             geo_field=None, geo_type='ucode'
     ):
-        """Return data field."""
+        """
+        Retrieve distinct values for a specific data field.
+
+        This method returns the unique values of a given field across all rows.
+        If ``country_geom_ids`` are provided, the data is filtered to include
+        only rows linked to those geometries.
+
+        :param field: The name of the field to extract values from.
+        :type field: str
+        :param country_geom_ids: Optional list of geometry IDs to filter by.
+        :type country_geom_ids: list or None
+        :param geo_field: Optional geometry field used for filtering.
+        :type geo_field: str or None
+        :param geo_type:
+            Type of geographic identifier (default is ``'ucode'``).
+        :type geo_type: str
+        :return: List of distinct values for the specified field.
+        :rtype: list
+        """
         if not country_geom_ids:
             return self.relatedtablerow_set.values_list(
                 f'data__{field}', flat=True
@@ -274,7 +356,36 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             geo_field, date_field=None, date_format=None, geo_type='ucode',
             max_time=None, min_time=None, limit=25, offset=None
     ):
-        """Return data of related table."""
+        """
+        Retrieve related table data joined with geographic context.
+
+        This method executes a database query to fetch related table rows
+        and enriches each entry with geometry and metadata information.
+        Optionally filters the data based on date fields.
+
+        :param country_geom_ids: List of geometry IDs to filter the data by.
+        :type country_geom_ids: list
+        :param geo_field: Name of the geometry field used in the join.
+        :type geo_field: str
+        :param date_field: Optional field name representing the date.
+        :type date_field: str or None
+        :param date_format: Format to interpret date values, if applicable.
+        :type date_format: str or None
+        :param geo_type: Geographic code type (default ``'ucode'``).
+        :type geo_type: str
+        :param max_time: Optional maximum datetime filter (ISO 8601 string).
+        :type max_time: str or None
+        :param min_time: Optional minimum datetime filter (ISO 8601 string).
+        :type min_time: str or None
+        :param limit: Maximum number of rows to return (default 25).
+        :type limit: int
+        :param offset: Optional pagination offset.
+        :type offset: int or None
+        :return: A tuple containing:
+            - List of result dictionaries with data and geometry info.
+            - Boolean indicating if there are more results (has_next).
+        :rtype: tuple(list[dict], bool)
+        """
         # Check codes based on code type
         output = []
         has_next = False
@@ -330,7 +441,25 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             self, country_geom_ids,
             geo_field, date_field=None, date_format=None, geo_type='ucode'
     ):
-        """Return data of related table."""
+        """
+        Retrieve all distinct date values from a related table.
+
+        This method executes a query to fetch unique date entries,
+        converting them into ISO 8601 formatted strings.
+
+        :param country_geom_ids: List of geometry IDs to filter data by.
+        :type country_geom_ids: list
+        :param geo_field: Geometry field name used for filtering.
+        :type geo_field: str
+        :param date_field: The name of the field containing date values.
+        :type date_field: str
+        :param date_format: Optional date parsing format.
+        :type date_format: str or None
+        :param geo_type: Geographic code type (default ``'ucode'``).
+        :type geo_type: str
+        :return: List of unique ISO-formatted date strings.
+        :rtype: list[str]
+        """
         with connection.cursor() as cursor:
             query = self.query(
                 country_geom_ids=country_geom_ids,
@@ -354,7 +483,19 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         return dates
 
     def add_field(self, name, label, field_type):
-        """Add a new field definition to the related table."""
+        """
+        Add a new field definition to the related table.
+
+        :param name: Internal name of the field.
+        :type name: str
+        :param label: Display name (alias) for the field.
+        :type label: str
+        :param field_type:
+            Data type of the field (``'date'``, ``'number'``, or ``'string'``).
+        :type field_type: str
+        :raises ValueError:
+            If the field type is invalid or the field already exists.
+        """
         if field_type not in ['date', 'number', 'string']:
             raise ValueError(f"Invalid type value for Related Table field: "
                              f"{field_type}")
@@ -369,7 +510,16 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         )
 
     def set_fields(self):
-        """Set fields data."""
+        """
+        Infer and set field definitions from existing table rows.
+
+        This method analyzes the first and last row data to automatically
+        detect field names and data types
+        (``date``, ``number``, or ``string``).
+        Existing field definitions not found in the current data are deleted.
+        :raises ValueError:
+            If the field type is invalid or the field already exists.
+        """
         related_fields = []
         row = self.relatedtablerow_set.first()
         if row:
@@ -434,7 +584,18 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         query.exclude(id__in=ids).delete()
 
     def save_relations(self, data):
-        """Save all relationship data."""
+        """
+        Save all relationship field definitions to the related table.
+
+        This method updates or creates field definitions based on the
+        ``data_fields`` property provided in the ``data`` dictionary.
+        Any fields not included in the latest update will be deleted.
+
+        :param data:
+            Dictionary containing a ``data_fields``
+            JSON array of field definitions.
+        :type data: dict
+        """
         ids = []
         query = self.relatedtablefield_set.all()
         try:
@@ -464,7 +625,16 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
 
     @property
     def last_importer(self):
-        """Return last importer."""
+        """
+        Retrieve the most recent importer associated with this related table.
+
+        This method finds the latest
+        :class:`geosight.importer.models.attribute.ImporterAttribute`
+        entry that references this table and returns its admin edit URL.
+
+        :return: Admin URL for the last importer or ``None`` if not found.
+        :rtype: str or None
+        """
         from django.urls import reverse
         from geosight.importer.models.attribute import ImporterAttribute
         attribute = ImporterAttribute.objects.filter(
@@ -478,7 +648,12 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         return None
 
     def make_none_to_empty_string(self):
-        """Make empty string for empty data."""
+        """
+        Replace all ``None`` values in related table data with empty strings.
+
+        Iterates through all rows and updates their data dictionary, replacing
+        ``None`` with ``''`` for consistent display and export.
+        """
         query = self.relatedtablerow_set.all()
         for row in query:
             if row.data:

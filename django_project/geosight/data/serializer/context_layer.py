@@ -20,7 +20,7 @@ import urllib.parse
 from rest_framework import serializers
 
 from geosight.data.models.context_layer import (
-    ContextLayer, ContextLayerField
+    ContextLayer, ContextLayerField, LayerType
 )
 from geosight.data.serializer.resource import ResourceSerializer
 
@@ -40,11 +40,25 @@ class ContextLayerSerializer(ResourceSerializer):
     configuration = serializers.SerializerMethodField()
 
     def get_url(self, obj: ContextLayer):
-        """Url."""
+        """
+        Extract and return the base URL of the layer.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Base URL without query parameters.
+        :rtype: str or None
+        """
         return urllib.parse.unquote(obj.url.split('?')[0]) if obj.url else None
 
     def get_parameters(self, obj: ContextLayer):
-        """Return parameters."""
+        """
+        Extract URL query parameters (excluding 'bbox') from the layer URL.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Dictionary of URL parameters.
+        :rtype: dict
+        """
         parameters = {}
         if obj.url:
             urls = obj.url.split('?')
@@ -56,35 +70,90 @@ class ContextLayerSerializer(ResourceSerializer):
         return parameters
 
     def get_category(self, obj: ContextLayer):
-        """Return category name."""
+        """
+        Retrieve the name of the category (group) the layer belongs to.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Group name if available, otherwise an empty string.
+        :rtype: str
+        """
         return obj.group.name if obj.group else ''
 
     def get_data_fields(self, obj: ContextLayer):
-        """Return category name."""
-        return ContextLayerFieldSerializer(
+        """
+        Retrieve data fields for the context layer.
+
+        For related tables, returns field definitions if none exist.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: List of serialized field data.
+        :rtype: list
+        """
+        fields = ContextLayerFieldSerializer(
             obj.contextlayerfield_set.all(), many=True
         ).data
+        if obj.layer_type == LayerType.RELATED_TABLE:
+            if not fields:
+                fields = obj.related_table.fields_definition
+        return fields
 
     def get_styles(self, obj: ContextLayer):
-        """Return category name."""
+        """
+        Deserialize and return the styles configuration.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Styles as a dictionary or None.
+        :rtype: dict or None
+        """
         return json.loads(obj.styles) if obj.styles else None
 
     def get_original_styles(self, obj: ContextLayer):
-        """Return original_styles."""
+        """
+        Return the original styles of the context layer.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Original styles as a dictionary or None.
+        :rtype: dict or None
+        """
         return json.loads(obj.styles) if obj.styles else None
 
     def get_label_styles(self, obj: ContextLayer):
-        """Return category name."""
+        """
+        Retrieve label styles configuration.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Label styles dictionary.
+        :rtype: dict
+        """
         return json.loads(obj.label_styles) if obj.label_styles else {}
 
     def get_permission(self, obj: ContextLayer):
-        """Return permission."""
+        """
+        Retrieve permissions for the context layer based on the current user.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Permissions information.
+        :rtype: dict
+        """
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
 
     def get_configuration(self, obj: ContextLayer):
-        """Return original_configuration."""
+        """
+        Retrieve the current configuration of the context layer.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Configuration dictionary or None.
+        :rtype: dict or None
+        """
         if not obj.configuration:
             return None
         if isinstance(obj.configuration, str):
@@ -92,7 +161,14 @@ class ContextLayerSerializer(ResourceSerializer):
         return obj.configuration
 
     def get_original_configuration(self, obj: ContextLayer):
-        """Return original_configuration."""
+        """
+        Retrieve the original configuration of the context layer.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Original configuration dictionary or None.
+        :rtype: dict or None
+        """
         if not obj.configuration:
             return None
         if isinstance(obj.configuration, str):

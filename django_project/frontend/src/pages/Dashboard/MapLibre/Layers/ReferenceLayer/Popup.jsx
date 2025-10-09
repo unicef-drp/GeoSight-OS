@@ -523,7 +523,6 @@ export function popup(
             }
           }
         }
-        console.log(rawData);
       }
     }
     if (rawData?.length) {

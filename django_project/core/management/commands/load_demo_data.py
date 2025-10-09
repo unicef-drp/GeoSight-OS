@@ -50,7 +50,7 @@ class Command(BaseCommand):
             'loaddata', 'core/fixtures/demo/cloud_native_gis/1.init.json'
         )
         # Load the layer
-        from cloud_native_gis.utils.geopandas import shapefile_to_postgis
+        from cloud_native_gis.utils.geopandas import collection_to_postgis
         from cloud_native_gis.models.layer import Layer
         try:
             layer = Layer.objects.get(
@@ -60,7 +60,7 @@ class Command(BaseCommand):
                 'core', 'fixtures', 'demo', 'cloud_native_gis',
                 'shapefile', 'somalia.shp'
             )
-            shapefile_to_postgis(
+            collection_to_postgis(
                 filepath=filepath,
                 table_name=layer.table_name,
                 schema_name=layer.schema_name,

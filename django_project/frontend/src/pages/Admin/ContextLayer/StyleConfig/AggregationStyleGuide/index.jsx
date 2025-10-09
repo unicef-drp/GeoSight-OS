@@ -37,7 +37,7 @@ function AggregationJsonGuide() {
     {
       "id": "clusterLabel",
       "type": "symbol",
-      "source": "source-cluster",
+      "source": "source",
       "filter": [ "has", "point_count" ],
       "layout": {
         "text-field": [
@@ -67,7 +67,7 @@ function AggregationJsonGuide() {
     {
         "id": "clusterLayer",
         "type": "circle",
-        "source": "source-cluster",
+        "source": "source",
         "filter": [ "has", "point_count" ],
         "paint": {
             "circle-color": [
@@ -104,7 +104,7 @@ function AggregationJsonGuide() {
     {
         "id": "unclusterLayer",
         "type": "circle",
-        "source": "source-cluster",
+        "source": "source",
         "filter": [ "!", [ "has", "point_count" ] ],
         "paint": {
             "circle-color": "#0000FF",
@@ -138,11 +138,7 @@ export default function AggregationStyleGuide({ styleChanged }) {
   const [aggregationMethod, setAggregationMethod] = useState('point_count');
 
   return <>
-    <div>
-      This layer has aggregation.<br/>
-      source:"source" for uncluster layer.<br/>
-      source:"source-cluster" for uncluster layer.<br/>
-      Click <span
+    <div>This layer has aggregation. Click <span
       className='TextLinkButton'
       onClick={() => {
         setModalOpen(true)

@@ -59,29 +59,22 @@ export default function relatedTableLayer(
         data: geojson,
         type: "geojson",
       });
-      const clusterId = id + "-cluster";
+      if (field_aggregation) {
+        params.cluster = true;
+        params.clusterRadius = 50;
+        params.clusterMaxZoom = 14;
+        params.clusterProperties = {
+          sum: ["+", ["get", field_aggregation]],
+          max: ["max", ["get", field_aggregation]],
+          min: ["min", ["get", field_aggregation]],
+        };
+      }
       removeSource(map, id);
-      removeSource(map, clusterId);
 
       if (!hasSource(map, id)) {
         map.addSource(id, params);
-
-        if (field_aggregation) {
-          map.addSource(clusterId, {
-            ...params,
-            cluster: true,
-            clusterRadius: 50,
-            clusterMaxZoom: 14,
-            clusterProperties: {
-              sum: ["+", ["get", field_aggregation]],
-              max: ["max", ["get", field_aggregation]],
-              min: ["min", ["get", field_aggregation]],
-            },
-          });
-        }
       } else {
         map.getSource(id).setData(geojson);
-        map.getSource(clusterId).setData(geojson);
       }
 
       const popupFeature = (properties) => {
@@ -100,11 +93,7 @@ export default function relatedTableLayer(
               await loadImageToMap(map, layer.layout["icon-image"]);
             }
             layer.id = id + "-" + layer.id;
-            if (!layer.source.includes("cluster")) {
-              layer.source = id;
-            } else {
-              layer.source = clusterId;
-            }
+            layer.source = id;
 
             removeLayer(map, layer.id);
             addLayerWithOrder(
