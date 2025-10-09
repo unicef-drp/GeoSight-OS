@@ -13,16 +13,16 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { AdminPage, pageNames } from '../../index';
+import React, { useEffect, useState } from "react";
+import { render } from "../../../../app";
+import { store } from "../../../../store/admin";
+import { AdminPage, pageNames } from "../../index";
 import { fetchingData } from "../../../../Requests";
 import { capitalize, parseDateTime } from "../../../../utils/main";
 import { isValueDate } from "../../../../utils/relatedTable";
 import { AdminListPagination } from "../../AdminListPagination";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * Related Table App Data
@@ -34,11 +34,13 @@ export default function RelatedTableData() {
   useEffect(() => {
     fetchingData(urls.api.detail, {}, {}, (detailData) => {
       setColums(
-        [
-          { field: 'id', headerName: 'id', hide: true, width: 30, }
-        ].concat(
-          detailData.related_fields.map(field => {
-            const isDate = isValueDate(field, null)
+        [{ field: "id", headerName: "id", hide: true, width: 30 }].concat(
+          detailData.fields_definition.map((fieldDefinition) => {
+            const field = fieldDefinition.name;
+            const isDate =
+              isValueDate(field, null) ||
+              fieldDefinition.type?.toLowerCase().includes("date");
+
             return {
               field: field,
               headerName: capitalize(field),
@@ -46,35 +48,37 @@ export default function RelatedTableData() {
               minWidth: 200,
               renderCell: (params) => {
                 if (isDate) {
-                  return parseDateTime(params.value)
+                  return parseDateTime(params.value);
                 }
-                return <div
-                  title={params.value}
-                  className='MuiDataGrid-cellContent'>
-                  {params.value}
-                </div>
+                return (
+                  <div title={params.value} className="MuiDataGrid-cellContent">
+                    {params.value}
+                  </div>
+                );
               },
-            }
-          })
-        )
-      )
-    })
-  }, [])
+            };
+          }),
+        ),
+      );
+    });
+  }, []);
 
-  return <AdminPage pageName={pageNames.RelatedTablesData}>
-    <AdminListPagination
-      urlData={urls.api.data}
-      columns={columns}
-      disabledDelete={true}
-      checkboxSelection={false}
-      hideSearch={true}
-      getParameters={() => {
-        return {
-          flat: true
-        }
-      }}
-    />
-  </AdminPage>
+  return (
+    <AdminPage pageName={pageNames.RelatedTablesData}>
+      <AdminListPagination
+        urlData={urls.api.data}
+        columns={columns}
+        disabledDelete={true}
+        checkboxSelection={false}
+        hideSearch={true}
+        getParameters={() => {
+          return {
+            flat: true,
+          };
+        }}
+      />
+    </AdminPage>
+  );
 }
 
-render(RelatedTableData, store)
+render(RelatedTableData, store);

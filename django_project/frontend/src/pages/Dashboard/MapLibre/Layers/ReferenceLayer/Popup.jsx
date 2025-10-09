@@ -528,6 +528,7 @@ export function popup(
     }
     if (rawData?.length) {
       const content = [];
+      console.log(rawData)
       rawData.map((data, idx) => {
         const rows = [];
         Object.keys(data).forEach((key) => {

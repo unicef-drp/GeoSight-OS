@@ -33,6 +33,7 @@ import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 import rasterCogLayer from "../../LayerType/RasterCog";
 import { Variables } from "../../../../../utils/Variables";
 import { addLayerWithOrder } from "../../Render";
+import { instanceOf } from "prop-types";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -103,10 +104,22 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
       }
     })
 
-    newProperties = {}
+    newProperties = {};
     fields.forEach((field, idx) => {
-      newProperties[field.alias] = properties[field.alias]
-    })
+      let value = properties[field.alias];
+      try {
+        if (value.includes("http")) {
+          value = `<a href="${value}" target="_blank">${value}</a>`;
+        }
+      } catch (err) {}
+      if (
+        field?.type.toLowerCase().includes("date") &&
+        typeof value === "number"
+      ) {
+        value = new Date(value).toISOString();
+      }
+      newProperties[field.alias] = value;
+    });
   }
 
   return popupTemplate(null, newProperties, {

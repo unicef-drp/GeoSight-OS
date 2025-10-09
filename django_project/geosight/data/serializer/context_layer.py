@@ -20,7 +20,7 @@ import urllib.parse
 from rest_framework import serializers
 
 from geosight.data.models.context_layer import (
-    ContextLayer, ContextLayerField
+    ContextLayer, ContextLayerField, LayerType
 )
 from geosight.data.serializer.resource import ResourceSerializer
 
@@ -61,9 +61,13 @@ class ContextLayerSerializer(ResourceSerializer):
 
     def get_data_fields(self, obj: ContextLayer):
         """Return category name."""
-        return ContextLayerFieldSerializer(
+        fields = ContextLayerFieldSerializer(
             obj.contextlayerfield_set.all(), many=True
         ).data
+        if obj.layer_type == LayerType.RELATED_TABLE:
+            if not fields:
+                fields = obj.related_table.fields_definition
+        return fields
 
     def get_styles(self, obj: ContextLayer):
         """Return category name."""
