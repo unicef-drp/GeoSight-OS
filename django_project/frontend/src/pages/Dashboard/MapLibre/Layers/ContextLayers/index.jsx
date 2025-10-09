@@ -85,9 +85,9 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
       if (field.visible !== false) {
         if (field.name) {
           properties[field.alias] = featureProperties[field.name]
-          if (field.type === 'date') {
+          if (field?.type.toLowerCase().includes("date")) {
             try {
-              properties[firendeeld.alias] = new Date(featureProperties[field.name]).toString()
+              properties[field.alias] = new Date(featureProperties[field.name]).toISOString()
             } catch (err) {
 
             }
@@ -111,12 +111,6 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
           value = `<a href="${value}" target="_blank">${value}</a>`;
         }
       } catch (err) {}
-      if (
-        field?.type.toLowerCase().includes("date") &&
-        typeof value === "number"
-      ) {
-        value = new Date(value).toISOString();
-      }
       newProperties[field.alias] = value;
     });
   }

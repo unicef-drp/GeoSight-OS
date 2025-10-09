@@ -426,7 +426,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                         data[date_field] = extract_time_string(
                             format_time=date_format,
                             value=date_time
-                        ).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+                        ).isoformat()
                         # Filter by date
                         if max_time and data[date_field] > max_time:
                             continue
