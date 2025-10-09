@@ -94,8 +94,6 @@ jobs:
         with:
           path: /tmp/my-image.tar
           key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-image-
 
       - name: ✅ Check GDAL version inside geosight_dev
         run: |
@@ -144,8 +142,6 @@ jobs:
         with:
           path: /tmp/my-image.tar
           key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-image-
 
       - name: Load Docker Image
         run: docker load -i /tmp/my-image.tar
@@ -164,12 +160,6 @@ jobs:
           docker cp ./django_project geosight_dev:/home/web
           docker restart geosight_dev
           docker restart geosight_worker
-
-      - name: Install requirements
-        run: |
-          docker cp ./deployment/docker/requirements.txt geosight_dev:/home/web/requirements.txt
-          docker cp ./deployment/docker/requirements-dev.txt geosight_dev:/home/web/requirements-dev.txt
-          docker exec -i geosight_dev bash -c "pip install -r /home/web/requirements.txt && pip install -r /home/web/requirements-dev.txt"
 
       - name: Backend (Prepare container and test)
         if: ${{ matrix.test_suite.mode == 'backend' }}

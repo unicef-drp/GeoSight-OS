@@ -30,7 +30,7 @@ export const defaultAggregationStyle = [
   {
     id: "clusterLabel",
     type: "symbol",
-    source: "source-cluster",
+    source: "source",
     filter: ["has", "point_count"],
     layout: {
       "text-field": ["format", ["get", "_value_text_"]],
@@ -56,7 +56,7 @@ export const defaultAggregationStyle = [
   {
     id: "clusterLayer",
     type: "circle",
-    source: "source-cluster",
+    source: "source",
     filter: ["has", "point_count"],
     paint: {
       "circle-color": [
@@ -92,7 +92,7 @@ export const defaultAggregationStyle = [
   {
     id: "unclusterLayer",
     type: "circle",
-    source: "source-cluster",
+    source: "source",
     filter: ["!", ["has", "point_count"]],
     paint: {
       "circle-color": "#0000FF",
