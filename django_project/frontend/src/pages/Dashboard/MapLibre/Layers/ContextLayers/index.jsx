@@ -291,6 +291,8 @@ export function contextLayerRendering(
           removeLayers(map, id)
           cloudNativeGISLayer(
             map, id, layer, contextLayerData, featureProperties => {
+              console.log(featureProperties)
+              console.log(contextLayerData.data_fields)
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,

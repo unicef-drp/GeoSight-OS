@@ -20,7 +20,6 @@
 .BasicForm.Preview {
   height: 100%;
   box-sizing: border-box;
-  padding: 0 !important;
 
   .Preview {
     height: 100%;
@@ -55,7 +54,6 @@
     height: fit-content;
 
     #ContextLayerConfig {
-      padding: 1rem !important;
       position: relative;
 
       &.ShowStyle {

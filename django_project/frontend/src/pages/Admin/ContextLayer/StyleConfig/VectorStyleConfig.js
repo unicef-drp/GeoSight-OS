@@ -14,12 +14,14 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { capitalize, dictDeepCopy, toJson } from "../../../../utils/main";
+import { dictDeepCopy, toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
 import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 import MapboxStyleInformation from "../../../../components/Buttons/MapboxStyleInformation";
 import { Editor } from "../../../../components/MapBoxStyleEditor";
 import { Variables } from "../../../../utils/Variables";
+import RelatedTableRequest from "../../../../utils/RelatedTable/Request";
+import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 export default function VectorStyleConfig({ data, setData, setError }) {
   const [inputStyle, setInputStyle] = useState(null);
@@ -39,21 +41,11 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       if (data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE) {
         if (data.related_table) {
           setFields(null);
-          (async () => {
-            try {
-              const response = await fetch(
-                `/api/v1/related-tables/${data.related_table}/`,
-              );
 
-              if (!response.ok) {
-                setFields([]);
-              }
-              const jsonData = await response.json();
-              setFields(jsonData.fields_definition);
-            } catch (error) {
-              setFields([]);
-            }
-          })();
+          const request = new RelatedTableRequest(data.related_table);
+          request.getDetail().then((response) => {
+            setFields(response.fields_definition);
+          });
         }
       }
       if (data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS) {
@@ -61,31 +53,12 @@ export default function VectorStyleConfig({ data, setData, setError }) {
           setFields(null);
           (async () => {
             try {
-              const response = await fetch(
-                `/cloud-native-gis/api/layer/${data.cloud_native_gis_layer_id}/attributes/`,
+              const response = await GET_RESOURCE.CLOUD_NATIVE_GIS.ATTRIBUTES(
+                data.cloud_native_gis_layer_id,
               );
-
-              if (!response.ok) {
-                setFields([]);
-              }
-              const jsonData = await response.json();
-              const fields = jsonData.results.map((field) => {
-                return {
-                  name: field.attribute_name,
-                  label: field.attribute_label
-                    ? field.attribute_label
-                    : capitalize(field.attribute_name),
-                  type:
-                    field.attribute_type.includes("int") ||
-                    field.attribute_type.includes("double")
-                      ? "number"
-                      : field.attribute_type.includes("timestamp")
-                        ? "date"
-                        : "string",
-                };
-              });
-              setFields(fields);
+              setFields(response);
             } catch (error) {
+              console.log(error);
               setFields([]);
             }
           })();

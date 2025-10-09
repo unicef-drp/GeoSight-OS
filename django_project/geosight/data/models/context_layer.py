@@ -199,7 +199,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
                         as_label=field.get('as_label', False),
                         order=idx
                     )
-        except KeyError:
+        except KeyError as e:
             pass
 
     def _request(self, url, headers=None):

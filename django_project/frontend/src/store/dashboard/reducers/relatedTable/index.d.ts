@@ -12,7 +12,7 @@
  * __date__ = '26/12/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import { Permission } from "../../../index";
+import { Permission } from "../../../../types/Permission";
 
 export interface RelatedTableField {
   example: string[];

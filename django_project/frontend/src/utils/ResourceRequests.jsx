@@ -14,18 +14,53 @@
  */
 
 import { fetchingData } from "../Requests";
+import { capitalize } from "./main";
 
 export const GET_RESOURCE = {
   CLOUD_NATIVE_GIS: {
     DETAIL: async (id) => {
-      let data = null
+      let data = null;
       await fetchingData(
         `/cloud-native-gis/api/layer/${id}/`,
-        {}, {}, (response, error) => {
-          data = response
-        }, false
-      )
-      return data
-    }
-  }
-}
+        {},
+        {},
+        (response, error) => {
+          data = response;
+        },
+        false,
+      );
+      return data;
+    },
+    ATTRIBUTES: async (id) => {
+      let data = null;
+      await fetchingData(
+        `/cloud-native-gis/api/layer/${id}/attributes/`,
+        {},
+        {},
+        (response, error) => {
+          data = response.map((field) => {
+            const alias = field.attribute_label
+              ? field.attribute_label
+              : capitalize(field.attribute_name);
+            return {
+              name: field.attribute_name,
+              alias: alias,
+              label: alias,
+              type:
+                field.attribute_type.includes("int") ||
+                field.attribute_type.includes("double")
+                  ? "number"
+                  : field.attribute_type.includes("timestamp")
+                    ? "date"
+                    : "string",
+              visible: true,
+              as_label: true,
+            };
+          });
+        },
+        false,
+      );
+      return data;
+    },
+  },
+};
