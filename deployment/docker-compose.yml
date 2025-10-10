@@ -82,6 +82,8 @@ services:
       "--requirepass", "${REDIS_PASSWORD:-redis_password}",
       "--logfile", "/tmp/redis.log"
     ]
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
     volumes:
       - redis-data:/data
       - tmp-data:/tmp
