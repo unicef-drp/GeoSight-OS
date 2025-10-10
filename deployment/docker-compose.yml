@@ -72,11 +72,6 @@ x-common-django:
   restart: on-failure
 
 services:
-#  redis:
-#    image: bitnamilegacy/redis:7.0.2
-#    container_name: "geosight_redis"
-#    environment:
-#      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
   redis:
     image: redis:8.0.4-alpine
     container_name: "geosight_redis"
