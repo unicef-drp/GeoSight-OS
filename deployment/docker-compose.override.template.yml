@@ -23,9 +23,9 @@ services:
   redis:
     volumes:
       # fix redis permission issue because it's using user redis (1001)
-      # sudo chown -R 1001:1001 ./volumes/tmp_data/redis
+      # sudo chown -R 999:999 ./volumes/tmp_data/redis
+      - ./volumes/redis:/data
       - ./volumes/tmp_data/redis:/tmp
-      - ./redis/redis.conf:/opt/bitnami/redis/mounted-etc/overrides.conf
 
   django:
     build:

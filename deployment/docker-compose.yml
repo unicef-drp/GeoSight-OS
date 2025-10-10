@@ -20,7 +20,6 @@ volumes:
   backups-data:
   rabbitmq:
   redis-data:
-  redis-conf:
   tmp-data:
   tmp-logrotate:
 
@@ -73,15 +72,24 @@ x-common-django:
   restart: on-failure
 
 services:
+#  redis:
+#    image: bitnamilegacy/redis:7.0.2
+#    container_name: "geosight_redis"
+#    environment:
+#      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
   redis:
-    image: bitnamilegacy/redis:7.0.2
+    image: redis:8.0.4-alpine
     container_name: "geosight_redis"
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--appendfilename", "appendonly.aof",
+      "--requirepass", "${REDIS_PASSWORD:-redis_password}",
+      "--logfile", "/tmp/redis.log"
+    ]
     volumes:
-      - redis-data:/bitnami/redis/data
+      - redis-data:/data
       - tmp-data:/tmp
-      - redis-conf:/opt/bitnami/redis/mounted-etc/overrides.conf
 
   db:
     image: kartoza/postgis:13.0
