@@ -24,7 +24,6 @@ REQUIRED_EXTENSIONS=(
     rpinski.shebang-snippets@1.1.0
     joffreykern.markdown-toc@1.4.0
     GitHub.copilot@1.326.0
-    GitHub.copilot-chat@0.27.2
     bpruitt-goddard.mermaid-markdown-syntax-highlighting@1.7.1
     DavidAnson.vscode-markdownlint@0.60.0
     shd101wyy.markdown-preview-enhanced@0.8.18
@@ -167,7 +166,7 @@ echo "🗨️ Checking redis directory permissions..."
 if [ ! -d deployment/volumes/tmp_data/redis ]; then
     echo "  📂 Creating deployment/volumes/tmp_data/redis..."
     mkdir -p deployment/volumes/tmp_data/redis
-    sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis
+    sudo chown -R 999:999 deployment/volumes/tmp_data/redis
 else
     echo "  ✅ Redis directory already exists."
 fi

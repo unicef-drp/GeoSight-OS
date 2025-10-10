@@ -139,9 +139,9 @@ dev: down setup
 	@if [ ! -d deployment/volumes/tmp_data/redis ]; then \
 		echo "Creating deployment/volumes/tmp_data/redis and setting permissions..."; \
 		sudo mkdir -p deployment/volumes/tmp_data/redis; \
-		sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis; \
+		sudo chown -R 999:999 deployment/volumes/tmp_data/redis; \
 	else \
-	    sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis; \
+	    sudo chown -R 999:999 deployment/volumes/tmp_data/redis; \
 		echo "Directory already exists: deployment/volumes/tmp_data/redis"; \
 	fi
 	@docker compose ${ARGS} up -d worker celery_beat dev
