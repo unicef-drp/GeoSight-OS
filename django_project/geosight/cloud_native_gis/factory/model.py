@@ -14,7 +14,9 @@ __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 from cloud_native_gis.models.layer import Layer
-from django.db import models
+from django.contrib.gis.db import models
+
+from geosight.cloud_native_gis.factory.queryset import get_columns_with_types
 
 
 def model_factory(layer: Layer):
@@ -40,9 +42,9 @@ def model_factory(layer: Layer):
     table_name = layer.table_name
     full_table = f'"{schema_name}"."{table_name}"'
     model_name = f"Dynamic_{schema_name}_{table_name}".replace('.', '_')
-    columns = layer.attribute_names
+    columns = get_columns_with_types(layer)
 
-    primary_key_col = columns[0] if columns else None
+    primary_key_col = columns[0]['name'] if columns else None
 
     attrs = {
         '__module__': __name__,
@@ -54,10 +56,34 @@ def model_factory(layer: Layer):
     }
 
     for col in columns:
-        if col == primary_key_col:
-            attrs[col] = models.TextField(db_column=col, primary_key=True)
-        else:
-            attrs[col] = models.TextField(db_column=col)
+        name = col['name']
+        col_type = col.get('type', 'text').lower()
 
-    model = type(model_name, (models.Model,), attrs)
-    return model
+        field_kwargs = {}
+        if name == primary_key_col:
+            field_kwargs['primary_key'] = True
+
+        if col_type in (
+                'geometry', 'point', 'polygon', 'linestring',
+                'multipoint', 'multipolygon'
+        ):
+            field_cls = models.GeometryField
+        elif col_type in ('integer', 'bigint', 'smallint'):
+            field_cls = models.IntegerField
+        elif col_type in ('numeric', 'decimal', 'double precision', 'real'):
+            field_cls = models.FloatField
+        elif col_type in (
+                'timestamp', 'timestamp without time zone',
+                'timestamp with time zone'
+        ):
+            field_cls = models.DateTimeField
+        elif col_type == 'date':
+            field_cls = models.DateField
+        elif col_type == 'time':
+            field_cls = models.TimeField
+        else:
+            field_cls = models.TextField
+
+        attrs[name] = field_cls(db_column=name, **field_kwargs)
+
+    return type(model_name, (models.Model,), attrs)

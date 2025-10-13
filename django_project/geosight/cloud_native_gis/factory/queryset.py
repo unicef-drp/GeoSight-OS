@@ -13,6 +13,7 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+from cloud_native_gis.models.layer import Layer
 from django.db import connection
 
 
@@ -28,3 +29,48 @@ def delete_queryset(queryset):
         cursor.execute(delete_sql, params)
 
     return cursor.rowcount
+
+
+def get_columns_with_types(layer: Layer):
+    """
+    Returns a list of dicts with column name and type,
+    including geometry columns.
+    Example:
+    [
+        {'name': 'id', 'type': 'integer'},
+        {'name': 'name', 'type': 'text'},
+        {'name': 'geom', 'type': 'point'}
+    ]
+    """
+    schema_name = layer.schema_name
+    table_name = layer.table_name
+    with connection.cursor() as cursor:
+        # Get standard columns
+        cursor.execute(
+            """
+            SELECT column_name, data_type
+            FROM information_schema.columns
+            WHERE table_schema = %s
+              AND table_name = %s
+            """, [schema_name, table_name])
+        normal_cols = [
+            {'name': row[0], 'type': row[1].lower()} for row in
+            cursor.fetchall()
+        ]
+
+        # Get geometry columns (PostGIS)
+        cursor.execute(
+            """
+            SELECT f_geometry_column, type
+            FROM geometry_columns
+            WHERE f_table_schema = %s
+              AND f_table_name = %s
+            """, [schema_name, table_name])
+        geom_cols = {row[0]: row[1].lower() for row in cursor.fetchall()}
+
+    # Merge: replace type in normal_cols if it's a geometry
+    for col in normal_cols:
+        if col['name'] in geom_cols:
+            col['type'] = geom_cols[col['name']]
+
+    return normal_cols

@@ -210,6 +210,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             data={
                 "addr_city": "Jakarta",
                 "addr_house": "house 1",
+                "completene": 10
             }
         )
         response = self.assertRequestGetView(
@@ -241,6 +242,9 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
         )
         self.assertEqual(
             response.json()["results"][0]["addr_house"], "house 1"
+        )
+        self.assertEqual(
+            response.json()["results"][0]["completene"], 10
         )
 
         # ----------------------------------------------
