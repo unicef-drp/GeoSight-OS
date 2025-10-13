@@ -102,7 +102,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
 
     def test_data(self):
         """Test data."""
-        key = "context_layers_data-list"
+        key = "context_layers_data-features"
         resource_1 = ContextLayer.permissions.create(
             user=self.admin,
             name='name 2',
@@ -140,3 +140,49 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             user=self.admin
         )
         self.assertEqual(response.json()["count"], 13)
+
+        # Delete
+        self.assertRequestDeleteView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=403,
+            user=self.viewer
+        )
+        self.assertRequestDeleteView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=403,
+            user=self.creator
+        )
+        self.assertRequestDeleteView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=403,
+            user=self.contributor
+        )
+        self.assertRequestDeleteView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=204,
+            user=self.admin
+        )
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 34)
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 0)

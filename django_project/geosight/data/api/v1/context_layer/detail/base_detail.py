@@ -87,7 +87,7 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
             return HttpResponseBadRequest(f"{e}")
 
     @swagger_auto_schema(auto_schema=None)
-    def retrieve(self, request, id=None):
+    def retrieve(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
         Retrieve detailed information for a specific context layer object.
 
