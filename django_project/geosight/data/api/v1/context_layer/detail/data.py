@@ -13,7 +13,8 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from django.http import HttpResponse
+from django.core.exceptions import FieldDoesNotExist
+from django.http import HttpResponse, HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
@@ -93,7 +94,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 'of accessed context layer for the user.'
         )
     )
-    @action(detail=False, methods=['get', 'delete'])
+    @action(detail=False, methods=['get', 'delete', 'put'])
     def features(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
         Retrieve a paginated list of data for the specified context layer.
@@ -115,7 +116,34 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
 
             query = self.get_queryset()
             count = query.count()
+            if count > 1:
+                return HttpResponseBadRequest(
+                    f"Found {count} feature(s); "
+                    "cannot delete more than one at a time."
+                )
             delete_queryset(queryset=query)
+
+            return HttpResponse(
+                {"detail": f"{count} data deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        if request.method == 'PUT':
+            obj = self._get_object()
+            edit_data_permission_resource(obj, self.request.user)
+
+            query = self.get_queryset()
+            count = query.count()
+            if count > 1:
+                return HttpResponseBadRequest(
+                    f"Found {count} feature(s); "
+                    "cannot update more than one at a time."
+                )
+            try:
+                query.update(**request.data)
+            except FieldDoesNotExist as e:
+                return HttpResponseBadRequest(
+                    f"Field does not exist:{getattr(e, 'name', str(e)).split('named')[1]}"
+                )
 
             return HttpResponse(
                 {"detail": f"{count} data deleted successfully."},

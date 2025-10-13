@@ -141,6 +141,15 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
         )
         self.assertEqual(response.json()["count"], 13)
 
+        # With the incorrect filter
+        self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?non_field=clinic",
+            code=400,
+            user=self.admin
+        )
+
         # Delete
         self.assertRequestDeleteView(
             url=reverse(
@@ -163,10 +172,93 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             code=403,
             user=self.contributor
         )
+
+        # ----------------------------------------------
+        # PUT
+        # ----------------------------------------------
+        # Put more data, return bad request
+        self.assertRequestPutView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=400,
+            user=self.admin,
+            data={}
+        )
+        # Just update 1 data but wrong field
+        response = self.assertRequestPutView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic&osm_id=3455527618",
+            code=400,
+            user=self.admin,
+            data={
+                "non_field": "Jakarta",
+                "non_field_2": "Jakarta",
+            }
+        )
+        self.assertEqual(
+            response.content.decode(), "Field does not exist: 'non_field'"
+        )
+        # Just update 1 data
+        self.assertRequestPutView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic&osm_id=3455527618",
+            code=204,
+            user=self.admin,
+            data={
+                "addr_city": "Jakarta",
+                "addr_house": "house 1",
+            }
+        )
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 47)
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 13)
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic&osm_id=3455527618",
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 1)
+        self.assertEqual(
+            response.json()["results"][0]["addr_city"], "Jakarta"
+        )
+        self.assertEqual(
+            response.json()["results"][0]["addr_house"], "house 1"
+        )
+
+        # ----------------------------------------------
+        # DELETE
+        # ----------------------------------------------
+        # Delete more data, return bad request
         self.assertRequestDeleteView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ) + "?amenity=clinic",
+            code=400,
+            user=self.admin
+        )
+        # Just delete 1 data
+        self.assertRequestDeleteView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic&osm_id=3455527618",
             code=204,
             user=self.admin
         )
@@ -177,11 +269,19 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             code=200,
             user=self.admin
         )
-        self.assertEqual(response.json()["count"], 34)
+        self.assertEqual(response.json()["count"], 46)
         response = self.assertRequestGetView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ) + "?amenity=clinic",
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 12)
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic&osm_id=3455527618",
             code=200,
             user=self.admin
         )
