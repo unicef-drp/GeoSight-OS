@@ -18,7 +18,18 @@ from django.db import connection
 
 
 def delete_queryset(queryset):
-    """Force delete for queryset without primary key."""
+    """
+    Force delete all records in a queryset that may not have a primary key.
+
+    This function bypasses the Django ORM's usual delete() method and
+    directly executes a DELETE SQL statement. Useful for tables without
+    a primary key.
+
+    :param queryset: Django queryset to delete
+    :type queryset: django.db.models.QuerySet
+    :return: Number of rows deleted
+    :rtype: int
+    """
     query = queryset.query
     compiler = query.get_compiler(using=queryset.db)
     sql, params = compiler.as_sql()
@@ -32,10 +43,18 @@ def delete_queryset(queryset):
 
 
 def get_columns_with_types(layer: Layer):
-    """
-    Returns a list of dicts with column name and type,
-    including geometry columns.
-    Example:
+    """Return metadata for all columns in a GIS layer table.
+
+    Combines standard columns from information_schema with geometry columns
+    from PostGIS's geometry_columns table.
+
+    :param layer: Layer object containing schema and table name
+    :type layer: cloud_native_gis.models.layer.Layer
+    :return: List of dictionaries with column names and types
+    :rtype: list of dict
+    :example:
+
+    >>> get_columns_with_types(layer)
     [
         {'name': 'id', 'type': 'integer'},
         {'name': 'name', 'type': 'text'},

@@ -142,7 +142,8 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 query.update(**request.data)
             except FieldDoesNotExist as e:
                 return HttpResponseBadRequest(
-                    f"Field does not exist:{getattr(e, 'name', str(e)).split('named')[1]}"
+                    f"Field does not exist:"
+                    f"{getattr(e, 'name', str(e)).split('named')[1]}"
                 )
 
             return HttpResponse(
