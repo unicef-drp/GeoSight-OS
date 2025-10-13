@@ -11,10 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '06/01/2025'
+__date__ = '10/10/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .cloud_native_gis import ContextLayerCloudNativeTest  # noqa
-from .cloud_native_zonal_analysis import TestCloudNativeZonalAnalysis  # noqa
-from .raster_zonal_analysis import TestRasterZonalAnalysis  # noqa
-from .resource_api import ContextLayerListApiTest  # noqa
+from .context_layer import *

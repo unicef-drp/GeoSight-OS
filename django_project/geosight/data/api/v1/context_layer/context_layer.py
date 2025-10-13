@@ -17,13 +17,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 from drf_yasg.utils import swagger_auto_schema
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from geosight.data.api.v1.base import (
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDeleteOnly
+)
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.serializer.context_layer import (
     ContextLayerSerializer
-)
-from .base import (
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
 )
 
 
@@ -52,9 +52,7 @@ class ContextLayerViewSet(
             ApiParams.NAME_CONTAINS,
             ApiParams.DESCRIPTION_CONTAINS,
             ApiParams.CATEGORIES,
-            ApiParams.TYPES,
-            ApiParams.PROJECT_SLUGS,
-            ApiParams.PROJECT_IDS
+            ApiParams.TYPES
         ],
         operation_description=(
                 'Return list of accessed context layer for the user.'

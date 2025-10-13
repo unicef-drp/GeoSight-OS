@@ -23,6 +23,9 @@ from rest_framework_nested.routers import NestedSimpleRouter
 from geosight.data.api.v1.basemap import BasemapViewSet
 from geosight.data.api.v1.codelist import CodeListViewSet
 from geosight.data.api.v1.context_layer import ContextLayerViewSet
+from geosight.data.api.v1.context_layer.detail import (
+    ContextLayerDataViewSet, ContextLayerAttributesViewSet
+)
 from geosight.data.api.v1.dashboard import DashboardViewSet
 from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DatasetApiList
@@ -45,13 +48,24 @@ router.register(r'basemaps', BasemapViewSet, basename='basemaps')
 router.register(r'dashboards', DashboardViewSet, basename='dashboards')
 router.register(r'styles', StyleViewSet, basename='styles')
 router.register(r'users', UserViewSet, basename='users')
-router.register(
-    r'context-layers', ContextLayerViewSet, basename='context-layers'
-)
 router.register(r'groups', GroupViewSet, basename='groups')
 router.register(r'code-list', CodeListViewSet, basename='codelist')
 router.register(r'dataset', DatasetApiList, basename='dataset')
 router.register(r'data-browser', DataBrowserApiList, basename='data-browser')
+
+# Context layers
+router.register(
+    r'context-layers', ContextLayerViewSet, basename='context-layers'
+)
+context_layers_router = NestedSimpleRouter(
+    router, r'context-layers', lookup='context_layer')
+context_layers_router.register(
+    'data', ContextLayerDataViewSet, basename='context_layers_data'
+)
+context_layers_router.register(
+    'attributes', ContextLayerAttributesViewSet,
+    basename='context_layers_attributes'
+)
 
 # Indicator
 router.register(
@@ -81,6 +95,7 @@ related_tables_router.register(
 urlpatterns = router.urls
 urlpatterns += related_tables_router.urls
 urlpatterns += indicators_router.urls
+urlpatterns += context_layers_router.urls
 
 if settings.REFERENCE_DATASET_ENABLED:
     urlpatterns += [
