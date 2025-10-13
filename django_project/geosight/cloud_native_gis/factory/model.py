@@ -18,7 +18,24 @@ from django.db import models
 
 
 def model_factory(layer: Layer):
-    """Create model dynamically."""
+    """
+    Dynamically generate a Django model class for a cloud-native GIS layer.
+
+    This factory function creates a Django model that maps directly to
+    the database table associated with the given :class:`Layer` instance.
+    It inspects the schema and table name from the layer and uses its
+    attribute names to define the model fields dynamically.
+
+    The generated model:
+      - Is **unmanaged** (not affected by migrations)
+      - Uses the layer's schema and table as its `db_table`
+      - Treats the first attribute as the primary key (if any)
+
+    :param layer: The cloud-native GIS layer used to generate the model.
+    :type layer: cloud_native_gis.models.layer.Layer
+    :return: A dynamically generated Django model mapped to the layer’s table.
+    :rtype: type[django.db.models.Model]
+    """
     schema_name = layer.schema_name
     table_name = layer.table_name
     full_table = f'"{schema_name}"."{table_name}"'

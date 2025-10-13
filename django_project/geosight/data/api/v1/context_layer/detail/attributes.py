@@ -27,6 +27,7 @@ from geosight.data.models import LayerType
 class DynamicLayerAttributeSerializer(
     LayerAttributeSerializer, DynamicModelSerializer):
     """Dynamic Layer Attribute Serializer."""
+
     pass
 
 
@@ -36,6 +37,15 @@ class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
     non_filtered_keys = ['page', 'page_size']
 
     def get_serializer_class(self):
+        """
+        Return the serializer class for the current context layer.
+
+        If the context layer is of type ``CLOUD_NATIVE_GIS_LAYER``,
+        it returns ``DynamicLayerAttributeSerializer``; otherwise, ``None``.
+
+        :return: Serializer class for the current context layer.
+        :rtype: rest_framework.serializers.Serializer or None
+        """
         obj = self._get_object()
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
             return DynamicLayerAttributeSerializer
@@ -46,11 +56,12 @@ class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
         """
         Return the filtered queryset for the API view.
 
-        This method retrieves the base queryset and filters it
-        by the current context layer's ID.
+        This method retrieves the related attributes for the current
+        context layer, restricted to cloud-native GIS layers.
 
-        :return: A queryset filtered by indicator_id.
-        :rtype: QuerySet
+        :return: Queryset of layer attributes.
+        :rtype: django.db.models.QuerySet
+        :raises ValueError: If the layer type is invalid for this request.
         """
         obj = self._get_object()
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
@@ -71,19 +82,33 @@ class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
     )
     def list(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
-        Retrieve a list of attributes of context layer.
-        Specifically for cloud native layer.
+        Retrieve a list of attributes for the specified context layer.
+
+        This method handles ``GET`` requests and returns the attribute
+        definitions associated with a cloud-native GIS context layer.
 
         :param request: The HTTP request object.
         :type request: rest_framework.request.Request
         :param args: Additional positional arguments.
         :param kwargs: Additional keyword arguments.
-        :return: Response containing a list of indicator rows.
+        :return: Paginated response containing attribute definitions.
         :rtype: rest_framework.response.Response
         """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(auto_schema=None)
     def retrieve(self, request, id=None):
-        """Return detailed of context layer."""
+        """
+        Retrieve detailed information for a specific context layer attribute.
+
+        This endpoint is disabled and always defers
+        to the base class implementation.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param id: Identifier of the attribute object.
+        :type id: int or str, optional
+        :return: Response as defined in the parent implementation.
+        :rtype: rest_framework.response.Response
+        """
         return super().retrieve(request, id)

@@ -30,6 +30,15 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
     non_filtered_keys = ['page', 'page_size']
 
     def get_serializer_class(self):
+        """
+        Return a serializer class for the current queryset model.
+
+        This dynamically creates a serializer based on the model
+        generated from the factory.
+
+        :return: Serializer class for the queryset model.
+        :rtype: rest_framework.serializers.ModelSerializer
+        """
         return serializer_factory(self.get_queryset().model)
 
     @property
@@ -38,10 +47,12 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         Return the filtered queryset for the API view.
 
         This method retrieves the base queryset and filters it
-        by the current context layer's ID.
+        according to the current context layer's ID. Only
+        cloud-native GIS layers are supported.
 
-        :return: A queryset filtered by indicator_id.
-        :rtype: QuerySet
+        :return: Queryset filtered by context layer ID.
+        :rtype: django.db.models.QuerySet
+        :raises ValueError: If the layer type is not supported.
         """
         obj = self._get_object()
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
@@ -66,22 +77,31 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
     )
     def list(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
-        Retrieve a list of data of context layer.
-        Specifically for cloud native layer.
+        Retrieve a paginated list of data for the specified context layer.
 
-        This method handles GET requests to return a collection of indicator
-        objects, typically paginated.
+        This method handles ``GET`` requests and returns the collection
+        of objects (features) belonging to a specific cloud-native
+        context layer.
 
         :param request: The HTTP request object.
         :type request: rest_framework.request.Request
         :param args: Additional positional arguments.
         :param kwargs: Additional keyword arguments.
-        :return: Response containing a list of indicator rows.
+        :return: Paginated list of context layer data.
         :rtype: rest_framework.response.Response
         """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(auto_schema=None)
     def retrieve(self, request, id=None):
-        """Return detailed of context layer."""
+        """
+        Retrieve detailed data for a specific context layer object.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param id: Identifier of the context layer object.
+        :type id: int or str
+        :return: Detailed data of the context layer object.
+        :rtype: rest_framework.response.Response
+        """
         return super().retrieve(request, id)

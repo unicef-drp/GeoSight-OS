@@ -13,24 +13,24 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from django.db import connection
-from rest_framework import serializers
-
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 
 
 def serializer_factory(model_class):
     """
-    Create a serializer that includes all fields from the model's table.
-    """
-    # Introspect fields from the DB
-    fields = []
-    with connection.cursor() as cursor:
-        cursor.execute(f'SELECT * FROM {model_class._meta.db_table} LIMIT 1')
-        fields = [col[0] for col in cursor.description]
+    Dynamically generate a serializer for a given Django model class.
 
-    # Dynamically create serializer
-    serializer_attrs = {field: serializers.ReadOnlyField() for field in fields}
+    This function introspects the corresponding database table of the
+    provided model and generates a serializer class that exposes all
+    fields as read-only fields. It is typically used for models whose
+    schema is dynamic or discovered at runtime (e.g., cloud-native GIS layers).
+
+    :param model_class: The Django model class to build the serializer for.
+    :type model_class: django.db.models.Model
+    :return:
+        A dynamically generated serializer class exposing all model fields.
+    :rtype: rest_framework.serializers.ModelSerializer
+    """
     return type(
         'DynamicContextLayerSerializer',
         (DynamicModelSerializer,),
