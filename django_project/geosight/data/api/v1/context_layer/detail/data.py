@@ -13,6 +13,8 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+from cloud_native_gis.models.layer import Layer
+from cloud_native_gis.utils.connection import fields
 from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
 from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -48,6 +50,62 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         :rtype: rest_framework.serializers.ModelSerializer
         """
         return serializer_factory(self.get_queryset().model)
+
+    def update_data(self, replace=False):
+        """
+        Update data for the current context layer.
+
+        This method updates the data for the layer associated with
+        the current object context.
+        The data should be provided in GeoJSON format. Depending
+        on the `replace` flag,
+        the data can either replace the existing data or be appended.
+
+        :param replace: If True, existing layer data will be replaced;
+                        if False, new data will be appended.
+        :type replace: bool
+        :returns: HttpResponse indicating the result of the operation.
+        :rtype: django.http.HttpResponse
+
+        :note:
+            Only layers of type
+            `LayerType.CLOUD_NATIVE_GIS_LAYER` are supported.
+        """
+        obj = self._get_object()
+        edit_data_permission_resource(obj, self.request.user)
+        try:
+            layer = self.get_context_layer_object()
+            if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
+                try:
+                    geojson_to_geopanda(
+                        self.request.data, layer.schema_name, layer.table_name,
+                        mode=Mode.REPLACE if replace else Mode.APPEND,
+                    )
+                except KeyError:
+                    return HttpResponseBadRequest(
+                        "Invalid payload format. "
+                        "Format should be geojson format. "
+                    )
+                except UndefinedColumn as e:
+                    error = f"{e}".split(" of relation")[0]
+                    return HttpResponseBadRequest(
+                        f"{error} does not exist"
+                    )
+                except InvalidParameterValue as e:
+                    return HttpResponseBadRequest(f"{e}".split("\n")[0])
+                except Exception as e:
+                    return HttpResponseBadRequest(f"{e}")
+                return HttpResponse(
+                    {"detail": "Data created successfully."},
+                    status=status.HTTP_204_NO_CONTENT
+                )
+            else:
+                pass
+        except ValueError:
+            pass
+        return HttpResponseBadRequest(
+            "Invalid layer type for this request."
+        )
 
     @property
     def queryset(self):
@@ -107,7 +165,8 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 'the accessed context layer for the user. '
                 'Restricted to updating only one feature at a time. \n'
                 'Need to be at least edit data permission.\n\n'
-                'Payload is in json with field names as keys and value as the new value. \n'
+                'Payload is in json with field names as keys and value '
+                'as the new value. \n'
                 'e.g. {"field_1": "new_value", "field_2": "new_value}.'
         )
     )
@@ -140,41 +199,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         :rtype: rest_framework.response.Response
         """
         if request.method == 'POST':
-            obj = self._get_object()
-            edit_data_permission_resource(obj, self.request.user)
-            try:
-                layer = self.get_context_layer_object()
-                if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
-                    try:
-                        geojson_to_geopanda(
-                            request.data, layer.schema_name, layer.table_name,
-                            mode=Mode.APPEND,
-                        )
-                    except KeyError:
-                        return HttpResponseBadRequest(
-                            "Invalid payload format. "
-                            "Format should be geojson format. "
-                        )
-                    except UndefinedColumn as e:
-                        error = f"{e}".split(" of relation")[0]
-                        return HttpResponseBadRequest(
-                            f"{error} does not exist"
-                        )
-                    except InvalidParameterValue as e:
-                        return HttpResponseBadRequest(f"{e}".split("\n")[0])
-                    except Exception as e:
-                        return HttpResponseBadRequest(f"{e}")
-                    return HttpResponse(
-                        {"detail": f"Data created successfully."},
-                        status=status.HTTP_204_NO_CONTENT
-                    )
-                else:
-                    pass
-            except ValueError:
-                pass
-            return HttpResponseBadRequest(
-                "Invalid layer type for this request."
-            )
+            return self.update_data(replace=False)
         if request.method == 'DELETE':
             obj = self._get_object()
             edit_data_permission_resource(obj, self.request.user)
@@ -216,6 +241,38 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 status=status.HTTP_204_NO_CONTENT
             )
         return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        method='post',
+        operation_id='context-layer-features-replace',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[],
+        operation_description=(
+                'Replace all data of'
+                'the accessed context layer for the user.\n'
+                'Need to be at least edit data permission.\n\n'
+                'Payload is geojson format.'
+        )
+    )
+    @action(detail=False, methods=['post'])
+    def replace(self, request, *args, **kwargs):  # noqa DOC110, DOC103
+        """
+        Replace all data for a specific context layer object.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param id: Identifier of the context layer object.
+        :type id: int or str
+        :return: Detailed data of the context layer object.
+        :rtype: rest_framework.response.Response
+        """
+        output = self.update_data(replace=True)
+        layer = self.get_context_layer_object()
+        if isinstance(layer, Layer):
+            layer.reset_attributes()
+
+        fields(schema_name=layer.schema_name, table_name=layer.table_name)
+        return output
 
     @swagger_auto_schema(auto_schema=None)
     def list(self, request, id=None):
