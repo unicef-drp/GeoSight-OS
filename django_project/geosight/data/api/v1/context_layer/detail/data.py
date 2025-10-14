@@ -13,9 +13,11 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
 from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
+from psycopg2.errors import UndefinedColumn, InvalidParameterValue
 from rest_framework import status
 from rest_framework.decorators import action
 
@@ -33,7 +35,7 @@ from geosight.permission.access import edit_data_permission_resource
 class ContextLayerDataViewSet(ContextBaseDetailDataView):
     """Context Layer Data ViewSet."""
 
-    non_filtered_keys = ['page', 'page_size']
+    non_filtered_keys = ['page', 'page_size', 'fields', 'sort']
 
     def get_serializer_class(self):
         """
@@ -83,18 +85,45 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         )
     )
     @swagger_auto_schema(
+        method='post',
+        operation_id='context-layer-features-post',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[],
+        operation_description=(
+                'Add new feature(s) '
+                'for the accessed context layer for the user.\n'
+                'Need to be at least edit data permission.\n\n'
+                'Payload is geojson format. '
+                'The geometry type should be the same with the current data.\n'
+        )
+    )
+    @swagger_auto_schema(
+        method='put',
+        operation_id='context-layer-features-put',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[],
+        operation_description=(
+                'Update filtered feature of '
+                'the accessed context layer for the user. '
+                'Restricted to updating only one feature at a time. \n'
+                'Need to be at least edit data permission.\n\n'
+                'Payload is in json with field names as keys and value as the new value. \n'
+                'e.g. {"field_1": "new_value", "field_2": "new_value}.'
+        )
+    )
+    @swagger_auto_schema(
         method='delete',
         operation_id='context-layer-features-delete',
         tags=[ApiTag.CONTEXT_LAYER],
-        manual_parameters=[
-            *common_api_params
-        ],
+        manual_parameters=[],
         operation_description=(
-                'Remove filtered features '
-                'of accessed context layer for the user.'
+                'Remove filtered feature of '
+                'the accessed context layer for the user. '
+                'Restricted to deleting only one feature at a time.\n'
+                'Need to be at least edit data permission.'
         )
     )
-    @action(detail=False, methods=['get', 'delete', 'put'])
+    @action(detail=False, methods=['get', 'post', 'delete', 'put'])
     def features(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
         Retrieve a paginated list of data for the specified context layer.
@@ -110,6 +139,42 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         :return: Paginated list of context layer data.
         :rtype: rest_framework.response.Response
         """
+        if request.method == 'POST':
+            obj = self._get_object()
+            edit_data_permission_resource(obj, self.request.user)
+            try:
+                layer = self.get_context_layer_object()
+                if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
+                    try:
+                        geojson_to_geopanda(
+                            request.data, layer.schema_name, layer.table_name,
+                            mode=Mode.APPEND,
+                        )
+                    except KeyError:
+                        return HttpResponseBadRequest(
+                            "Invalid payload format. "
+                            "Format should be geojson format. "
+                        )
+                    except UndefinedColumn as e:
+                        error = f"{e}".split(" of relation")[0]
+                        return HttpResponseBadRequest(
+                            f"{error} does not exist"
+                        )
+                    except InvalidParameterValue as e:
+                        return HttpResponseBadRequest(f"{e}".split("\n")[0])
+                    except Exception as e:
+                        return HttpResponseBadRequest(f"{e}")
+                    return HttpResponse(
+                        {"detail": f"Data created successfully."},
+                        status=status.HTTP_204_NO_CONTENT
+                    )
+                else:
+                    pass
+            except ValueError:
+                pass
+            return HttpResponseBadRequest(
+                "Invalid layer type for this request."
+            )
         if request.method == 'DELETE':
             obj = self._get_object()
             edit_data_permission_resource(obj, self.request.user)
@@ -147,7 +212,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 )
 
             return HttpResponse(
-                {"detail": f"{count} data deleted successfully."},
+                {"detail": f"{count} data updated successfully."},
                 status=status.HTTP_204_NO_CONTENT
             )
         return super().list(request, *args, **kwargs)

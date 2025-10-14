@@ -106,7 +106,7 @@ class BaseApiV1(FilteredAPI):
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
 
-        if self.action in ['list']:
+        if self.action in ['list', 'features']:
             fields = self.request.GET.get('fields')
             if not fields:
                 kwargs['exclude'] = ['creator'] + self.extra_exclude_fields

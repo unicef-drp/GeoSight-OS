@@ -150,7 +150,9 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             user=self.admin
         )
 
+        # -------------------------------------
         # Delete
+        # -------------------------------------
         self.assertRequestDeleteView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
@@ -176,6 +178,14 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
         # ----------------------------------------------
         # PUT
         # ----------------------------------------------
+        self.assertRequestPutView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=403,
+            user=self.viewer,
+            data={}
+        )
         # Put more data, return bad request
         self.assertRequestPutView(
             url=reverse(
@@ -290,3 +300,158 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             user=self.admin
         )
         self.assertEqual(response.json()["count"], 0)
+
+        # ----------------------------------------------
+        # TEST INSERT
+        # ----------------------------------------------
+        response = self.assertRequestPostView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=403,
+            user=self.viewer,
+            data={}
+        )
+        response = self.assertRequestPostView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=400,
+            user=self.admin,
+            data={}
+        )
+        self.assertTrue("Invalid payload format" in response.content.decode())
+        response = self.assertRequestPostView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=400,
+            user=self.admin,
+            data={
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "id": 10,
+                            "name": "New shop",
+                            "category": "shop"
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [0, 0],
+                                    [0, 1],
+                                    [1, 1],
+                                    [1, 0],
+                                    [0, 0]
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            },
+            content_type=self.JSON_CONTENT
+        )
+        self.assertEqual(
+            'column "id" does not exist', response.content.decode()
+        )
+        response = self.assertRequestPostView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=400,
+            user=self.admin,
+            data={
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "New shop"
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [0, 0],
+                                    [0, 1],
+                                    [1, 1],
+                                    [1, 0],
+                                    [0, 0]
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            },
+            content_type=self.JSON_CONTENT
+        )
+        self.assertEqual(
+            "Geometry type (Polygon) does not match column type (Point)",
+            response.content.decode()
+        )
+
+        # Test success
+        self.assertRequestPostView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=204,
+            user=self.admin,
+            data={
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "New clinic",
+                            "amenity": "clinic"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [0, 0]
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "New clinic 2",
+                            "amenity": "clinic"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [0, 1]
+                        }
+                    }
+                ]
+            },
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ),
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 48)
+
+        # With the filter
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?amenity=clinic",
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 14)
+        response = self.assertRequestGetView(
+            url=reverse(
+                key, kwargs={'context_layer_id': self.resource.id}
+            ) + "?name__icontains=New clinic",
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 2)
