@@ -19,6 +19,7 @@ import json
 from django import forms
 from django.conf import settings
 from django.forms.models import model_to_dict
+from rest_framework.exceptions import ValidationError
 
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
@@ -70,6 +71,26 @@ class ContextLayerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
+        try:
+            args[0]['group'] = args[0]['category']
+        except Exception:
+            pass
+        # If styles is object, convert to string
+        try:
+            if not isinstance(args[0]['styles'], str):
+                args[0]['styles'] = json.dumps(args[0]['styles'])
+        except Exception:
+            pass
+        # If it does not have override_style and has styles
+        try:
+            args[0]['override_style']
+        except Exception:
+            try:
+                if args[0]['styles']:
+                    args[0]['override_style'] = True
+            except Exception:
+                pass
+
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
             (group.name, group.name)
@@ -120,9 +141,12 @@ class ContextLayerForm(forms.ModelForm):
 
     def clean_styles(self):
         """Return styles."""
-        if self.data['layer_type'] != LayerType.CLOUD_NATIVE_GIS_LAYER:
-            if self.instance and not self.cleaned_data['styles']:
-                return self.instance.styles
+        try:
+            if self.data['layer_type'] != LayerType.CLOUD_NATIVE_GIS_LAYER:
+                if self.instance and not self.cleaned_data['styles']:
+                    return self.instance.styles
+        except KeyError:
+            raise ValidationError("layer_type is required.")
         try:
             override_style = self.data['override_style']
         except KeyError:
