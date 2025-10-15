@@ -61,8 +61,9 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         on the `replace` flag,
         the data can either replace the existing data or be appended.
 
-        :param replace: If True, existing layer data will be replaced;
-                        if False, new data will be appended.
+        :param replace:
+            If True, existing layer data will be replaced;
+            if False, new data will be appended.
         :type replace: bool
         :returns: HttpResponse indicating the result of the operation.
         :rtype: django.http.HttpResponse
@@ -74,7 +75,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         obj = self._get_object()
         edit_data_permission_resource(obj, self.request.user)
         try:
-            layer = self.get_context_layer_object()
+            layer = self.get_context_layer_object(autocreate=replace)
             if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
                 try:
                     geojson_to_geopanda(

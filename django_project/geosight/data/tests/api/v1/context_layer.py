@@ -275,7 +275,6 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
             user=self.creator,
             data={
                 "name": 'New name',
-                "url": 'New url',
                 "layer": LayerType.CLOUD_NATIVE_GIS_LAYER,
                 "category": 'Test',
                 "styles": styles
@@ -287,7 +286,6 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
             user=self.creator,
             data={
                 "name": 'New name',
-                "url": 'New url',
                 "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
                 "category": 'Test',
                 "styles": styles
@@ -297,8 +295,6 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
         obj = ContextLayer.objects.get(id=response.json()['id'])
         self.assertEqual(obj.name, 'New name')
         self.assertEqual(response.json()['name'], 'New name')
-        self.assertEqual(obj.url, 'New url')
-        self.assertEqual(response.json()['url'], 'New url')
         self.assertEqual(obj.layer_type, LayerType.CLOUD_NATIVE_GIS_LAYER)
         self.assertEqual(
             response.json()['layer_type'], LayerType.CLOUD_NATIVE_GIS_LAYER
