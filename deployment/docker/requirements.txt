@@ -48,7 +48,7 @@ msal==1.21.0
 selenium==4.13.0
 webdriver-manager==4.0.1
 
-git+https://github.com/kartoza/CloudNativeGIS.git@0.0.7
+git+https://github.com/kartoza/CloudNativeGIS.git@0.0.8
 
 # FEATURE: Multi tenant
 # Comment below for excluding the multi tenants feature

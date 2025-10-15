@@ -17,13 +17,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 from drf_yasg.utils import swagger_auto_schema
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from geosight.data.api.v1.base import (
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDeleteOnly
+)
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.serializer.context_layer import (
     ContextLayerSerializer
-)
-from .base import (
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
 )
 
 
@@ -52,16 +52,27 @@ class ContextLayerViewSet(
             ApiParams.NAME_CONTAINS,
             ApiParams.DESCRIPTION_CONTAINS,
             ApiParams.CATEGORIES,
-            ApiParams.TYPES,
-            ApiParams.PROJECT_SLUGS,
-            ApiParams.PROJECT_IDS
+            ApiParams.TYPES
         ],
         operation_description=(
                 'Return list of accessed context layer for the user.'
         )
     )
-    def list(self, request, *args, **kwargs):
-        """List of context_layer."""
+    def list(self, request, *args, **kwargs):  # noqa DOC110, DOC103
+        """
+        Retrieve a list of available context layers.
+
+        This method handles ``GET`` requests to return a collection
+        of context layers that the user has access to. It supports
+        filtering and pagination via standard query parameters.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param args: Additional positional arguments.
+        :param kwargs: Additional keyword arguments.
+        :return: Paginated list of context layers.
+        :rtype: rest_framework.response.Response
+        """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -71,7 +82,19 @@ class ContextLayerViewSet(
         operation_description='Return detailed of context layer.'
     )
     def retrieve(self, request, id=None):
-        """Return detailed of context layer."""
+        """
+        Retrieve detailed information for a specific context layer.
+
+        This method handles ``GET`` requests to return all available
+        metadata and properties of a specific context layer.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param id: Identifier of the context layer to retrieve.
+        :type id: int or str
+        :return: Detailed information about the context layer.
+        :rtype: rest_framework.response.Response
+        """
         return super().retrieve(request, id=id)
 
     @swagger_auto_schema(
@@ -81,5 +104,18 @@ class ContextLayerViewSet(
         operation_description='Delete a context layer.'
     )
     def destroy(self, request, id=None):
-        """Destroy an object."""
+        """
+        Delete a specific context layer.
+
+        This method handles ``DELETE`` requests to remove
+        a context layer identified by its ID. The user must
+        have the necessary permissions to perform this action.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param id: Identifier of the context layer to delete.
+        :type id: int or str
+        :return: Response indicating successful deletion.
+        :rtype: rest_framework.response.Response
+        """
         return super().destroy(request, id=id)
