@@ -104,7 +104,21 @@ class ContextLayerViewSet(BaseApiV1Resource):
         operation_description='Create a context layer.'
     )
     def create(self, request, *args, **kwargs):
-        """Create a basemap."""
+        """Create a new context layer.
+
+        This endpoint creates a new Context Layer
+        instance using the data provided in the request payload.
+
+        :param request: The HTTP request object containing creation data.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return:
+            The HTTP response containing the created context layer details.
+        :rtype: rest_framework.response.Response
+        """
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -116,7 +130,20 @@ class ContextLayerViewSet(BaseApiV1Resource):
         operation_description='Replace a detailed of context layer.'
     )
     def update(self, request, *args, **kwargs):
-        """Update detailed of basemap."""
+        """Fully update a context layer.
+
+        This endpoint replaces all fields of a context layer instance
+        with the values provided in the request payload.
+
+        :param request: The HTTP request object containing update data.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return: The HTTP response after the full update.
+        :rtype: rest_framework.response.Response
+        """
         return super().update(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -131,7 +158,20 @@ class ContextLayerViewSet(BaseApiV1Resource):
         )
     )
     def partial_update(self, request, *args, **kwargs):
-        """Update detailed of basemap."""
+        """Update a context layer partially.
+
+        This endpoint allows updating specific fields of a context layer
+        instance without replacing the entire resource.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return: The HTTP response after partial update.
+        :rtype: rest_framework.response.Response
+        """
         return super().partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(

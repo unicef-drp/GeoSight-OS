@@ -216,9 +216,9 @@ class ContextLayerSerializer(ResourceSerializer):
                     title='Styles',
                     type=openapi.TYPE_OBJECT,
                     description=(
-                        f'String of JSON containing style configuration. '
-                        f'The styles are simply a '
-                        f'list of layers in a Mapbox style.'
+                        'String of JSON containing style configuration. '
+                        'The styles are simply a '
+                        'list of layers in a Mapbox style.'
                     )
                 ),
             },
