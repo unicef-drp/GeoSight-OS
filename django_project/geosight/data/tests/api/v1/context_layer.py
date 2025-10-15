@@ -14,12 +14,15 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '09/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+import json
 import urllib.parse
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from geosight.data.models.context_layer import ContextLayer, ContextLayerGroup
+from geosight.data.models.context_layer import (
+    ContextLayer, ContextLayerGroup, LayerType
+)
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -224,6 +227,85 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
             with self.assertRaises(KeyError):
                 result['name']  # noqa
 
+    def test_create_api(self):
+        """Test POST API."""
+        url = reverse('context-layers-list') + '?fields=__all__'
+        self.assertRequestPostView(url, 403, data={})
+        self.assertRequestPostView(url, 403, user=self.viewer, data={})
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New name',
+                "url": 'New url',
+                "layer_type": 'Type',
+                "category": 'Test'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        styles = [
+            {
+                "id": "1",
+                "type": "circle",
+                "paint": {
+                    "circle-color": "#98F194",
+                    "circle-radius": 6,
+                    "circle-opacity": 1,
+                    "circle-stroke-width": 1
+                },
+                "source": "00000000-0000-0000-0000-000000000000",
+                "source-layer": "default"
+            },
+            {
+                "id": "2",
+                "type": "circle",
+                "paint": {
+                    "circle-color": "#88005C",
+                    "circle-radius": 6,
+                    "circle-opacity": 1,
+                    "circle-stroke-width": 1
+                },
+                "source": "00000000-0000-0000-0000-000000000000",
+                "source-layer": "default"
+            },
+
+        ]
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New name',
+                "layer": LayerType.CLOUD_NATIVE_GIS_LAYER,
+                "category": 'Test',
+                "styles": styles
+            },
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestPostView(
+            url, 201,
+            user=self.creator,
+            data={
+                "name": 'New name',
+                "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
+                "category": 'Test',
+                "styles": styles
+            },
+            content_type=self.JSON_CONTENT
+        )
+        obj = ContextLayer.objects.get(id=response.json()['id'])
+        self.assertEqual(obj.name, 'New name')
+        self.assertEqual(response.json()['name'], 'New name')
+        self.assertEqual(obj.layer_type, LayerType.CLOUD_NATIVE_GIS_LAYER)
+        self.assertEqual(
+            response.json()['layer_type'], LayerType.CLOUD_NATIVE_GIS_LAYER
+        )
+        self.assertEqual(obj.group.name, 'Test')
+        self.assertEqual(response.json()['category'], 'Test')
+        self.assertEqual(obj.styles, json.dumps(styles))
+        self.assertEqual(response.json()['styles'], styles)
+        self.assertEqual(obj.creator, self.creator)
+        self.assertEqual(response.json()['created_by'], self.creator.username)
+
     def test_detail_api(self):
         """Test GET DETAIL API."""
         url = reverse('context-layers-detail', args=[self.resource_1.id])
@@ -244,6 +326,92 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
         self.assertEqual(response.json()['name'], self.resource_3.name)
         self.assertEqual(
             response.json()['created_by'], self.resource_3.creator.username
+        )
+
+    def test_update_api(self):
+        """Test PUT API."""
+        url = reverse('context-layers-detail', args=[0])
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 404, user=self.creator, data={})
+        self.assertRequestPutView(url, 404, user=self.admin, data={})
+
+        url = reverse(
+            'context-layers-detail', kwargs={'id': self.resource_3.id}
+        )
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 403, user=self.creator, data={})
+        self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "layer_type": LayerType.RELATED_TABLE,
+            },
+            content_type=self.JSON_CONTENT
+        )
+        self.assertRequestPutView(
+            url, 200,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "layer_type": LayerType.RELATED_TABLE,
+                "category": 'Test'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).name, 'Name C'
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).layer_type,
+            LayerType.RELATED_TABLE
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).description,
+            ''
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).group.name, 'Test'
+        )
+
+    def test_patch_api(self):
+        """Test PATCH API."""
+        url = reverse('context-layers-detail', args=[0])
+        self.assertRequestPatchView(url, 403, data={})
+        self.assertRequestPatchView(url, 403, user=self.viewer, data={})
+        self.assertRequestPatchView(url, 404, user=self.creator, data={})
+        self.assertRequestPatchView(url, 404, user=self.admin, data={})
+
+        url = reverse(
+            'context-layers-detail', kwargs={'id': self.resource_3.id}
+        )
+        self.assertRequestPatchView(url, 403, data={})
+        self.assertRequestPatchView(url, 403, user=self.viewer, data={})
+        self.assertRequestPatchView(url, 403, user=self.creator, data={})
+        self.assertRequestPatchView(
+            url, 200,
+            user=self.creator_in_group,
+            data={
+                "description": "New description"
+            },
+            content_type=self.JSON_CONTENT
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).name, 'Name C'
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).layer_type,
+            LayerType.ARCGIS
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).description,
+            'New description'
+        )
+        self.assertEqual(
+            ContextLayer.objects.get(id=self.resource_3.id).group.name,
+            'Group 3'
         )
 
     def test_destroy_api(self):

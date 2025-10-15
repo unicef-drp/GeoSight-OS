@@ -13,7 +13,9 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from cloud_native_gis.models.layer import Layer
+from cloud_native_gis.models.layer import (
+    Layer, LayerType as CloudNativeGISLayerType
+)
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
@@ -44,8 +46,12 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
         )
         return obj
 
-    def get_context_layer_object(self):
+    def get_context_layer_object(self, autocreate=False):
         """Retrieve the linked cloud-native GIS for the current context layer.
+
+        :param autocreate:
+            If True, create a cloud-native GIS layer if none exists.
+        :type autocreate: bool
 
         :return: The associated cloud-native GIS layer object.
         :rtype: cloud_native_gis.models.layer.Layer
@@ -57,9 +63,20 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
             if obj.cloud_native_gis_layer_id:
                 return Layer.objects.get(id=obj.cloud_native_gis_layer_id)
-            raise ValueError(
-                "The context layer does not have a cloud native layer."
-            )
+            else:
+                if not autocreate:
+                    raise ValueError(
+                        "The context layer does not have a cloud native layer."
+                    )
+                layer = Layer.objects.create(
+                    name=obj.name,
+                    layer_type=CloudNativeGISLayerType.VECTOR_TILE,
+                    is_ready=True,
+                    created_by=obj.creator
+                )
+                obj.cloud_native_gis_layer_id = layer.id
+                obj.save()
+                return layer
         raise ValueError("Invalid layer type for this request.")
 
     def list(self, request, *args, **kwargs):  # noqa DOC110, DOC103

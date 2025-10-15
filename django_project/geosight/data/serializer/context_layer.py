@@ -17,12 +17,19 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import urllib.parse
 
+from drf_yasg import openapi
 from rest_framework import serializers
 
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerField, LayerType
 )
 from geosight.data.serializer.resource import ResourceSerializer
+
+TYPES = [
+    LayerType.ARCGIS, LayerType.GEOJSON, LayerType.RASTER_COG,
+    LayerType.RASTER_TILE, LayerType.VECTOR_TILE, LayerType.RELATED_TABLE,
+    LayerType.CLOUD_NATIVE_GIS_LAYER
+]
 
 
 class ContextLayerSerializer(ResourceSerializer):
@@ -94,7 +101,7 @@ class ContextLayerSerializer(ResourceSerializer):
         fields = ContextLayerFieldSerializer(
             obj.contextlayerfield_set.all(), many=True
         ).data
-        if obj.layer_type == LayerType.RELATED_TABLE:
+        if obj.layer_type == LayerType.RELATED_TABLE and obj.related_table:
             if not fields:
                 fields = obj.related_table.fields_definition
         return fields
@@ -178,6 +185,77 @@ class ContextLayerSerializer(ResourceSerializer):
     class Meta:  # noqa: D106
         model = ContextLayer
         fields = '__all__'
+        post_body = openapi.Schema(
+            description='Data that is needed to create/edit context layer.',
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(
+                    title='Name',
+                    type=openapi.TYPE_STRING
+                ),
+                'description': openapi.Schema(
+                    title='Description',
+                    type=openapi.TYPE_STRING
+                ),
+                'category': openapi.Schema(
+                    title='Category',
+                    type=openapi.TYPE_STRING
+                ),
+                'url': openapi.Schema(
+                    title='Url',
+                    type=openapi.TYPE_STRING
+                ),
+                'type': openapi.Schema(
+                    title='Type',
+                    type=openapi.TYPE_STRING,
+                    description=(
+                        f'The choices are {[TYPES]}'
+                    )
+                ),
+                'styles': openapi.Schema(
+                    title='Styles',
+                    type=openapi.TYPE_OBJECT,
+                    description=(
+                        'String of JSON containing style configuration. '
+                        'The styles are simply a '
+                        'list of layers in a Mapbox style.'
+                    )
+                ),
+            },
+            example={
+                "name": "Somalia healthsites",
+                "description": "",
+                "layer_type": "Cloud Native GIS Layer",
+                "category": "Test",
+                "styles": [
+                    {
+                        "id": "1",
+                        "type": "circle",
+                        "paint": {
+                            "circle-color": "#98F194",
+                            "circle-radius": 6,
+                            "circle-opacity": 1,
+                            "circle-stroke-width": 1
+                        },
+                        "source": "00000000-0000-0000-0000-000000000000",
+                        "source-layer": "default"
+                    },
+                    {
+                        "id": "2",
+                        "type": "circle",
+                        "paint": {
+                            "circle-color": "#88005C",
+                            "circle-radius": 6,
+                            "circle-opacity": 1,
+                            "circle-stroke-width": 1
+                        },
+                        "source": "00000000-0000-0000-0000-000000000000",
+                        "source-layer": "default"
+                    },
+
+                ]
+            }
+        )
 
 
 class ContextLayerFieldSerializer(serializers.ModelSerializer):

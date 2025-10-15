@@ -18,23 +18,21 @@ from drf_yasg.utils import swagger_auto_schema
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.api.v1.base import (
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
+    BaseApiV1Resource
 )
+from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.serializer.context_layer import (
     ContextLayerSerializer
 )
 
 
-class ContextLayerViewSet(
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
-):
+class ContextLayerViewSet(BaseApiV1Resource):
     """ContextLayer view set."""
 
     model_class = ContextLayer
     serializer_class = ContextLayerSerializer
+    form_class = ContextLayerForm
     extra_exclude_fields = [
         'url', 'permission', 'styles', 'label_styles', 'configuration',
         'parameters', 'original_styles', 'original_configuration',
@@ -96,6 +94,85 @@ class ContextLayerViewSet(
         :rtype: rest_framework.response.Response
         """
         return super().retrieve(request, id=id)
+
+    @swagger_auto_schema(
+        operation_id='context-layer-create',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[],
+        request_body=ContextLayerSerializer.
+        Meta.post_body,
+        operation_description='Create a context layer.'
+    )
+    def create(self, request, *args, **kwargs):
+        """Create a new context layer.
+
+        This endpoint creates a new Context Layer
+        instance using the data provided in the request payload.
+
+        :param request: The HTTP request object containing creation data.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return:
+            The HTTP response containing the created context layer details.
+        :rtype: rest_framework.response.Response
+        """
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='context-layer-detail-update',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[],
+        request_body=ContextLayerSerializer.
+        Meta.post_body,
+        operation_description='Replace a detailed of context layer.'
+    )
+    def update(self, request, *args, **kwargs):
+        """Fully update a context layer.
+
+        This endpoint replaces all fields of a context layer instance
+        with the values provided in the request payload.
+
+        :param request: The HTTP request object containing update data.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return: The HTTP response after the full update.
+        :rtype: rest_framework.response.Response
+        """
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='context-layer-detail-partial-update',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[],
+        request_body=ContextLayerSerializer.
+        Meta.post_body,
+        operation_description=(
+                'Update just partial data based on payload '
+                'a detailed of context layer.'
+        )
+    )
+    def partial_update(self, request, *args, **kwargs):
+        """Update a context layer partially.
+
+        This endpoint allows updating specific fields of a context layer
+        instance without replacing the entire resource.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return: The HTTP response after partial update.
+        :rtype: rest_framework.response.Response
+        """
+        return super().partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_id='context-layer-detail-delete',

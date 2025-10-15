@@ -19,6 +19,7 @@ import json
 from django import forms
 from django.conf import settings
 from django.forms.models import model_to_dict
+from rest_framework.exceptions import ValidationError
 
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
@@ -68,8 +69,28 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
+    def __init__(self, *args, **kwargs):  # noqa
+        """Initialize the form."""
+        try:
+            args[0]['group'] = args[0]['category']
+        except Exception:
+            pass
+        # If styles is object, convert to string
+        try:
+            if not isinstance(args[0]['styles'], str):
+                args[0]['styles'] = json.dumps(args[0]['styles'])
+        except Exception:
+            pass
+        # If it does not have override_style and has styles
+        try:
+            args[0]['override_style']
+        except Exception:
+            try:
+                if args[0]['styles']:
+                    args[0]['override_style'] = True
+            except Exception:
+                pass
+
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
             (group.name, group.name)
@@ -91,14 +112,22 @@ class ContextLayerForm(forms.ModelForm):
             ]
 
     def clean_group(self):
-        """Return group."""
+        """Validate and return a :class:`ContextLayerGroup` instance.
+
+        :return: The existing or newly created :class:`ContextLayerGroup`.
+        :rtype: ContextLayerGroup
+        """
         group, created = ContextLayerGroup.objects.get_or_create(
             name=self.cleaned_data['group']
         )
         return group
 
     def clean_related_table(self):
-        """Return related table."""
+        """Validate and return a :class:`RelatedTable` instance if applicable.
+
+        :return: A related table instance or ``None``.
+        :rtype: RelatedTable or None
+        """
         if self.instance and self.cleaned_data['related_table']:
             return RelatedTable.objects.get(
                 pk=self.cleaned_data['related_table']
@@ -106,7 +135,13 @@ class ContextLayerForm(forms.ModelForm):
         return None
 
     def clean_cloud_native_gis_layer_id(self):
-        """Return layer of cloud_native_gis_layer."""
+        """Validate and return the cloud-native GIS layer ID.
+
+        Only applicable if ``CLOUD_NATIVE_GIS_ENABLED`` is True.
+
+        :return: The layer primary key or ``None``.
+        :rtype: int or None
+        """
         if settings.CLOUD_NATIVE_GIS_ENABLED:
             from cloud_native_gis.models import Layer
             if self.instance and self.cleaned_data[
@@ -119,10 +154,21 @@ class ContextLayerForm(forms.ModelForm):
         return None
 
     def clean_styles(self):
-        """Return styles."""
-        if self.data['layer_type'] != LayerType.CLOUD_NATIVE_GIS_LAYER:
-            if self.instance and not self.cleaned_data['styles']:
-                return self.instance.styles
+        """Validate and return the serialized styles.
+
+        If ``override_style`` is True or layer type is raster,
+        the provided style is used. Otherwise, retains existing styles.
+
+        :raises ValidationError: If ``layer_type`` is missing.
+        :return: Serialized style string or ``None``.
+        :rtype: str or None
+        """
+        try:
+            if self.data['layer_type'] != LayerType.CLOUD_NATIVE_GIS_LAYER:
+                if self.instance and not self.cleaned_data['styles']:
+                    return self.instance.styles
+        except KeyError:
+            raise ValidationError("layer_type is required.")
         try:
             override_style = self.data['override_style']
         except KeyError:
@@ -136,7 +182,11 @@ class ContextLayerForm(forms.ModelForm):
             return self.cleaned_data['styles']
 
     def clean_label_styles(self):
-        """Return label_styles."""
+        """Validate and return label styles.
+
+        :return: Label style JSON string.
+        :rtype: str
+        """
         if self.instance and not self.cleaned_data['label_styles']:
             return self.instance.label_styles
         return self.cleaned_data['label_styles']
@@ -149,7 +199,13 @@ class ContextLayerForm(forms.ModelForm):
 
     @staticmethod
     def model_to_initial(model: ContextLayer):
-        """Return model data as json."""
+        """Convert `ContextLayer` instance into an initial form dictionary.
+
+        :param model: The :class:`ContextLayer` instance to convert.
+        :type model: ContextLayer
+        :return: A dictionary suitable for populating form initial data.
+        :rtype: dict
+        """
         from geosight.data.serializer.context_layer import (
             ContextLayerFieldSerializer
         )
