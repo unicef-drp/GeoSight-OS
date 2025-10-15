@@ -35,9 +35,9 @@ import { Variables } from "../../../../utils/Variables";
 
 let sessions = {};
 
-/***
- * Render Raster Cog
- */
+/*** Render Raster Cog Layer */
+const cogRender = {}
+
 export default function rasterCogLayer(
   map, id, data, setData, contextLayerData, popupFeatureFn,
   contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {
@@ -91,7 +91,7 @@ export default function rasterCogLayer(
       // TODO: Handle styling when multiple, identical COG URLs are used
       let url = `cog://${data.url}?method=${dynamic_classification}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`      //
       if (dynamic_classification != 'Equidistant.') {
-        url = `cog://${data.url}#method=${dynamic_classification}`      //
+        url = `cog://${data.url}#method=${dynamic_classification}`
         const requestBody = {
           url: data.url,
           class_type: dynamic_classification,
@@ -206,6 +206,16 @@ export default function rasterCogLayer(
         Variables.LAYER_CATEGORY.CONTEXT_LAYER,
         before
       );
+      cogRender[id] = false
+      map.on("sourcedata", (e) => {
+        if (e.sourceId === id && e.isSourceLoaded) {
+          if(!cogRender[id]) {
+            map.panBy([0, 0]);
+            cogRender[id] = true
+          }
+        }
+      });
+
 
       /** Click map */
       const onClick = async (e) => {

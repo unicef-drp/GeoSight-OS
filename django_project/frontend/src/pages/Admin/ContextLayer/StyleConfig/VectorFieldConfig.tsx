@@ -8,7 +8,7 @@
  *     the Free Software Foundation; either version 3 of the License, or
  *     (at your option) any later version.
  *
- * __author__ = 'fpsampayo@geomatico.es'
+ * __author__ = 'irwan@kartoza.com'
  * __date__ = '12/04/2024'
  * __copyright__ = ('Copyright 2024, Unicef')
  */
