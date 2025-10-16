@@ -111,8 +111,6 @@ export default function StyleConfig({
     }
   }, [layer, error, legend]);
 
-  console.log(layerData?.data?.fields)
-
   return (
     <div className={"ContextLayerConfig-Wrapper " + tab}>
       <div className="form-helptext">

@@ -8,19 +8,18 @@
  *     the Free Software Foundation; either version 3 of the License, or
  *     (at your option) any later version.
  *
- * __author__ = 'fpsampayo@geomatico.es'
+ * __author__ = 'irwan@kartoza.com'
  * __date__ = '31/10/2024'
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, {Fragment, useEffect, useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import { debounce } from '@mui/material/utils';
 import {FormControl} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import ColorPaletteStyleConfig, {QUANTITATIVE_TYPE} from "../../../Style/Form/DynamicStyleConfig/Palette";
 import {dictDeepCopy} from "../../../../../utils/main";
 import {dynamicClassificationChoices} from "../../../Style/Form/DynamicStyleConfig";
-import ColorSelector from "../../../../../components/Input/ColorSelector";
 import ColorPickerWithAlpha, {rgbaToHex} from "../../../../../components/Input/ColorSelectorWithAlpha";
 
 
