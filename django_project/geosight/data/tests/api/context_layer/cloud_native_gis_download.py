@@ -116,7 +116,7 @@ class ContextLayerCloudNativeDownloadTest(BasePermissionTest.TestCase):
             url=reverse(
                 key,
                 kwargs={'context_layer_id': self.resource.id}
-            ) + "?extension=shapefile",
+            ) + "?file_format=shapefile",
             code=200,
             user=self.admin
         )
@@ -128,7 +128,7 @@ class ContextLayerCloudNativeDownloadTest(BasePermissionTest.TestCase):
             url=reverse(
                 key,
                 kwargs={'context_layer_id': self.resource.id}
-            ) + "?extension=kml",
+            ) + "?file_format=kml",
             code=200,
             user=self.admin
         )
@@ -139,7 +139,7 @@ class ContextLayerCloudNativeDownloadTest(BasePermissionTest.TestCase):
             url=reverse(
                 key,
                 kwargs={'context_layer_id': self.resource.id}
-            ) + "?extension=geojson",
+            ) + "?file_format=geojson",
             code=200,
             user=self.admin
         )
@@ -154,7 +154,7 @@ class ContextLayerCloudNativeDownloadTest(BasePermissionTest.TestCase):
             url=reverse(
                 key,
                 kwargs={'context_layer_id': self.resource.id}
-            ) + "?extension=geopackage",
+            ) + "?file_format=geopackage",
             code=200,
             user=self.admin
         )

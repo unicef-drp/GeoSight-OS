@@ -313,7 +313,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         operation_id='context-layer-features-download',
         tags=[ApiTag.CONTEXT_LAYER],
         manual_parameters=[
-            ApiParams.VECTOR_EXTENSIONS
+            ApiParams.VECTOR_FILE_FORMAT
         ],
         operation_description=(
                 'Download data based on output type.'
@@ -337,14 +337,14 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
             layer = self.get_context_layer_object()
         except ValueError as e:
             return HttpResponseBadRequest(e)
-        extension = request.GET.get('extension', FileTypeOriginal)
-        if extension not in ApiParams.VECTOR_EXTENSIONS.enum:
+        file_format = request.GET.get('file_format', FileTypeOriginal)
+        if file_format not in ApiParams.VECTOR_FILE_FORMAT.enum:
             return HttpResponseBadRequest(
-                "Invalid extension. "
+                "Invalid format. "
                 "Extension should be either original or zip."
             )
         if isinstance(layer, Layer):
-            if extension == FileTypeOriginal:
+            if file_format == FileTypeOriginal:
                 # If it has upload, use original one
                 upload = layer.layerupload_set.order_by('-created_at').first()
                 if upload:
@@ -378,18 +378,22 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                             as_attachment=True,
                             filename=os.path.basename(zip_path)
                         )
-            if extension == FileTypeOriginal:
-                extension = FileType.SHAPEFILE
+            if file_format == FileTypeOriginal:
+                file_format = FileType.SHAPEFILE
 
-            file_path, success = layer.export_layer(extension, '/tmp')
+            file_path, success = layer.export_layer(
+                file_format, '/tmp'
+            )
             if not success:
                 return HttpResponseBadRequest(success)
             else:
                 if os.path.exists(file_path):
+                    filename = os.path.basename(file_path)
+                    ext = os.path.splitext(filename)[1]
                     response = FileResponse(
                         open(file_path, 'rb'),
                         as_attachment=True,
-                        filename=os.path.basename(file_path)
+                        filename=obj.name + ext
                     )
 
                     def cleanup_file():

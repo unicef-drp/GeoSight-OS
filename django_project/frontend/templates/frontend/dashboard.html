@@ -30,6 +30,9 @@
         urls.dashboardEditUrl = '{% url 'admin-dashboard-edit-view' slug=dashboard.id %}'
       }
 
+      {# Download #}
+      urls.contextLayerDownload = '{% url 'context_layers_data-download' 0 %}'
+
       const embedConfig = {% if embed_config %}{{ embed_config|safe }}{% else %}null{% endif %};
     </script>
 {% endblock %}

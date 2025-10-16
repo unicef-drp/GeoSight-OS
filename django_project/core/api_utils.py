@@ -201,11 +201,11 @@ class ApiParams:
         type=openapi.TYPE_STRING
     )
 
-    VECTOR_EXTENSIONS = openapi.Parameter(
-        'extension',
+    VECTOR_FILE_FORMAT = openapi.Parameter(
+        'file_format',
         openapi.IN_QUERY,
         description=(
-            'Selected extensions to be returned.'
+            'Selected file format to be returned.'
         ),
         required=True,
         type=openapi.TYPE_STRING,
