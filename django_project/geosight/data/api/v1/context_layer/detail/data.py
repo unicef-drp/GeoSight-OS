@@ -18,6 +18,7 @@ from cloud_native_gis.utils.connection import fields
 from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
 from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from psycopg2.errors import UndefinedColumn, InvalidParameterValue
 from rest_framework import status
@@ -32,6 +33,28 @@ from geosight.data.api.v1.context_layer.detail.base_detail import (
 )
 from geosight.data.models import LayerType
 from geosight.permission.access import edit_data_permission_resource
+
+request_body = openapi.Schema(
+    description='Geojson data.',
+    type=openapi.TYPE_OBJECT,
+    example={
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "id": 1,
+                    "name": "New data",
+                    "category": "Category 1"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [0, 0]
+                }
+            }
+        ]
+    }
+)
 
 
 class ContextLayerDataViewSet(ContextBaseDetailDataView):
@@ -148,6 +171,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         operation_id='context-layer-features-post',
         tags=[ApiTag.CONTEXT_LAYER],
         manual_parameters=[],
+        request_body=request_body,
         operation_description=(
                 'Add new feature(s) '
                 'for the accessed context layer for the user.\n'
@@ -157,7 +181,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         )
     )
     @swagger_auto_schema(
-        method='put',
+        method='patch',
         operation_id='context-layer-features-put',
         tags=[ApiTag.CONTEXT_LAYER],
         manual_parameters=[],
@@ -183,7 +207,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 'Need to be at least edit data permission.'
         )
     )
-    @action(detail=False, methods=['get', 'post', 'delete', 'put'])
+    @action(detail=False, methods=['get', 'post', 'delete', 'patch'])
     def features(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
         Retrieve a paginated list of data for the specified context layer.
@@ -218,7 +242,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 {"detail": f"{count} data deleted successfully."},
                 status=status.HTTP_204_NO_CONTENT
             )
-        if request.method == 'PUT':
+        if request.method == 'PATCH':
             obj = self._get_object()
             edit_data_permission_resource(obj, self.request.user)
 
@@ -248,6 +272,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         operation_id='context-layer-features-replace',
         tags=[ApiTag.CONTEXT_LAYER],
         manual_parameters=[],
+        request_body=request_body,
         operation_description=(
                 'Replace all data of'
                 'the accessed context layer for the user.\n'

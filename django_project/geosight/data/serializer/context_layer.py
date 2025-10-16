@@ -223,7 +223,7 @@ class ContextLayerSerializer(ResourceSerializer):
                 ),
             },
             example={
-                "name": "Somalia healthsites",
+                "name": "Context Layer",
                 "description": "",
                 "layer_type": "Cloud Native GIS Layer",
                 "category": "Test",

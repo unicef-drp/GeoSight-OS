@@ -176,9 +176,9 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
         )
 
         # ----------------------------------------------
-        # PUT
+        # PATCH
         # ----------------------------------------------
-        self.assertRequestPutView(
+        self.assertRequestPatchView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ) + "?amenity=clinic",
@@ -187,7 +187,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             data={}
         )
         # Put more data, return bad request
-        self.assertRequestPutView(
+        self.assertRequestPatchView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ) + "?amenity=clinic",
@@ -196,7 +196,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             data={}
         )
         # Just update 1 data but wrong field
-        response = self.assertRequestPutView(
+        response = self.assertRequestPatchView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ) + "?amenity=clinic&osm_id=3455527618",
@@ -211,7 +211,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             response.content.decode(), "Field does not exist: 'non_field'"
         )
         # Just update 1 data
-        self.assertRequestPutView(
+        self.assertRequestPatchView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ) + "?amenity=clinic&osm_id=3455527618",
