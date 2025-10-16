@@ -17,6 +17,9 @@
         'batch': '{% url 'admin-context-layer-edit-batch-view' %}',
         'detail': '{% url 'context-layers-detail' 0 %}',
 
+        {# Download #}
+        'download': '{% url 'context_layers_data-download' 0 %}',
+
         {# context-layer specified url#}
         'permission': '{% url 'context-layer-permission-api' 0 %}',
       }
