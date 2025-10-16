@@ -13,18 +13,25 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+import os
+import shutil
+import tempfile
+
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.utils.connection import fields
 from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
+from cloud_native_gis.utils.type import FileType
 from django.core.exceptions import FieldDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, FileResponse, HttpResponseBadRequest
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from psycopg2.errors import UndefinedColumn, InvalidParameterValue
 from rest_framework import status
 from rest_framework.decorators import action
 
-from core.api_utils import common_api_params, ApiTag
+from core.api_utils import (
+    common_api_params, ApiTag, ApiParams, FileTypeOriginal
+)
 from geosight.cloud_native_gis.factory.model import model_factory
 from geosight.cloud_native_gis.factory.queryset import delete_queryset
 from geosight.cloud_native_gis.factory.serializer import serializer_factory
@@ -32,7 +39,8 @@ from geosight.data.api.v1.context_layer.detail.base_detail import (
     ContextBaseDetailDataView
 )
 from geosight.data.models import LayerType
-from geosight.permission.access import edit_data_permission_resource
+from geosight.permission.access import read_data_permission_resource, \
+    edit_data_permission_resource
 
 request_body = openapi.Schema(
     description='Geojson data.',
@@ -299,6 +307,109 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
 
         fields(schema_name=layer.schema_name, table_name=layer.table_name)
         return output
+
+    @swagger_auto_schema(
+        method='get',
+        operation_id='context-layer-features-download',
+        tags=[ApiTag.CONTEXT_LAYER],
+        manual_parameters=[
+            ApiParams.VECTOR_EXTENSIONS
+        ],
+        operation_description=(
+                'Download data based on output type.'
+        )
+    )
+    @action(detail=False, methods=['get'], pagination_class=None)
+    def download(self, request, *args, **kwargs):  # noqa DOC110, DOC103
+        """
+        Download data for a specific context layer features.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param id: Identifier of the context layer object.
+        :type id: int or str
+        :return: Detailed data of the context layer object.
+        :rtype: rest_framework.response.Response
+        """
+        obj = self._get_object()
+        read_data_permission_resource(obj, self.request.user)
+        try:
+            layer = self.get_context_layer_object()
+        except ValueError as e:
+            return HttpResponseBadRequest(e)
+        extension = request.GET.get('extension', FileTypeOriginal)
+        if extension not in ApiParams.VECTOR_EXTENSIONS.enum:
+            return HttpResponseBadRequest(
+                "Invalid extension. "
+                "Extension should be either original or zip."
+            )
+        if isinstance(layer, Layer):
+            if extension == FileTypeOriginal:
+                # If it has upload, use original one
+                upload = layer.layerupload_set.order_by('-created_at').first()
+                if upload:
+                    for file in upload.files:
+                        # If it has zip, just return the zip file
+                        if file.endswith('.zip'):
+                            file_path = os.path.join(upload.folder, file)
+                            if os.path.exists(file_path):
+                                response = FileResponse(
+                                    open(file_path, 'rb'),
+                                    as_attachment=True,
+                                    filename=os.path.basename(file_path)
+                                )
+                                return response
+                            else:
+                                return HttpResponseBadRequest(
+                                    "File not found."
+                                )
+                    # if no zip file, try to zipping the folder
+                    folder_to_zip = upload.folder
+                    if os.path.exists(folder_to_zip):
+                        temp_dir = tempfile.mkdtemp()
+                        zip_base = os.path.join(
+                            temp_dir, os.path.basename(folder_to_zip)
+                        )
+                        zip_path = shutil.make_archive(
+                            zip_base, 'zip', folder_to_zip
+                        )
+                        return FileResponse(
+                            open(zip_path, 'rb'),
+                            as_attachment=True,
+                            filename=os.path.basename(zip_path)
+                        )
+            if extension == FileTypeOriginal:
+                extension = FileType.SHAPEFILE
+
+            file_path, success = layer.export_layer(extension, '/tmp')
+            if not success:
+                return HttpResponseBadRequest(success)
+            else:
+                if os.path.exists(file_path):
+                    response = FileResponse(
+                        open(file_path, 'rb'),
+                        as_attachment=True,
+                        filename=os.path.basename(file_path)
+                    )
+
+                    def cleanup_file():
+                        """Cleanup file after response is sent."""
+                        try:
+                            os.remove(file_path)
+                        except OSError:
+                            pass
+
+                    response.close = cleanup_file
+                    return response
+                else:
+                    return HttpResponseBadRequest(
+                        "File not found."
+                    )
+
+        # If not cloud native layer, return error
+        return HttpResponseBadRequest(
+            "Invalid layer type for this request."
+        )
 
     @swagger_auto_schema(auto_schema=None)
     def list(self, request, id=None):
