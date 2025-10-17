@@ -14,7 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '25/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from cloud_native_gis.utils.type import FileType
 from drf_yasg import openapi
+
+FileTypeOriginal = 'original'
 
 common_api_params = [
     openapi.Parameter(
@@ -196,4 +199,18 @@ class ApiParams:
             'Filter data up to the date in format YYYY-MM-DD.'
         ),
         type=openapi.TYPE_STRING
+    )
+
+    VECTOR_FILE_FORMAT = openapi.Parameter(
+        'file_format',
+        openapi.IN_QUERY,
+        description=(
+            'Selected file format to be returned.'
+        ),
+        required=True,
+        type=openapi.TYPE_STRING,
+        enum=[
+            FileTypeOriginal, FileType.GEOJSON, FileType.SHAPEFILE,
+            FileType.GEOPACKAGE, FileType.KML
+        ],
     )

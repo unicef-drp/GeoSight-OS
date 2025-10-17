@@ -15,9 +15,8 @@ __date__ = '06/01/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from .cloud_native_gis import ContextLayerCloudNativeTest  # noqa
-from .cloud_native_gis_api_flow import (
-    ContextLayerCloudNativeAPIFlowTest  # noqa
-)
+from .cloud_native_gis_api_flow import ContextLayerCloudNativeAPIFlowTest
+from .cloud_native_gis_download import ContextLayerCloudNativeDownloadTest
 from .cloud_native_zonal_analysis import TestCloudNativeZonalAnalysis  # noqa
 from .raster_zonal_analysis import TestRasterZonalAnalysis  # noqa
 from .resource_api import ContextLayerListApiTest  # noqa

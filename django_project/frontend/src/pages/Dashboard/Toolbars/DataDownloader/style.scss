@@ -17,7 +17,7 @@
    Downloader data
    ========================================================================== */
 
-.DownloaderDataComponent {
+.DataDownloaderComponent {
   padding: 1rem;
 
   .GroupSelection {
@@ -39,7 +39,7 @@
     }
   }
 
-  .DownloaderDataForm {
+  .DataDownloaderForm {
     max-height: 80%;
     overflow-y: auto;
     padding-top: 1rem;
@@ -90,7 +90,7 @@
     margin-top: 0 !important;
   }
 
-  .DownloaderDataTitle {
+  .DataDownloaderTitle {
     padding-bottom: 0.5rem;
     border-bottom: var(--border);
     font-size: 12px;
@@ -127,5 +127,18 @@
 
   .MuiGrid-item {
     padding-right: 0.5rem !important;
+  }
+
+  .ContextLayerDownloaderExtensions {
+    display: flex;
+    gap: 0.5rem;
+
+    a {
+      padding: 3px 0.5rem;
+      background-color: var(--primary-color);
+      color: var(--anti-primary-color);
+      cursor: pointer;
+      border-radius: 4px;
+    }
   }
 }

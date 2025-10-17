@@ -21,8 +21,9 @@ import { store } from "../../../../store/admin";
 import { pageNames } from "../../index";
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
-import AdminList from "../../../../components/AdminList";
-import { useResourceMeta } from "../../../../components/AdminList";
+import AdminList, { useResourceMeta } from "../../../../components/AdminList";
+import { Variables } from "../../../../utils/Variables";
+import { DownloadIcon } from "../../../../components/Icons";
 
 import "./style.scss";
 
@@ -54,7 +55,6 @@ export default function ContextLayerList() {
     getActions: (params) => {
       const permission = params.row.permission;
       const actions = resourceActions(params);
-
       // Unshift before more & edit action
       if (permission.share) {
         actions.unshift(
@@ -68,6 +68,28 @@ export default function ContextLayerList() {
               </a>
             }
             label="Change Share Configuration."
+          />,
+        );
+      }
+
+      if (
+        params.row.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS &&
+        permission.read
+      ) {
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <a
+                href={urls.api.download.replace("/0", `/${params.id}`)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div className="ButtonIcon">
+                  <DownloadIcon />
+                </div>
+              </a>
+            }
+            label="Download data."
           />,
         );
       }

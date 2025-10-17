@@ -35,7 +35,7 @@ import {
 import {
   Bookmark,
   CompareLayer,
-  DownloaderData,
+  DataDownloader,
   EmbedControl,
   GlobalDateSelector,
   HomeButton,
@@ -378,7 +378,7 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
               </PluginChild>
             </div>
           </Plugin>
-          <DownloaderData />
+          <DataDownloader />
           <Plugin className="BookmarkControl">
             <Bookmark map={map} />
           </Plugin>
