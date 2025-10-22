@@ -60,12 +60,29 @@ class IndicatorValueDataset(models.Model):
 
     @property
     def indicator(self):
-        """Return indicator."""
+        """Return the related object.
+
+        This property attempts to retrieve the full :class:`Indicator`
+        instance associated with this dataset via its ``indicator_id``.
+
+        :return: The related indicator instance, or ``None`` if not found.
+        :rtype: Indicator or None
+        """
         try:
             return Indicator.objects.get(id=self.indicator_id)
         except Indicator.DoesNotExist:
             return None
 
     def permissions(self, user):
-        """Return permission of user."""
+        """Return the user's permissions for this indicator dataset.
+
+        Delegates permission checking to the associated
+        :class:`~geosight.data.models.indicator.Indicator` instance.
+
+        :param user: The user for whom permissions are being checked.
+        :type user: django.contrib.auth.models.User
+        :return: A dictionary or object containing permission details
+                 (e.g., ``{"view": True, "edit": False, "delete": False}``).
+        :rtype: dict or Any
+        """
         return self.indicator.permission.all_permission(user)
