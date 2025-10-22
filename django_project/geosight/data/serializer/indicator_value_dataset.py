@@ -35,14 +35,35 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
     permission = serializers.SerializerMethodField()
 
     def get_id(self, obj: IndicatorValueDataset):
-        """Return id."""
+        """Return a computed unique identifier for the dataset entry.
+
+        The identifier combines indicator, country, and admin level
+        into a single string format.
+
+        Example: ``12-34-[1]``
+
+        :param obj: The dataset object.
+        :type obj: IndicatorValueDataset
+        :return: A string representing the unique dataset ID.
+        :rtype: str
+        """
         return (
             f'{obj.indicator_id}-{obj.country_id}-'
             f'[{obj.admin_level}]'
         )
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
-        """Return browse data API url."""
+        """Return a constructed API URL for browsing related dataset data.
+
+        This method reconstructs the base dataset browsing API URL
+        from the serializer context and modifies its query parameters
+        to match the current dataset’s indicator, country, and admin level.
+
+        :param obj: The dataset object.
+        :type obj: IndicatorValueDataset
+        :return: A full URL string pointing to the browse-data API endpoint.
+        :rtype: str
+        """
         url = self.context.get('browse-data', None)
         (scheme, netloc, path, query, fragment) = parse.urlsplit(
             force_str(url)
@@ -65,7 +86,16 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
         return parse.urlunsplit((scheme, netloc, path, query, fragment))
 
     def get_browse_url(self, obj: IndicatorValueDataset):
-        """Return browse data API url."""
+        """Return a direct admin browse URL for dataset visualization.
+
+        The generated URL leads to the GeoSight admin interface for
+        browsing datasets filtered by indicator, country, and level.
+
+        :param obj: The dataset object.
+        :type obj: IndicatorValueDataset
+        :return: A full URL string pointing to the admin data browser.
+        :rtype: str
+        """
         return (
             f"{reverse('admin-data-browser-view')}?"
             f"indicators={obj.indicator_id}&"
@@ -75,8 +105,17 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
 
     class Meta:  # noqa: D106
         model = IndicatorValueDataset
-        fields = '__all__'
+        exclude = ('string_id',)
 
     def get_permission(self, obj: IndicatorValueDataset):
-        """Return permission."""
+        """Return the permission structure for the dataset.
+
+        Evaluates the user's permission to view, edit, or delete
+        the given dataset based on their profile and assigned roles.
+
+        :param obj: The dataset object.
+        :type obj: IndicatorValueDataset
+        :return: Dictionary or object containing permission information.
+        :rtype: dict or Any
+        """
         return obj.permissions(self.context.get('user', None))

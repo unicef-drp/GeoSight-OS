@@ -28,8 +28,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.utils import string_is_true
+from geosight.data.models import IndicatorValue
 from geosight.data.models.indicator import (
-    IndicatorValue, Indicator
+    Indicator
 )
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
@@ -44,66 +45,96 @@ class BaseDatasetApiList:
     """Contains queryset."""
 
     filter_query_exclude = [
-        'page', 'page_size', 'group_admin_level', 'detail', 'format'
+        'page', 'page_size', 'group_admin_level', 'detail', 'format',
+        'id__in', 'id'
     ]
     serializer_class = IndicatorValueDatasetSerializer
 
     @property
     def group_admin_level(self):
-        """Return group admin level."""
+        """Check if query should be grouped by admin level.
+
+        :return: True if the `group_admin_level` query parameter is 'true'.
+        :rtype: bool
+        """
         return self.request.GET.get(
             'group_admin_level', 'False'
         ).lower() == 'true'
 
     def get_queryset(self):
-        """Return queryset of API."""
+        """Build the queryset for dataset API.
+
+        This method returns a queryset of `IndicatorValueDataset` objects
+        aggregated by indicator, country,
+        and optionally grouped by admin level.
+
+        :return: Queryset containing dataset information.
+        :rtype: QuerySet
+        """
         if not self.group_admin_level:
-            return super().get_queryset().values(
+            query = super().get_queryset().values(
                 'indicator_id', 'country_id', 'admin_level'
             ).annotate(
-                data_count=Count('*')
-            ).annotate(
-                indicator_name=F('indicator_name')
-            ).annotate(
-                indicator_shortcode=F('indicator_shortcode')
-            ).annotate(
-                country_geom_id=F('country_geom_id')
-            ).annotate(
-                country_name=F('country_name')
-            ).annotate(
-                start_date=Min('date')
-            ).annotate(
-                end_date=Max('date')
+                data_count=Count('*'),
+                indicator_name=F('indicator_name'),
+                indicator_shortcode=F('indicator_shortcode'),
+                country_geom_id=F('country_geom_id'),
+                country_name=F('country_name'),
+                start_date=Min('date'),
+                end_date=Max('date'),
+                string_id=Concat(
+                    Cast(F('indicator_id'), CharField()),
+                    Value('-'),
+                    Cast(F('country_id'), CharField()),
+                    Value('-['),
+                    Cast(F('admin_level'), CharField()),
+                    Value(']'),
+                    output_field=CharField()
+                )
             ).order_by(
                 'indicator_id', 'country_id', 'admin_level'
             ).filter(country_id__isnull=False)
+            if self.request.GET.get('id__in'):
+                query = query.filter(
+                    string_id__in=self.request.GET.get('id__in').split(',')
+                )
+            return query
         else:
-            return super().get_queryset().values(
+            query = super().get_queryset().values(
                 'indicator_id', 'country_id'
             ).annotate(
                 admin_level=StringAgg(
                     Cast('admin_level', CharField()),
-                    delimiter=', ',
+                    delimiter=',',
                     distinct=True,
                     output_field=CharField()
+                ),
+                data_count=Count('*'),
+                indicator_name=F('indicator_name'),
+                indicator_shortcode=F('indicator_shortcode'),
+                country_geom_id=F('country_geom_id'),
+                country_name=F('country_name'),
+                start_date=Min('date'),
+                end_date=Max('date'),
+                string_id=Concat(
+                    Cast(F('indicator_id'), CharField()),
+                    Value('-'),
+                    Cast(F('country_id'), CharField()),
+                    Value('-['),
+                    Cast(F('admin_level'), CharField()),
+                    Value(']'),
+                    output_field=CharField()
                 )
-            ).annotate(
-                data_count=Count('*')
-            ).annotate(
-                indicator_name=F('indicator_name')
-            ).annotate(
-                indicator_shortcode=F('indicator_shortcode')
-            ).annotate(
-                country_geom_id=F('country_geom_id')
-            ).annotate(
-                country_name=F('country_name')
-            ).annotate(
-                start_date=Min('date')
-            ).annotate(
-                end_date=Max('date')
             ).order_by(
                 'indicator_id', 'country_id'
             ).filter(country_id__isnull=False)
+            if self.request.GET.get('id__in'):
+                id_in = [
+                    f'{id}]'.lstrip(',') for id in
+                    self.request.GET.get('id__in').split(']')
+                ]
+                query = query.filter(string_id__in=id_in)
+            return query
 
 
 class DatasetApiList(
@@ -111,8 +142,14 @@ class DatasetApiList(
 ):
     """Return Dataset with indicator, country and admin level."""
 
-    def get_serializer(self, *args, **kwargs):
-        """Return serializer of data."""
+    def get_serializer(self, *args, **kwargs):  # noqa
+        """Return the serializer for the dataset.
+
+        :param args: Positional arguments containing queryset data.
+        :param kwargs: Additional serializer options.
+        :return: Serialized dataset response.
+        :rtype: IndicatorValueDatasetSerializer
+        """
         data = []
         try:
             for row in args[0]:
@@ -126,7 +163,11 @@ class DatasetApiList(
         return serializer_class(data, **kwargs)
 
     def get_serializer_context(self):
-        """For serializer context."""
+        """Provide additional context for serializer.
+
+        :return: Context dictionary containing request and URL data.
+        :rtype: dict
+        """
         curr_url = self.request.path
         full_url = self.request.build_absolute_uri()
         context = super().get_serializer_context()
@@ -142,21 +183,44 @@ class DatasetApiList(
         return context
 
     @swagger_auto_schema(auto_schema=None)
-    def list(self, request, *args, **kwargs):
-        """Return indicator data by dataset, indicator and level."""
+    def list(self, request, *args, **kwargs):  # noqa
+        """List dataset records grouped by indicator, country, and level.
+
+        :param request: Django REST framework request.
+        :type request: Request
+        :return: Response object with serialized dataset list.
+        :rtype: Response
+        """
         try:
             return super().list(request, *args, **kwargs)
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
 
     @swagger_auto_schema(auto_schema=None)
-    def retrieve(self, request, id=None):
-        """Return detailed of basemap."""
+    def retrieve(self, request, id=None):  # noqa
+        """Retrieve a single dataset record.
+
+        :param request: Django REST framework request.
+        :param id: Dataset ID.
+        :type id: str
+        :return: Serialized dataset object.
+        :rtype: Response
+        """
         return super().retrieve(request, id=id)
 
     @swagger_auto_schema(auto_schema=None)
     def delete(self, request):
-        """Batch delete data."""
+        """Delete dataset entries in batch mode.
+
+        Deletes dataset records based on provided IDs,
+        checking user permissions
+        and related indicator-level permissions.
+
+        :param request: Django REST framework request with JSON body.
+        :type request: Request
+        :return: Empty 204 No Content response on success.
+        :rtype: Response
+        """
         try:
             ids = json.loads(request.data['ids'])
         except TypeError:
@@ -207,7 +271,13 @@ class DatasetApiList(
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def ids(self, request):
-        """Get ids of data."""
+        """Return all dataset identifiers.
+
+        :param request: Django REST framework request.
+        :type request: Request
+        :return: List of dataset string identifiers.
+        :rtype: Response
+        """
         return Response(
             self.get_queryset().annotate(
                 identifier=Concat(
@@ -225,7 +295,15 @@ class DatasetApiList(
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def data(self, request):
-        """Get data."""
+        """Return distinct dataset elements (indicators, datasets, levels).
+
+        :param request: Django REST framework request.
+        :type request: Request
+        :return:
+            Dictionary containing unique indicator IDs,
+            dataset IDs, and levels.
+        :rtype: Response
+        """
         indicator_id = 'indicator_id'
         country_geom_id = 'country_geom_id'
         admin_level = 'admin_level'
