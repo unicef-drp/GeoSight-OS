@@ -80,6 +80,24 @@ class DatasetApiTest(BaseDataBrowserTest.TestCase):
         self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
 
+        # by id
+        response = self.assertRequestGetView(
+            f'{url}?id__in='
+            f'{self.indicator_1.id}-{self.country_1.id}-[1]',
+            200, user=user
+        )
+        self.assertEqual(response.json()['count'], 1)
+        self.assertEqual(self.data_count(response), 5)
+
+        response = self.assertRequestGetView(
+            f'{url}?id__in='
+            f'{self.indicator_1.id}-{self.country_1.id}-[1],'
+            f'{self.indicator_2.id}-{self.country_1.id}-[1]',
+            200, user=user
+        )
+        self.assertEqual(response.json()['count'], 2)
+        self.assertEqual(self.data_count(response), 10)
+
     def test_list_api_by_creator(self):
         """Test List API."""
         user = self.creator

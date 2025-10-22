@@ -57,6 +57,29 @@ class DatasetApiGroupedDataTest(BaseDataBrowserTest.TestCase):
         self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
 
+        # by id
+        response = self.assertRequestGetView(
+            f'{url}&indicator_id__in={",".join([f"{self.indicator_1.id}"])}&'
+            f'country__in={self.country_1.id}',
+            200, user=user
+        )
+        response = self.assertRequestGetView(
+            f'{url}&id__in='
+            f'{self.indicator_1.id}-{self.country_1.id}-[1,2]',
+            200, user=user
+        )
+        self.assertEqual(response.json()['count'], 1)
+        self.assertEqual(self.data_count(response), 9)
+
+        response = self.assertRequestGetView(
+            f'{url}&id__in='
+            f'{self.indicator_1.id}-{self.country_1.id}-[1,2],'
+            f'{self.indicator_2.id}-{self.country_1.id}-[1,2]',
+            200, user=user
+        )
+        self.assertEqual(response.json()['count'], 2)
+        self.assertEqual(self.data_count(response), 18)
+
     def test_list_api_by_creator(self):
         """Test List API."""
         user = self.creator

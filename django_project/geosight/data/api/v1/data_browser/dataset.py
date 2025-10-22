@@ -28,8 +28,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.utils import string_is_true
+from geosight.data.models import IndicatorValue
 from geosight.data.models.indicator import (
-    IndicatorValue, Indicator
+    Indicator
 )
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
@@ -44,7 +45,8 @@ class BaseDatasetApiList:
     """Contains queryset."""
 
     filter_query_exclude = [
-        'page', 'page_size', 'group_admin_level', 'detail', 'format'
+        'page', 'page_size', 'group_admin_level', 'detail', 'format',
+        'id__in', 'id'
     ]
     serializer_class = IndicatorValueDatasetSerializer
 
@@ -58,52 +60,69 @@ class BaseDatasetApiList:
     def get_queryset(self):
         """Return queryset of API."""
         if not self.group_admin_level:
-            return super().get_queryset().values(
+            query = super().get_queryset().values(
                 'indicator_id', 'country_id', 'admin_level'
             ).annotate(
-                data_count=Count('*')
-            ).annotate(
-                indicator_name=F('indicator_name')
-            ).annotate(
-                indicator_shortcode=F('indicator_shortcode')
-            ).annotate(
-                country_geom_id=F('country_geom_id')
-            ).annotate(
-                country_name=F('country_name')
-            ).annotate(
-                start_date=Min('date')
-            ).annotate(
-                end_date=Max('date')
+                data_count=Count('*'),
+                indicator_name=F('indicator_name'),
+                indicator_shortcode=F('indicator_shortcode'),
+                country_geom_id=F('country_geom_id'),
+                country_name=F('country_name'),
+                start_date=Min('date'),
+                end_date=Max('date'),
+                string_id=Concat(
+                    Cast(F('indicator_id'), CharField()),
+                    Value('-'),
+                    Cast(F('country_id'), CharField()),
+                    Value('-['),
+                    Cast(F('admin_level'), CharField()),
+                    Value(']'),
+                    output_field=CharField()
+                )
             ).order_by(
                 'indicator_id', 'country_id', 'admin_level'
             ).filter(country_id__isnull=False)
+            if self.request.GET.get('id__in'):
+                query = query.filter(
+                    string_id__in=self.request.GET.get('id__in').split(',')
+                )
+            return query
         else:
-            return super().get_queryset().values(
+            query = super().get_queryset().values(
                 'indicator_id', 'country_id'
             ).annotate(
                 admin_level=StringAgg(
                     Cast('admin_level', CharField()),
-                    delimiter=', ',
+                    delimiter=',',
                     distinct=True,
                     output_field=CharField()
+                ),
+                data_count=Count('*'),
+                indicator_name=F('indicator_name'),
+                indicator_shortcode=F('indicator_shortcode'),
+                country_geom_id=F('country_geom_id'),
+                country_name=F('country_name'),
+                start_date=Min('date'),
+                end_date=Max('date'),
+                string_id=Concat(
+                    Cast(F('indicator_id'), CharField()),
+                    Value('-'),
+                    Cast(F('country_id'), CharField()),
+                    Value('-['),
+                    Cast(F('admin_level'), CharField()),
+                    Value(']'),
+                    output_field=CharField()
                 )
-            ).annotate(
-                data_count=Count('*')
-            ).annotate(
-                indicator_name=F('indicator_name')
-            ).annotate(
-                indicator_shortcode=F('indicator_shortcode')
-            ).annotate(
-                country_geom_id=F('country_geom_id')
-            ).annotate(
-                country_name=F('country_name')
-            ).annotate(
-                start_date=Min('date')
-            ).annotate(
-                end_date=Max('date')
             ).order_by(
                 'indicator_id', 'country_id'
             ).filter(country_id__isnull=False)
+            if self.request.GET.get('id__in'):
+                id_in = [
+                    f'{id}]'.lstrip(',') for id in
+                    self.request.GET.get('id__in').split(']')
+                ]
+                query = query.filter(string_id__in=id_in)
+            return query
 
 
 class DatasetApiList(

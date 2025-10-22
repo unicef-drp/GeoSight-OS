@@ -75,7 +75,7 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
 
     class Meta:  # noqa: D106
         model = IndicatorValueDataset
-        fields = '__all__'
+        exclude = ('string_id',)
 
     def get_permission(self, obj: IndicatorValueDataset):
         """Return permission."""

@@ -23,6 +23,7 @@ class IndicatorValueDataset(models.Model):
     """Indicator value x entity view x admin level."""
 
     id = models.CharField(max_length=256, primary_key=True)
+    string_id = models.CharField(max_length=256)
 
     # Indicator
     indicator_id = models.BigIntegerField()
