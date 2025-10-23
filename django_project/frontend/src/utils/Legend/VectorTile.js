@@ -111,6 +111,7 @@ export function vectorTileLegend(layers) {
     .filter((layer) => layer.source && layer.source !== "composite")
     .forEach((layer) => {
       const { id, layout, paint, metadata } = layer;
+      const layerLabel = metadata?.name || metadata?.label || id;
 
       if (layer["hide-legend"]) {
         return;
@@ -119,12 +120,46 @@ export function vectorTileLegend(layers) {
       // Construct all required blocks, break if none
       let paneBlocks = Object.entries({ ...layout, ...paint }).reduce(
         (acc, [attribute, value]) => {
+          if (attribute.includes("stroke") || attribute.includes("outline")) {
+            return acc;
+          }
           try {
             const blocks = legend._getBlocks("Key", layer, attribute, value);
-            blocks?.forEach((block) => acc.push(block));
+            blocks?.forEach((block) => {
+              // Update the block
+              if (block.className.includes("list--color")) {
+                switch (attribute) {
+                  case "fill-color": {
+                    if (paint && paint["fill-outline-color"]) {
+                      block.setAttribute(
+                        "style",
+                        `--pane-border: 1px solid ${paint["fill-outline-color"]}`,
+                      );
+                    }
+                  }
+                  case "circle-color": {
+                    if (
+                      paint &&
+                      paint["circle-stroke-color"] &&
+                      paint["circle-stroke-opacity"] &&
+                      paint["circle-stroke-width"]
+                    ) {
+                      block.setAttribute(
+                        "style",
+                        `--pane-border: 1px solid ${paint["circle-stroke-color"]}`,
+                      );
+                    }
+                  }
+                }
+              }
+              acc.push(block);
+            });
           } catch (e) {
             // Error
-            if (attribute === "icon-image" && (value.includes("http") || value.includes("data:"))) {
+            if (
+              attribute === "icon-image" &&
+              (value.includes("http") || value.includes("data:"))
+            ) {
               const element = createElement("ul", {
                 classes: ["list"],
                 content: [
@@ -133,9 +168,12 @@ export function vectorTileLegend(layers) {
                     content: [
                       createElement("img", {
                         classes: ["icon"],
-                        attributes: { src: value, height: 40 },
+                        attributes: {
+                          src: value,
+                          height: "20px",
+                        },
                       }),
-                      "",
+                      layerLabel,
                     ],
                   }),
                 ],
@@ -152,19 +190,40 @@ export function vectorTileLegend(layers) {
         return;
       }
 
+      // -----------------------------------------------
+      // Update for one data
+      // -----------------------------------------------
+      const defaultChild = layers.length === 1;
+      let hasOneChild = true;
+      paneBlocks.map((block) => {
+        if (block.className.includes("list--color")) {
+          if (block.childNodes.length === 1) {
+            block.childNodes[0].textContent = layerLabel;
+          } else {
+            hasOneChild = defaultChild;
+          }
+        }
+      });
+
       // Create pane
       const pane = createElement("details", {
-        classes: ["mapboxgl-ctrl-legend-pane"],
+        classes: [
+          "mapboxgl-ctrl-legend-pane",
+          layer.type,
+          hasOneChild ? ["has-one-child"] : ["has-multiple-child"],
+        ],
         attributes: { open: true },
         content: [
           createElement("summary", {
-            content: [metadata?.name || metadata?.label || id],
+            classes: hasOneChild ? ["has-one-child"] : [],
+            content: hasOneChild ? [] : [layerLabel],
           }),
           ...paneBlocks,
         ],
       });
-
-      // Update value for case
+      // -----------------------------------------------
+      // Update value for cases
+      // -----------------------------------------------
       let outerHtml = pane.outerHTML;
 
       /** Switch based on the style */
@@ -218,7 +277,6 @@ export function vectorTileLegend(layers) {
       }
       legendHtml.push(outerHtml);
     });
-
   let output = legendHtml.join("<br/>");
   // If radius are same, we remove the bubble
   try {

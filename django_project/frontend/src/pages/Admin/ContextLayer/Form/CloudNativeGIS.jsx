@@ -29,7 +29,6 @@ export default function CloudNativeGISFields({ data, onSetData }) {
 
   // Loading data
   useEffect(() => {
-    console.log(data);
     if (data.cloud_native_gis_layer_id) {
       (async () => {
         const newData = await updateDataWithMapbox(data);
