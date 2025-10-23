@@ -124,7 +124,7 @@ export function vectorTileLegend(layers) {
             blocks?.forEach((block) => acc.push(block));
           } catch (e) {
             // Error
-            if (attribute === "icon-image" && value.includes("http")) {
+            if (attribute === "icon-image" && (value.includes("http") || value.includes("data:"))) {
               const element = createElement("ul", {
                 classes: ["list"],
                 content: [
