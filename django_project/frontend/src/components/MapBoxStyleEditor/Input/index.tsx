@@ -17,7 +17,7 @@
    Mapbox style editor
    ========================================================================== */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { EditorProps } from "../type";
 import { useTranslation } from "react-i18next";
 import { capitalize } from "../../../utils/main";
@@ -128,7 +128,29 @@ export function ColorSelectorStyle({
 }: Props) {
   const { t } = useTranslation();
   // @ts-ignore
-  const value = layer[layerAttr][styleKey];
+  const inputValue = layer[layerAttr][styleKey];
+  const [value, setValue] = useState(inputValue);
+
+  useEffect(() => {
+    if (typeof inputValue === "string") {
+      setValue(inputValue);
+    }
+  }, [inputValue]);
+
+  // Update layer when value changes
+  useEffect(() => {
+    if (value === inputValue) return;
+    const newLayer = { ...layer };
+    if (value) {
+      // @ts-ignore
+      newLayer[layerAttr][styleKey] = value;
+    } else {
+      // @ts-ignore
+      delete newLayer[layerAttr][styleKey];
+    }
+    setLayer(newLayer);
+  }, [value]);
+
   return (
     <div>
       <div>
@@ -140,15 +162,8 @@ export function ColorSelectorStyle({
         <ColorSelector
           color={value}
           onChange={(evt) => {
-            const newLayer = { ...layer };
-            if (evt.target.value) {
-              // @ts-ignore
-              newLayer[layerAttr][styleKey] = evt.target.value;
-            } else {
-              // @ts-ignore
-              delete newLayer[layerAttr][styleKey];
-            }
-            setLayer(newLayer);
+            if (value === evt.target.value) return;
+            setValue(evt.target.value);
           }}
         />
       </div>
