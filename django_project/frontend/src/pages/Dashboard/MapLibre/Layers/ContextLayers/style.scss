@@ -40,17 +40,16 @@
     }
   }
 
-  .list--color li:before {
-    height: 1rem;
-    width: 1rem;
+  .list--color {
+    & li:before {
+      height: 1rem;
+      width: 1rem;
+      border: var(--pane-border);
+    }
   }
 
   .mapboxgl-ctrl-legend-pane {
     width: 100%;
-
-    & li:before {
-      border: var(--pane-border);
-    }
 
     &.circle {
       & li:before {
