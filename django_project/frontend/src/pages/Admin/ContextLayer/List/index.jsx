@@ -13,8 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 import { render } from "../../../../app";
 import { store } from "../../../../store/admin";
@@ -24,11 +26,65 @@ import PermissionModal from "../../Permission";
 import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 import { Variables } from "../../../../utils/Variables";
 import { DownloadIcon } from "../../../../components/Icons";
+import { useDisclosure } from "../../../../hooks";
+import { CLOUD_NATIVE_DOWNLOAD_FORMATS } from "../../../Dashboard/Toolbars/DataDownloader/ContextLayer";
 
 import "./style.scss";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.contextLayerList);
+}
+
+export function CloudNativeDownload({ id }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { open, onOpen, onClose } = useDisclosure();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    onOpen();
+    event.preventDefault();
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    onClose();
+  };
+
+  return (
+    <>
+      <a href="" onClick={handleClick}>
+        <div className="ButtonIcon">
+          <DownloadIcon />
+        </div>
+      </a>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem>
+          <a
+            href={urls.api.download.replace("/0", `/${id}`)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            original
+          </a>
+        </MenuItem>
+        {Object.keys(CLOUD_NATIVE_DOWNLOAD_FORMATS).map((format) => (
+          <MenuItem>
+            <a
+              href={
+                urls.api.download.replace("/0", `/${id}`) +
+                "?file_format=" +
+                format
+              }
+              target="_blank"
+              rel="noreferrer"
+            >
+              {CLOUD_NATIVE_DOWNLOAD_FORMATS[format]}
+            </a>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
+  );
 }
 
 /**
@@ -78,17 +134,7 @@ export default function ContextLayerList() {
       ) {
         actions.unshift(
           <GridActionsCellItem
-            icon={
-              <a
-                href={urls.api.download.replace("/0", `/${params.id}`)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="ButtonIcon">
-                  <DownloadIcon />
-                </div>
-              </a>
-            }
+            icon={<CloudNativeDownload id={params.id} />}
             label="Download data."
           />,
         );
