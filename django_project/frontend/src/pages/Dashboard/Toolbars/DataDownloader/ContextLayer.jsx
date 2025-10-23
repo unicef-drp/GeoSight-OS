@@ -17,6 +17,13 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Variables } from "../../../../utils/Variables";
 
+export const CLOUD_NATIVE_DOWNLOAD_FORMATS = {
+  geojson: ".geojson",
+  shapefile: ".shp",
+  kml: ".kml",
+  geopackage: ".gpkg",
+};
+
 /** Context layer data downloader component. */
 export default function ContextLayerDownloader() {
   const contextLayers = useSelector(
@@ -52,50 +59,21 @@ export default function ContextLayerDownloader() {
               >
                 <div>{contextLayer.name}</div>
                 <div className="ContextLayerDownloaderExtensions">
-                  <a
-                    href={
-                      urls.contextLayerDownload.replaceAll(
-                        "0",
-                        contextLayer.id,
-                      ) + "?file_format=geojson"
-                    }
-                    target="_blank"
-                  >
-                    .geojson
-                  </a>
-                  <a
-                    href={
-                      urls.contextLayerDownload.replaceAll(
-                        "0",
-                        contextLayer.id,
-                      ) + "?file_format=shapefile"
-                    }
-                    target="_blank"
-                  >
-                    .shp
-                  </a>
-                  <a
-                    href={
-                      urls.contextLayerDownload.replaceAll(
-                        "0",
-                        contextLayer.id,
-                      ) + "?file_format=kml"
-                    }
-                    target="_blank"
-                  >
-                    .kml
-                  </a>
-                  <a
-                    href={
-                      urls.contextLayerDownload.replaceAll(
-                        "0",
-                        contextLayer.id,
-                      ) + "?file_format=geopackage"
-                    }
-                    target="_blank"
-                  >
-                    .gpkg
-                  </a>
+                  {Object.keys(CLOUD_NATIVE_DOWNLOAD_FORMATS).map((format) => (
+                    <a
+                      href={
+                        urls.contextLayerDownload.replaceAll(
+                          "0",
+                          contextLayer.id,
+                        ) +
+                        "?file_format=" +
+                        format
+                      }
+                      target="_blank"
+                    >
+                      {CLOUD_NATIVE_DOWNLOAD_FORMATS[format]}
+                    </a>
+                  ))}
                 </div>
               </div>
             </td>
