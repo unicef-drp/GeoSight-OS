@@ -38,7 +38,7 @@ class IndicatorDataViewSet(
     serializer_class = IndicatorValueSerializer
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission',
-        'attributes', 'version', 'frequency'
+        'attributes', 'version', 'frequency', 'reference_dataset'
     ]
 
     @property
@@ -75,21 +75,6 @@ class IndicatorDataViewSet(
         read_data_permission_resource(indicator, self.request.user)
         return indicator
 
-    def _set_request(self):  # noqa DOC110, DOC103
-        """
-        Set request query parameters from POST data.
-
-        Copies data from the POST body (`self.request.data`) into
-        the GET query parameters (`self.request.GET`), allowing
-        uniform access to parameters regardless of HTTP method.
-
-        :return: None
-        """
-        self.request.GET = self.request.GET.copy()
-        data = self.request.data.copy()
-        for key, value in data.items():
-            self.request.GET[key] = value
-
     def get_queryset(self):
         """
         Return the filtered queryset for the API view.
@@ -100,6 +85,7 @@ class IndicatorDataViewSet(
         :return: A queryset filtered by indicator_id.
         :rtype: QuerySet
         """
+        self._set_request()
         indicator = self._get_indicator()
         query = super().get_queryset()
         query = query.filter(
@@ -205,6 +191,7 @@ class IndicatorDataViewSet(
         :return: Response containing a list of data IDs.
         :rtype: rest_framework.response.Response
         """
+        self._set_request()
         return super().ids(request)
 
     @swagger_auto_schema(auto_schema=None)
@@ -223,6 +210,7 @@ class IndicatorDataViewSet(
         :return: Response containing a list of string values.
         :rtype: rest_framework.response.Response
         """
+        self._set_request()
         return super().values_string(request)
 
     @swagger_auto_schema(method='get', auto_schema=None)

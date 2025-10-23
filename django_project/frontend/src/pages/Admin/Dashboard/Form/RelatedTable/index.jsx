@@ -23,14 +23,11 @@ import {
   SelectWithSearch,
 } from "../../../../../components/Input/SelectWithSearch";
 import { getRelatedTableFields } from "../../../../../utils/relatedTable";
-import WhereInputModal
-  from "../../../../../components/SqlQueryGenerator/WhereInputModal";
+import WhereInputModal from "../../../../../components/SqlQueryGenerator/WhereInputModal";
 import Match from "../../../../../utils/Match";
 import { fetchingData } from "../../../../../Requests";
 import { dictDeepCopy } from "../../../../../utils/main";
-import { getCountryGeomIds } from "../../../../../utils/Dataset";
-import RelatedTableSelector
-  from "../../../../../components/ResourceSelector/RelatedTableSelector";
+import RelatedTableSelector from "../../../../../components/ResourceSelector/RelatedTableSelector";
 
 import "./style.scss";
 import { useResourceMeta } from "../../../../../components/AdminList";
@@ -56,7 +53,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
       return;
     }
     const params = {
-      country_geom_ids: getCountryGeomIds(referenceLayerData.data).join(","),
+      reference_dataset: referenceLayerData?.data?.identifier,
       geography_code_field_name: data.geography_code_field_name,
       geography_code_type: data.geography_code_type,
     };

@@ -30,6 +30,7 @@ from rest_framework.utils.urls import replace_query_param
 
 from core.api_utils import ApiTag
 from core.pagination import Pagination
+from geosight.data.api.v1.utils import update_request_reference_dataset
 from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.related_table import (
     RelatedTableGeoDataSerializer
@@ -71,6 +72,7 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         """Set request parameters from POST."""
         # Add the data to query
         self.request.GET = self.request.GET.copy()
+        update_request_reference_dataset(self.request, 'country_geom_ids')
         data = self.request.data.copy()
         for key, value in data.items():
             self.request.GET[key] = value

@@ -23,7 +23,6 @@ import { Actions } from "../../../../store/dashboard";
 import { queryData } from "../../../../utils/queryExtraction";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Worker";
-import { getCountryGeomIds } from "../../../../utils/Dataset";
 import {
   RelatedTable as RelatedTableRequest
 } from "../../../../class/RelatedTable";
@@ -86,11 +85,10 @@ export function RelatedTable({
     // Skip if no data
     // To get the countries
     if (!referenceLayerData?.data?.identifier) return;
-    const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
 
     const params = {
       time__lte: selectedGlobalTime.max,
-      country_geom_ids: countryGeomIds,
+      reference_dataset: referenceLayerData.data,
       date_field: indicatorLayer?.config?.date_field,
       date_format: indicatorLayer?.config?.date_format,
       geography_code_field_name: relatedTable.geography_code_field_name,

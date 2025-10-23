@@ -39,7 +39,7 @@ class IndicatorsDataViewSet(
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission',
         'attributes', 'version', 'frequency', 'indicators_id__in',
-        'last_value'
+        'last_value', 'reference_dataset'
     ]
 
     @property
@@ -60,6 +60,7 @@ class IndicatorsDataViewSet(
                  permissions and optional request parameters.
         :rtype: django.db.models.QuerySet
         """
+        self._set_request()
         indicators_id = []
         indicators_id__in = self.request.GET.get('indicator_id__in', None)
         if indicators_id__in:

@@ -58,10 +58,9 @@ import { MainDataGrid } from "../../../../../../components/Table";
 import { CogIcon } from "../../../../../../components/Icons";
 import { ExecuteWebWorker } from "../../../../../../utils/WebWorker";
 import worker from "../../../../../Dashboard/LeftPanel/RelatedTable/Worker";
-import { getCountryGeomIds } from "../../../../../../utils/Dataset";
+import FieldConfig from "../../../../../../components/FieldConfig";
 
 import "./style.scss";
-import FieldConfig from "../../../../../../components/FieldConfig";
 
 /**
  * MultiIndicatorConfig
@@ -163,7 +162,7 @@ export default function RelatedTableLayerConfig({
       return;
     }
     const params = {
-      country_geom_ids: getCountryGeomIds(referenceLayerData.data).join(","),
+      reference_dataset: referenceLayerData.data.identifier,
       geography_code_field_name: relatedTableConfig.geography_code_field_name,
       geography_code_type: relatedTableConfig.geography_code_type,
       date_field: data?.config?.date_field,

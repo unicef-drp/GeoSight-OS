@@ -18,7 +18,6 @@ import { memo, useEffect, useRef } from "react";
 import { FetchOptionsData } from "./types.d";
 import { useSelector } from "react-redux";
 import { fetchingData } from "../../../../Requests";
-import { getCountryGeomIds } from "../../../../utils/Dataset";
 import { Indicator } from "../../../../class/Indicator";
 
 export const FetchFromDataOptions = memo(
@@ -87,15 +86,9 @@ export const FetchIndicatorOptions = memo(
       datasets = referenceLayers.map((_: any) => _.identifier)
     }
 
-    // Return if no data
-    let countryGeomIds = null
-    if (referenceLayerData?.data?.countries) {
-      countryGeomIds = getCountryGeomIds(referenceLayerData.data);
-    }
-
     const parameters = {
       admin_level: adminLevel,
-      country_geom_id__in: countryGeomIds
+      reference_dataset: referenceLayer?.identifier
     }
     if (maxDate) {
       // @ts-ignore
@@ -112,7 +105,7 @@ export const FetchIndicatorOptions = memo(
     useEffect(() => {
       if (
         !maxDate || [null, undefined].includes(adminLevel) || !datasets.length ||
-        !countryGeomIds
+        !referenceLayerData.data.identifier
       ) {
         return
       }

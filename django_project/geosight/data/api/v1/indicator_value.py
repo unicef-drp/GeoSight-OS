@@ -21,6 +21,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from geosight.data.api.v1.utils import update_request_reference_dataset
+
 
 class IndicatorValueApiUtilities:
     """Indicator value api utilities."""
@@ -35,7 +37,7 @@ class IndicatorValueApiUtilities:
 
         :return: None
         """
-        self.request.GET = self.request.GET.copy()
+        update_request_reference_dataset(self.request, 'country_geom_id__in')
         data = self.request.data.copy()
         for key, value in data.items():
             self.request.GET[key] = value

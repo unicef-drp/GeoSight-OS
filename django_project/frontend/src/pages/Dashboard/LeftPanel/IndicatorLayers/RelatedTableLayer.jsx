@@ -26,7 +26,6 @@ import { Actions } from "../../../../store/dashboard";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
-import { getCountryGeomIds } from "../../../../utils/Dataset";
 import { RelatedTable } from "../../../../class/RelatedTable";
 
 /**
@@ -92,13 +91,12 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
       if (!referenceLayerData?.data?.identifier) {
         return;
       }
-      const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
       const indicatorLayer = relatedTableLayer;
       const id = indicatorLayer.id;
       const params = {
         geography_code_field_name: relatedTableConfig.geography_code_field_name,
         geography_code_type: relatedTableConfig.geography_code_type,
-        country_geom_ids: countryGeomIds,
+        reference_dataset: referenceLayerData?.data?.identifier,
       };
       if (indicatorLayer.config.date_field) {
         params.date_field = indicatorLayer.config.date_field;

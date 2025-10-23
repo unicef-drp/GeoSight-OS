@@ -60,25 +60,11 @@ export default function SummaryGroupWidgetView({ data }) {
   );
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
-  const referenceLayerData = useSelector(
-    (state) => state.referenceLayerData[referenceLayer?.identifier],
-  );
-  const [countries, setCountries] = useState({});
 
   const [layerData, setLayerData] = useState({});
   const date_filter_type = use_only_last_known_value
     ? DateFilterType.NO_FILTER
     : config.date_filter_type;
-
-  // Fetch the data if it is using global filter
-  useEffect(() => {
-    const newCountries = referenceLayerData?.data?.countries?.map(
-      (country) => country.ucode,
-    );
-    if (newCountries !== countries) {
-      setCountries(newCountries);
-    }
-  }, [referenceLayerData?.data]);
 
   // Fetch the data if it is using global filter
   useEffect(() => {
@@ -137,12 +123,15 @@ export default function SummaryGroupWidgetView({ data }) {
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
     (async () => {
-      if (!countries || [null, undefined].includes(selectedAdminLevel?.level)) {
+      if (
+        !referenceLayer?.identifier ||
+        [null, undefined].includes(selectedAdminLevel?.level)
+      ) {
         return;
       }
       let params = {
         admin_level: selectedAdminLevel?.level,
-        country_geom_id__in: countries,
+        reference_dataset: referenceLayer?.identifier,
       };
       if (date_filter_type === DateFilterType.CUSTOM) {
         if (date_filter_value) {
@@ -248,7 +237,13 @@ export default function SummaryGroupWidgetView({ data }) {
           );
       }
     })();
-  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, countries]);
+  }, [
+    data,
+    selectedAdminLevel,
+    indicatorLayers,
+    date_filter_type,
+    referenceLayer?.identifier,
+  ]);
 
   let indicatorData = null;
   if (layerData) {

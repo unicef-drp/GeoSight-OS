@@ -121,7 +121,7 @@ export default function RequestData({ data, applyData }: Props) {
       }
       let params: any = {
         admin_level: selectedAdminLevel?.level,
-        country_geom_id__in: countries,
+        reference_dataset: referenceLayer?.identifier,
         indicator_id__in: indicators,
       };
       if (unitParameterUsed.geographic_units.length > 0) {

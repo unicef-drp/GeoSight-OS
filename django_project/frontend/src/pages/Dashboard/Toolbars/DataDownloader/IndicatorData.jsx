@@ -77,10 +77,6 @@ export default function IndicatorDataDownloader() {
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
 
-  const countries = referenceLayerData?.data?.countries?.map(
-    (country) => country.ucode,
-  );
-
   const [downloading, setDownloading] = useState(false);
 
   // Indicator layers ids
@@ -103,8 +99,7 @@ export default function IndicatorDataDownloader() {
     downloading ||
     !state.levels.length ||
     !state.indicators.length ||
-    !indicatorLayers.length ||
-    !countries;
+    !indicatorLayers.length
 
   // Notification
   const notificationRef = useRef(null);
@@ -279,7 +274,7 @@ export default function IndicatorDataDownloader() {
         `/api/v1/data-browser/`,
         {
           indicator_id: indicator.id,
-          country_geom_id__in: countries,
+          reference_dataset: referenceLayer.identifier,
         },
         {},
         (response, error) => {
@@ -298,7 +293,7 @@ export default function IndicatorDataDownloader() {
           : null,
         date__gte: selectedGlobalTime.min.split("T")[0],
         admin_level__in: state.levels.map((level) => level).join(","),
-        country_geom_id__in: countries,
+        reference_dataset: referenceLayer.identifier,
       });
       response.map((row) => {
         row.indicator = indicator;
@@ -383,7 +378,7 @@ export default function IndicatorDataDownloader() {
                 geography_code_field_name:
                   relatedTable.geography_code_field_name,
                 geography_code_type: relatedTable.geography_code_type,
-                country_geom_ids: countries,
+                reference_dataset: referenceLayer.identifier,
               };
               if (indicatorLayer.config.date_field) {
                 params.date_field = indicatorLayer.config.date_field;

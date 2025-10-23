@@ -25,7 +25,7 @@ import { Actions } from "../../../../store/dashboard";
 interface Parameter {
   date__lte: string;
   date__gte?: string;
-  country_geom_id__in?: string[];
+  reference_dataset?: string;
   admin_level?: number | null | undefined;
   version?: string;
   page_size: number;
@@ -78,8 +78,6 @@ export const IndicatorRequest = memo(
     )
 
     // @ts-ignore
-    const referenceLayerData = useSelector(state => state.referenceLayerData[datasetIdentifier]);
-    // @ts-ignore
     const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
     // @ts-ignore
     const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata[metadataId]);
@@ -94,7 +92,7 @@ export const IndicatorRequest = memo(
       date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
       version: version,
       admin_level: admin_level,
-      country_geom_id__in: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode),
+      reference_dataset: datasetIdentifier,
       page_size: 500
     }
     if (selectedGlobalTime.min) {
@@ -157,7 +155,7 @@ export const IndicatorRequest = memo(
       if (!isBeingRequest) {
         return;
       }
-      if (!params.date__lte || !params.country_geom_id__in || !params.version || [null, undefined].includes(params.admin_level)) {
+      if (!params.date__lte || !datasetIdentifier || !params.version || [null, undefined].includes(params.admin_level)) {
         return
       }
       // @ts-ignore
