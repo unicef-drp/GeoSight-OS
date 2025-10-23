@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { fetchReferenceLayerList, GeorepoUrls } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
@@ -22,209 +22,217 @@ import {
   FormControl,
   FormControlLabel,
   Radio,
-  RadioGroup
+  RadioGroup,
 } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
 
-
-const VALUE_REMOTE = 'Remote'
-const VALUE_LOCAL = 'Local'
+const VALUE_REMOTE = "Remote";
+const VALUE_LOCAL = "Local";
 
 const columns = [
-  { field: 'id', headerName: 'id', hide: true },
-  { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'description', headerName: 'Description', flex: 1 },
-  { field: 'last_update', headerName: 'Last Update', flex: 1 },
+  { field: "id", headerName: "id", hide: true },
+  { field: "name", headerName: "Name", flex: 1 },
+  { field: "description", headerName: "Description", flex: 1 },
+  { field: "last_update", headerName: "Last Update", flex: 1 },
   {
-    field: 'tags', headerName: 'Tags', flex: 1,
+    field: "tags",
+    headerName: "Tags",
+    flex: 1,
     renderCell: (params: any) => {
       return params.row.tags.map((tag: any) => {
-        return <span
-          style={{
-            padding: '0.5rem',
-            backgroundColor: '#EEE',
-            marginRight: '2px'
-          }}>{tag}</span>
-      })
-    }
+        return (
+          <span
+            style={{
+              padding: "0.5rem",
+              backgroundColor: "#EEE",
+              marginRight: "2px",
+            }}
+          >
+            {tag}
+          </span>
+        );
+      });
+    },
   },
-]
+];
 
 /** For Georepo View selection. */
-export default function DatasetViewSelector(
-  {
-    // Input properties
-    placeholder,
-    showSelected,
-    disabled,
-    mode,
-    opener,
+export default function DatasetViewSelector({
+  // Input properties
+  placeholder,
+  showSelected,
+  disabled,
+  mode,
+  opener,
 
-    // Data properties
-    initData,
+  // Data properties
+  initData,
 
-    // Listeners
-    dataSelected,
+  // Listeners
+  dataSelected,
 
-    // Table properties
-    multipleSelection,
-  }: ModalInputSelectorProps
-) {
-  const [datasets, setDatasets] = useState([])
-  const [dataset, setDataset] = useState(null)
+  // Table properties
+  multipleSelection,
+}: ModalInputSelectorProps) {
+  const [datasets, setDatasets] = useState([]);
+  const [dataset, setDataset] = useState(null);
 
   // @ts-ignore
-  const isLocalEnabled = localReferenceDatasetEnabled
-  const [sourceType, setSourceType] = useState(isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE)
+  const isLocalEnabled = localReferenceDatasetEnabled;
+  const [sourceType, setSourceType] = useState(
+    isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE,
+  );
 
   // TODO:
   //  This makes the E2E tests fails, need to check it
   // const url = URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
 
-  const url = sourceType === VALUE_REMOTE ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true) :
-    '/api/v1/reference-datasets/?page=1&page_size=25&fields=uuid,bbox,vector_tiles,possible_id_types,dataset_levels,tags,permission,version_data,created_at,modified_at,identifier,name,description,in_georepo,modified_by'
+  const url =
+    sourceType === VALUE_REMOTE
+      ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true)
+      : "/api/v1/reference-datasets/?page=1&page_size=25&fields=uuid,bbox,vector_tiles,possible_id_types,dataset_levels,tags,permission,version_data,created_at,modified_at,identifier,name,description,in_georepo,modified_by";
 
   /** Get the datasets */
-  useEffect(
-    () => {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const datasets = responseData.map((row: any) => {
-            row.value = row.identifier
-            return row
-          })
-          setDatasets(datasets)
-        }
-      )();
-    }, []
-  )
+  useEffect(() => {
+    (async () => {
+      const responseData = await fetchReferenceLayerList();
+      const datasets = responseData.map((row: any) => {
+        row.value = row.identifier;
+        return row;
+      });
+      setDatasets(datasets);
+    })();
+  }, []);
 
   /** On datasets loaded */
-  useEffect(
-    () => {
-      if (!dataset && datasets[0]) {
-        setDataset(datasets[0].value)
-      }
-    }, [datasets]
-  )
+  useEffect(() => {
+    if (!dataset && datasets[0]) {
+      setDataset(datasets[0].value);
+    }
+  }, [datasets]);
 
   /*** Parameters Changed */
   const getParameters = (parameters: any) => {
     if (sourceType === VALUE_REMOTE) {
-      if (parameters['name__icontains']) {
-        parameters['search'] = parameters['name__icontains']
+      if (parameters["q"]) {
+        parameters["search"] = parameters["q"];
+      } else if (parameters["name__icontains"]) {
+        parameters["search"] = parameters["name__icontains"];
       } else {
-        delete parameters['search']
+        delete parameters["search"];
       }
     } else {
-      delete parameters['search']
+      delete parameters["search"];
     }
-    return parameters
-  }
+    return parameters;
+  };
 
-
-  return <ModalInputSelector
-    // Input properties
-    placeholder={placeholder}
-    showSelected={showSelected}
-    disabled={disabled}
-    mode={mode}
-    dataName={'View'}
-    opener={opener}
-
-    // Data properties
-    initData={initData}
-
-    // Listeners
-    url={url}
-    columns={columns}
-    getParameters={getParameters}
-    dataSelected={(data: any) => {
-      if (dataSelected) {
-        dataSelected(data.map((_row: DatasetView) => {
-          return {
-            ..._row,
-            id: _row.uuid,
-            identifier: _row.uuid,
-            is_local: sourceType === VALUE_LOCAL
+  return (
+    <ModalInputSelector
+      // Input properties
+      placeholder={placeholder}
+      showSelected={showSelected}
+      disabled={disabled}
+      mode={mode}
+      dataName={"View"}
+      opener={opener}
+      // Data properties
+      initData={initData}
+      // Listeners
+      url={url}
+      columns={columns}
+      getParameters={getParameters}
+      dataSelected={(data: any) => {
+        if (dataSelected) {
+          dataSelected(
+            data.map((_row: DatasetView) => {
+              return {
+                ..._row,
+                id: _row.uuid,
+                identifier: _row.uuid,
+                is_local: sourceType === VALUE_LOCAL,
+              };
+            }),
+          );
+        }
+      }}
+      // Table properties
+      multipleSelection={multipleSelection}
+      rowIdKey={"uuid"}
+      topChildren={
+        <div
+          className={
+            "DatasetLayerSelector " +
+            (isLocalEnabled ? "localDatasetDatasetEnabled" : "")
           }
-        }))
-      }
-    }}
-
-    // Table properties
-    multipleSelection={multipleSelection}
-    rowIdKey={'uuid'}
-    topChildren={
-      <div
-        className={'DatasetLayerSelector ' + (isLocalEnabled ? 'localDatasetDatasetEnabled' : '')}>
-        {
-          isLocalEnabled ?
-            <FormControl className='RadioButtonControl'>
+        >
+          {isLocalEnabled ? (
+            <FormControl className="RadioButtonControl">
               <RadioGroup
                 value={sourceType}
-                onChange={evt => setSourceType(evt.target.value)}
+                onChange={(evt) => setSourceType(evt.target.value)}
                 row
               >
                 <FormControlLabel
-                  control={<Radio/>}
+                  control={<Radio />}
                   value={VALUE_LOCAL}
                   label={VALUE_LOCAL}
                 />
                 <FormControlLabel
-                  control={<Radio/>}
+                  control={<Radio />}
                   value={VALUE_REMOTE}
-                  label={VALUE_REMOTE}/>
+                  label={VALUE_REMOTE}
+                />
               </RadioGroup>
-            </FormControl> : null
-        }
-        {
-          !isLocalEnabled || sourceType === VALUE_REMOTE ?
+            </FormControl>
+          ) : null}
+          {!isLocalEnabled || sourceType === VALUE_REMOTE ? (
             <SelectWithList
-              placeholder={datasets ? 'Select dataset' : 'Loading'}
+              placeholder={datasets ? "Select dataset" : "Loading"}
               list={datasets}
               value={dataset}
               onChange={(evt: any) => {
-                setDataset(evt.value)
+                setDataset(evt.value);
               }}
-            /> : null
-        }
-      </div>
-    }
-  />
+            />
+          ) : null}
+        </div>
+      }
+    />
+  );
 }
 
-export function DatasetFilterSelector(
-  {
-    // Input properties
-    showSelected,
-    disabled,
+export function DatasetFilterSelector({
+  // Input properties
+  showSelected,
+  disabled,
 
-    // Data properties
-    data,
+  // Data properties
+  data,
 
-    // Listeners
-    setData
-  }: ModalFilterSelectorProps
-) {
-
-  return <DatasetViewSelector
-    initData={
-      !data ? [] : data.map((row: any) => {
-        return {
-          identifier: row,
-          uuid: row
-        }
-      })
-    }
-    dataSelected={(data) => {
-      setData(data.map((row: any) => row.identifier))
-    }}
-    multipleSelection={true}
-    showSelected={showSelected}
-    disabled={disabled}
-    placeholder={'Filter by View(s)'}
-    mode={'filter'}
-  />
+  // Listeners
+  setData,
+}: ModalFilterSelectorProps) {
+  return (
+    <DatasetViewSelector
+      initData={
+        !data
+          ? []
+          : data.map((row: any) => {
+              return {
+                identifier: row,
+                uuid: row,
+              };
+            })
+      }
+      dataSelected={(data) => {
+        setData(data.map((row: any) => row.identifier));
+      }}
+      multipleSelection={true}
+      showSelected={showSelected}
+      disabled={disabled}
+      placeholder={"Filter by View(s)"}
+      mode={"filter"}
+    />
+  );
 }
