@@ -55,8 +55,9 @@ export function Editor({
   const [mode, setMode] = useState<string>(EDITOR);
 
   useEffect(() => {
-    if (textArea !== JSON.stringify(layers)) {
-      setTextArea(JSON.stringify(layers, null, 4));
+    const newTextArea = JSON.stringify(layers, null, 4);
+    if (textArea !== newTextArea) {
+      setTextArea(newTextArea);
     }
   }, [layers]);
 

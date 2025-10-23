@@ -21,19 +21,53 @@
   gap: 0;
   width: 100%;
   max-width: unset;
+  margin-top: 1rem;
 
   summary {
     text-transform: capitalize;
+
+    &.has-one-child {
+      display: none;
+    }
   }
 
-  .list li {
-    text-transform: unset;
+  .list {
+    margin: 0 var(--map-legend-margin);
+
+    li {
+      text-transform: unset;
+      margin-left: 0 !important;
+    }
+  }
+
+  .list--color {
+    & li:before {
+      height: 1rem;
+      width: 1rem;
+      min-width: 1rem;
+      min-height: 1rem;
+      border: var(--pane-border);
+    }
   }
 
   .mapboxgl-ctrl-legend-pane {
-    border: 1px solid #eee;
     width: 100%;
-    box-sizing: border-box;
+
+    &.circle {
+      & li:before {
+        border-radius: 50%;
+      }
+    }
+
+    &.line {
+      & li:before {
+        height: 2px;
+      }
+    }
+  }
+
+  .icon {
+    margin-right: 3px;
   }
 
   br {

@@ -5,16 +5,16 @@ test.describe('Mapbox style', () => {
   test('Styling mapbox', async ({ page }) => {
     await page.goto(`/en-us/admin/context-layer/2/edit`);
     await page.getByText('Preview').first().click();
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(0)).toHaveText("00000000-0000-0000-0000-000000000000-copy");
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(1)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy-copy");
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(2)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy");
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(3)).toHaveText("00000000-0000-0000-0000-000000000000");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(0)).toHaveText("00000000-0000-0000-0000-000000000000-copy");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(1)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy-copy");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(2)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(3)).toHaveText("00000000-0000-0000-0000-000000000000");
 
     // Style
     {
       await page.locator('.MuiAccordionSummary-gutters').first().click();
-      const li = page.locator('.mapboxgl-ctrl-legend').locator('li').first();
-      await expect(li).toHaveText("amenity == clinic");
+      const li = page.locator('.mapboxgl-ctrl-legend-pane .list--color').locator('li').first();
+      await expect(li).toHaveText("00000000-0000-0000-0000-000000000000-copy");
       await expect(await li.evaluate(el => getComputedStyle(el).getPropertyValue('--color'))).toBe('#98F194');
       await expect(page.locator('.MuiAccordionDetails-root .ColorConfig input').first()).toHaveValue("#98F194");
       await page.locator('.MuiAccordionSummary-gutters').first().click();
@@ -40,22 +40,22 @@ test.describe('Mapbox style', () => {
     await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2 - 10, { steps: 15 });
     await page.mouse.up();
 
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(0)).toHaveText("00000000-0000-0000-0000-000000000000");
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(1)).toHaveText("00000000-0000-0000-0000-000000000000-copy");
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(2)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy-copy");
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(3)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(0)).toHaveText("00000000-0000-0000-0000-000000000000");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(1)).toHaveText("00000000-0000-0000-0000-000000000000-copy");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(2)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy-copy");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(3)).toHaveText("00000000-0000-0000-0000-000000000000-copy-copy");
 
 
     // Change label
     await page.locator('.MuiAccordionSummary-gutters').first().click();
     await page.locator('.MuiAccordionDetails-root input').first().fill('This is test');
-    await expect(page.locator('.mapboxgl-ctrl-legend summary').nth(0)).toHaveText("This is test");
+    await expect(page.locator('.mapboxgl-ctrl-legend-pane .list--color').nth(0)).toHaveText("This is test");
 
     // Style
     {
       await page.locator('.MuiAccordionSummary-gutters').first().click();
-      const li = page.locator('.mapboxgl-ctrl-legend').locator('li').first();
-      await expect(li).toHaveText("amenity == hospital");
+      const li = page.locator('.mapboxgl-ctrl-legend-pane .list--color').locator('li').first();
+      await expect(li).toHaveText("This is test");
       await expect(await li.evaluate(el => getComputedStyle(el).getPropertyValue('--color'))).toEqual("#068600")
       await expect(page.locator('.MuiAccordionDetails-root .ColorConfig input').first()).toHaveValue("#068600");
       await page.locator('.MuiAccordionSummary-gutters').first().click();

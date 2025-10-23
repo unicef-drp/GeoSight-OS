@@ -58,7 +58,6 @@ export default function VectorStyleConfig({ data, setData, setError }) {
               );
               setFields(response);
             } catch (error) {
-              console.log(error);
               setFields([]);
             }
           })();
