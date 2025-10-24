@@ -22,7 +22,7 @@ from django.contrib.gis.db import models
 from django.db import connection, transaction
 
 from core.models.general import (
-    AbstractEditData, AbstractTerm, AbstractVersionData
+    AbstractEditData, AbstractTerm, AbstractVersionData, AbstractSource
 )
 from geosight.data.models.field_layer import BaseFieldLayerAbstract
 from geosight.data.utils import extract_time_string
@@ -38,11 +38,24 @@ class RelatedTableException(Exception):
         super().__init__(self.message)
 
 
-class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
+class RelatedTableGroup(AbstractTerm):
+    """A model for the group of related table."""
+
+    pass
+
+
+class RelatedTable(
+    AbstractTerm, AbstractEditData, AbstractVersionData, AbstractSource
+):
     """Related table data."""
 
     unique_id = models.UUIDField(
         default=uuid.uuid4, editable=False
+    )
+    group = models.ForeignKey(
+        RelatedTableGroup,
+        null=True, blank=True,
+        on_delete=models.SET_NULL
     )
     objects = models.Manager()
     permissions = PermissionManager()

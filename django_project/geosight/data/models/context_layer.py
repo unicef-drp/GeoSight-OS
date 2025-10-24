@@ -17,8 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import os
 import uuid
-from urllib.parse import urlparse, parse_qs
 from base64 import b64encode
+from urllib.parse import urlparse, parse_qs
 
 import requests
 from django.conf import settings
@@ -27,7 +27,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import AbstractEditData, AbstractTerm
+from core.models import AbstractEditData, AbstractTerm, AbstractSource
 from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.related_table import RelatedTable
@@ -54,12 +54,7 @@ LayerTypeWithOverrideStyle = [
 class ContextLayerGroup(AbstractTerm):
     """A model for the group of context layer."""
 
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        """Override save."""
-        super(ContextLayerGroup, self).save(*args, **kwargs)
+    pass
 
 
 class ContextLayerRequestError(Exception):
@@ -71,7 +66,7 @@ class ContextLayerRequestError(Exception):
         super().__init__(self.message)
 
 
-class ContextLayer(AbstractEditData, AbstractTerm):
+class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
     """A model for the context layer."""
 
     group = models.ForeignKey(
@@ -209,7 +204,8 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         params = {}
         if self.username and self.password:
             basic_auth = b64encode(
-                bytes(f"{self.username}:{self.password}", encoding='utf8')  # noqa
+                bytes(f"{self.username}:{self.password}", encoding='utf8')
+                # noqa
             ).decode("ascii")
             headers['Authorization'] = f'Basic {basic_auth}'
         if self.token:

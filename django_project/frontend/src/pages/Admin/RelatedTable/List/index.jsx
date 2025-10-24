@@ -16,13 +16,13 @@
 import React from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
+import { useTranslation } from "react-i18next";
 
+import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 import { render } from "../../../../app";
 import { store } from "../../../../store/admin";
 import { pageNames } from "../../index";
 import { COLUMNS_ACTION } from "../../Components/List";
-import { dictDeepCopy } from "../../../../utils/main";
-import { relatedTableColumns } from "./Attributes";
 import PermissionModal from "../../Permission";
 import {
   DataBrowserActiveIcon,
@@ -30,7 +30,64 @@ import {
 } from "../../../../components/Icons";
 
 import "./style.scss";
-import AdminList, { useResourceMeta } from "../../../../components/AdminList";
+
+/**
+ *
+ * DEFAULT COLUMNS
+ * @param {String} pageName Page name.
+ * @param {String} redirectUrl Url for redirecting after action done.
+ * @param {String} editUrl Url for edit row.
+ * @param {String} detailUrl Url for detail of row.
+ * @returns {list}
+ */
+export function COLUMNS(
+  pageName,
+  redirectUrl,
+  editUrl = null,
+  detailUrl = null,
+) {
+  const { t } = useTranslation();
+  return [
+    {
+      field: "id",
+      headerName: "id",
+      hide: true,
+      width: 30,
+    },
+    {
+      field: "name",
+      headerName: "Related Table Name",
+      flex: 1,
+      renderCell: (params) => {
+        const permission = params.row.permission;
+        const editUrl = urls.api.edit;
+        if (editUrl && (!permission || permission.edit)) {
+          return (
+            <a
+              className="MuiButtonLike CellLink"
+              href={editUrl.replace("/0", `/${params.id}`)}
+            >
+              {params.value}
+            </a>
+          );
+        } else {
+          return <div className="MuiDataGrid-cellContent">{params.value}</div>;
+        }
+      },
+    },
+    {
+      field: "description",
+      headerName: t("admin.columns.description"),
+      flex: 1,
+    },
+    {
+      field: "category",
+      headerName: t("admin.columns.category"),
+      flex: 0.5,
+      serverKey: "group__name",
+    }
+  ];
+}
 
 export function resourceActions(params) {
   const permission = params.row.permission;
@@ -98,7 +155,7 @@ export function resourceActions(params) {
  */
 export default function RelatedTableList() {
   const pageName = pageNames.RelatedTables;
-  let columns = dictDeepCopy(relatedTableColumns, false);
+  let columns = COLUMNS(pageName, urls.admin.relatedTableList);
   columns = columns.concat(useResourceMeta());
   columns.push({
     field: "actions",
@@ -109,7 +166,6 @@ export default function RelatedTableList() {
       return resourceActions(params);
     },
   });
-
 
   return (
     <AdminList
