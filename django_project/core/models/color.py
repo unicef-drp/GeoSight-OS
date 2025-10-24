@@ -15,15 +15,23 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import RegexValidator
 from django.db import models
 
 from core.models import AbstractTerm
+
+hex_color_validator = RegexValidator(
+    regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
+    message="Color must be a valid hex code in #RRGGBB or #RRGGBBAA format."
+)
 
 
 class ColorPalette(AbstractTerm):
     """Model of color palette."""
 
-    colors = ArrayField(models.CharField(max_length=7))
+    colors = ArrayField(
+        models.CharField(max_length=9, validators=[hex_color_validator])
+    )
 
     class Meta:  # noqa: D106
         ordering = ('name',)
