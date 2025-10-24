@@ -53,5 +53,6 @@ export const rgbaToHex = (rgba: {
  * @param hex
  */
 export function removeHexAlpha(hex: string) {
+  if (!hex) return hex;
   return hex.slice(0, 7);
 }
