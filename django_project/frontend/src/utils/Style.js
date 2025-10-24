@@ -17,7 +17,6 @@ import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
 import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
 import { fetchingData } from "../Requests";
-import { deepClone } from "@mui/x-data-grid/utils/utils";
 
 export const STYLE_FORM_LIBRARY = "Style from library.";
 const DYNAMIC_QUANTITATIVE = "Dynamic quantitative style.";
@@ -403,22 +402,30 @@ function middleColor(color1, color2, ratio) {
   color1 = color1.replace("#", "");
   color2 = color2.replace("#", "");
   const hex = (color) => {
-    const colorString = color.toString(16);
-    return colorString.length === 1 ? `0${colorString}` : colorString;
+    const s = color.toString(16);
+    return s.length === 1 ? "0" + s : s;
   };
 
-  const r = Math.ceil(
-    parseInt(color2.substring(0, 2), 16) * ratio +
-      parseInt(color1.substring(0, 2), 16) * (1 - ratio),
-  );
-  const g = Math.ceil(
-    parseInt(color2.substring(2, 4), 16) * ratio +
-      parseInt(color1.substring(2, 4), 16) * (1 - ratio),
-  );
-  const b = Math.ceil(
-    parseInt(color2.substring(4, 6), 16) * ratio +
-      parseInt(color1.substring(4, 6), 16) * (1 - ratio),
-  );
+  const parseChannel = (color, start, end, fallback = "ff") =>
+    parseInt(color.substring(start, end) || fallback, 16);
 
-  return "#" + hex(r) + hex(g) + hex(b);
+  // 1st color
+  const r1 = parseChannel(color1, 0, 2);
+  const g1 = parseChannel(color1, 2, 4);
+  const b1 = parseChannel(color1, 4, 6);
+  const a1 = parseChannel(color1, 6, 8, "ff");
+
+  // 2nd color
+  const r2 = parseChannel(color2, 0, 2);
+  const g2 = parseChannel(color2, 2, 4);
+  const b2 = parseChannel(color2, 4, 6);
+  const a2 = parseChannel(color2, 6, 8, "ff");
+
+  // Interpolate
+  const r = r1 * (1 - ratio) + r2 * ratio;
+  const g = g1 * (1 - ratio) + g2 * ratio;
+  const b = b1 * (1 - ratio) + b2 * ratio;
+  const a = a1 * (1 - ratio) + a2 * ratio;
+
+  return `#${hex(r)}${hex(g)}${hex(b)}${hex(a)}`;
 }

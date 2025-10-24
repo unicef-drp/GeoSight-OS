@@ -58,6 +58,11 @@
     min-height: 2.9rem;
     width: 2.9rem;
     min-width: 2.9rem;
+
+    & > div {
+      height: 100%;
+      width: 100%;
+    }
   }
 
   input[type="color"] {

@@ -42,11 +42,15 @@ export default function CustomPopover({
   onHover,
   className,
   showCloseButton = false,
+  preventDefault = false,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    if (preventDefault) {
+      event.preventDefault();
+    }
   };
 
   const handleClose = () => {
