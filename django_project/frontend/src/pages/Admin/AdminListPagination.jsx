@@ -99,6 +99,9 @@ export const AdminListPagination = forwardRef(
       setData(null)
       setError(null)
       const paramsUsed = dictDeepCopy(parameters)
+      if (!paramsUsed.page) {
+        paramsUsed.page = 0;
+      }
       paramsUsed.page += 1
       const params = jsonToUrlParams(paramsUsed)
       const url = urlData + '?' + params

@@ -24,15 +24,12 @@ import { AdminListPagination } from "../../AdminListPagination";
 
 import "./style.scss";
 
-/**
- * Related Table App Data
- */
-export default function RelatedTableData() {
+export function RelatedTableDataTable({ url, urlDetail }) {
   const [columns, setColums] = useState([]);
 
   // Show modal when url changed
   useEffect(() => {
-    fetchingData(urls.api.detail, {}, {}, (detailData) => {
+    fetchingData(urlDetail, {}, {}, (detailData) => {
       setColums(
         [{ field: "id", headerName: "id", hide: true, width: 30 }].concat(
           detailData.fields_definition.map((fieldDefinition) => {
@@ -64,19 +61,28 @@ export default function RelatedTableData() {
   }, []);
 
   return (
+    <AdminListPagination
+      urlData={url}
+      columns={columns}
+      disabledDelete={true}
+      checkboxSelection={false}
+      hideSearch={true}
+      getParameters={() => {
+        return {
+          flat: true,
+        };
+      }}
+    />
+  );
+}
+
+/**
+ * Related Table App Data
+ */
+export default function RelatedTableData() {
+  return (
     <AdminPage pageName={pageNames.RelatedTablesData}>
-      <AdminListPagination
-        urlData={urls.api.data}
-        columns={columns}
-        disabledDelete={true}
-        checkboxSelection={false}
-        hideSearch={true}
-        getParameters={() => {
-          return {
-            flat: true,
-          };
-        }}
-      />
+      <RelatedTableDataTable url={urls.api.data} urlDetail={urls.api.detail} />
     </AdminPage>
   );
 }

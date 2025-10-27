@@ -468,6 +468,12 @@
   cursor: not-allowed !important;
 }
 
+.AdminTable {
+  .MuiDataGrid-row:nth-of-type(even) {
+    background-color: #f9f9f9;
+  }
+}
+
 // -----------------------------------------------
 // SWITCH THEME
 // -----------------------------------------------
