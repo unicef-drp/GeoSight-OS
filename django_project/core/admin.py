@@ -60,7 +60,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         }),
         ('Environment', {
             'fields': (
-                'sentry_dsn', 'sentry_environment'
+                'sentry_dsn', 'sentry_environment', 'ogr_version'
             )
         }),
         ('Plugins', {
@@ -148,7 +148,8 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         'cloud_native_gis_enabled',
         'machine_info_fetcher_enabled',
         'reference_dataset_enabled',
-        'tenants_enabled'
+        'tenants_enabled',
+        'ogr_version'
     )
 
 

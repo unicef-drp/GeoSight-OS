@@ -15,8 +15,8 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import os
 import shutil
-import tempfile
 
+from django.conf import settings
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.utils.connection import fields
 from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
@@ -344,6 +344,10 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 "Extension should be either original or zip."
             )
         if isinstance(layer, Layer):
+            temp_dir = os.path.join(settings.MEDIA_ROOT, 'tmp')
+            if not os.path.exists(temp_dir):
+                os.makedirs(temp_dir)
+
             if file_format == FileTypeOriginal:
                 # If it has upload, use original one
                 upload = layer.layerupload_set.order_by('-created_at').first()
@@ -366,7 +370,6 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                     # if no zip file, try to zipping the folder
                     folder_to_zip = upload.folder
                     if os.path.exists(folder_to_zip):
-                        temp_dir = tempfile.mkdtemp()
                         zip_base = os.path.join(
                             temp_dir, os.path.basename(folder_to_zip)
                         )
@@ -382,7 +385,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 file_format = FileType.SHAPEFILE
 
             file_path, success = layer.export_layer(
-                file_format, '/tmp'
+                file_format, temp_dir
             )
             if not success:
                 return HttpResponseBadRequest(success)
