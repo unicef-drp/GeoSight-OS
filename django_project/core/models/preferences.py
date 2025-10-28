@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import subprocess
+
 from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature
@@ -409,6 +411,20 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
     def sentry_environment(self):
         """Return admin emails."""
         return settings.SENTRY_ENVIRONMENT
+
+    @property
+    def ogr_version(self):
+        """Return ogr version."""
+        try:
+            result = subprocess.run(
+                ['ogr2ogr', '--version'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return result.stdout.strip()
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return "OGR not available"
 
     # -------------------------------------
     # FOR PLUGINS
