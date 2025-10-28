@@ -26,6 +26,14 @@ test.describe('Test excel wide format', () => {
 
     // Name RT
     await page.locator('div').filter({ hasText: /^Related table name$/ }).getByRole('textbox').fill(name);
+    await delay(500)
+    await page.locator('div').filter({ hasText: /^Source$/ }).getByRole('textbox').click();
+    await page.keyboard.type('Source');
+    await page.locator('textarea').click();
+    await page.keyboard.type('Description');
+    await page.locator('.ReactSelect__input-container').first().click();
+    await page.keyboard.type('Category');
+    await page.getByRole('option', { name: /Category/ }).click();
 
     // Submit
     await page.getByRole('button', { name: 'Submit' }).click();
@@ -43,6 +51,16 @@ test.describe('Test excel wide format', () => {
     await expect(page.getByRole('grid')).toContainText('1–1 of 1');
     await page.getByLabel('Browse data').click();
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–47 of 47')
+
+    // Check the metadata
+    await page.goto('/admin/related-table/');
+    await page.getByRole('link', { name: name }).click();
+    await expect(page.locator('#Form #id_description')).toHaveValue("Description");
+    await expect(page.locator('#Form #id_source')).toHaveValue("Source");
+    await expect(page.locator('#Form #id_group')).toHaveText("Category");
+    await page.locator('.TabPrimary').getByText('Data').click();
+    await expect(page.locator('.MuiDataGrid-columnHeader').first()).toHaveText('Attribute1');
+    await expect(page.locator('.Data .AdminTable .MuiTablePagination-displayedRows')).toHaveText('1–47 of 47');
 
     // Delete RT
     await page.locator('.SideNavigation').getByRole('link', { name: 'Related Tables' }).click();
