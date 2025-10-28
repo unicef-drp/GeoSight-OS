@@ -15,7 +15,6 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import os
 import shutil
-import tempfile
 
 from django.conf import settings
 from cloud_native_gis.models.layer import Layer
