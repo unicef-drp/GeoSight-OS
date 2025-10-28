@@ -84,6 +84,13 @@ def assign_flat_table(modeladmin, request, queryset):
     IndicatorValue.assign_flat_table()
 
 
+@admin.action(description='Assign country')
+def assign_country(modeladmin, request, queryset):
+    """Assign country."""
+    for query in queryset:
+        query.assign_country()
+
+
 class IndicatorValueAdmin(admin.ModelAdmin):
     """IndicatorValue admin."""
 
@@ -93,7 +100,9 @@ class IndicatorValueAdmin(admin.ModelAdmin):
     )
     list_filter = (NullEntityFilter, NullCountryFilter, 'date')
     search_fields = ('indicator__name', 'geom_id')
-    actions = (assign_flat_table, assign_flat_table_selected)
+    actions = (
+        assign_flat_table, assign_flat_table_selected, assign_country
+    )
     raw_id_fields = ('country', 'entity')
 
     def entity_geom_id(self, obj: IndicatorValue):

@@ -119,6 +119,11 @@ class IndicatorValue(models.Model):
         help_text='This is ucode from georepo.',
         null=True, blank=True
     )
+    country_concept_uuid = models.CharField(
+        max_length=256,
+        help_text='This is concept uuid from georepo.',
+        null=True, blank=True
+    )
 
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
@@ -181,16 +186,18 @@ class IndicatorValue(models.Model):
 
     def assign_country(self, autosave=True):
         """Assign entity to indicator value."""
-        if not self.country_id:
+        if not self.country_id or not self.country_concept_uuid:
             if self.admin_level >= 1:
                 if self.entity and self.entity.country:
                     self.country = self.entity.country
                     self.country_name = self.country.name
                     self.country_geom_id = self.country.geom_id
+                    self.country_concept_uuid = self.country.concept_uuid
             elif self.admin_level == 0:
                 self.country = self.entity
                 self.country_name = self.entity.name
                 self.country_geom_id = self.entity.geom_id
+                self.country_concept_uuid = self.entity.concept_uuid
         if autosave:
             self.save()
 
@@ -206,65 +213,64 @@ class IndicatorValue(models.Model):
     def get_raw_query():
         """Return raw query."""
         entity_query = """
-            UPDATE geosight_data_indicatorvalue AS value
-            SET entity_id = entity.id,
-                entity_name = entity.name,
-                admin_level = entity.admin_level,
-                concept_uuid = entity.concept_uuid,
-                entity_start_date = entity.start_date,
-                entity_end_date = entity.end_date,
-                country_id = CASE
-                        WHEN entity.parents IS NULL
-                            OR jsonb_array_length(entity.parents) = 0
-                        THEN entity.id
-                        ELSE country.id
-                END,
+                       UPDATE geosight_data_indicatorvalue AS value
+                       SET entity_id = entity.id, entity_name = entity.name, admin_level = entity.admin_level, concept_uuid = entity.concept_uuid, entity_start_date = entity.start_date, entity_end_date = entity.end_date, country_id = CASE
+                           WHEN entity.parents IS NULL
+                           OR jsonb_array_length(entity.parents) = 0
+                           THEN entity.id
+                           ELSE country.id
+                       END
+                       ,
                 country_name = CASE
                     WHEN entity.parents IS NULL
                         OR jsonb_array_length(entity.parents) = 0
                     THEN entity.name
                     ELSE country.name
-                END,
+                       END
+                       ,
                 country_geom_id = CASE
                     WHEN entity.parents IS NULL
                         OR jsonb_array_length(entity.parents) = 0
                     THEN entity.geom_id
                     ELSE country.geom_id
-                END
-            FROM
+                       END
+                       FROM
                 geosight_georepo_entity AS entity
             LEFT JOIN geosight_georepo_entity
                 AS country ON entity.country_id=country.id
             WHERE
                 value.geom_id = entity.geom_id
                 AND
-                value.id BETWEEN %(start_id)s AND %(end_id)s
-        """
+                value.id BETWEEN
+                       %(start_id)s
+                       AND
+                       %(end_id)s \
+                       """
         indicator_query = """
-            UPDATE geosight_data_indicatorvalue AS value
-            SET
-                indicator_name = indicator.name,
-                indicator_shortcode = indicator.shortcode
-            FROM geosight_data_indicator AS indicator
-            WHERE
-                value.indicator_id = indicator.id
-                AND value.id BETWEEN %(start_id)s AND %(end_id)s
-        """
+                          UPDATE geosight_data_indicatorvalue AS value
+                          SET
+                              indicator_name = indicator.name, indicator_shortcode = indicator.shortcode
+                          FROM geosight_data_indicator AS indicator
+                          WHERE
+                              value.indicator_id = indicator.id
+                            AND value.id BETWEEN %(start_id)s
+                            AND %(end_id)s \
+                          """
         extra_value_query = """
-            UPDATE geosight_data_indicatorvalue value
-            SET extra_value = subquery.json_data
-            FROM (
-                SELECT
-                    indicator_value_id,
-                    jsonb_object_agg(name, value) AS json_data
-                FROM geosight_data_indicatorextravalue
-                GROUP BY indicator_value_id
-            ) subquery
-            WHERE
-                value.id = subquery.indicator_value_id
-                AND value.extra_value IS NULL
-                AND value.id BETWEEN %(start_id)s AND %(end_id)s
-        """
+                            UPDATE geosight_data_indicatorvalue value
+                            SET extra_value = subquery.json_data
+                            FROM (
+                                SELECT
+                                indicator_value_id, jsonb_object_agg(name, value) AS json_data
+                                FROM geosight_data_indicatorextravalue
+                                GROUP BY indicator_value_id
+                                ) subquery
+                            WHERE
+                                value.id = subquery.indicator_value_id
+                              AND value.extra_value IS NULL
+                              AND value.id BETWEEN %(start_id)s
+                              AND %(end_id)s \
+                            """
         return entity_query, indicator_query, extra_value_query
 
     @staticmethod
