@@ -100,7 +100,7 @@ export const CompositeIndexLayerConfig = forwardRef(
         >
           <ModalHeader
             onClosed={() => {
-              onOpen();
+              onClose();
             }}
           >
             {t("Composite index layer configuration")}

@@ -56,6 +56,8 @@ export interface IndicatorLayerConfig {
 
   // style
   style?: Style[];
+  style_type?: string;
+  style_config?: any;
 
   // Label
   label_config?: LabelConfig;
