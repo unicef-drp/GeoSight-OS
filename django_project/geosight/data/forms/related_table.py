@@ -19,16 +19,44 @@ import json
 from django import forms
 from django.forms.models import model_to_dict
 
-from geosight.data.models.related_table import RelatedTable
+from geosight.data.models.related_table import RelatedTable, RelatedTableGroup
 
 
 class RelatedTableForm(forms.ModelForm):
     """RelatedTable form."""
 
+    group = forms.ChoiceField(
+        label='Category',
+        widget=forms.Select(
+            attrs={'data-autocreated': 'True'}
+        )
+    )
+
     data_fields = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )
+
+    def __init__(self, *args, **kwargs):  # noqa
+        """Initialize the form."""
+        try:
+            args[0]['group'] = args[0]['category']
+        except Exception:
+            pass
+
+        super().__init__(*args, **kwargs)
+        self.fields['group'].choices = [
+            (group.name, group.name)
+            for group in RelatedTableGroup.objects.all().order_by('name')
+        ]
+
+        try:
+            if self.data['group']:
+                self.fields['group'].choices += [
+                    (self.data['group'], self.data['group'])
+                ]
+        except KeyError:
+            pass
 
     class Meta:  # noqa: D106
         model = RelatedTable
@@ -37,9 +65,38 @@ class RelatedTableForm(forms.ModelForm):
             'version_data'
         )
 
+    def clean_group(self):
+        """Validate and return a :class:`RelatedTableGroup` instance.
+
+        :return: The existing or newly created :class:`RelatedTableGroup`.
+        :rtype: ContextLayerGroup
+        """
+        group, created = RelatedTableGroup.objects.get_or_create(
+            name=self.cleaned_data['group']
+        )
+        return group
+
     @staticmethod
     def model_to_initial(model: RelatedTable):
-        """Return model data as json."""
+        """
+        Convert a RelatedTable instance into an initial form dictionary.
+
+        This helper method serializes model data into a format suitable
+        for pre-filling the form in edit mode, including converting
+        JSON fields and resolving related group names.
+
+        :param model: The RelatedTable model instance.
+        :type model: geosight.data.models.related_table.RelatedTable
+        :return: Dictionary of initial values for the form.
+        :rtype: dict
+        """
         initial = model_to_dict(model)
         initial['data_fields'] = json.dumps(model.fields_definition)
+        initial['unique_id'] = str(model.unique_id)
+        try:
+            initial['group'] = RelatedTableGroup.objects.get(
+                id=initial['group']
+            ).name
+        except RelatedTableGroup.DoesNotExist:
+            initial['group'] = None
         return initial

@@ -92,6 +92,7 @@ class RelatedTableApiSerializer(ResourceSerializer):
 
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
     fields_definition = RelatedTableFieldApiSerializer(many=True)
     related_fields = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
@@ -104,6 +105,17 @@ class RelatedTableApiSerializer(ResourceSerializer):
 
     def get_creator(self, obj: RelatedTable):  # noqa: D102
         return obj.creator.get_full_name() if obj.creator else None
+
+    def get_category(self, obj: RelatedTable):
+        """
+        Retrieve the name of the category (group) the layer belongs to.
+
+        :param obj: Related table instance.
+        :type obj: RelatedTable
+        :return: Group name if available, otherwise an empty string.
+        :rtype: str
+        """
+        return obj.group.name if obj.group else ''
 
     def create(self, validated_data):  # noqa: D102
         fields = validated_data['fields_definition']
@@ -144,7 +156,7 @@ class RelatedTableApiSerializer(ResourceSerializer):
 
     class Meta:  # noqa: D106
         model = RelatedTable
-        exclude = ('unique_id',)
+        fields = '__all__'
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'RelatedTable',

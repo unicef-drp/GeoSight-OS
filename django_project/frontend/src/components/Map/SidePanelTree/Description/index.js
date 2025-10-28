@@ -31,7 +31,11 @@ const LAYER_TYPE_INDICATOR = "Indicator";
  * @param {Object} layer Layer data.
  */
 export default function LayerDescription({ layer }) {
-  const { slug, indicators } = useSelector((state) => state.dashboard.data);
+  const indicators = useSelector((state) => state.dashboard.data?.indicators);
+  const slug = useSelector((state) => state.dashboard.data?.slug);
+  const relatedTables = useSelector(
+    (state) => state.dashboard.data?.relatedTables,
+  );
   const layerType =
     layer.indicators === undefined
       ? LAYER_TYPE_CONTEXT_LAYER
@@ -57,6 +61,17 @@ export default function LayerDescription({ layer }) {
   const units = [];
   layer?.indicators?.map((indicator) => {
     const found = indicators.find((ind) => ind.id === indicator.id);
+    if (found) {
+      if (found.source && !sources.includes(found.source)) {
+        sources.push(found.source);
+      }
+      if (found.unit && !units.includes(found.unit)) {
+        units.push(found.unit);
+      }
+    }
+  });
+  layer?.related_tables?.map((_rt) => {
+    const found = relatedTables.find((rt) => rt.id === _rt.id);
     if (found) {
       if (found.source && !sources.includes(found.source)) {
         sources.push(found.source);

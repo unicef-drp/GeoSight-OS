@@ -13,20 +13,20 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import $ from 'jquery';
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import $ from "jquery";
 
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
+import { render } from "../../../../app";
+import { store } from "../../../../store/admin";
 import { SaveButton } from "../../../../components/Elements/Button";
-import Admin, { pageNames } from '../../index';
-import { AdminForm } from '../../Components/AdminForm'
+import Admin, { pageNames } from "../../index";
+import { AdminForm } from "../../Components/AdminForm";
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
 import FieldConfig from "./Field";
+import { RelatedTableDataTable } from "../Data";
 
-import './style.scss';
-
+import "./style.scss";
 
 /**
  * Related Table Form App
@@ -35,71 +35,84 @@ export default function RelatedTableForm() {
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
   const [fields, setFields] = useState([]);
-  const selectableInput = batch !== null
+  const selectableInput = batch !== null;
 
   /** On init **/
   useEffect(() => {
     try {
-      setFields(JSON.parse($('#id_data_fields').val()))
-    } catch (err) {
-
-    }
+      setFields(JSON.parse($("#id_data_fields").val()));
+    } catch (err) {}
   }, []);
-
+  console.log(initialData)
   return (
     <Admin
       minifySideNavigation={true}
       pageName={pageNames.RelatedTables}
       rightHeader={
         <Fragment>
-          {
-            initialData.id ?
-              resourceActions({
-                id: initialData.id,
-                row: {
-                  ...initialData,
-                  permission
-                }
-              }) : null
-          }
+          {initialData.id
+            ? resourceActions(
+                {
+                  id: initialData.id,
+                  row: {
+                    ...initialData,
+                    permission,
+                  },
+                },
+                true,
+              )
+            : null}
           <SaveButton
             variant="primary"
             text="Submit"
             onClick={() => {
-              formRef.current.submit(true)
-              setSubmitted(true)
+              formRef.current.submit(true);
+              setSubmitted(true);
             }}
             disabled={submitted ? true : false}
           />
         </Fragment>
-      }>
+      }
+    >
       <AdminForm
         ref={formRef}
         selectableInput={selectableInput}
         forms={
-          batch ? {
-            'General': (
-              <DjangoTemplateForm
-                selectableInput={selectableInput}
-                selectableInputExcluded={['name', 'shortcode']}
-              />
-            )
-          } : {
-            'General': (
-              <DjangoTemplateForm
-                selectableInput={selectableInput}
-                selectableInputExcluded={['name', 'shortcode']}
-              />
-            ),
-            'Fields': <FieldConfig
-              data_fields={fields}
-              update={(fields) => {
-                $('#id_data_fields').val(JSON.stringify(fields))
-              }}/>,
-          }}
+          batch
+            ? {
+                General: (
+                  <DjangoTemplateForm
+                    selectableInput={selectableInput}
+                    selectableInputExcluded={["name", "shortcode"]}
+                  />
+                ),
+              }
+            : {
+                General: (
+                  <DjangoTemplateForm
+                    selectableInput={selectableInput}
+                    selectableInputExcluded={["name", "shortcode"]}
+                  />
+                ),
+                Fields: (
+                  <FieldConfig
+                    data_fields={fields}
+                    update={(fields) => {
+                      $("#id_data_fields").val(JSON.stringify(fields));
+                    }}
+                  />
+                ),
+                Data: (
+                  <RelatedTableDataTable
+                    url={urls.api.data}
+                    urlDetail={urls.api.detail}
+                  />
+                ),
+              }
+        }
       />
     </Admin>
   );
 }
 
-render(RelatedTableForm, store)
+render(RelatedTableForm, store);

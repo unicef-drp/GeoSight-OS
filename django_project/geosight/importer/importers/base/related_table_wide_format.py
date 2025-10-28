@@ -20,7 +20,9 @@ from typing import List
 import pytz
 from django.conf import settings
 
-from geosight.data.models.related_table import RelatedTable, RelatedTableRow
+from geosight.data.models.related_table import (
+    RelatedTable, RelatedTableRow, RelatedTableGroup
+)
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
 from geosight.importer.importers.base.related_table import (
@@ -38,13 +40,39 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
     description = "Import Related Table data from excel in wide format."
 
     @staticmethod
-    def attributes_definition(**kwargs) -> List[ImporterAttribute]:
-        """Return attributes of the importer."""
+    def attributes_definition(  # noqa: DOC103
+            **kwargs
+    ) -> List[ImporterAttribute]:
+        """
+        Define metadata attributes required by this importer.
+
+        :param kwargs: Optional keyword arguments for subclass extension.
+        :type kwargs: dict
+        :return: List of importer attribute definitions.
+        :rtype: list[ImporterAttribute]
+        """
         return AbstractImporterRelatedTable.attributes_definition(
             **kwargs)
 
     def _process_data(self):
-        """Run the import process."""
+        """
+        Execute the full import workflow for the wide-format related table.
+
+        This includes:
+          - Reading and preprocessing records.
+          - Creating or updating the related table instance.
+          - Validating permissions and creating group/category.
+          - Converting cell data (numeric, date, datetime, timezone aware).
+          - Bulk-creating :class:`RelatedTableRow` objects for efficiency.
+          - Updating relationships and version tracking.
+
+        :return: A tuple ``(success, error_message)``.
+                 Returns ``(True, None)`` if import completed successfully.
+        :rtype: tuple[bool, Optional[str]]
+        :raises ImporterError:
+            If the importer creator does not have permission to create or edit
+            the related table.
+        """
         self._update('Reading data')
         records = self.get_records()
 
@@ -52,17 +80,29 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
         # Check related table
         name = self.get_attribute('related_table_name')
         related_table_uuid = self.get_attribute('related_table_uuid')
+        related_table_source = self.get_attribute('related_table_source')
+        related_table_category = self.get_attribute('related_table_category')
+        related_table_description = self.get_attribute(
+            'related_table_description'
+        )
         try:
             name = name if name else self.importer.__str__()
             related_table, _ = RelatedTable.permissions.get_or_create(
                 user=self.importer.creator,
                 unique_id=related_table_uuid,
                 defaults={
-                    'name': name
+                    'name': name,
+                    'source': related_table_source,
+                    'description': related_table_description,
                 }
             )
             related_table.relatedtablerow_set.all().delete()
             related_table.name = name
+            if related_table_category:
+                group, _ = RelatedTableGroup.objects.get_or_create(
+                    name=related_table_category
+                )
+                related_table.group = group
             related_table.save()
         except PermissionException:
             raise ImporterError(
@@ -104,7 +144,6 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
             # Construct data
             # ---------------------------------------
             data = {}
-            print(record)
             for key, value in record.items():
                 if value.__class__ is str:
                     try:

@@ -28,8 +28,21 @@ class AbstractImporterRelatedTable(BaseImporter, ABC):
     """Abstract class for importer of related table."""
 
     @staticmethod
-    def attributes_definition(**kwargs) -> List[ImporterAttribute]:
-        """Return attributes of the importer."""
+    def attributes_definition(  # noqa: DOC103
+            **kwargs
+    ) -> List[ImporterAttribute]:
+        """
+        Define attribute schema required for the related table importer.
+
+        These attributes specify metadata about the related table being
+        imported, such as its name, UUID, source, and description.
+
+        :param kwargs:
+            Optional keyword arguments for flexibility in subclassing.
+        :type kwargs: dict
+        :return: List of attribute definitions used by the importer.
+        :rtype: list[ImporterAttribute]
+        """
         from geosight.importer.attribute import ImporterAttributeInputType
         return [
             ImporterAttribute(
@@ -40,11 +53,40 @@ class AbstractImporterRelatedTable(BaseImporter, ABC):
                 name='related_table_uuid',
                 input_type=ImporterAttributeInputType.TEXT,
                 required=False
+            ),
+            ImporterAttribute(
+                name='related_table_source',
+                input_type=ImporterAttributeInputType.TEXT,
+                required=False
+            ),
+            ImporterAttribute(
+                name='related_table_category',
+                input_type=ImporterAttributeInputType.TEXT,
+                required=False
+            ),
+            ImporterAttribute(
+                name='related_table_description',
+                input_type=ImporterAttributeInputType.TEXT,
+                required=False
             )
         ]
 
     def check_attributes(self):
-        """Check attributes definition."""
+        """
+        Validate the importer attributes and check related table permissions.
+
+        If a ``related_table_uuid`` is provided, the importer verifies that
+        the related table exists and that the current user has permission
+        to edit it.
+
+        If no UUID is provided,
+        a new unique ID will be generated automatically.
+
+        :raises ImporterError:
+            If the related table does not exist,
+            or if the user lacks permission
+            to edit the data.
+        """
         super().check_attributes()
         related_table_uuid = self.get_attribute('related_table_uuid')
         if related_table_uuid:
@@ -66,7 +108,9 @@ class AbstractImporterRelatedTable(BaseImporter, ABC):
         else:
             self.attributes['related_table_uuid'] = str(uuid.uuid4())
 
-    def _check_data_to_log(self, data: dict, note: dict) -> (dict, dict):
+    def _check_data_to_log(  # noqa : DOC501, DOC503
+            self, data: dict, note: dict
+    ) -> (dict, dict):
         """Save data that constructed from importer.
 
         :type data: dict
@@ -75,10 +119,19 @@ class AbstractImporterRelatedTable(BaseImporter, ABC):
         :type note: dict
         :param note: Note for each data
 
+        :return: Return data and note.
         :rtype (data, note): (dict, dict)
         """
         raise NotImplemented()
 
     def _save_log_data_to_model(self, data: dict):
-        """Save data from log to actual model."""
+        """
+        Save validated data from the log into the actual Django model.
+
+        This function should be implemented by concrete importer subclasses
+        to perform database writes or updates based on validated importer data.
+
+        :param data: The validated data ready to be persisted.
+        :type data: dict
+        """
         pass

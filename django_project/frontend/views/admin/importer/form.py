@@ -23,6 +23,7 @@ from django.shortcuts import get_object_or_404, reverse
 
 from core.utils import string_is_true
 from frontend.views.admin._base import AdminBaseView
+from geosight.data.models.related_table import RelatedTableGroup
 from geosight.georepo.models import ReferenceLayerView
 from geosight.importer.exception import ImporterError, ImporterDoesNotExist
 from geosight.importer.form import ImporterForm
@@ -37,12 +38,22 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title displayed in the browser tab.
+
+        :return: Page title text.
+        :rtype: str
+        """
         return 'Data Management'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the breadcrumb navigation title for this view.
+
+        :return: HTML string for breadcrumb navigation.
+        :rtype: str
+        """
         data_importer = reverse('admin-data-management-list-view')
         import_data = reverse('admin-importer-create-view')
         return (
@@ -53,11 +64,27 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
 
     @property
     def instance(self):
-        """Return instance."""
+        """
+        Return the importer instance associated with this view.
+
+        Since this is the create view, it always returns None.
+
+        :return: None
+        :rtype: NoneType
+        """
         return None
 
-    def post(self, request, **kwargs):
-        """POST data for importer configuration."""
+    def post(self, request, **kwargs):  # noqa: DOC103
+        """
+        Handle POST request for creating a new importer configuration.
+
+        :param request: HTTP request containing importer form data.
+        :type request: django.http.HttpRequest
+        :param kwargs: Additional keyword arguments.
+        :type kwargs: dict
+        :return: HTTP response with success or error message.
+        :rtype: django.http.HttpResponse
+        """
         data = request.POST.copy()
         reference_layer = None
         if data.get('reference_layer', None):
@@ -102,26 +129,59 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
             errors.append(f'{key} - {value[0]}')
         return HttpResponseBadRequest(', '.join(errors))
 
+    def get_context_data(self, **kwargs) -> dict:  # noqa: DOC103
+        """
+        Return the context data for rendering the template.
+
+        :param kwargs: Additional context data.
+        :type kwargs: dict
+        :return: Context dictionary for template rendering.
+        :rtype: dict
+        """
+        context = super().get_context_data(**kwargs)
+        context['related_table_options'] = [
+            {"value": group.name, "label": group.name} for group in
+            RelatedTableGroup.objects.all()
+        ]
+        return context
+
 
 class ImporterEditView(ImporterCreateView):
     """Importer Edit View."""
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Get context data."""
+    def get_context_data(self, **kwargs) -> dict:  # noqa: DOC103
+        """
+        Return the context data for the edit view.
+
+        :param kwargs: Additional context data.
+        :type kwargs: dict
+        :return: Context dictionary with object ID included.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         context['obj_id'] = self.instance.id
         return context
 
     @property
     def instance(self):
-        """Return instance."""
+        """
+        Return the current importer instance being edited.
+
+        :return: Importer instance.
+        :rtype: geosight.importer.models.Importer
+        """
         return get_object_or_404(
             Importer, id=self.kwargs.get('pk', '')
         )
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return breadcrumb navigation for the edit importer page.
+
+        :return: HTML breadcrumb string.
+        :rtype: str
+        """
         importer = self.instance
         log = self.instance.importerlog_set.first()
         importer_edit = reverse(
@@ -148,7 +208,12 @@ class ImporterScheduledEditView(ImporterEditView):
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return breadcrumb navigation for the scheduled importer edit page.
+
+        :return: HTML breadcrumb string.
+        :rtype: str
+        """
         importer = self.instance
         data_importer = reverse('admin-data-management-list-view')
         list_url = reverse(

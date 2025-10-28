@@ -64,6 +64,9 @@ class ExcelWideFormatRelatedTableTest(BaseImporterTest):
         with open(filepath, 'rb') as _file:
             attributes = {
                 'related_table_name': 'Related Table A',
+                'related_table_description': 'This is a description',
+                'related_table_source': 'This is a source',
+                'related_table_category': 'category',
                 'sheet_name': 'Sheet 1',
                 'row_number_for_header': 1
             }
@@ -79,6 +82,11 @@ class ExcelWideFormatRelatedTableTest(BaseImporterTest):
         )
 
         related_table = RelatedTable.objects.get(name='Related Table A')
+        self.assertEqual(
+            related_table.description, 'This is a description'
+        )
+        self.assertEqual(related_table.source, 'This is a source')
+        self.assertEqual(related_table.group.name, 'category')
         self.assertEqual(related_table.relatedtablerow_set.count(), 9)
         first_row = related_table.relatedtablerow_set.first()
         self.assertEqual(len(first_row.data.keys()), 6)

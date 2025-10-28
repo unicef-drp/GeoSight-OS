@@ -14,10 +14,15 @@
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
-        'detail': '{% url 'basemap-detail-api' 0 %}',
-        'dataView': '{% url 'admin-related-table-data-view' 0 %}',
+        'detail': '{% url 'related-table-detail-api' id %}',
+        'dataView': '{% url 'admin-related-table-data-view' 0 %}'
       }
 
+      if (permission.read_data) {
+        {% if id %}
+          urls.api.data = '{% url 'related_tables_data-list' id %}'
+        {% endif %}
+      }
       if (permission.share) {
         {% if id %}
           urls.api.permission = '{% url 'related-table-permission-api' id %}'
