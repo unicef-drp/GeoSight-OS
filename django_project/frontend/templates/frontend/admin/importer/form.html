@@ -29,5 +29,6 @@
           'detail': '{% url 'importer-detail-api' obj_id %}',
         {% endif %}
       }
+      const relatedTableOptions = {{ related_table_options|safe }}
     </script>
 {% endblock %}

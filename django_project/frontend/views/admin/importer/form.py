@@ -23,6 +23,7 @@ from django.shortcuts import get_object_or_404, reverse
 
 from core.utils import string_is_true
 from frontend.views.admin._base import AdminBaseView
+from geosight.data.models.related_table import RelatedTableGroup
 from geosight.georepo.models import ReferenceLayerView
 from geosight.importer.exception import ImporterError, ImporterDoesNotExist
 from geosight.importer.form import ImporterForm
@@ -101,6 +102,15 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
         for key, value in form.errors.items():
             errors.append(f'{key} - {value[0]}')
         return HttpResponseBadRequest(', '.join(errors))
+
+    def get_context_data(self, **kwargs) -> dict:
+        """Get context data."""
+        context = super().get_context_data(**kwargs)
+        context['related_table_options'] = [
+            {"value": group.name, "label": group.name} for group in
+            RelatedTableGroup.objects.all()
+        ]
+        return context
 
 
 class ImporterEditView(ImporterCreateView):

@@ -20,18 +20,19 @@ import React, {
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
+} from "react";
 import {
   FormControl,
   FormControlLabel,
   Radio,
-  RadioGroup
+  RadioGroup,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
-import '../style.scss';
+import "../style.scss";
 import RelatedTableSelector
   from "../../../../../../components/ResourceSelector/RelatedTableSelector";
+import { Creatable } from "../../../../../../components/Input";
 
 /**
  * Related Table Excel Wide Format specific inputs.
@@ -42,97 +43,84 @@ import RelatedTableSelector
  * @param {Array} indicatorList Indicator List.
  */
 export const BaseWideExcelRelatedTable = forwardRef(
-  ({
-     data, setData, files, setFiles, indicatorList, children
-   }, ref
-  ) => {
-
+  ({ data, setData, files, setFiles, indicatorList, children }, ref) => {
     // Get default data from parameters
-    let defaultRelatedTable = null
+    let defaultRelatedTable = null;
     if (data?.related_table_id) {
       defaultRelatedTable = {
         id: parseInt(data.related_table_id),
-        name: data.related_table_name
-      }
+        name: data.related_table_name,
+      };
     }
-    const [attributes, setAttributes] = useState([])
-    const [isReplace, setIsReplace] = useState(defaultRelatedTable ? true : false)
-    const [selectedRelatedTable, setSelectedRelatedTable] = useState(defaultRelatedTable);
+    const [attributes, setAttributes] = useState([]);
+    const [isReplace, setIsReplace] = useState(
+      defaultRelatedTable ? true : false,
+    );
+    const [selectedRelatedTable, setSelectedRelatedTable] =
+      useState(defaultRelatedTable);
 
     // Ready check
     const childRef = useRef(null);
     useImperativeHandle(ref, () => ({
       isReady(data) {
-        return !!(
-          !(isReplace && !selectedRelatedTable)
-        ) && childRef?.current?.isReady(data)
-      }
+        return (
+          !!!(isReplace && !selectedRelatedTable) &&
+          childRef?.current?.isReady(data)
+        );
+      },
     }));
 
-    useEffect(
-      () => {
-        if (!isReplace) {
-          data.related_table_uuid = null
-          setSelectedRelatedTable(null)
-        } else {
-          setData({ ...data })
+    useEffect(() => {
+      if (!isReplace) {
+        data.related_table_uuid = null;
+        setSelectedRelatedTable(null);
+      } else {
+        setData({ ...data });
+      }
+    }, [isReplace]);
+
+    useEffect(() => {
+      if (isReplace && selectedRelatedTable) {
+        if (selectedRelatedTable.unique_id) {
+          data.related_table_uuid = selectedRelatedTable.unique_id;
         }
-      }, [isReplace]
-    )
+        data.related_table_name = selectedRelatedTable.name;
+        setData({ ...data });
+      }
+    }, [selectedRelatedTable]);
 
-    useEffect(
-      () => {
-        if (isReplace && selectedRelatedTable) {
-          if (selectedRelatedTable.unique_id) {
-            data.related_table_uuid = selectedRelatedTable.unique_id
-          }
-          data.related_table_name = selectedRelatedTable.name
-          setData({ ...data })
-        }
-      }, [selectedRelatedTable]
-    )
-
-    return <Fragment>
-      <div className='FormAttribute'>
-        <div className="BasicFormSection">
-          <label className="form-label required" htmlFor="group">
-            Related table name
-          </label>
-          <input
-            type='text'
-            value={data.related_table_name}
-            onChange={evt => {
-              data.related_table_name = evt.target.value
-              setData({ ...data })
-            }}/>
-        </div>
-
-        <div className="BasicFormSection">
-          <FormControl className="BasicFormSection">
-            <RadioGroup
-              name="import_type"
-              value={isReplace}
-              onChange={evt => {
-                setIsReplace(evt.target.value === 'true')
-              }}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={2}>
-                  <FormControlLabel
-                    value={false} control={<Radio/>}
-                    label={'Create new table'}/>
+    return (
+      <Fragment>
+        <div className="FormAttribute">
+          <div className="BasicFormSection">
+            <FormControl className="BasicFormSection">
+              <RadioGroup
+                name="import_type"
+                value={isReplace}
+                onChange={(evt) => {
+                  setIsReplace(evt.target.value === "true");
+                }}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={2}>
+                    <FormControlLabel
+                      value={false}
+                      control={<Radio />}
+                      label={"Create new table"}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <FormControlLabel
+                      value={true}
+                      control={<Radio />}
+                      label={"Update existing table"}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={2}>
-                  <FormControlLabel
-                    value={true} control={<Radio/>}
-                    label={'Update existing table'}/>
-                </Grid>
-              </Grid>
-            </RadioGroup>
-          </FormControl>
-        </div>
-        {
-          isReplace ?
+              </RadioGroup>
+            </FormControl>
+          </div>
+          {isReplace ? (
             <div className="BasicFormSection RelatedTableForm">
               <label className="form-label required" htmlFor="group">
                 Related table to be replaced
@@ -140,25 +128,77 @@ export const BaseWideExcelRelatedTable = forwardRef(
               <RelatedTableSelector
                 initData={selectedRelatedTable ? [selectedRelatedTable] : []}
                 dataSelected={(selectedData) => {
-                  setSelectedRelatedTable(selectedData[0])
-
+                  setSelectedRelatedTable(selectedData[0]);
                 }}
               />
-            </div> : ""
-        }
-      </div>
+            </div>
+          ) : (
+            <div className="RelatedTableForm">
+              <div className="BasicFormSection">
+                <label className="form-label required" htmlFor="group">
+                  Related table name
+                </label>
+                <input
+                  type="text"
+                  value={data.related_table_name}
+                  onChange={(evt) => {
+                    data.related_table_name = evt.target.value;
+                    setData({ ...data });
+                  }}
+                />
+              </div>
+              <div className="BasicFormSection">
+                <label className="form-label" htmlFor="group">
+                  Description
+                </label>
+                <textarea
+                  value={data.related_table_description}
+                  onChange={(evt) => {
+                    data.related_table_description = evt.target.value;
+                    setData({ ...data });
+                  }}
+                />
+              </div>
+              <div className="BasicFormSection">
+                <label className="form-label" htmlFor="group">
+                  Source
+                </label>
+                <input
+                  type="text"
+                  value={data.related_table_source}
+                  onChange={(evt) => {
+                    data.related_table_source = evt.target.value;
+                    setData({ ...data });
+                  }}
+                />
+              </div>
+              <div className="BasicFormSection">
+                <label className="form-label" htmlFor="group">
+                  Category
+                </label>
+                <Creatable
+                  options={relatedTableOptions}
+                  defaultValue={data.related_table_category}
+                  onChange={(e) => {
+                    data.related_table_category = e.value;
+                    setData({ ...data });
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
 
-      {
-        React.cloneElement(
-          children, {
-            data: data, setData: setData,
-            files: files, setFiles: setFiles,
-            attributes: attributes,
-            setAttributes: setAttributes,
-            ref: childRef
-          }
-        )
-      }
-    </Fragment>
-  }
-)
+        {React.cloneElement(children, {
+          data: data,
+          setData: setData,
+          files: files,
+          setFiles: setFiles,
+          attributes: attributes,
+          setAttributes: setAttributes,
+          ref: childRef,
+        })}
+      </Fragment>
+    );
+  },
+);

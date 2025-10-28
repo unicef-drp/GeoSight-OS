@@ -81,6 +81,7 @@ class RelatedTableForm(forms.ModelForm):
         """Return model data as json."""
         initial = model_to_dict(model)
         initial['data_fields'] = json.dumps(model.fields_definition)
+        initial['unique_id'] = str(model.unique_id)
         try:
             initial['group'] = RelatedTableGroup.objects.get(
                 id=initial['group']

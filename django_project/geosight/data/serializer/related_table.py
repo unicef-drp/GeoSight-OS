@@ -156,7 +156,7 @@ class RelatedTableApiSerializer(ResourceSerializer):
 
     class Meta:  # noqa: D106
         model = RelatedTable
-        exclude = ('unique_id',)
+        fields = '__all__'
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'RelatedTable',

@@ -40,6 +40,21 @@ class AbstractImporterRelatedTable(BaseImporter, ABC):
                 name='related_table_uuid',
                 input_type=ImporterAttributeInputType.TEXT,
                 required=False
+            ),
+            ImporterAttribute(
+                name='related_table_source',
+                input_type=ImporterAttributeInputType.TEXT,
+                required=False
+            ),
+            ImporterAttribute(
+                name='related_table_category',
+                input_type=ImporterAttributeInputType.TEXT,
+                required=False
+            ),
+            ImporterAttribute(
+                name='related_table_description',
+                input_type=ImporterAttributeInputType.TEXT,
+                required=False
             )
         ]
 

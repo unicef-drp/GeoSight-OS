@@ -20,7 +20,9 @@ from typing import List
 import pytz
 from django.conf import settings
 
-from geosight.data.models.related_table import RelatedTable, RelatedTableRow
+from geosight.data.models.related_table import (
+    RelatedTable, RelatedTableRow, RelatedTableGroup
+)
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
 from geosight.importer.importers.base.related_table import (
@@ -52,17 +54,29 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
         # Check related table
         name = self.get_attribute('related_table_name')
         related_table_uuid = self.get_attribute('related_table_uuid')
+        related_table_source = self.get_attribute('related_table_source')
+        related_table_category = self.get_attribute('related_table_category')
+        related_table_description = self.get_attribute(
+            'related_table_description'
+        )
         try:
             name = name if name else self.importer.__str__()
             related_table, _ = RelatedTable.permissions.get_or_create(
                 user=self.importer.creator,
                 unique_id=related_table_uuid,
                 defaults={
-                    'name': name
+                    'name': name,
+                    'source': related_table_source,
+                    'description': related_table_description,
                 }
             )
             related_table.relatedtablerow_set.all().delete()
             related_table.name = name
+            if related_table_category:
+                group, _ = RelatedTableGroup.objects.get_or_create(
+                    name=related_table_category
+                )
+                related_table.group = group
             related_table.save()
         except PermissionException:
             raise ImporterError(
@@ -104,7 +118,6 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
             # Construct data
             # ---------------------------------------
             data = {}
-            print(record)
             for key, value in record.items():
                 if value.__class__ is str:
                     try:
