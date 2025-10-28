@@ -60,7 +60,7 @@ class ContextLayerGroup(AbstractTerm):
 class ContextLayerRequestError(Exception):
     """Error class for ContextLayer Request."""
 
-    def __init__(self, message):
+    def __init__(self, message):  # noqa
         """init."""
         self.message = message
         super().__init__(self.message)
@@ -180,7 +180,15 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
     )
 
     def save_relations(self, data):
-        """Save all relationship data."""
+        """
+        Save field relationships for the context layer.
+
+        This method replaces existing related field records with new ones
+        based on ``data_fields`` provided in the submitted form data.
+
+        :param data: Form data containing serialized field definitions.
+        :type data: dict
+        """
         self.contextlayerfield_set.all().delete()
         try:
             if data['data_fields'] and data['override_field']:
@@ -198,7 +206,20 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
             pass
 
     def _request(self, url, headers=None):
-        """Return request of context layer."""
+        """
+        Perform an authenticated GET request to fetch layer data.
+
+        Automatically adds Basic or Token authentication if configured.
+
+        :param url: The URL to request.
+        :type url: str
+        :param headers: Optional HTTP headers.
+        :type headers: dict or None
+        :raises ContextLayerRequestError:
+            If the request fails or returns an error response.
+        :return: The successful HTTP response.
+        :rtype: requests.Response
+        """
         if not headers:
             headers = {}
         params = {}
@@ -229,15 +250,34 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
 
     @property
     def arcgis_definition(self):
-        """Return arcgis definition."""
+        """
+        Return ArcGIS layer definition metadata.
+
+        :return:
+            ArcGIS REST definition if the layer type is ARCGIS, otherwise None.
+        :rtype: requests.Response or None
+        """
         if self.layer_type == LayerType.ARCGIS:
             base_url = self.url.split('?')[0]
             return self._request(url=base_url + '?f=json')
         else:
             return None
 
-    def _arcgis_geojson(self, page: int = 0, bbox=None):
-        """Return geojson of context layer if arcgis."""
+    def _arcgis_geojson(  # noqa: DOC501, DOC503
+            self, page: int = 0, bbox=None
+    ):
+        """
+        Retrieve ArcGIS layer data as GeoJSON.
+
+        Supports pagination for large datasets.
+
+        :param page: The current pagination index.
+        :type page: int
+        :param bbox: Optional bounding box filter as [xmin, ymin, xmax, ymax].
+        :type bbox: list or None
+        :return: GeoJSON dictionary of features.
+        :rtype: dict or list
+        """
         # If page is 0, we need to check if it is paginated
         # If not we will return all data
         limit = 100
@@ -294,14 +334,26 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
             return features
 
     def geojson(self, bbox=None):
-        """Return geojson of context layer."""
+        """
+        Retrieve the layer data as GeoJSON, if supported.
+
+        :param bbox: Optional bounding box to limit the extent.
+        :type bbox: list or None
+        :return: GeoJSON data or None.
+        :rtype: dict or None
+        """
         if self.layer_type == LayerType.ARCGIS:
             """This is for ARCGIS layer."""
             return self._arcgis_geojson(bbox=bbox)
         return None
 
     def update_dashboard_version(self):
-        """Update dashboard version."""
+        """
+        Update version timestamps of dashboards using this layer.
+
+        Called automatically after save to
+        invalidate caches and trigger re-sync.
+        """
         from django.utils import timezone
         from geosight.data.models.dashboard import Dashboard
         Dashboard.objects.filter(
@@ -312,14 +364,26 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
 
     @property
     def token_val(self):
-        """Return token."""
+        """
+        Return the effective token for the layer.
+
+        Prefers token from linked ArcGIS configuration if available.
+
+        :return: Token string or None.
+        :rtype: str or None
+        """
         if self.arcgis_config:
             return self.arcgis_config.token_val
         return self.token
 
     @property
     def cloud_native_gis_layer(self):
-        """Return cloud native GIS."""
+        """
+        Retrieve linked Cloud Native GIS layer instance.
+
+        :return: Cloud-native GIS layer model or None.
+        :rtype: cloud_native_gis.models.layer.Layer or None
+        """
         if settings.CLOUD_NATIVE_GIS_ENABLED:
             from cloud_native_gis.models.layer import Layer
             try:
@@ -331,7 +395,20 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         return None
 
     def download_layer(self, original_name=True, bbox=None):
-        """Return geojson of context layer."""
+        """
+        Download the underlying layer data as a file.
+
+        Supports Raster COG and Raster Tile (WMS) layers.
+        Saves downloaded files under ``MEDIA_TEMP``.
+
+        :param original_name: Whether to keep the original filename.
+        :type original_name: bool
+        :param bbox: Optional bounding box for WMS requests.
+        :type bbox: list or None
+        :return: Local file path to the downloaded file or None.
+        :rtype: str or None
+        :raises Exception: If download fails.
+        """
         if self.layer_type == LayerType.RASTER_COG:
             # This is for Raster COG layer
             file_name = os.path.basename(self.url)
@@ -404,8 +481,17 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
 
 
 @receiver(post_save, sender=ContextLayer)
-def increase_version(sender, instance, **kwargs):
-    """Increase version of dashboard signal."""
+def increase_version(sender, instance, **kwargs):  # noqa :DOC503, DOC103
+    """
+    Signal handler to update dashboard versions when a ContextLayer is saved.
+
+    :param sender: The model class sending the signal.
+    :type sender: type
+    :param instance: The saved ContextLayer instance.
+    :type instance: ContextLayer
+    :param kwargs: Additional keyword arguments.
+    :type kwargs: dict
+    """
     instance.update_dashboard_version()
 
 
@@ -420,6 +506,11 @@ class ContextLayerField(FieldLayerAbstract):
         unique_together = ('context_layer', 'name')
 
     def __str__(self):
+        """Return the display name of the field.
+
+        :return: Display name of the field.
+        :rtype: str
+        """
         return f'{self.name}'
 
 
@@ -464,20 +555,34 @@ class ZonalAnalysis(AbstractEditData):
     result = models.TextField()
 
     def failed(self, message: status):
-        """Mark ZonalAnalysis as failed."""
+        """
+        Mark this analysis as failed.
+
+        :param message: Error message to store as the result.
+        :type message: str
+        :return: Updated analysis instance.
+        :rtype: ZonalAnalysis
+        """
         self.status = ZonalAnalysis.AnalysisStatus.FAILED
         self.result = message
         self.save()
         return self
 
     def success(self, result: status):
-        """Mark ZonalAnalysis as success."""
+        """
+        Mark this analysis as successfully completed.
+
+        :param result: Result or output data as text.
+        :type result: str
+        :return: Updated analysis instance.
+        :rtype: ZonalAnalysis
+        """
         self.status = ZonalAnalysis.AnalysisStatus.SUCCESS
         self.result = result
         self.save()
         return self
 
     def running(self):
-        """Mark ZonalAnalysis as running."""
+        """Mark this analysis as currently running."""
         self.status = ZonalAnalysis.AnalysisStatus.RUNNING
         self.save()

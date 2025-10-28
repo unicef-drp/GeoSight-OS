@@ -78,7 +78,18 @@ class RelatedTableForm(forms.ModelForm):
 
     @staticmethod
     def model_to_initial(model: RelatedTable):
-        """Return model data as json."""
+        """
+        Convert a RelatedTable instance into an initial form dictionary.
+
+        This helper method serializes model data into a format suitable
+        for pre-filling the form in edit mode, including converting
+        JSON fields and resolving related group names.
+
+        :param model: The RelatedTable model instance.
+        :type model: geosight.data.models.related_table.RelatedTable
+        :return: Dictionary of initial values for the form.
+        :rtype: dict
+        """
         initial = model_to_dict(model)
         initial['data_fields'] = json.dumps(model.fields_definition)
         initial['unique_id'] = str(model.unique_id)
