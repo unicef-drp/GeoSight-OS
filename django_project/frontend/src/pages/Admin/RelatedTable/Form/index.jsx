@@ -51,13 +51,16 @@ export default function RelatedTableForm() {
       rightHeader={
         <Fragment>
           {initialData.id
-            ? resourceActions({
-                id: initialData.id,
-                row: {
-                  ...initialData,
-                  permission,
+            ? resourceActions(
+                {
+                  id: initialData.id,
+                  row: {
+                    ...initialData,
+                    permission,
+                  },
                 },
-              })
+                true,
+              )
             : null}
           <SaveButton
             variant="primary"

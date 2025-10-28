@@ -85,11 +85,11 @@ export function COLUMNS(
       headerName: t("admin.columns.category"),
       flex: 0.5,
       serverKey: "group__name",
-    }
+    },
   ];
 }
 
-export function resourceActions(params) {
+export function resourceActions(params, isForm) {
   const permission = params.row.permission;
   const actions = COLUMNS_ACTION(
     params,
@@ -98,7 +98,7 @@ export function resourceActions(params) {
     urls.api.detail,
   );
   // Unshift before more & edit action
-  if (permission.share) {
+  if (!isForm && permission.share) {
     actions.unshift(
       <GridActionsCellItem
         icon={
@@ -131,7 +131,7 @@ export function resourceActions(params) {
       />,
     );
   }
-  if (permission.read_data) {
+  if (!isForm && permission.read_data) {
     actions.unshift(
       <GridActionsCellItem
         icon={
