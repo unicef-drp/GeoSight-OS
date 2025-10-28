@@ -39,6 +39,7 @@ class RelatedTableAdminViewTest(BaseViewTest.TestCaseWithBatch):
     payload = {
         'name': 'name',
         'description': 'description',
+        'category': 'category',
         'data_fields': json.dumps([
             {
                 'name': 'field_1',
@@ -69,6 +70,7 @@ class RelatedTableAdminViewTest(BaseViewTest.TestCaseWithBatch):
         """Create resource function."""
         payload = copy.deepcopy(self.payload)
         del payload['data_fields']
+        del payload['category']
         return RelatedTable.permissions.create(
             user=user,
             **payload
