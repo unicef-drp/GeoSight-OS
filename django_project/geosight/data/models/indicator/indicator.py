@@ -34,8 +34,8 @@ from geosight.data.models.style.indicator_style import (
     IndicatorStyleBaseModel, IndicatorStyleType
 )
 from geosight.data.serializer.style import StyleRuleSerializer
-from geosight.permission.models.manager import PermissionManager
 from geosight.permission.access.mixin import edit_data_permission_resource
+from geosight.permission.models.manager import PermissionManager
 
 VALUE_IS_EMPTY_TEXT = 'Value is empty'
 
@@ -448,14 +448,14 @@ class Indicator(
             ]
         return []
 
-    def metadata(self, reference_layer):
+    def metadata(self, reference_layer, is_using_uuid=False):
         """Metadata for indicator."""
         from geosight.data.models.indicator.utilities import (
             metadata_indicator_by_view
         )
-        return metadata_indicator_by_view(self, reference_layer)
+        return metadata_indicator_by_view(self, reference_layer, is_using_uuid)
 
-    def metadata_with_cache(self, reference_layer):
+    def metadata_with_cache(self, reference_layer, is_using_uuid=False):
         """Metadata for indicator."""
         from core.cache import VersionCache
         version = self.version_with_reference_layer_uuid(
@@ -465,6 +465,7 @@ class Indicator(
             key=(
                 f'METADATA : '
                 f'Indicator {self.id} - {reference_layer.identifier}',
+                f'Is_using_uuid {is_using_uuid}'
             ),
             version=version
         )
@@ -472,7 +473,7 @@ class Indicator(
         if cache_data:
             return cache_data
 
-        response = self.metadata(reference_layer)
+        response = self.metadata(reference_layer, is_using_uuid)
         response['version'] = cache.version
         cache.set(response)
         return response

@@ -81,7 +81,8 @@ class IndicatorBatchMetadataAPI(_BaseAPI):
             try:
                 read_permission_resource(indicator, self.request.user)
                 responses[indicator.id] = indicator.metadata_with_cache(
-                    reference_layer
+                    reference_layer,
+                    self.request.GET.get('is_using_uuid', False)
                 )
             except ResourcePermissionDenied:
                 responses[indicator.id] = {

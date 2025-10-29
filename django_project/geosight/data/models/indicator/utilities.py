@@ -25,16 +25,25 @@ from geosight.georepo.models.reference_layer import ReferenceLayerView
 
 
 def metadata_indicator_by_view(
-        indicator: Indicator, reference_layer: ReferenceLayerView
+        indicator: Indicator, reference_layer: ReferenceLayerView,
+        is_using_uuid=False
 ):
-    """Metadata indicator by viw.
+    """Metadata indicator by view.
 
     Return dates and count.
     """
-    query = IndicatorValue.objects.filter(
-        country__in=reference_layer.countries.all(),
-        indicator=indicator,
-    )
+    if is_using_uuid:
+        query = IndicatorValue.objects.filter(
+            country__concept_uuid__in=reference_layer.countries.values_list(
+                'concept_uuid', flat=True
+            ),
+            indicator=indicator,
+        )
+    else:
+        query = IndicatorValue.objects.filter(
+            country__in=reference_layer.countries.all(),
+            indicator=indicator,
+        )
     dates = [
         datetime.combine(
             date_str, datetime.min.time(),

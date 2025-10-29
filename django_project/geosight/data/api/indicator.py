@@ -133,7 +133,9 @@ class IndicatorMetadataAPI(APIView):
             identifier=self.request.GET.get('reference_layer_uuid', '')
         )
         return Response(
-            indicator.metadata(reference_layer)
+            indicator.metadata(
+                reference_layer, self.request.GET.get('is_using_uuid', False)
+            )
         )
 
 

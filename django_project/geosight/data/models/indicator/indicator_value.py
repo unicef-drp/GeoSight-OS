@@ -122,7 +122,8 @@ class IndicatorValue(models.Model):
     country_concept_uuid = models.CharField(
         max_length=256,
         help_text='This is concept uuid from georepo.',
-        null=True, blank=True
+        null=True, blank=True,
+        db_index=True
     )
 
     class Meta:  # noqa: D106
@@ -140,6 +141,9 @@ class IndicatorValue(models.Model):
             ),
             models.Index(
                 fields=['indicator', 'country_id', 'admin_level']
+            ),
+            models.Index(
+                fields=['indicator', 'country_concept_uuid']
             ),
             models.Index(
                 fields=['indicator', 'admin_level']
