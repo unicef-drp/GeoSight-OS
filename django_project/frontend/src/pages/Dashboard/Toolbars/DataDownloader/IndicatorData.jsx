@@ -267,7 +267,7 @@ export default function IndicatorDataDownloader() {
   ) => {
     // Get per geometries
     geometries.map((geom) => {
-      const ucode = extractCode(geom.properties);
+      const ucode = extractCode(geom.properties, "ucode");
       const data = getData(
         indicatorLayer,
         indicatorData,
@@ -278,7 +278,14 @@ export default function IndicatorDataDownloader() {
       if (data) {
         data.map((dataRow) => {
           const usedGeom = dictDeepCopy(geom);
-          usedGeom.properties = Object.assign({}, usedGeom.properties, dataRow);
+          const properties = Object.assign({}, usedGeom.properties);
+          properties.GeographyCode = properties.ucode;
+          properties.GeographyName = properties.name;
+          properties.GeographyLevel = levels.find(
+            (level) => level.level === properties.admin_level,
+          )?.level_name;
+          properties.level_name = properties.GeographyLevel
+          usedGeom.properties = Object.assign({}, properties, dataRow);
           features.push(usedGeom);
         });
       }
@@ -504,8 +511,12 @@ export default function IndicatorDataDownloader() {
             a.ucode > b.ucode ? 1 : b.ucode > a.ucode ? -1 : 0,
           );
           if (state.geographyFilter === GeographyFilter.Filtered) {
-            geometryData = geometryData.filter((geom) =>
-              filteredGeometries.includes(extractCode(geom)),
+            geometryData = geometryData.filter(
+              (geom) =>
+                filteredGeometries.includes(
+                  extractCode(geom, "concept_uuid"),
+                ) ||
+                filteredGeometries.includes(extractCode(geom, "geometry_code")),
             );
           }
           geometries = geometries.concat(geometryData);

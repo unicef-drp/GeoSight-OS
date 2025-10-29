@@ -19,7 +19,7 @@ import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
 import { fetchingData } from "../Requests";
 
 export const STYLE_FORM_LIBRARY = "Style from library.";
-const DYNAMIC_QUANTITATIVE = "Dynamic quantitative style.";
+export const DYNAMIC_QUANTITATIVE = "Dynamic quantitative style.";
 const DYNAMIC_QUALITATIVE = "Dynamic qualitative style.";
 
 const NATURAL_BREAKS = "Natural breaks.";

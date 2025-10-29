@@ -24,7 +24,14 @@ class Pagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
     def get_paginated_response_data(self, data):
-        """Return paginated only data."""
+        """
+        Build and return the paginated response data structure.
+
+        :param data: Serialized list of objects for the current page.
+        :type data: list or dict
+        :return: Dictionary containing pagination metadata and results.
+        :rtype: dict
+        """
         return {
             'next': self.get_next_link(),
             'previous': self.get_previous_link(),
@@ -36,5 +43,28 @@ class Pagination(PageNumberPagination):
         }
 
     def get_paginated_response(self, data):
-        """Response for pagination."""
+        """
+        Generate the paginated :class:`Response` object for the API.
+
+        :param data: Serialized data for the current page.
+        :type data: list or dict
+        :return: A REST framework :class:`Response` containing paginated data.
+        :rtype: rest_framework.response.Response
+        """
         return Response(self.get_paginated_response_data(data))
+
+
+class GeojsonPagination(Pagination):
+    """Geojson pagination for API."""
+
+    def get_paginated_response_data(self, data):
+        """
+        Return GeoJSON data without pagination metadata.
+
+        :param data:
+            GeoJSON features or feature collection for the current page.
+        :type data: dict
+        :return: The GeoJSON data as-is.
+        :rtype: dict
+        """
+        return data
