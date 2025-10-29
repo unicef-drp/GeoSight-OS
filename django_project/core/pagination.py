@@ -38,3 +38,17 @@ class Pagination(PageNumberPagination):
     def get_paginated_response(self, data):
         """Response for pagination."""
         return Response(self.get_paginated_response_data(data))
+
+
+class GeojsonPagination(PageNumberPagination):
+    """Geojson pagination for API."""
+
+    page_size_query_param = 'page_size'
+
+    def get_paginated_response_data(self, data):
+        """Return paginated only data."""
+        return data
+
+    def get_paginated_response(self, data):
+        """Response for pagination."""
+        return Response(self.get_paginated_response_data(data))

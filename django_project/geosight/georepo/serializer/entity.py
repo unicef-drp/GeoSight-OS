@@ -154,3 +154,11 @@ class ApiEntitySerializer(DynamicModelSerializer):
             'id', 'name', 'ucode', 'concept_uuid', 'admin_level', 'parents',
             'level_name', 'bbox', 'centroid', 'ext_codes'
         )
+
+
+class ApiEntityGeoSerializer(ApiEntitySerializer, GeoFeatureModelSerializer):
+    """Return Entity with geometry."""
+
+    class Meta(ApiEntitySerializer.Meta):
+        geo_field = "geometry"
+        fields = ApiEntitySerializer.Meta.fields
