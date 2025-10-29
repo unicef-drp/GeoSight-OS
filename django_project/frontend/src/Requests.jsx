@@ -15,6 +15,7 @@
 
 import axios from "axios";
 import { Session } from "./utils/Sessions";
+import { splitByJoinedLength } from "./utils/main";
 
 /** Check if we use post or get */
 const isPost = function (data) {
@@ -477,4 +478,29 @@ export const axiosPostWithSession = async function (name, url, data) {
         reject(err);
       });
   });
+};
+
+export const getWithSplitKey = async function (
+  url,
+  data,
+  params,
+  paramKey,
+  onProgress,
+) {
+  const newParams = splitByJoinedLength(params[paramKey]);
+  let values = [];
+  for (let i = 0; i < newParams.length; i++) {
+    const newParam = {
+      ...params,
+    };
+    newParam[paramKey] = newParams[i];
+    const result = await DjangoRequestPagination.get(
+      url,
+      data,
+      newParam,
+      onProgress,
+    );
+    values.push(...result);
+  }
+  return values;
 };

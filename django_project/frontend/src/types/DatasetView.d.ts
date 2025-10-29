@@ -16,17 +16,18 @@
 export interface CountryDatasetView {
   name: string;
   ucode: string;
+  concept_uuid: string;
 }
 
 export interface DatasetView {
-  name: string,
-  uuid: string,
-  description: string,
-  dataset: string,
-  root_entity: string,
-  last_update: string,
-  bbox: number[],
-  tags: string[],
+  name: string;
+  uuid: string;
+  description: string;
+  dataset: string;
+  root_entity: string;
+  last_update: string;
+  bbox: number[];
+  tags: string[];
   countries: CountryDatasetView[];
   identifier?: string;
   is_local?: boolean;

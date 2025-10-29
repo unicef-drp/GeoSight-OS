@@ -237,6 +237,12 @@ class IndicatorValue(models.Model):
                         OR jsonb_array_length(entity.parents) = 0
                     THEN entity.geom_id
                     ELSE country.geom_id
+                       END,
+                country_concept_uuid = CASE
+                    WHEN entity.parents IS NULL
+                        OR jsonb_array_length(entity.parents) = 0
+                    THEN entity.concept_uuid
+                    ELSE country.concept_uuid
                        END
                        FROM
                 geosight_georepo_entity AS entity

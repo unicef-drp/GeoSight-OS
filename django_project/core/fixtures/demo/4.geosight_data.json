@@ -26104,6 +26104,30 @@
     }
   },
   {
+    "model": "geosight_data.indicatorvalue",
+    "pk": 173227,
+    "fields": {
+      "date": "2025-01-01",
+      "value": 1.0,
+      "value_str": null,
+      "geom_id": "KEN_V1",
+      "indicator": 371,
+      "extra_value": null,
+      "entity": 94,
+      "country": 94,
+      "indicator_shortcode": "KENYA_A",
+      "indicator_name": "Kenya Indicator A",
+      "entity_name": "Kenya",
+      "admin_level": 0,
+      "concept_uuid": "6e8d3c49-f1b7-4a5c-a454-c15461078e10",
+      "entity_start_date": "2023-11-30T08:40:19.563Z",
+      "entity_end_date": null,
+      "country_name": "Kenya",
+      "country_geom_id": "KEN_V1",
+      "country_concept_uuid": "6e8d3c49-f1b7-4a5c-a454-c15461078e10"
+    }
+  },
+  {
     "model": "geosight_data.indicatorextravalue",
     "pk": 121409,
     "fields": {

@@ -59,7 +59,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = Entity
-        fields = ('name', 'ucode')
+        fields = ('name', 'ucode', 'concept_uuid')
 
 
 class ReferenceDatasetSerializer(DynamicModelSerializer):
