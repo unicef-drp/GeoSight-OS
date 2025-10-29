@@ -196,8 +196,6 @@ export default function GlobalDateSelector() {
   }
   indicatorLayersSelected.sort();
 
-  console.log(geoField);
-
   /**
    * Return dates list of data
    * **/
