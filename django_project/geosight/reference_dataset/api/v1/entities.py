@@ -20,11 +20,16 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 from core.api_utils import common_api_params, ApiParams
+from core.pagination import Pagination, GeojsonPagination
+from core.renderers import GeoJSONRenderer
 from geosight.data.api.v1.base import BaseApiV1
 from geosight.georepo.models.entity import Entity
-from geosight.georepo.serializer.entity import ApiEntitySerializer
+from geosight.georepo.serializer.entity import (
+    ApiEntitySerializer, ApiEntityGeoSerializer
+)
 from geosight.permission.access import read_data_permission_resource
 from geosight.reference_dataset.api.v1.api_utils import (
     ApiTag as ReferenceApiTag,
@@ -111,6 +116,32 @@ class EntityReferenceDatasetViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     serializer_class = ApiEntitySerializer
     lookup_field = 'geom_id'
     lookup_value_regex = '[^/]+'
+    renderer_classes = [GeoJSONRenderer, JSONRenderer, BrowsableAPIRenderer]
+
+    @property
+    def pagination_class(self):
+        """Return dynamic pagination class based on format."""
+        format = self.request.query_params.get('format')
+        if format == 'geojson':
+            return GeojsonPagination
+        return Pagination
+
+    def get_serializer_class(self):
+        """
+        Get the appropriate serializer class based on the requested format.
+
+        This method checks the ``format`` query parameter in the request.
+        If the format is set to ``geojson``, it returns the
+        :class:`ApiEntityGeoSerializer`; otherwise, it returns the
+        default :class:`ApiEntitySerializer`.
+
+        :return: The serializer class to be used for the current request.
+        :rtype: type[rest_framework.serializers.Serializer]
+        """
+        format = self.request.query_params.get('format')
+        if format == 'geojson':
+            return ApiEntityGeoSerializer
+        return ApiEntitySerializer
 
     @property
     def queryset(self):  # noqa DOC103

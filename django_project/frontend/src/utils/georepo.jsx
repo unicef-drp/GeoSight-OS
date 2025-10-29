@@ -107,6 +107,9 @@ export const fetchGeojson = async function (url, useCache = true) {
   };
   const _fetchGeojson = async function (page = 1) {
     try {
+      if (!url.includes("http")) {
+        url = window.location.origin + url;
+      }
       var newUrl = new URL(url);
       newUrl.searchParams.append("format", "geojson");
       newUrl.searchParams.append("page", page);

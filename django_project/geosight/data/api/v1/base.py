@@ -49,7 +49,7 @@ class BaseApiV1(FilteredAPI):
     pagination_class = Pagination
     extra_exclude_fields = []
     non_filtered_keys = [
-        'page', 'page_size', 'fields', 'extra_fields', 'permission'
+        'page', 'page_size', 'fields', 'extra_fields', 'permission', 'format'
     ]
     keep_exclude_fields = False
 
