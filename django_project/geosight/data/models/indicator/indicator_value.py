@@ -152,27 +152,61 @@ class IndicatorValue(models.Model):
 
     @property
     def val(self):
-        """Return val of value based on int or string."""
+        """
+        Return the value of the indicator.
+
+        If the indicator type is string-based, returns ``value_str``,
+        otherwise returns the numeric ``value``.
+
+        :return: Indicator value (numeric or string).
+        :rtype: float | str | None
+        """
         if self.indicator.type == IndicatorType.STRING:
             return self.value_str
         return self.value
 
     @staticmethod
     def value_permissions(user, indicator: Indicator):
-        """Return value permissions for a user."""
+        """
+        Return value permissions for a given user.
+
+        :param user: The user for whom permissions are checked.
+        :type user: User
+        :param indicator: The indicator being accessed.
+        :type indicator: Indicator
+        :return: The user's permission object for this indicator.
+        :rtype: dict | None
+        """
         return indicator.permission.all_permission(user)
 
     def permissions(self, user):
-        """Return permission of user."""
+        """
+        Return permission for a given user on this value’s indicator.
+
+        :param user: The user whose permission is checked.
+        :type user: User
+        :return: The permission object for the indicator.
+        :rtype: dict | None
+        """
         return IndicatorValue.value_permissions(user, self.indicator)
 
     @property
     def attributes(self):
-        """Return attributes of value."""
+        """
+        Return extra attributes stored as JSON.
+
+        :return: Dictionary of extra attributes, or empty dict if none.
+        :rtype: dict
+        """
         return self.extra_value if self.extra_value else {}
 
     def assign_entity(self, autosave=True):
-        """Assign entity to indicator value."""
+        """
+        Assign the related entity fields based on ``geom_id``.
+
+        :param autosave: Whether to automatically save after assignment.
+        :type autosave: bool
+        """
         if not self.entity_id:
             entity = Entity.objects.filter(
                 geom_id=self.geom_id
@@ -189,7 +223,12 @@ class IndicatorValue(models.Model):
                     self.save()
 
     def assign_country(self, autosave=True):
-        """Assign entity to indicator value."""
+        """
+        Assign country information derived from the related entity.
+
+        :param autosave: Whether to automatically save after assignment.
+        :type autosave: bool
+        """
         if not self.country_id or not self.country_concept_uuid:
             if self.admin_level >= 1:
                 if self.entity and self.entity.country:
@@ -206,7 +245,12 @@ class IndicatorValue(models.Model):
             self.save()
 
     def assign_indicator(self, autosave=True):
-        """Assign indicator flat value."""
+        """
+        Assign flattened indicator metadata fields.
+
+        :param autosave: Whether to automatically save after assignment.
+        :type autosave: bool
+        """
         if not self.indicator_name:
             self.indicator_name = self.indicator.name
             self.indicator_shortcode = self.indicator.shortcode
@@ -215,10 +259,24 @@ class IndicatorValue(models.Model):
 
     @staticmethod
     def get_raw_query():
-        """Return raw query."""
+        """Return SQL query strings used for bulk data flattening.
+
+        These queries update ``IndicatorValue`` rows with flattened entity,
+        country, and indicator information for faster data retrieval.
+
+        :return:
+            Tuple of SQL update statements
+            for (entity, indicator, extra_value).
+        :rtype: tuple[str, str, str]
+        """
         entity_query = """
                        UPDATE geosight_data_indicatorvalue AS value
-                       SET entity_id = entity.id, entity_name = entity.name, admin_level = entity.admin_level, concept_uuid = entity.concept_uuid, entity_start_date = entity.start_date, entity_end_date = entity.end_date, country_id = CASE
+                       SET entity_id = entity.id, entity_name = entity.name,
+                           admin_level = entity.admin_level,
+                           concept_uuid = entity.concept_uuid,
+                           entity_start_date = entity.start_date,
+                           entity_end_date = entity.end_date,
+                           country_id = CASE
                            WHEN entity.parents IS NULL
                            OR jsonb_array_length(entity.parents) = 0
                            THEN entity.id
@@ -237,7 +295,8 @@ class IndicatorValue(models.Model):
                         OR jsonb_array_length(entity.parents) = 0
                     THEN entity.geom_id
                     ELSE country.geom_id
-                       END,
+                       END
+                       ,
                 country_concept_uuid = CASE
                     WHEN entity.parents IS NULL
                         OR jsonb_array_length(entity.parents) = 0
@@ -259,7 +318,8 @@ class IndicatorValue(models.Model):
         indicator_query = """
                           UPDATE geosight_data_indicatorvalue AS value
                           SET
-                              indicator_name = indicator.name, indicator_shortcode = indicator.shortcode
+                              indicator_name = indicator.name,
+                              indicator_shortcode = indicator.shortcode
                           FROM geosight_data_indicator AS indicator
                           WHERE
                               value.indicator_id = indicator.id
@@ -271,7 +331,8 @@ class IndicatorValue(models.Model):
                             SET extra_value = subquery.json_data
                             FROM (
                                 SELECT
-                                indicator_value_id, jsonb_object_agg(name, value) AS json_data
+                                indicator_value_id,
+                                jsonb_object_agg(name, value) AS json_data
                                 FROM geosight_data_indicatorextravalue
                                 GROUP BY indicator_value_id
                                 ) subquery
@@ -285,7 +346,12 @@ class IndicatorValue(models.Model):
 
     @staticmethod
     def assign_flat_table(step=10000000):
-        """Assign flat table."""
+        """
+        Populate flattened columns for all records in bulk.
+
+        :param step: The batch size for updating records.
+        :type step: int
+        """
         entity_query, indicator_query, extra_value_query = (
             IndicatorValue.get_raw_query()
         )
@@ -308,7 +374,14 @@ class IndicatorValue(models.Model):
 
     @staticmethod
     def assign_flat_table_selected(ids, step=100000):
-        """Assign flat table for selected ids."""
+        """
+        Populate flattened columns only for selected records.
+
+        :param ids: List of IndicatorValue IDs to update.
+        :type ids: list[int]
+        :param step: Batch size for updates.
+        :type step: int
+        """
         entity_query, indicator_query, extra_value_query = (
             IndicatorValue.get_raw_query()
         )
@@ -333,7 +406,14 @@ class IndicatorValue(models.Model):
             connection.commit()
 
     def add_extra_value(self, name, value):
-        """Add extra value."""
+        """
+        Add or update an extra key/value pair in ``extra_value``.
+
+        :param name: The name of the attribute.
+        :type name: str
+        :param value: The value to store.
+        :type value: Any
+        """
         extra_value = self.extra_value
         if not extra_value:
             extra_value = {}
@@ -371,7 +451,12 @@ class IndicatorExtraValue(models.Model):
 
     @property
     def key(self):
-        """Return key of attributes in pythonic."""
+        """
+        Return a normalized Python-style key name.
+
+        :return: Attribute key formatted as lowercase with underscores.
+        :rtype: str
+        """
         return self.name.replace(' ', '_').replace(':', '').lower()
 
 
@@ -469,15 +554,23 @@ class IndicatorValueWithGeo(models.Model):
 
 @receiver(post_save, sender=IndicatorValue)
 @receiver(pre_delete, sender=IndicatorValue)
-def increase_version(sender, instance, **kwargs):
-    """Increase verison of indicator signal."""
+def increase_version(sender, instance, **kwargs):  # noqa: DOC101,DOC103
+    """
+    Signal handler that increments the indicator version.
+
+    Triggered whenever an :class:`IndicatorValue` is created or deleted.
+    """
     instance.indicator.increase_version()
 
 
 @receiver(post_save, sender=IndicatorValue)
-def assign_entity_and_indicator_to_value(
+def assign_entity_and_indicator_to_value(  # noqa: DOC101,DOC103
         sender, instance: IndicatorValue, created, **kwargs
 ):
-    """Assign entity to value."""
+    """
+    Signal handler to assign entity and indicator metadata.
+
+    Automatically sets flattened entity and indicator fields after saving.
+    """
     instance.assign_entity()
     instance.assign_indicator()

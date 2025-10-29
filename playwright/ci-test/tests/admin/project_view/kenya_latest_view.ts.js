@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import xlsx from "xlsx";
 import fs from "fs";
 import { BASE_URL } from "../../variables";
+import { deleteProject } from "../../utils/project";
 
 // URL That we need to check
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -147,5 +148,10 @@ test.describe('View kenya latest project', () => {
       }
       await compare(geojson.features[0].properties, output[0])
     }
+
+    // ------------------------------------
+    // DELETE PROJECT
+    // ------------------------------------
+    await deleteProject(page, "Kenya Test")
   })
 })

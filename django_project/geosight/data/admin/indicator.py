@@ -33,14 +33,31 @@ class NullEntityFilter(admin.SimpleListFilter):
     parameter_name = 'is_entity_null'
 
     def lookups(self, request, model_admin):
-        """Lookup function for entity filter."""
+        """
+        Return the list of lookup options.
+
+        :param request: HttpRequest
+            The current request object.
+        :type request: django.http.HttpRequest
+        :param model_admin: ModelAdmin
+            The admin model instance.
+        :type model_admin: django.contrib.admin.ModelAdmin
+        :return: A list of tuples for lookup options.
+        :rtype: list[tuple[str, str]]
+        """
         return [
             ('yes', _('Is NULL')),
             ('no', _('Is NOT NULL')),
         ]
 
-    def queryset(self, request, queryset):
-        """Return filtered queryset."""
+    def queryset(self, request, queryset):  # noqa: DOC109, DOC110
+        """
+        Return the filtered queryset based on selection.
+
+        :param request: django.http.HttpRequest — The current request.
+        :param queryset: django.db.models.QuerySet — The base queryset.
+        :return: django.db.models.QuerySet — The filtered queryset.
+        """
         if self.value() == 'yes':
             return queryset.filter(entity_id__isnull=True)
         if self.value() == 'no':
@@ -55,14 +72,31 @@ class NullCountryFilter(admin.SimpleListFilter):
     parameter_name = 'is_country_null'
 
     def lookups(self, request, model_admin):
-        """Lookup function for country filter."""
+        """
+        Return the list of lookup options.
+
+        :param request: HttpRequest
+            The current request object.
+        :type request: django.http.HttpRequest
+        :param model_admin: ModelAdmin
+            The admin model instance.
+        :type model_admin: django.contrib.admin.ModelAdmin
+        :return: A list of tuples for lookup options.
+        :rtype: list[tuple[str, str]]
+        """
         return [
             ('yes', _('Is NULL')),
             ('no', _('Is NOT NULL')),
         ]
 
-    def queryset(self, request, queryset):
-        """Return filtered queryset."""
+    def queryset(self, request, queryset):  # noqa: DOC109, DOC110
+        """
+        Return the filtered queryset based on selection.
+
+        :param request: The current request.
+        :param queryset: The base queryset.
+        :return: Filtered queryset.
+        """
         if self.value() == 'yes':
             return queryset.filter(country_id__isnull=True)
         if self.value() == 'no':
@@ -71,22 +105,49 @@ class NullCountryFilter(admin.SimpleListFilter):
 
 
 @admin.action(description='Assign flat table selected')
-def assign_flat_table_selected(modeladmin, request, queryset):
-    """Assign flat table."""
+def assign_flat_table_selected(  # noqa: DOC109, DOC110
+        modeladmin, request, queryset
+):
+    """
+    Assign selected IndicatorValue objects to the flat table.
+
+    :param modeladmin:
+        django.contrib.admin.ModelAdmin — The admin model instance.
+    :param request: django.http.HttpRequest — The current request.
+    :param queryset:
+        django.db.models.QuerySet[IndicatorValue] —
+        The queryset of selected IndicatorValue objects.
+    """
     IndicatorValue.assign_flat_table_selected(
         list(queryset.values_list('id', flat=True))
     )
 
 
 @admin.action(description='Assign flat table')
-def assign_flat_table(modeladmin, request, queryset):
-    """Assign flat table."""
+def assign_flat_table(  # noqa: DOC109, DOC110
+        modeladmin, request, queryset
+):
+    """
+    Assign all IndicatorValue objects to the flat table.
+
+    :param modeladmin: The admin model instance.
+    :param request: The current request.
+    :param queryset: The queryset of selected objects.
+    """
     IndicatorValue.assign_flat_table()
 
 
 @admin.action(description='Assign country')
-def assign_country(modeladmin, request, queryset):
-    """Assign country."""
+def assign_country(  # noqa: DOC109, DOC110
+        modeladmin, request, queryset
+):
+    """
+    Assign country to each selected IndicatorValue object.
+
+    :param modeladmin: The admin model instance.
+    :param request: The current request.
+    :param queryset: The queryset of selected objects.
+    """
     for query in queryset:
         query.assign_country()
 
@@ -106,7 +167,17 @@ class IndicatorValueAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'entity')
 
     def entity_geom_id(self, obj: IndicatorValue):
-        """Return entity."""
+        """
+        Return a clickable link to the related entity.
+
+        :param obj:
+            The IndicatorValue instance for which to generate the entity link.
+        :type obj: IndicatorValue
+        :return:
+            An HTML anchor tag linking to the related Entity's
+            admin change page, or ``'-'`` if no entity is associated.
+        :rtype: str
+        """
         if not obj.entity_id:
             return '-'
         url = f"/django-admin/geosight_georepo/entity/{obj.entity_id}/change/"
@@ -115,7 +186,17 @@ class IndicatorValueAdmin(admin.ModelAdmin):
         )
 
     def country_geom_id(self, obj: IndicatorValue):
-        """Return country."""
+        """
+        Return a clickable link to the related object.
+
+        :param obj:
+            The IndicatorValue instance for which to generate the country link.
+        :type obj: IndicatorValue
+        :return:
+            An HTML anchor tag linking to the related Country's
+            admin change page, or ``'-'`` if no country is associated.
+        :rtype: str
+        """
         if not obj.country_id:
             return '-'
         url = f"/django-admin/geosight_georepo/entity/{obj.country_id}/change/"
@@ -132,8 +213,17 @@ class IndicatorRuleInline(admin.TabularInline):
 
 
 @admin.action(description='Invalidate cache')
-def invalidate_cache(modeladmin, request, queryset):
-    """Invalidate cache of value on frontend."""
+def invalidate_cache(modeladmin, request, queryset):  # noqa: DOC109, DOC110
+    """
+    Invalidate the cached values on the frontend by updating the version data.
+
+    :param modeladmin: The admin model instance associated with this action.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HTTP request object.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected objects to invalidate.
+    :type queryset: django.db.models.QuerySet
+    """
     queryset.update(version_data=timezone.now())
 
 
