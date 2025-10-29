@@ -118,7 +118,17 @@ class EntityReferenceDatasetViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     renderer_classes = [GeoJSONRenderer, JSONRenderer, BrowsableAPIRenderer]
 
     def get_serializer_class(self):
-        """Get serializer class based on query params."""
+        """
+        Get the appropriate serializer class based on the requested format.
+
+        This method checks the ``format`` query parameter in the request.
+        If the format is set to ``geojson``, it returns the
+        :class:`ApiEntityGeoSerializer`; otherwise, it returns the
+        default :class:`ApiEntitySerializer`.
+
+        :return: The serializer class to be used for the current request.
+        :rtype: type[rest_framework.serializers.Serializer]
+        """
         format = self.request.query_params.get('format')
         if format == 'geojson':
             return ApiEntityGeoSerializer

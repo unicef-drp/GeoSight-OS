@@ -33,25 +33,62 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
     pc = serializers.SerializerMethodField()
 
     def get_c(self, obj: Entity):
-        """Return concept uuid."""
+        """
+        Get the concept UUID of the entity.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Concept UUID string.
+        :rtype: str
+        """
         return obj.concept_uuid
 
     def get_n(self, obj: Entity):
-        """Return name."""
+        """
+        Get the entity name.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Entity name.
+        :rtype: str
+        """
         return obj.name
 
     def get_u(self, obj: Entity):
-        """Return ucode."""
+        """
+        Get the entity's unique geometry code (ucode).
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Geometry unique code.
+        :rtype: str
+        """
         return obj.geom_id
 
     def get_pu(self, obj: Entity):
-        """Return ucode."""
+        """
+        Get the list of parent unique codes (ucodes).
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Ordered list of parent ucodes.
+        :rtype: list[str]
+        """
         parents = obj.parents
         parents.reverse()
         return list(parents)
 
     def get_pc(self, obj: Entity):
-        """Return ucode."""
+        """
+        Get the list of parent concept UUIDs.
+
+        If not cached, fetch from the database and cache them.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Ordered list of parent concept UUIDs.
+        :rtype: list[str]
+        """
         pcs = []
         parents = obj.parents
         parents.reverse()
@@ -81,7 +118,14 @@ class EntitySerializer(DynamicModelSerializer):
     geom_code = serializers.SerializerMethodField()
 
     def get_geom_code(self, obj: Entity):
-        """Return value."""
+        """
+        Get the geometry code for the entity.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: The geometry unique identifier.
+        :rtype: str
+        """
         return obj.geom_id
 
     class Meta:  # noqa: D106
@@ -101,11 +145,28 @@ class ApiEntitySerializer(DynamicModelSerializer):
     ext_codes = serializers.SerializerMethodField()
 
     def entity_level(self, obj: Entity, admin_level: int):
-        """Return levels of entity."""
+        """
+        Get metadata for the specified administrative level of the entity.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :param admin_level: The administrative level index.
+        :type admin_level: int
+        :return:
+            A dictionary with level information, or ``None`` if unavailable.
+        :rtype: dict or None
+        """
         return None
 
     def get_parents(self, obj: Entity):
-        """Return ucode."""
+        """
+        Get the list of parent entities with metadata.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: A list of dictionaries containing parent details.
+        :rtype: list[dict]
+        """
         output = []
         if not obj.parents:
             return output
@@ -122,28 +183,63 @@ class ApiEntitySerializer(DynamicModelSerializer):
         return output
 
     def get_ucode(self, obj: Entity):
-        """Return ucode."""
+        """
+        Get the unique geometry code (ucode) for the entity.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Geometry unique code.
+        :rtype: str
+        """
         return obj.geom_id
 
     def get_level_name(self, obj: Entity):
-        """Return level name."""
+        """
+        Get the human-readable administrative level name.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Level name or ``'-'`` if unavailable.
+        :rtype: str
+        """
         level = self.entity_level(obj, obj.admin_level)
         return level['name'] if level else '-'
 
     def get_centroid(self, obj: Entity):
-        """Return bbox."""
+        """
+        Get the centroid of the entity's geometry in WKT format.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Centroid as WKT string, or ``None`` if no geometry.
+        :rtype: str or None
+        """
         if obj.geometry:
             return obj.geometry.centroid.wkt
         return None
 
     def get_bbox(self, obj: Entity):
-        """Return bbox."""
+        """
+        Get the bounding box (extent) of the entity geometry.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Geometry extent tuple (minx, miny, maxx, maxy), or ``None``.
+        :rtype: tuple or None
+        """
         if obj.geometry:
             return obj.geometry.extent
         return None
 
     def get_ext_codes(self, obj: Entity):
-        """Return ext_codes."""
+        """
+        Get external codes for the entity.
+
+        :param obj: The entity instance.
+        :type obj: Entity
+        :return: Dictionary of external codes.
+        :rtype: dict
+        """
         return {
             "default": obj.geom_id
         }
@@ -159,6 +255,6 @@ class ApiEntitySerializer(DynamicModelSerializer):
 class ApiEntityGeoSerializer(ApiEntitySerializer, GeoFeatureModelSerializer):
     """Return Entity with geometry."""
 
-    class Meta(ApiEntitySerializer.Meta):
+    class Meta(ApiEntitySerializer.Meta):  # noqa: D106
         geo_field = "geometry"
         fields = ApiEntitySerializer.Meta.fields
