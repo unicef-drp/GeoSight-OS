@@ -267,7 +267,7 @@ export default function IndicatorDataDownloader() {
   ) => {
     // Get per geometries
     geometries.map((geom) => {
-      const ucode = extractCode(geom.properties, "ucode");
+      const ucode = extractCode(geom.properties, geoField);
       const data = getData(
         indicatorLayer,
         indicatorData,
@@ -275,6 +275,7 @@ export default function IndicatorDataDownloader() {
         ucode,
         isIndicator,
       );
+      console.log(data);
       if (data) {
         data.map((dataRow) => {
           const usedGeom = dictDeepCopy(geom);
@@ -284,7 +285,7 @@ export default function IndicatorDataDownloader() {
           properties.GeographyLevel = levels.find(
             (level) => level.level === properties.admin_level,
           )?.level_name;
-          properties.level_name = properties.GeographyLevel
+          properties.level_name = properties.GeographyLevel;
           usedGeom.properties = Object.assign({}, properties, dataRow);
           features.push(usedGeom);
         });
@@ -589,7 +590,6 @@ export default function IndicatorDataDownloader() {
           }
           geometries = geometries.concat(geometryData);
         }
-
         // Get every selected indicators
         state.indicators.map((indicatorId) => {
           // Get per indicator layer
