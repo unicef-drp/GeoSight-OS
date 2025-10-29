@@ -33,7 +33,7 @@ test.describe('Create project', () => {
 
     // Select dataset
     await page.locator(".ReferenceDatasetSection input").click();
-    await page.locator(".ModalDataSelector .MuiDataGrid-row").nth(1).click();
+    await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
 
     // Update indicator layer transparency
     const slider = await page.locator('.transparency-indicator-layer .MuiSlider-root');

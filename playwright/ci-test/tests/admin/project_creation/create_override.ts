@@ -22,7 +22,7 @@ test.describe('Create project', () => {
 
     // Select dataset
     await page.locator(".ReferenceDatasetSection input").click();
-    await page.locator(".ModalDataSelector .MuiDataGrid-row").nth(1).click();
+    await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
 
     // Check extent
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
