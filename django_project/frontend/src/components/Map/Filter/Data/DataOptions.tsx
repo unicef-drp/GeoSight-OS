@@ -51,7 +51,6 @@ export const FetchFromDataOptions = memo(
 /** This is for value */
 export const FetchIndicatorOptions = memo(
   ({ id, onChange }: FetchOptionsData) => {
-    console.log("FetchIndicatorOptions");
     const referenceLayer = useSelector(
       // @ts-ignore
       (state) => state.dashboard.data?.referenceLayer,
@@ -92,6 +91,10 @@ export const FetchIndicatorOptions = memo(
     const parameters = {
       admin_level: adminLevel,
     };
+
+    // --------------------------------
+    // Features:
+    //  Switch parameter by concept_uuid
     if (!isUsingConceptUUID) {
       // @ts-ignore
       parameters["country_geom_id__in"] =
@@ -105,6 +108,8 @@ export const FetchIndicatorOptions = memo(
           (country: CountryDatasetView) => country.concept_uuid,
         );
     }
+    // --------------------------------
+
     if (maxDate) {
       // @ts-ignore
       parameters["date__lte"] = maxDate.split("T")[0];

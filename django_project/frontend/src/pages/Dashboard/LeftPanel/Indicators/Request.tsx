@@ -110,6 +110,10 @@ export const IndicatorRequest = memo(
       admin_level: admin_level,
       page_size: 500,
     };
+
+    // --------------------------------
+    // Features:
+    //  Switch parameter by concept_uuid
     if (!isUsingConceptUUID) {
       params["country_geom_id__in"] = referenceLayerData?.data?.countries?.map(
         (country: CountryDatasetView) => country.ucode,
@@ -120,6 +124,8 @@ export const IndicatorRequest = memo(
           (country: CountryDatasetView) => country.concept_uuid,
         );
     }
+    // --------------------------------
+
     if (selectedGlobalTime.min) {
       params.date__gte = selectedGlobalTime.min.split("T")[0];
     }

@@ -26,6 +26,7 @@ import { UnitConfig, Widget } from "../../../types/Widget";
 import { IndicatorData } from "../../../class/IndicatorData";
 import UnitParameters, { UnitParametersProps } from "./UnitParameters";
 import TimeParameter, { TimeParametersProps } from "./TimeParameter";
+import { CountryDatasetView } from "../../../types/DatasetView";
 
 const fetchIndicatorData = async (params: any) => {
   try {
@@ -68,7 +69,13 @@ export interface Props {
 /**Base widget that handler widget rendering. */
 export default function RequestData({ data, applyData }: Props) {
   const { config } = data;
-  const { dateTimeType } = config;
+
+  const geoField = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.geoField,
+  );
+  const isUsingConceptUUID = geoField === "concept_uuid";
+
   // @ts-ignore
   const referenceLayers = useSelector((state) => state.map?.referenceLayers);
   const referenceLayer = referenceLayers[0];
@@ -121,9 +128,27 @@ export default function RequestData({ data, applyData }: Props) {
       }
       let params: any = {
         admin_level: selectedAdminLevel?.level,
-        country_geom_id__in: countries,
         indicator_id__in: indicators,
       };
+
+      // --------------------------------
+      // Features:
+      //  Switch parameter by concept_uuid
+      if (!isUsingConceptUUID) {
+        // @ts-ignore
+        params["country_geom_id__in"] =
+          referenceLayerData?.data?.countries?.map(
+            (country: CountryDatasetView) => country.ucode,
+          );
+      } else {
+        // @ts-ignore
+        params["country_concept_uuid__in"] =
+          referenceLayerData?.data?.countries?.map(
+            (country: CountryDatasetView) => country.concept_uuid,
+          );
+      }
+      // --------------------------------
+
       if (unitParameterUsed.geographic_units.length > 0) {
         params["geom_id__in"] = unitParameterUsed.geographic_units.map(
           (unit: UnitConfig) => unit.id,
