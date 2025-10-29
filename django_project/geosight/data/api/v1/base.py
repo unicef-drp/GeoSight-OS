@@ -28,7 +28,7 @@ from rest_framework.viewsets import mixins, GenericViewSet
 
 from core.api.base import FilteredAPI
 from core.auth import BearerAuthentication
-from core.pagination import Pagination, GeojsonPagination
+from core.pagination import Pagination
 from core.permissions import (
     RoleContributorAuthenticationPermission,
     RoleCreatorAuthenticationPermission
@@ -46,19 +46,12 @@ class BaseApiV1(FilteredAPI):
     authentication_classes = [
         SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
+    pagination_class = Pagination
     extra_exclude_fields = []
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission', 'format'
     ]
     keep_exclude_fields = False
-
-    @property
-    def pagination_class(self):
-        """Return dynamic pagination class based on format."""
-        format = self.request.query_params.get('format')
-        if format == 'geojson':
-            return GeojsonPagination
-        return Pagination
 
     def get_queryset(self):
         """
