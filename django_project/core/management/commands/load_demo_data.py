@@ -29,10 +29,7 @@ class Command(BaseCommand):
         'core/fixtures/demo/1.core.json',
         'core/fixtures/demo/2.user_group.json',
         'core/fixtures/demo/3.geosight_georepo.json',
-        (
-            'geosight/reference_dataset/fixtures/test/'
-            '4.reference_dataset_levels.json'
-        ),
+        'core/fixtures/demo/3.geosight_georepo_levels.json',
         'core/fixtures/demo/4.geosight_data.json',
         'core/fixtures/demo/5.geosight_permission.json',
     ]
