@@ -70,11 +70,9 @@ export interface Props {
 export default function RequestData({ data, applyData }: Props) {
   const { config } = data;
 
-  const geoField = useSelector(
+  const isUsingConceptUUID =
     // @ts-ignore
-    (state) => state.dashboard.data?.geoField,
-  );
-  const isUsingConceptUUID = geoField === "concept_uuid";
+    useSelector((state) => state.dashboard.data?.geoField) === "concept_uuid";
 
   // @ts-ignore
   const referenceLayers = useSelector((state) => state.map?.referenceLayers);

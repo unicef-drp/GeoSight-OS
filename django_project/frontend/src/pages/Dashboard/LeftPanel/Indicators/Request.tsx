@@ -50,11 +50,10 @@ export const IndicatorRequest = memo(
     isRequest,
   }: Props) => {
     const dispatch = useDispatch();
-    const geoField = useSelector(
+
+    const isUsingConceptUUID =
       // @ts-ignore
-      (state) => state.dashboard.data?.geoField,
-    );
-    const isUsingConceptUUID = geoField === "concept_uuid";
+      useSelector((state) => state.dashboard.data?.geoField) === "concept_uuid";
 
     // @ts-ignore
     const prevState = useRef();
