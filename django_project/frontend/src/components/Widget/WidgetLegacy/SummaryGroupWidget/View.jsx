@@ -253,10 +253,11 @@ export default function SummaryGroupWidgetView({ data }) {
   let indicatorData = null;
   if (layerData) {
     indicatorData = Object.assign({}, layerData);
-    if (indicatorData?.fetched && indicatorData?.data) {
+    if (filteredGeometries && indicatorData?.fetched && indicatorData?.data) {
       indicatorData.data = indicatorData.data.filter((row) => {
         return (
-          !filteredGeometries || filteredGeometries?.includes(row.concept_uuid)
+          filteredGeometries?.includes(row.concept_uuid) ||
+          filteredGeometries?.includes(row.geom_id)
         );
       });
     }
@@ -281,6 +282,10 @@ export default function SummaryGroupWidgetView({ data }) {
         break;
     }
     // render widget by the type
+    console.log("----------------");
+    console.log(filteredGeometries);
+    console.log(layerData);
+    console.log(indicatorData);
     switch (type) {
       case WidgetType.SUMMARY_WIDGET: {
         const _data = cleanLayerData(

@@ -34,7 +34,7 @@ export default function IndicatorLayersReferenceControl() {
    * Update reference layer views
    * */
   useEffect(() => {
-    const views = [referenceLayer];
+    const views = [];
     if (Object.keys(selectedIndicatorLayer).length) {
       const view = referenceLayerIndicatorLayer(
         referenceLayer,
@@ -66,6 +66,9 @@ export default function IndicatorLayersReferenceControl() {
         view.detail_url = `/reference-dataset/${view.identifier}/`;
       }
     });
+    if (views.length === 0) {
+      views.push(referenceLayer);
+    }
     dispatch(Actions.Map.changeReferenceLayers(views));
   }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
 
