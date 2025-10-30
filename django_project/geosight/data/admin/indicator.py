@@ -147,7 +147,6 @@ def assign_country_concept_uuid(  # noqa: DOC109, DOC110
             value.country_concept_uuid IS NULL
         """
     )
-    print(query)
     with connection.cursor() as cursor:
         cursor.execute(query)
 
