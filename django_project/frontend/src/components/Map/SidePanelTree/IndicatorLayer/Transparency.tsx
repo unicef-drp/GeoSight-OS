@@ -32,8 +32,6 @@ export function GlobalIndicatorLayerTransparency({ transparencyKey }: Props) {
     (state) => state.map?.transparency[transparencyKey],
   );
 
-  console.log(dashboardTransparency);
-
   // When dashboard transparency indicator layer changed
   useEffect(() => {
     if (dashboardTransparency === undefined) {

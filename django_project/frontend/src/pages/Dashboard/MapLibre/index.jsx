@@ -406,7 +406,7 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
       <ContextLayers map={map} />
       {map ? (
         <>
-          <IndicatorLayersReferenceControl map={map} />
+          <IndicatorLayersReferenceControl />
           <DatasetGeometryData />
           <ReferenceLayerCentroid map={map} />
           <TransparencyControl map={map} ref={transparencyRef} />

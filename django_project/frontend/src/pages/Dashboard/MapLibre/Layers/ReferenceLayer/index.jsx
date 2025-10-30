@@ -52,7 +52,17 @@ import { Variables } from "../../../../../utils/Variables";
 export const CONTEXT_LAYER_ID = `context-layer`;
 const MAX_ELEVATION = 500000;
 
-const NOCOLOR = `rgba(0, 0, 0, 0)`;
+const defaultColor = {
+  fillColor: preferences.style_no_data_fill_color
+    ? preferences.style_no_data_fill_color
+    : `rgba(0, 0, 0, 0)`,
+  outlineColor: preferences.style_no_data_fill_color
+    ? preferences.style_no_data_outline_color
+    : `rgba(0, 0, 0, 0)`,
+  outlineSize: preferences.style_no_data_outline_size
+    ? preferences.style_no_data_outline_size
+    : 1,
+};
 const INDICATOR_LABEL_ID = "indicator-label";
 const LAYER_HIGHLIGHT_ID = "reference-layer-highlight";
 
@@ -297,9 +307,9 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           type: "line",
           "source-layer": _referenceLayerConfig["source-layer"],
           paint: {
-            "line-color": NOCOLOR,
+            "line-color": defaultColor.outlineColor,
             "line-offset": 1,
-            "line-width": 1,
+            "line-width": defaultColor.outlineSize,
             "line-opacity": transparency,
           },
         },
@@ -314,8 +324,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           type: "fill",
           "source-layer": _referenceLayerConfig["source-layer"],
           paint: {
-            "fill-color": NOCOLOR,
-            "fill-outline-color": NOCOLOR,
+            "fill-color": defaultColor.fillColor,
             "fill-opacity": transparency,
           },
         },
