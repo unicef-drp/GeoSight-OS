@@ -68,6 +68,12 @@
         color: var(--primary-color);
       }
 
+      &.Disabled:hover {
+        color: var(--gray-500) !important;
+        background-color: unset !important;
+        cursor: not-allowed;
+      }
+
       &.Selected {
         background: var(--primary-color-transparency) !important;
         border: unset !important;

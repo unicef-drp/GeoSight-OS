@@ -16,7 +16,7 @@
 .MultipleSelectWithSearch {
 
   .OtherOptions {
-    color: #adb5bd !important;
+    color: var(--gray-500) !important;
     z-index: 1;
 
     button {

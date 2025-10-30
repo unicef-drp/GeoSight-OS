@@ -56,7 +56,6 @@ import DashboardFormHeader from "./DashboardFormHeader";
 import Tooltip from "@mui/material/Tooltip";
 import { IS_DEBUG } from "../../../../utils/logger";
 import DashboardHistory from "./History";
-import { useTranslation } from "react-i18next";
 
 /**
  * Dashboard history
@@ -215,7 +214,7 @@ export function DashboardSaveForm() {
     show_splash_first_open,
     truncate_indicator_layer_name,
     layer_tabs_visibility,
-    show_map_toolbar
+    show_map_toolbar,
   } = useSelector((state) => state.dashboard.data);
   const { data } = useSelector((state) => state.dashboard);
   const [submitted, setSubmitted] = useState(false);
@@ -247,11 +246,8 @@ export function DashboardSaveForm() {
     if (!name) {
       errors.push("Name is empty, please fill it.");
     }
-    if (
-      Object.keys(referenceLayer).length === 0 ||
-      !referenceLayer.identifier
-    ) {
-      errors.push("Need to select View in General.");
+    if (!slug) {
+      errors.push("Slug is empty, please fill it.");
     }
     if (basemapsLayers.length === 0) {
       errors.push("Basemap is empty, please select one or more basemap.");
@@ -415,8 +411,13 @@ export function DashboardSaveForm() {
  * Dashboard Form Section
  */
 export function DashboardForm({ onPreview }) {
-  const { user_permission, view_url, id, name } = useSelector(
-    (state) => state.dashboard.data,
+  const id = useSelector((state) => state.dashboard.data?.user_permission);
+  const name = useSelector((state) => state.dashboard.data?.user_permission);
+  const view_url = useSelector(
+    (state) => state.dashboard.data?.user_permission,
+  );
+  const user_permission = useSelector(
+    (state) => state.dashboard.data?.user_permission,
   );
   const [currentPage, setCurrentPage] = useState(PAGES.GENERAL);
   const className = currentPage.replaceAll(" ", "");

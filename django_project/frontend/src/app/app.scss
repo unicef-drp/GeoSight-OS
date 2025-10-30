@@ -447,8 +447,8 @@ header {
     }
 
     &.Disabled {
-      background: var(--gray-100);
-      color: #adb5bd;
+      background-color: unset !important;
+      color: var(--gray-500);
       cursor: not-allowed;
     }
   }

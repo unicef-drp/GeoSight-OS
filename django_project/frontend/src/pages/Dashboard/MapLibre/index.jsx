@@ -47,7 +47,6 @@ import {
 } from "../Toolbars";
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
-import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 import DatasetGeometryData from "./Controllers/DatasetGeometryData";
 import IndicatorLayersReferenceControl
   from "./IndicatorLayersReferenceControl";
@@ -58,6 +57,8 @@ import { isDashboardToolEnabled } from "../../../selectors/dashboard";
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
 import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
+import ReferenceLayerLevelSelection
+  from "../Toolbars/ReferenceLayerLevelSelection";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
@@ -86,9 +87,6 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
 
   const view3DEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
-  );
-  const levelSelectorEnable = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.LEVEL_SELECTOR),
   );
   const embedToolEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.EMBED_TOOL),
@@ -315,19 +313,7 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
               }}
             />
           ) : null}
-          <Plugin
-            className={"ReferenceLayerToolbar"}
-            hidden={!levelSelectorEnable}
-          >
-            <div data-tool={Variables.DASHBOARD.TOOL.LEVEL_SELECTOR}>
-              <PluginChild
-                title={"Reference Layer selection"}
-                className={"ReferenceLayerSelectorWrapper no-select"}
-              >
-                <ReferenceLayerSection />
-              </PluginChild>
-            </div>
-          </Plugin>
+          <ReferenceLayerLevelSelection />
           <GlobalDateSelector />
         </div>
 
