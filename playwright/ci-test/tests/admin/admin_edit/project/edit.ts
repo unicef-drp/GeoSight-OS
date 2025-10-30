@@ -144,6 +144,46 @@ test.describe('View edit project', () => {
     await expect(JSON.stringify(lastLayerStyles["No data"])).toEqual('{"rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":"0.5"}')
     await expect(JSON.stringify(lastLayerStyles["Other data"])).toEqual('{"rule":"Other data","color":"#A6A6A6","outline_color":"#ffffff","outline_size":"0.5"}')
 
+    // Update the style by quantitative
+    await page.getByText('Override style from indicator').click();
+    await page.locator('div:nth-child(2) > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').first().click();
+    await page.getByRole('option', { name: 'Dynamic quantitative style.' }).click();
+    await page.locator('input[name="dynamic_class_num"]').fill('5');
+    await delay(1000)
+    await page.getByRole('button', { name: 'Apply Changes' }).click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(page.getByText('Configuration has been saved!')).toBeVisible()
+    await page.goto('/project/demo-geosight-project');
+    await page.waitForURL(`${BASE_URL}/project/demo-geosight-project`);
+    await expect(page.locator('.IndicatorLegendRow')).toHaveCount(6);
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(0)).toHaveCSS('background-color', 'rgb(26, 152, 80)');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(0)).toHaveCSS('border', '1px solid rgb(255, 255, 255)');
+    await expect(page.locator('.IndicatorLegendRowName').nth(0)).toHaveText('77.00 - 96.00');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(1)).toHaveCSS('background-color', 'rgb(181, 223, 117)');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(1)).toHaveCSS('border', '1px solid rgb(255, 255, 255)');
+    await expect(page.locator('.IndicatorLegendRowName').nth(1)).toHaveText('58.00 - 77.00');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(2)).toHaveCSS('background-color', 'rgb(255, 255, 191)');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(2)).toHaveCSS('border', '1px solid rgb(255, 255, 255)');
+    await expect(page.locator('.IndicatorLegendRowName').nth(2)).toHaveText('39.00 - 58.00');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(3)).toHaveCSS('background-color', 'rgb(253, 182, 114)');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(3)).toHaveCSS('border', '1px solid rgb(255, 255, 255)');
+    await expect(page.locator('.IndicatorLegendRowName').nth(3)).toHaveText('20.00 - 39.00');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(4)).toHaveCSS('background-color', 'rgb(215, 48, 39)');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(4)).toHaveCSS('border', '1px solid rgb(255, 255, 255)');
+    await expect(page.locator('.IndicatorLegendRowName').nth(4)).toHaveText('1.00 - 20.00');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(5)).toHaveCSS('background-color', 'rgb(216, 216, 216)');
+    await expect(page.locator('.IndicatorLegendRowBlock').nth(5)).toHaveCSS('border', '1px solid rgb(255, 255, 255)');
+    await expect(page.locator('.IndicatorLegendRowName').nth(5)).toHaveText('No data');
+
+
+    // Update the style by role
+    await page.goto('/admin/project/demo-geosight-project/edit');
+    await page.waitForURL(`${BASE_URL}/admin/project/demo-geosight-project/edit`);
+    await page.getByText('Indicator Layers (10)').click();
+    await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();
+    await page.locator('.TabPrimary').getByText('Style', { exact: true }).click();
+    await page.getByText('Override style from indicator').click();
+    await delay(1000)
     await page.getByText('Override style from indicator').click();
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
