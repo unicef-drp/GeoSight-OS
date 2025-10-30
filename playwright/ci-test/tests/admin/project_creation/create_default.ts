@@ -166,6 +166,23 @@ test.describe('Create project', () => {
 
     // Check transparency
     await page.getByRole('tab', { name: 'Context Layers' }).click();
+    await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel')).toBeHidden();
+    await expect(page.locator('#simple-tabpanel-0 .TreeView').first()).toHaveText("No context layers available");
+    await page.getByRole('tab', { name: 'Indicators' }).click();
+    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+
+    await page.goto(editUrl);
+    await page.waitForURL(editUrl)
+
+    // Add context layer
+    await page.getByText('Context Layers', { exact: true }).nth(1).click();
+    await page.getByRole('button', { name: 'Add Context Layer' }).click();
+    await page.getByRole('cell', { name: 'Somalia healthsites' }).click();
+    await page.getByRole('button', { name: 'Update Selection' }).click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(page.getByText('Configuration has been saved!')).toBeVisible()
+    await page.goto('/project/test-project-default');
+    await page.getByRole('tab', { name: 'Context Layers' }).click();
     await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
     await page.getByRole('tab', { name: 'Indicators' }).click();
     await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();

@@ -42,7 +42,7 @@ import Highlighted from "../Highlighted";
 import { MagnifyIcon } from "../../../Icons";
 import { dictDeepCopy } from "../../../../utils/main";
 import SidePanelSlicers from "../SidePanelSlicers";
-import { GlobalContextLayerTransparency } from "./Transparency";
+import { GlobalIndicatorLayerTransparency } from "../IndicatorLayer/Transparency";
 
 import "./style.scss";
 
@@ -438,35 +438,41 @@ export default function SidePanelTreeView({
 
   return (
     <div className="TreeView">
-      <Paper
-        component="form"
-        sx={{
-          p: "2px 4px",
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <FilterLayer
-          placeholder={props.placeholder}
-          inputChanged={(input) => setFilterText(input)}
-        />
-      </Paper>
-      <TreeView
-        aria-label="rich object"
-        ref={layerGroupListRef}
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        expanded={groups.filter((group) => !unexpandedGroups.includes(group))}
-        onNodeToggle={handleToggle}
-        onNodeSelect={handleSelect}
-        defaultExpandIcon={<ExpandLessIcon />}
-        sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
-      >
-        {nodes.length > 0
-          ? nodes.map((treeData) => renderTree(treeData))
-          : "No data"}
-      </TreeView>
-      <GlobalContextLayerTransparency />
+      {nodes.length > 0 ? (
+        <>
+          <Paper
+            component="form"
+            sx={{
+              p: "2px 4px",
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <FilterLayer
+              placeholder={props.placeholder}
+              inputChanged={(input) => setFilterText(input)}
+            />
+          </Paper>
+          <TreeView
+            aria-label="rich object"
+            ref={layerGroupListRef}
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            expanded={groups.filter(
+              (group) => !unexpandedGroups.includes(group),
+            )}
+            onNodeToggle={handleToggle}
+            onNodeSelect={handleSelect}
+            defaultExpandIcon={<ExpandLessIcon />}
+            sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
+          >
+            {nodes.map((treeData) => renderTree(treeData))}
+          </TreeView>
+          <GlobalIndicatorLayerTransparency transparencyKey={"contextLayer"} />
+        </>
+      ) : (
+        <div className="NoData">No context layers available</div>
+      )}
     </div>
   );
 }

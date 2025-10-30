@@ -17,38 +17,42 @@ import { useDispatch, useSelector } from "react-redux";
 import Transparency from "../../../TransparencySlider";
 import { Actions } from "../../../../store/dashboard";
 
-export interface Props {}
+export interface Props {
+  transparencyKey: string;
+}
 
-export function GlobalIndicatorLayerTransparency({}: Props) {
+export function GlobalIndicatorLayerTransparency({ transparencyKey }: Props) {
   const dispatch = useDispatch();
-  const {
-    indicatorLayer,
+  const dashboardTransparency = useSelector(
     // @ts-ignore
-  } = useSelector((state) => state.dashboard.data?.transparency_config);
-  const {
-    indicatorLayer: currTransparency,
+    (state) => state.dashboard.data?.transparency_config[transparencyKey],
+  );
+  const currTransparency = useSelector(
     // @ts-ignore
-  } = useSelector((state) => state.map?.transparency);
+    (state) => state.map?.transparency[transparencyKey],
+  );
+
+  console.log(dashboardTransparency);
 
   // When dashboard transparency indicator layer changed
   useEffect(() => {
-    if (indicatorLayer === undefined) {
-      dispatch(Actions.Map.updateTransparency("indicatorLayer", 100));
+    if (dashboardTransparency === undefined) {
+      dispatch(Actions.Map.updateTransparency(transparencyKey, 100));
     } else {
       dispatch(
-        Actions.Map.updateTransparency("indicatorLayer", indicatorLayer),
+        Actions.Map.updateTransparency(transparencyKey, dashboardTransparency),
       );
     }
-  }, [indicatorLayer]);
+  }, [dashboardTransparency]);
 
   return (
     <Transparency
       value={currTransparency}
       onChange={(value) =>
-        dispatch(Actions.Map.updateTransparency("indicatorLayer", value))
+        dispatch(Actions.Map.updateTransparency(transparencyKey, value))
       }
       onChangeCommitted={(value) =>
-        dispatch(Actions.Map.updateTransparency("indicatorLayer", value))
+        dispatch(Actions.Map.updateTransparency(transparencyKey, value))
       }
     />
   );

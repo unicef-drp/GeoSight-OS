@@ -396,38 +396,44 @@ export default function SidePanelTreeView({
   };
   return (
     <div className="TreeView">
-      <Paper
-        component="form"
-        sx={{
-          p: "2px 4px",
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <FilterLayer
-          placeholder={props.placeholder}
-          inputChanged={(input) => setFilterText(input)}
-        />
-      </Paper>
-      <TreeView
-        aria-label="rich object"
-        ref={layerGroupListRef}
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        expanded={groups.filter((group) => !unexpandedGroups.includes(group))}
-        onNodeToggle={handleToggle}
-        onNodeSelect={handleSelect}
-        defaultExpandIcon={<ExpandLessIcon />}
-        sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
-      >
-        <CompositeIndexLayer />
-        {nodes.length > 0 ? (
-          nodes.map((treeData) => renderTree(treeData))
-        ) : (
-          <div style={{ margin: "1rem 0" }}>No data</div>
-        )}
-      </TreeView>
-      <GlobalIndicatorLayerTransparency />
+      {nodes.length > 0 ? (
+        <>
+          <Paper
+            component="form"
+            sx={{
+              p: "2px 4px",
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <FilterLayer
+              placeholder={props.placeholder}
+              inputChanged={(input) => setFilterText(input)}
+            />
+          </Paper>
+          <TreeView
+            aria-label="rich object"
+            ref={layerGroupListRef}
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            expanded={groups.filter(
+              (group) => !unexpandedGroups.includes(group),
+            )}
+            onNodeToggle={handleToggle}
+            onNodeSelect={handleSelect}
+            defaultExpandIcon={<ExpandLessIcon />}
+            sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
+          >
+            <CompositeIndexLayer />
+            {nodes.map((treeData) => renderTree(treeData))}
+          </TreeView>
+          <GlobalIndicatorLayerTransparency
+            transparencyKey={"indicatorLayer"}
+          />
+        </>
+      ) : (
+        <div className="NoData">No indicators available</div>
+      )}
     </div>
   );
 }
