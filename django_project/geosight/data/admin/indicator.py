@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.db import connection
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -123,22 +124,8 @@ def assign_flat_table_selected(  # noqa: DOC109, DOC110
     )
 
 
-@admin.action(description='Assign flat table')
-def assign_flat_table(  # noqa: DOC109, DOC110
-        modeladmin, request, queryset
-):
-    """
-    Assign all IndicatorValue objects to the flat table.
-
-    :param modeladmin: The admin model instance.
-    :param request: The current request.
-    :param queryset: The queryset of selected objects.
-    """
-    IndicatorValue.assign_flat_table()
-
-
-@admin.action(description='Assign country')
-def assign_country(  # noqa: DOC109, DOC110
+@admin.action(description='Assign concept uuid')
+def assign_country_concept_uuid(  # noqa: DOC109, DOC110
         modeladmin, request, queryset
 ):
     """
@@ -148,8 +135,20 @@ def assign_country(  # noqa: DOC109, DOC110
     :param request: The current request.
     :param queryset: The queryset of selected objects.
     """
-    for query in queryset:
-        query.assign_country()
+    query = (
+        """
+        UPDATE geosight_data_indicatorvalue AS value
+        SET country_concept_uuid=country.concept_uuid
+        FROM
+            geosight_georepo_entity AS country
+        WHERE
+            value.country_geom_id = country.geom_id
+          AND
+            value.country_concept_uuid IS NULL
+        """
+    )
+    with connection.cursor() as cursor:
+        cursor.execute(query)
 
 
 class IndicatorValueAdmin(admin.ModelAdmin):
@@ -162,7 +161,7 @@ class IndicatorValueAdmin(admin.ModelAdmin):
     list_filter = (NullEntityFilter, NullCountryFilter, 'date')
     search_fields = ('indicator__name', 'geom_id')
     actions = (
-        assign_flat_table, assign_flat_table_selected, assign_country
+        assign_flat_table_selected, assign_country_concept_uuid
     )
     raw_id_fields = ('country', 'entity')
 
