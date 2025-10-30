@@ -324,7 +324,6 @@ const ArcGisStyle = async (map, id, layer) => {
                   map.setLayoutProperty(layerId, 'icon-image', paint);
                   if (iconSize && iconSize[0]) {
                     const scale = iconSize[0][0] / image.data.width;
-                    console.log(scale)
                     map.setLayoutProperty(layerId, 'icon-size', scale);
                   }
                 }
@@ -356,7 +355,6 @@ const ArcGisStyle = async (map, id, layer) => {
                         if (iconSize && iconSize[0]) {
                           if (cases[idx - 1]) {
                             const scale = iconSize[0] / image.data.width
-                            console.log(scale)
                             sizeCases.push(cases[idx - 1])
                             sizeCases.push(scale)
                           }

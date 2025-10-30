@@ -275,7 +275,6 @@ export default function IndicatorDataDownloader() {
         ucode,
         isIndicator,
       );
-      console.log(data);
       if (data) {
         data.map((dataRow) => {
           const usedGeom = dictDeepCopy(geom);
