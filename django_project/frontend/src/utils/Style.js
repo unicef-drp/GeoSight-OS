@@ -402,7 +402,7 @@ function middleColor(color1, color2, ratio) {
   color1 = color1.replace("#", "");
   color2 = color2.replace("#", "");
   const hex = (color) => {
-    const s = color.toString(16);
+    const s = Math.floor(color).toString(16);
     return s.length === 1 ? "0" + s : s;
   };
 

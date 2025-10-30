@@ -3,9 +3,9 @@
     "model": "core.colorpalette",
     "pk": 2,
     "fields": {
-      "name": "Sezen Aksu 2",
+      "name": "Blue-Violet-Yellow",
       "description": "",
-      "colors": "[\"#1b60a0\", \"#68132a\", \"#ea465e\", \"#022c3a\", \"#0f752b\"]"
+      "colors": "[\"#481793\",\"#7F1EB4\",\"#B233B9\",\"#E745B5\",\"#FF778D\",\"#FFAE85\",\"#FFFFD1\"]"
     }
   },
   {
