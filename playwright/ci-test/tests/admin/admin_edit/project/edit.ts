@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../../variables";
+import { editProject } from "../../../utils/project"
 
 // URL That we need to check
 const timeout = 2000;
@@ -7,8 +8,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('View edit project', () => {
   test.beforeEach(async ({ page }) => {
-    // Go to the starting url before each test.
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    await editProject(page, 'demo-geosight-project')
   });
   test('Edit project', async ({ page }) => {
     let lastLayerStyles = null
@@ -45,7 +45,7 @@ test.describe('View edit project', () => {
 
     // --------------------------------------------------------------------
     // Check filter is hidden or not
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    await editProject(page, 'demo-geosight-project')
     await page.locator('.TabPrimary').getByText('Filters').click();
     await page.getByText('Hide filter section').click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
@@ -55,7 +55,7 @@ test.describe('View edit project', () => {
     await page.getByRole('button', { name: 'Close' }).click();
     await expect(page.getByRole('tab', { name: 'Filters' })).toBeHidden();
 
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    await editProject(page, 'demo-geosight-project')
     await page.locator('.TabPrimary').getByText('Filters').click();
     await page.getByText('Hide filter section').click();
 
@@ -109,7 +109,7 @@ test.describe('View edit project', () => {
     await expect(page.getByText('/ 2')).toBeVisible();
 
     // Check extent
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    await editProject(page, 'demo-geosight-project')
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
@@ -177,8 +177,7 @@ test.describe('View edit project', () => {
 
 
     // Update the style by role
-    await page.goto('/admin/project/demo-geosight-project/edit');
-    await page.waitForURL(`${BASE_URL}/admin/project/demo-geosight-project/edit`);
+    await editProject(page, 'demo-geosight-project')
     await page.getByText('Indicator Layers (10)').click();
     await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();
     await page.locator('.TabPrimary').getByText('Style', { exact: true }).click();

@@ -118,6 +118,8 @@ test.describe('Indicator list admin', () => {
     // Test Project Selection
     // ----------------------------------
     await page.goto('/admin/project/create');
+    await page.getByRole('textbox', { name: 'Select View' }).click();
+    await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
     await page.locator('.DashboardFormHeader').getByText('Indicators').click();
     await page.getByRole('button', { name: 'Add Indicator' }).click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()

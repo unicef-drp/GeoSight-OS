@@ -18,6 +18,14 @@ export async function viewProject(page, name) {
   await page.goto(`/project/${nameToSlug(name)}`);
 }
 
+
+export async function editProject(page, name) {
+  await page.goto(`/admin/project/${nameToSlug(name)}/edit`);
+  await page.waitForURL(`${BASE_URL}/admin/project/demo-geosight-project/edit`);
+  await expect(page.locator('div').getByText('Fetching Project Data...')).toBeHidden();
+}
+
+
 export async function deleteProject(page, name) {
   await page.goto(`/admin/project/${nameToSlug(name)}/edit`);
   await page.locator('.MoreActionIcon').click();
