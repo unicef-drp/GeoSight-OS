@@ -24,7 +24,9 @@ test.describe('View kenya latest project', () => {
     await page.getByRole('button', { name: 'Create New Project' }).click();
     await page.getByRole('textbox', { name: 'Select View' }).click();
     await page.getByRole('cell', { name: 'Kenya (Latest)' }).click();
-    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill('Kenya Test');
+    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).click();
+    await page.keyboard.type('Kenya Test');
+    await delay(1000);
 
     // Options
     await page.locator('.ReactSelect__input-container').first().click();

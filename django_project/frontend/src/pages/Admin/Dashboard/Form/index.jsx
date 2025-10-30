@@ -74,11 +74,15 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
   }, [openSaveAs]);
 
   useEffect(() => {
-    $("#GeneralName").val(nameData);
+    if (nameData) {
+      $("#GeneralName").val(nameData);
+    }
   }, [nameData]);
 
   useEffect(() => {
-    $("#GeneralSlug").val(slugInput);
+    if (slugInput) {
+      $("#GeneralSlug").val(slugInput);
+    }
   }, [slugInput]);
 
   return (
@@ -358,7 +362,6 @@ export function DashboardSaveForm() {
         "transparency_config",
         JSON.stringify(transparency_config),
       );
-
       postData(targetUrl, formData, function (response, responseError) {
         setSubmitted(false);
         if (responseError) {
@@ -411,11 +414,9 @@ export function DashboardSaveForm() {
  * Dashboard Form Section
  */
 export function DashboardForm({ onPreview }) {
-  const id = useSelector((state) => state.dashboard.data?.user_permission);
-  const name = useSelector((state) => state.dashboard.data?.user_permission);
-  const view_url = useSelector(
-    (state) => state.dashboard.data?.user_permission,
-  );
+  const id = useSelector((state) => state.dashboard.data?.id);
+  const name = useSelector((state) => state.dashboard.data?.name);
+  const view_url = useSelector((state) => state.dashboard.data?.view_url);
   const user_permission = useSelector(
     (state) => state.dashboard.data?.user_permission,
   );
