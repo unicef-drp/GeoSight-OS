@@ -36,7 +36,7 @@ from geosight.permission.access import (
 class IndicatorListAPI(APIView):
     """API for list of indicator."""
 
-    def get(self, request):
+    def get(self, request):  # noqa: DOC101, DOC103, DOC201
         """Return Indicatorslist."""
         return Response(
             IndicatorSerializer(
@@ -52,7 +52,7 @@ class IndicatorListAPI(APIView):
 class IndicatorAdminListAPI(APIView):
     """Return list of indicator in admin data."""
 
-    def get(self, request):
+    def get(self, request):  # noqa: DOC101, DOC103, DOC201
         """Return Indicatorslist."""
         return Response(
             IndicatorAdminListSerializer(
@@ -62,7 +62,7 @@ class IndicatorAdminListAPI(APIView):
             ).data
         )
 
-    def post(self, request):
+    def post(self, request):  # noqa: DOC101, DOC103, DOC201
         """Return Indicatorslist."""
         ids = request.data['ids']
         return Response(
@@ -75,7 +75,7 @@ class IndicatorAdminListAPI(APIView):
             ).data
         )
 
-    def delete(self, request):
+    def delete(self, request):  # noqa: DOC101, DOC103, DOC201
         """Delete objects."""
         ids = json.loads(request.data['ids'])
         for obj in Indicator.permissions.delete(request.user).filter(
@@ -87,7 +87,7 @@ class IndicatorAdminListAPI(APIView):
 class IndicatorBasicListAPI(APIView):
     """Return list of indicator in basic data."""
 
-    def get(self, request):
+    def get(self, request):  # noqa: DOC101, DOC103, DOC201
         """Return Indicatorslist."""
         return Response(
             IndicatorBasicListSerializer(
@@ -103,7 +103,7 @@ class IndicatorDetailAPI(APIView):
 
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, pk):
+    def get(self, request, pk):  # noqa: DOC101, DOC103, DOC201
         """Delete an indicator."""
         indicator = get_object_or_404(Indicator, pk=pk)
         read_permission_resource(indicator, request.user)
@@ -114,7 +114,7 @@ class IndicatorDetailAPI(APIView):
             ).data
         )
 
-    def delete(self, request, pk):
+    def delete(self, request, pk):  # noqa: DOC101, DOC103, DOC201
         """Delete an indicator."""
         indicator = get_object_or_404(Indicator, pk=pk)
         delete_permission_resource(indicator, request.user)
@@ -125,7 +125,7 @@ class IndicatorDetailAPI(APIView):
 class IndicatorMetadataAPI(APIView):
     """API for Values of indicator."""
 
-    def get(self, request, pk, **kwargs):
+    def get(self, request, pk, **kwargs):  # noqa: DOC101, DOC103, DOC201
         """Return Values."""
         indicator = get_object_or_404(Indicator, pk=pk)
         reference_layer = get_object_or_404(
@@ -133,7 +133,9 @@ class IndicatorMetadataAPI(APIView):
             identifier=self.request.GET.get('reference_layer_uuid', '')
         )
         return Response(
-            indicator.metadata(reference_layer)
+            indicator.metadata(
+                reference_layer, self.request.GET.get('is_using_uuid', False)
+            )
         )
 
 
@@ -142,7 +144,7 @@ class SearchSimilarityIndicatorAPI(APIView):
 
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, **kwargs):
+    def post(self, request, **kwargs):  # noqa: DOC101, DOC103, DOC201
         """Return Values."""
         data = request.data
         try:

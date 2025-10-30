@@ -13,7 +13,7 @@ test.describe('Dataset list admin', () => {
     // Test filter by country
     await page.getByRole('textbox').nth(1).click();
     await page.getByRole('cell', { name: 'Somalia' }).click();
-    await page.getByRole('cell', { name: 'Kenya' }).click();
+    await page.getByRole('cell', { name: 'KEN_V1', exact: true }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.getByRole('grid')).toContainText('0–0 of 0');
     await page.getByRole('textbox').nth(1).click();

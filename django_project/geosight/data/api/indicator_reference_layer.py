@@ -34,11 +34,30 @@ class _BaseAPI(APIView):
     """Base API."""
 
     def check_permission(self, user, indicator):
-        """Check permission."""
+        """
+        Check if the given user has permission to access the indicator.
+
+        :param user: The user to check permission for.
+        :type user: User
+        :param indicator: The indicator object to check access against.
+        :type indicator: Indicator
+        """
         read_permission_resource(indicator, user)
 
     def return_parameters(self, request):
-        """Return parameters for data."""
+        """
+        Return min and max time parameters from the request.
+
+        Parses the GET parameters `time__gte` and `time__lte` from the request
+        to return corresponding datetime objects.
+
+        :param request: Django request object containing GET parameters.
+        :type request: HttpRequest
+        :return:
+            Tuple of (min_time, max_time),
+            where max_time defaults to now if not provided.
+        :rtype: tuple[datetime.date or None, datetime.datetime]
+        """
         max_time = request.GET.get('time__lte', None)
         if max_time:
             max_time = date_parser.parse(max_time)
@@ -54,7 +73,17 @@ class _BaseAPI(APIView):
         return min_time, max_time
 
     def return_reference_view(self):
-        """Return reference view."""
+        """
+        Return the ReferenceLayerView object based on the request parameter.
+
+        Retrieves the `reference_layer_uuid` from the request's GET parameters
+        and fetches or creates a corresponding ReferenceLayerView object.
+
+        :return:
+            ReferenceLayerView instance if `reference_layer_uuid` is provided,
+            else None
+        :rtype: ReferenceLayerView or None
+        """
         identifier = self.request.GET.get('reference_layer_uuid', None)
         if identifier:
             reference_layer, _ = ReferenceLayerView.objects.get_or_create(
@@ -67,7 +96,7 @@ class _BaseAPI(APIView):
 class IndicatorBatchMetadataAPI(_BaseAPI):
     """API for Values of indicator."""
 
-    def post(self, request, **kwargs):
+    def post(self, request, **kwargs):  # noqa : DOC101, DOC103, DOC201
         """Return Values."""
         reference_layer = self.return_reference_view()
         if not reference_layer:
@@ -81,7 +110,8 @@ class IndicatorBatchMetadataAPI(_BaseAPI):
             try:
                 read_permission_resource(indicator, self.request.user)
                 responses[indicator.id] = indicator.metadata_with_cache(
-                    reference_layer
+                    reference_layer,
+                    self.request.GET.get('is_using_uuid', False)
                 )
             except ResourcePermissionDenied:
                 responses[indicator.id] = {

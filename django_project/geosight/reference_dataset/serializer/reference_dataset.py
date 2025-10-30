@@ -33,11 +33,25 @@ class ReferenceDatasetLevelSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
 
     def get_level_name(self, obj: ReferenceDatasetLevel):
-        """Return value."""
+        """
+        Return the display name for the level.
+
+        :param obj: The ReferenceDatasetLevel instance.
+        :type obj: ReferenceDatasetLevel
+        :return: The name of the level.
+        :rtype: str
+        """
         return obj.name
 
     def get_url(self, obj: ReferenceDatasetLevel):
-        """Return value."""
+        """
+        Return the API URL for the level’s entities.
+
+        :param obj: The ReferenceDatasetLevel instance.
+        :type obj: ReferenceDatasetLevel
+        :return: The URL to the related entity API list.
+        :rtype: str
+        """
         return reverse(
             'reference-datasets-detail-entity-api-list',
             kwargs={'identifier': obj.reference_layer.identifier}
@@ -54,12 +68,19 @@ class EntitySerializer(serializers.ModelSerializer):
     ucode = serializers.SerializerMethodField()
 
     def get_ucode(self, obj: Entity):
-        """Return value."""
+        """
+        Return the unique geometry code (geom_id).
+
+        :param obj: The Entity instance.
+        :type obj: Entity
+        :return: The entity’s geometry ID.
+        :rtype: str
+        """
         return obj.geom_id
 
     class Meta:  # noqa: D106
         model = Entity
-        fields = ('name', 'ucode')
+        fields = ('name', 'ucode', 'concept_uuid')
 
 
 class ReferenceDatasetSerializer(DynamicModelSerializer):
@@ -75,11 +96,27 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
     countries = serializers.SerializerMethodField()
 
     def get_uuid(self, obj: ReferenceDataset):
-        """Return uuid."""
+        """
+        Return the unique identifier for the dataset.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return: The dataset UUID.
+        :rtype: str
+        """
         return obj.identifier
 
     def get_bbox(self, obj: ReferenceDataset):
-        """Return value."""
+        """
+        Return the bounding box (extent) of the dataset entities.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return:
+            The bounding box as a list [xmin, ymin, xmax, ymax],
+            or ``None`` if unavailable.
+        :rtype: list[float] | None
+        """
         try:
             return [
                 float(str(round(geom, 4))) for geom in
@@ -91,7 +128,16 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
             return None
 
     def get_vector_tiles(self, obj: ReferenceDataset):
-        """Return value."""
+        """
+        Return the URL pattern for accessing the dataset’s vector tiles.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return:
+            The vector tile URL template
+            (with ``{z}``, ``{x}``, ``{y}`` placeholders).
+        :rtype: str
+        """
         url = reverse(
             'reference-datasets-vector-tile-api',
             kwargs={
@@ -114,21 +160,49 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
         return url
 
     def get_possible_id_types(self, obj: ReferenceDataset):
-        """Return value."""
+        """
+        Return the supported identifier field types for entities.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return: A list of possible identifier field names.
+        :rtype: list[str]
+        """
         return ['ucode', 'concept_uuid']
 
     def get_dataset_levels(self, obj: ReferenceDataset):
-        """Return value."""
+        """
+        Return serialized dataset levels.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return: A list of serialized dataset levels.
+        :rtype: list[dict]
+        """
         return ReferenceDatasetLevelSerializer(
             obj.referencedatasetlevel_set.order_by('level'), many=True
         ).data
 
     def get_tags(self, obj: ReferenceDataset):
-        """Return value."""
+        """
+        Return a list of predefined tags.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return: A list of tag strings.
+        :rtype: list[str]
+        """
         return ['GeoSight', 'local']
 
     def get_permission(self, obj: ReferenceDataset):
-        """Return permission."""
+        """
+        Return permission data for the current user.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return: A permission dictionary for the dataset.
+        :rtype: dict
+        """
         from geosight.permission.models.resource.reference_layer_view import (
             ReferenceLayerViewPermission
         )
@@ -143,7 +217,14 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
         )
 
     def get_countries(self, obj: ReferenceDataset):
-        """Return countries."""
+        """
+        Return serialized countries associated with the dataset.
+
+        :param obj: The ReferenceDataset instance.
+        :type obj: ReferenceDataset
+        :return: A list of serialized countries.
+        :rtype: list[dict]
+        """
         return EntitySerializer(obj.countries, many=True).data
 
     class Meta:  # noqa: D106
@@ -166,11 +247,25 @@ class ReferenceDatasetCentroidUrlSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
 
     def get_level_name(self, obj: ReferenceDatasetLevel):
-        """Return value."""
+        """
+        Return the display name for the level.
+
+        :param obj: The ReferenceDatasetLevel instance.
+        :type obj: ReferenceDatasetLevel
+        :return: The level name.
+        :rtype: str
+        """
         return obj.name
 
     def get_url(self, obj: ReferenceDatasetLevel):
-        """Return value."""
+        """
+        Return the centroid API URL for this level.
+
+        :param obj: The ReferenceDatasetLevel instance.
+        :type obj: ReferenceDatasetLevel
+        :return: The centroid API URL.
+        :rtype: str
+        """
         return reverse(
             'reference-datasets-centroid-api',
             kwargs={

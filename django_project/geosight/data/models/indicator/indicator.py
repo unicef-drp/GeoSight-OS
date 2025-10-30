@@ -34,8 +34,8 @@ from geosight.data.models.style.indicator_style import (
     IndicatorStyleBaseModel, IndicatorStyleType
 )
 from geosight.data.serializer.style import StyleRuleSerializer
-from geosight.permission.models.manager import PermissionManager
 from geosight.permission.access.mixin import edit_data_permission_resource
+from geosight.permission.models.manager import PermissionManager
 
 VALUE_IS_EMPTY_TEXT = 'Value is empty'
 
@@ -128,8 +128,13 @@ class Indicator(
             return f'{self.group}/{self.name} ({self.shortcode})'
         return f'{self.group}/{self.name}'
 
-    def save(self, *args, **kwargs):
-        """On save method."""
+    def save(self, *args, **kwargs):  # noqa : DOC109, DOC110, DOC103
+        """
+        Override the save method to trigger asynchronous data access creation.
+
+        :param args: Positional arguments.
+        :param kwargs: Keyword arguments.
+        """
         from geosight.georepo.tasks import create_data_access_indicator
         created = self.pk is None
         super(Indicator, self).save(*args, **kwargs)
@@ -138,14 +143,24 @@ class Indicator(
 
     @property
     def last_update(self):
-        """Return reporting level."""
+        """
+        Return the most recent update date of the indicator.
+
+        :return: Date of the most recent value or ``None``.
+        :rtype: date | None
+        """
         first_value = self.query_values().first()
         if first_value:
             return first_value.date
         return None
 
     def rules_dict(self):
-        """Return rules in list of dict."""
+        """
+        Return indicator rules as a list of dictionaries.
+
+        :return: Serialized rule definitions.
+        :rtype: list[dict]
+        """
         from geosight.data.serializer.indicator import IndicatorRuleSerializer
         return [
             dict(rule) for rule in IndicatorRuleSerializer(
@@ -155,13 +170,25 @@ class Indicator(
 
     @property
     def style_conf(self):
-        """Return style."""
+        """
+        Return the indicator style configuration.
+
+        :return: Style configuration instance.
+        :rtype: IndicatorStyleBaseModel
+        """
         if self.style_type == IndicatorStyleType.LIBRARY and self.style:
             return self.style
         return self
 
     def style_obj(self, user):
-        """Return style."""
+        """
+        Return serialized style rules for the indicator.
+
+        :param user: The requesting user.
+        :type user: django.contrib.auth.models.User
+        :return: Serialized style data or ``None``.
+        :rtype: list[dict] | None
+        """
         from geosight.data.serializer.indicator import IndicatorRuleSerializer
         if self.style_type == IndicatorStyleType.PREDEFINED:
             return IndicatorRuleSerializer(
@@ -174,11 +201,28 @@ class Indicator(
         return None
 
     def able_to_write_data(self, user):
-        """Is able to write data."""
+        """
+        Check if the user has permission to edit data for this indicator.
+
+        :param user: The user to check permission for.
+        :type user: django.contrib.auth.models.User
+        """
         edit_data_permission_resource(self, user)
 
     def validate(self, value):
-        """Check value and return the comment."""
+        """
+        Validate a value according to the indicator's type and constraints.
+
+        :param value: The value to validate.
+        :type value: any
+        :raises IndicatorValueRejectedError: Raised if the value is empty,
+            not an integer/float/string as required,
+            out of min/max bounds, or not in the codelist.
+        :raises ValueError: Internally caught; not propagated
+        :return:
+            A tuple containing the validated value and an optional comment.
+        :rtype: tuple[any, str]
+        """
         comment = ''
         if value in [None, '']:
             raise IndicatorValueRejectedError(VALUE_IS_EMPTY_TEXT)
@@ -239,7 +283,7 @@ class Indicator(
                 raise IndicatorValueRejectedError('Value is not string')
         return value, comment
 
-    def save_value(
+    def save_value(  # noqa: DOC501,DOC503
             self,
             date: date, geom_id: str, value: any,
 
@@ -252,7 +296,28 @@ class Indicator(
             geom_id_type: str = 'ucode',
             more_error_information=False
     ):
-        """Save new value for the indicator."""
+        """
+        Save a new indicator value.
+
+        :param date: The date of the value.
+        :type date: date
+        :param geom_id: The geometry identifier (ucode or original ID).
+        :type geom_id: str
+        :param value: The value to be stored.
+        :type value: any
+        :param reference_layer: The reference layer context.
+        :type reference_layer: ReferenceLayerView | str | None
+        :param admin_level: Optional administrative level.
+        :type admin_level: int | None
+        :param extras: Optional extra metadata to attach to the value.
+        :type extras: dict | None
+        :param geom_id_type: The type of geometry ID (default: ``'ucode'``).
+        :type geom_id_type: str
+        :param more_error_information: Include additional error context.
+        :type more_error_information: bool
+        :return: The created or updated IndicatorValue instance.
+        :rtype: IndicatorValue
+        """
         from geosight.data.models.indicator import (
             IndicatorValue
         )
@@ -327,7 +392,28 @@ class Indicator(
             concept_uuids: list = None,
             entities_id: list = None
     ):
-        """Return query of indicator values."""
+        """
+        Return a queryset of indicator values filtered by various parameters.
+
+        :param date_data: Filter values up to this date.
+        :type date_data: date, optional
+        :param min_date_data: Filter values from this date onwards.
+        :type min_date_data: date, optional
+        :param reference_layer: Reference layer context for filtering.
+        :type reference_layer: ReferenceLayerView or None
+        :param countries_id: List of country IDs to filter.
+        :type countries_id: list[int], optional
+        :param admin_level: Filter by administrative level.
+        :type admin_level: int, optional
+        :param concept_uuid: Filter by a single concept UUID.
+        :type concept_uuid: str, optional
+        :param concept_uuids: Filter by multiple concept UUIDs.
+        :type concept_uuids: list[str], optional
+        :param entities_id: Filter by entity IDs.
+        :type entities_id: list[int], optional
+        :return: QuerySet of filtered IndicatorValueWithGeo objects.
+        :rtype: django.db.models.query.QuerySet
+        """
         from geosight.data.models.indicator.indicator_value import (
             IndicatorValueWithGeo
         )
@@ -361,7 +447,17 @@ class Indicator(
         return query
 
     def rule_by_value(self, value, rule_set=None):
-        """Return scenario level of the value."""
+        """
+        Return the indicator rule that matches a given value.
+
+        :param value: The value to evaluate against rules.
+        :type value: any
+        :param rule_set:
+            Optional set of rules to evaluate. Defaults to all rules.
+        :type rule_set: QuerySet, optional
+        :return: Matching indicator rule or None if no match.
+        :rtype: IndicatorRule or None
+        """
         if not rule_set:
             rule_set = self.indicatorrule_set.all()
         if value is not None:
@@ -389,10 +485,29 @@ class Indicator(
             concept_uuids: list = None, last_value=True,
             entities_id: list = None
     ):
-        """Return list data based on date.
+        """
+        Return a list of indicator values filtered by parameters.
 
-        If it is upper than the reporting geometry level,
-        it will be aggregate to upper level
+        If multiple values exist for the same entity,
+        it can return only the latest value per entity/concept combination.
+
+        :param date_data: Upper date limit for filtering.
+        :type date_data: date, optional
+        :param min_date_data: Lower date limit for filtering.
+        :type min_date_data: date, optional
+        :param reference_layer: Optional reference layer filter.
+        :type reference_layer: ReferenceLayerView or None
+        :param admin_level: Optional admin level filter.
+        :type admin_level: int, optional
+        :param concept_uuids: Optional list of concept UUIDs to filter.
+        :type concept_uuids: list[str], optional
+        :param last_value:
+            If True, return only the latest value per entity/concept.
+        :type last_value: bool
+        :param entities_id: Optional list of entity IDs to filter.
+        :type entities_id: list[int], optional
+        :return: QuerySet of filtered indicator values.
+        :rtype: django.db.models.query.QuerySet
         """
         query = self.query_values(
             date_data=date_data,
@@ -410,7 +525,12 @@ class Indicator(
         return query
 
     def update_dashboard_version(self):
-        """Update dashboard version."""
+        """
+        Update the version timestamp of dashboards containing this indicator.
+
+        This ensures dashboards reflect the
+        latest changes to the indicator values.
+        """
         from django.utils import timezone
         from geosight.data.models.dashboard import Dashboard
         Dashboard.objects.filter(
@@ -421,7 +541,18 @@ class Indicator(
 
     @staticmethod
     def search(name, description):
-        """Update dashboard version."""
+        """
+        Search indicators by name and description using similarity matching.
+
+        :param name: Name string to search for.
+        :type name: str
+        :param description: Description string to search for.
+        :type description: str
+        :return:
+            List of dictionaries with search results
+            including similarity scores.
+        :rtype: list[dict]
+        """
         if name:
             with connection.cursor() as cursor:
                 cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm;')
@@ -448,15 +579,33 @@ class Indicator(
             ]
         return []
 
-    def metadata(self, reference_layer):
-        """Metadata for indicator."""
+    def metadata(self, reference_layer, is_using_uuid=False):
+        """
+        Retrieve metadata for the indicator filtered by a reference layer.
+
+        :param reference_layer: The reference layer view.
+        :type reference_layer: ReferenceLayerView
+        :param is_using_uuid: Whether to use UUID-based filtering.
+        :type is_using_uuid: bool
+        :return: Metadata dictionary.
+        :rtype: dict
+        """
         from geosight.data.models.indicator.utilities import (
             metadata_indicator_by_view
         )
-        return metadata_indicator_by_view(self, reference_layer)
+        return metadata_indicator_by_view(self, reference_layer, is_using_uuid)
 
-    def metadata_with_cache(self, reference_layer):
-        """Metadata for indicator."""
+    def metadata_with_cache(self, reference_layer, is_using_uuid=False):
+        """
+        Retrieve cached metadata for this indicator.
+
+        :param reference_layer: The reference layer view.
+        :type reference_layer: ReferenceLayerView
+        :param is_using_uuid: Whether to use UUID-based filtering.
+        :type is_using_uuid: bool
+        :return: Cached metadata dictionary.
+        :rtype: dict
+        """
         from core.cache import VersionCache
         version = self.version_with_reference_layer_uuid(
             reference_layer.version_with_uuid
@@ -465,6 +614,7 @@ class Indicator(
             key=(
                 f'METADATA : '
                 f'Indicator {self.id} - {reference_layer.identifier}',
+                f'Is_using_uuid {is_using_uuid}'
             ),
             version=version
         )
@@ -472,7 +622,7 @@ class Indicator(
         if cache_data:
             return cache_data
 
-        response = self.metadata(reference_layer)
+        response = self.metadata(reference_layer, is_using_uuid)
         response['version'] = cache.version
         cache.set(response)
         return response
@@ -494,7 +644,9 @@ class Indicator(
 
 
 @receiver(pre_save, sender=Indicator)
-def update_indicator_value_data(sender, instance, **kwargs):
+def update_indicator_value_data(  # noqa: DOC101,DOC103
+        sender, instance, **kwargs
+):
     """Update indicator value when Indicator changed."""
     if not instance._state.adding:
         try:
@@ -509,6 +661,6 @@ def update_indicator_value_data(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Indicator)
-def increase_version(sender, instance, **kwargs):
+def increase_version(sender, instance, **kwargs):  # noqa: DOC101,DOC103
     """Increase version of dashboard signal."""
     instance.update_dashboard_version()

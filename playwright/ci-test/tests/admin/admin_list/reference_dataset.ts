@@ -39,7 +39,7 @@ test.describe('Reference dataset selector admin', () => {
   }
 
   const testFunction = async (originalPage, page, resourceName = 'View') => {
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–12 of 12');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
 
     // Check search
     await page.getByPlaceholder('Search ' + resourceName).fill('A2');
@@ -58,10 +58,10 @@ test.describe('Reference dataset selector admin', () => {
       exact: true
     }).click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 13');
     await page.getByLabel('Go to next page').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–12 of 12');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–13 of 13');
 
     // Orders
     await page.getByLabel('Go to previous page').click();
@@ -114,7 +114,7 @@ test.describe('Reference dataset selector admin', () => {
     await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
     await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–3 of 3');
     await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
-    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 13');
     await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
     await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
     await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeVisible();

@@ -14,8 +14,12 @@
  */
 
 import { Indicator as IndicatorType } from "../types/Indicator";
-import { DjangoRequestPagination, DjangoRequests } from "../Requests";
-import { dictDeepCopy, splitByJoinedLength } from "../utils/main";
+import {
+  DjangoRequestPagination,
+  DjangoRequests,
+  getWithSplitKey,
+} from "../Requests";
+import { dictDeepCopy } from "../utils/main";
 import { apiUrl } from "../utils/urls";
 
 export class Indicator {
@@ -74,21 +78,21 @@ export class Indicator {
 
     let data: any = {};
     if (params["country_geom_id__in"]) {
-      const newParams = splitByJoinedLength(params["country_geom_id__in"]);
-      let values: any[] = [];
-      for (let i: number = 0; i < newParams.length; i++) {
-        const result = await DjangoRequestPagination.get(
-          this.url,
-          data,
-          {
-            ...params,
-            country_geom_id__in: newParams[i],
-          },
-          onProgress,
-        );
-        values.push(...result);
-      }
-      return values;
+      return await getWithSplitKey(
+        this.url,
+        data,
+        params,
+        "country_geom_id__in",
+        onProgress,
+      );
+    } else if (params["country_concept_uuid__in"]) {
+      return await getWithSplitKey(
+        this.url,
+        data,
+        params,
+        "country_concept_uuid__in",
+        onProgress,
+      );
     } else {
       [params, data] = this.getParamAndData(params);
       return await DjangoRequestPagination.post(

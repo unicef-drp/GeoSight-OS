@@ -65,9 +65,21 @@ export const TimeType = {
 /** Indicator data downloader component. */
 export default function IndicatorDataDownloader() {
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
-  const { indicators, referenceLayer, indicatorLayers, relatedTables, name } =
-    useSelector((state) => state.dashboard.data);
-  const geoField = "geometry_code";
+  const indicators = useSelector((state) => state.dashboard.data?.indicators);
+  const referenceLayer = useSelector(
+    (state) => state.dashboard.data?.referenceLayer,
+  );
+  const indicatorLayers = useSelector(
+    (state) => state.dashboard.data?.indicatorLayers,
+  );
+  const relatedTables = useSelector(
+    (state) => state.dashboard.data?.relatedTables,
+  );
+  const name = useSelector((state) => state.dashboard.data?.name);
+
+  const geoField = useSelector((state) => state.dashboard.data?.geoField);
+  const isUsingConceptUUID = geoField === "concept_uuid";
+
   const referenceLayerData = useSelector(
     (state) => state.referenceLayerData[referenceLayer.identifier],
   );
@@ -255,7 +267,7 @@ export default function IndicatorDataDownloader() {
   ) => {
     // Get per geometries
     geometries.map((geom) => {
-      const ucode = extractCode(geom.properties, "ucode");
+      const ucode = extractCode(geom.properties, geoField);
       const data = getData(
         indicatorLayer,
         indicatorData,
@@ -263,6 +275,7 @@ export default function IndicatorDataDownloader() {
         ucode,
         isIndicator,
       );
+      console.log(data);
       if (data) {
         data.map((dataRow) => {
           const usedGeom = dictDeepCopy(geom);
@@ -272,7 +285,7 @@ export default function IndicatorDataDownloader() {
           properties.GeographyLevel = levels.find(
             (level) => level.level === properties.admin_level,
           )?.level_name;
-          properties.level_name = properties.GeographyLevel
+          properties.level_name = properties.GeographyLevel;
           usedGeom.properties = Object.assign({}, properties, dataRow);
           features.push(usedGeom);
         });
@@ -282,12 +295,26 @@ export default function IndicatorDataDownloader() {
   const indicatorLayerData = async (timeType, indicator) => {
     const output = [];
     if (state.time === TimeType.All) {
+      const params = {
+        indicator_id: indicator.id,
+      };
+      // --------------------------------
+      // Features:
+      //  Switch parameter by concept_uuid
+      if (!isUsingConceptUUID) {
+        // @ts-ignore
+        params["country_geom_id__in"] =
+          referenceLayerData?.data?.countries?.map((country) => country.ucode);
+      } else {
+        // @ts-ignore
+        params["country_concept_uuid__in"] =
+          referenceLayerData?.data?.countries?.map(
+            (country) => country.concept_uuid,
+          );
+      }
       await fetchingData(
         `/api/v1/data-browser/`,
-        {
-          indicator_id: indicator.id,
-          country_geom_id__in: countries,
-        },
+        params,
         {},
         (response, error) => {
           if (!error) {
@@ -299,14 +326,29 @@ export default function IndicatorDataDownloader() {
         },
       );
     } else {
-      const response = await new Indicator(indicator).valueLatest({
+      const params = {
         date__lte: selectedGlobalTime.max
           ? selectedGlobalTime.max.split("T")[0]
           : null,
         date__gte: selectedGlobalTime.min.split("T")[0],
         admin_level__in: state.levels.map((level) => level).join(","),
-        country_geom_id__in: countries,
-      });
+      };
+      // --------------------------------
+      // Features:
+      //  Switch parameter by concept_uuid
+      if (!isUsingConceptUUID) {
+        // @ts-ignore
+        params["country_geom_id__in"] =
+          referenceLayerData?.data?.countries?.map((country) => country.ucode);
+      } else {
+        // @ts-ignore
+        params["country_concept_uuid__in"] =
+          referenceLayerData?.data?.countries?.map(
+            (country) => country.concept_uuid,
+          );
+      }
+      // --------------------------------
+      const response = await new Indicator(indicator).valueLatest(params);
       response.map((row) => {
         row.indicator = indicator;
         output.push(row);
@@ -373,6 +415,10 @@ export default function IndicatorDataDownloader() {
                     output[row.geom_id] = [];
                   }
                   output[row.geom_id].push(row);
+                  if (!output[row.concept_uuid]) {
+                    output[row.concept_uuid] = [];
+                  }
+                  output[row.concept_uuid].push(row);
                 });
               },
               true,
@@ -444,6 +490,10 @@ export default function IndicatorDataDownloader() {
                   output[row.geometry_code] = [];
                 }
                 output[row.geometry_code].push(row);
+                if (!output[row.concept_uuid]) {
+                  output[row.concept_uuid] = [];
+                }
+                output[row.concept_uuid].push(row);
               });
             }
             indicatorValueByGeometry[indicatorLayer.id] = output;
@@ -540,7 +590,6 @@ export default function IndicatorDataDownloader() {
           }
           geometries = geometries.concat(geometryData);
         }
-
         // Get every selected indicators
         state.indicators.map((indicatorId) => {
           // Get per indicator layer

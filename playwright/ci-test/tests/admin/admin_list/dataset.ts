@@ -14,7 +14,7 @@ test.describe('Dataset list admin', () => {
 
     // Test ungroup by admin level
     await page.getByLabel('Group all admin levels').uncheck();
-    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(11);
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(12);
     await page.getByLabel('Group all admin levels').check();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
 
@@ -38,7 +38,7 @@ test.describe('Dataset list admin', () => {
     // Test Filter by level
     await page.getByPlaceholder('Filter by Level(s)').click();
     await page.getByRole('option', { name: '0' }).getByRole('checkbox').check();
-    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(3);
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(4);
     await page.getByRole('option', { name: '0' }).getByRole('checkbox').uncheck();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
 
