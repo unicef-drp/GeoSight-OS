@@ -424,10 +424,12 @@ export default function SidePanelTreeView({
         {nodes.length > 0 ? (
           nodes.map((treeData) => renderTree(treeData))
         ) : (
-          <div style={{ margin: "1rem 0" }}>No data</div>
+          <div className="NoData">No indicators available</div>
         )}
       </TreeView>
-      <GlobalIndicatorLayerTransparency />
+      {nodes.length > 0 && (
+        <GlobalIndicatorLayerTransparency transparencyKey={"indicatorLayer"} />
+      )}
     </div>
   );
 }

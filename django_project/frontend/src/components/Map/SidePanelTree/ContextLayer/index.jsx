@@ -42,7 +42,7 @@ import Highlighted from "../Highlighted";
 import { MagnifyIcon } from "../../../Icons";
 import { dictDeepCopy } from "../../../../utils/main";
 import SidePanelSlicers from "../SidePanelSlicers";
-import { GlobalContextLayerTransparency } from "./Transparency";
+import { GlobalIndicatorLayerTransparency } from "../IndicatorLayer/Transparency";
 
 import "./style.scss";
 
@@ -462,11 +462,15 @@ export default function SidePanelTreeView({
         defaultExpandIcon={<ExpandLessIcon />}
         sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
       >
-        {nodes.length > 0
-          ? nodes.map((treeData) => renderTree(treeData))
-          : "No data"}
+        {nodes.length > 0 ? (
+          nodes.map((treeData) => renderTree(treeData))
+        ) : (
+          <div className="NoData">No indicators available</div>
+        )}
       </TreeView>
-      <GlobalContextLayerTransparency />
+      {nodes.length > 0 && (
+        <GlobalIndicatorLayerTransparency transparencyKey={"contextLayer"} />
+      )}
     </div>
   );
 }
