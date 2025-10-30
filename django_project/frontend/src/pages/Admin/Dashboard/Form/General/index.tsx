@@ -143,7 +143,6 @@ const GeneralForm = memo(({}: Props) => {
               props["slug"] = slugify(newValue);
             }
           }
-          console.log("CHANGE")
           dispatch(Actions.Dashboard.updateProps(props));
         }
       }, 400),

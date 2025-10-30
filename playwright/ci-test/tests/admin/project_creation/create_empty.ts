@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { deleteProject } from "../../utils/project";
+import { deleteProject, fillProjectName } from "../../utils/project";
 import { BASE_URL } from "../../variables";
-import { delay } from "../../utils";
 
 test.describe('Create empty project', () => {
   test.beforeEach(async ({ page }) => {
@@ -27,9 +26,9 @@ test.describe('Create empty project', () => {
     await page.goto('/admin/project/create');
     await page.getByRole('textbox', { name: 'Select View' }).click();
     await page.getByText('Somalia', { exact: true }).click();
-    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).click();
-    await page.keyboard.type(name);
-    await delay(1000);
+
+    await fillProjectName(page,name);
+
     await page.locator('.ReactSelect__input-container').first().click();
     await page.getByRole('option', { name: 'Test' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
@@ -93,8 +92,8 @@ test.describe('Create empty project', () => {
     await expect(page.locator('.DashboardFormHeader').getByText('Tools', { exact: true })).not.toHaveClass("MuiButtonLike Disabled");
     await expect(page.locator('.DashboardFormHeader').getByText('Share', { exact: true })).not.toHaveClass("MuiButtonLike Disabled");
 
-    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill(name);
-    await delay(1000);
+    await fillProjectName(page,name);
+
     await page.locator('.ReactSelect__input-container').first().click();
     await page.getByRole('option', { name: 'Test' }).click();
     await page.getByRole('button', { name: 'Save' }).click();

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
+import { fillProjectName } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -13,6 +14,7 @@ test.describe('Duplicate and save as project', () => {
 
   // A use case tests scenarios
   test('Save as project', async ({ page }) => {
+    const name = 'Test Project Save As';
     // --------------------------------------------------------------
     // CREATE PROJECT WITH OVERRIDE CONFIG
     // --------------------------------------------------------------
@@ -23,12 +25,12 @@ test.describe('Duplicate and save as project', () => {
       exact: true
     }).click();
     await page.getByRole('button', { name: 'Save as' }).click();
-    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill('Test Project Save As');
+    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill(name);
     await page.getByRole('button', { name: 'Create' }).click();
 
     const editUrl = `${BASE_URL}/admin/project/test-project-save-as/edit`
     await page.waitForURL(editUrl)
-    await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue('Test Project Save As');
+    await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue(name);
 
     // --------------------------------------------------------------
     // CHECK PREVIEW
