@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FormControl, Radio, RadioGroup } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
@@ -38,6 +38,7 @@ import { DefaultTimeMode, ReferenceLayer } from "../../../../../types/Project";
 import TransparencySlider from "../../../../../components/TransparencySlider";
 
 import "./style.scss";
+import { debounce } from "@mui/material/utils";
 
 export interface Props {}
 
@@ -75,19 +76,6 @@ const geoFields = [
 const GeneralForm = memo(({}: Props) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
-  const referenceLayerProject = useSelector(
-    (state: any) => state.dashboard.data?.referenceLayer,
-  );
-  const geoFieldProject = useSelector(
-    (state: any) => state.dashboard.data?.geoField,
-  );
-  const defaultTimeModeProject = useSelector(
-    (state: any) => state.dashboard.data?.default_time_mode,
-  );
-  const levelConfigProject = useSelector(
-    (state: any) => state.dashboard.data?.levelConfig,
-  );
   const projectData = useSelector((state: any) => state.dashboard.data);
 
   const [data, setData] = useState<GeneralData>({
@@ -110,23 +98,67 @@ const GeneralForm = memo(({}: Props) => {
 
   /** referenceLayerProject changed **/
   useEffect(() => {
-    setData({ ...data, referenceLayer: referenceLayerProject });
-  }, [referenceLayerProject]);
+    const updates: any = {};
+    [
+      "id",
+      "slug",
+      "icon",
+      "name",
+      "description",
+      "group",
+      "referenceLayer",
+      "geoField",
+      "levelConfig",
+      "show_splash_first_open",
+      "default_time_mode",
+      "transparency_config",
+      "layer_tabs_visibility",
+      "show_map_toolbar",
+    ].map((key) => {
+      if (projectData[key] instanceof Object) {
+        // @ts-ignore
+        if (JSON.stringify(projectData[key]) !== JSON.stringify(data[key])) {
+          updates[key] = projectData[key];
+        }
+      } else {
+        // @ts-ignore
+        if (projectData[key] !== data[key]) {
+          updates[key] = projectData[key];
+        }
+      }
+    });
+    if (Object.keys(updates).length > 0) {
+      setData({ ...data, ...updates });
+    }
+  }, [projectData]);
 
-  /** geoFieldProject changed **/
-  useEffect(() => {
-    setData({ ...data, geoField: geoFieldProject });
-  }, [geoFieldProject]);
+  const update = useMemo(
+    () =>
+      debounce((key, newValue) => {
+        if (projectData[key] !== newValue) {
+          const props: any = {};
+          props[key] = newValue;
+          if (key === "name") {
+            if (isCreate) {
+              props["slug"] = slugify(newValue);
+            }
+          }
+          console.log(props);
+          dispatch(Actions.Dashboard.updateProps(props));
+        }
+      }, 500),
+    [],
+  );
 
-  /** defaultTimeModeProject changed **/
+  /** Name **/
   useEffect(() => {
-    setData({ ...data, default_time_mode: defaultTimeModeProject });
-  }, [defaultTimeModeProject]);
+    update("name", data.name);
+  }, [data.name]);
 
-  /** levelConfigProject changed **/
+  /** Name **/
   useEffect(() => {
-    setData({ ...data, levelConfig: levelConfigProject });
-  }, [levelConfigProject]);
+    update("description", data.description);
+  }, [data.description]);
 
   if (!data) {
     return null;
@@ -280,7 +312,11 @@ const GeneralForm = memo(({}: Props) => {
                     }
                     value={{ value: group, label: group }}
                     onChange={(evt: any) => {
-                      setData({ ...data, group: evt.value });
+                      dispatch(
+                        Actions.Dashboard.updateProps({
+                          group: evt.value,
+                        }),
+                      );
                     }}
                     disableCloseOnSelect={false}
                     fullWidth={true}
@@ -510,8 +546,7 @@ const GeneralForm = memo(({}: Props) => {
                       onChange={(event) => {
                         dispatch(
                           Actions.Dashboard.updateProps({
-                            show_map_toolbar:
-                              !show_map_toolbar,
+                            show_map_toolbar: !show_map_toolbar,
                           }),
                         );
                       }}

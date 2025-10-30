@@ -149,16 +149,6 @@ main {
 
   .MultipleSelectWithSearch {
     height: 37px;
-
-    input::placeholder {
-      color: rgba(0, 0, 0, 1) !important;
-      opacity: 1; /* Firefox */
-    }
-
-    input::-ms-input-placeholder { /* Edge 12 -18 */
-      color: rgba(0, 0, 0, 1) !important;
-      opacity: 1; /* Firefox */
-    }
   }
 
   & > div {

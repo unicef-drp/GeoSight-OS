@@ -66,7 +66,6 @@ export default function IndicatorLayersReferenceControl() {
         view.detail_url = `/reference-dataset/${view.identifier}/`;
       }
     });
-    console.log(views);
     dispatch(Actions.Map.changeReferenceLayers(views));
   }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
 
