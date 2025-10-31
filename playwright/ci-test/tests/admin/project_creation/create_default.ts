@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
+import { fillProjectName } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -12,6 +13,7 @@ test.describe('Create project', () => {
 
   // A use case tests scenarios
   test('Create with default config', async ({ page }) => {
+    const name = 'Test Project Default';
     let lastLog = null
     page.on('console', msg => {
       if (msg.text().indexOf('FILTERED_GEOM:') !== -1) {
@@ -75,7 +77,7 @@ test.describe('Create project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
-    await page.locator("#GeneralName").fill('Test Project Default');
+    await fillProjectName(page,name);
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Test');
     await page.keyboard.press('Enter');
@@ -237,7 +239,7 @@ test.describe('Create project', () => {
       availableLayers.push(await page.locator(selector).nth(i).innerText());
     }
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
-    await expect(page.locator('.General #GeneralName')).toHaveValue('Test Project Default');
+    await expect(page.locator('.General #GeneralName')).toHaveValue(name);
     expect(await page.locator('.General #GeneralCategory .ReactSelect__single-value').innerText()).toEqual('Test');
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');

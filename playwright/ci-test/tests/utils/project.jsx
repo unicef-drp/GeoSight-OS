@@ -1,5 +1,6 @@
 import { BASE_URL } from "../variables";
 import { expect } from "@playwright/test";
+import { delay } from "./index";
 
 function nameToSlug(name) {
   return name.replaceAll(' ', '-').toLowerCase()
@@ -16,6 +17,18 @@ export async function saveAsProject(page, inputName, outputName) {
 
 export async function viewProject(page, name) {
   await page.goto(`/project/${nameToSlug(name)}`);
+}
+
+export async function editProject(page, name) {
+  await page.goto(`/admin/project/${nameToSlug(name)}/edit`);
+  await page.waitForURL(`${BASE_URL}/admin/project/${nameToSlug(name)}/edit`);
+  await expect(page.locator('div').getByText('Fetching Project Data...')).toBeHidden();
+}
+
+export async function fillProjectName(page, name) {
+  await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).click();
+  await page.keyboard.type(name);
+  await delay(1000)
 }
 
 export async function deleteProject(page, name) {

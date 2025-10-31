@@ -43,7 +43,6 @@ export default function RelatedTableForm() {
       setFields(JSON.parse($("#id_data_fields").val()));
     } catch (err) {}
   }, []);
-  console.log(initialData)
   return (
     <Admin
       minifySideNavigation={true}

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import xlsx from "xlsx";
 import fs from "fs";
 import { BASE_URL } from "../../variables";
-import { deleteProject } from "../../utils/project";
+import { deleteProject, fillProjectName } from "../../utils/project";
 
 // URL That we need to check
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -17,6 +17,7 @@ test.describe('View kenya latest project', () => {
      * So when using ucode, no data loaded
      * But when using concept_uuid, data loaded
      */
+    const name = "Kenya Test"
     const editUrl = `${BASE_URL}/admin/project/kenya-test/edit`
     await page.goto('/admin/project/');
 
@@ -24,7 +25,8 @@ test.describe('View kenya latest project', () => {
     await page.getByRole('button', { name: 'Create New Project' }).click();
     await page.getByRole('textbox', { name: 'Select View' }).click();
     await page.getByRole('cell', { name: 'Kenya (Latest)' }).click();
-    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill('Kenya Test');
+
+    await fillProjectName(page,name)
 
     // Options
     await page.locator('.ReactSelect__input-container').first().click();

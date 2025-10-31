@@ -37,19 +37,20 @@
   background: var(--secondary-color);
 }
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #121212 !important;;
-  opacity: 0.3 !important;; /* Firefox */
+
+::placeholder {
+  color: var(--base-black) !important;;
+  opacity: 0.6 !important;;
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #121212 !important;;
-  opacity: 0.3 !important;; /* Firefox */
+::-ms-input-placeholder {
+  color: var(--base-black) !important;;
+  opacity: 0.6 !important;;
 }
 
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #121212 !important;
-  opacity: 0.3 !important;; /* Firefox */
+:-ms-input-placeholder {
+  color: var(--base-black) !important;;
+  opacity: 0.6 !important;;
 }
 
 ::-webkit-file-upload-button {
@@ -446,8 +447,8 @@ header {
     }
 
     &.Disabled {
-      background: var(--gray-100);
-      color: #adb5bd;
+      background-color: unset !important;
+      color: var(--gray-500);
       cursor: not-allowed;
     }
   }

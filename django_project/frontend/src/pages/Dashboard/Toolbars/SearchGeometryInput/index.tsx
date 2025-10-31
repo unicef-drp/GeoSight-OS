@@ -50,6 +50,10 @@ export function SearchGeometryMobile() {
 
 /** CompareLayer component. */
 export default function SearchGeometryInput({ map }: Props) {
+  const referenceLayer = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.referenceLayer,
+  );
   const enable_geometry_search = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
   );
@@ -129,7 +133,7 @@ export default function SearchGeometryInput({ map }: Props) {
     );
   };
 
-  if (!enable_geometry_search) {
+  if (!enable_geometry_search || !referenceLayer?.identifier) {
     return;
   }
 

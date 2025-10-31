@@ -18,38 +18,59 @@ import { useEffect } from "react";
 import { referenceLayerIndicatorLayer } from "../../../utils/indicatorLayer";
 import { Actions } from "../../../store/dashboard";
 
-export default function IndicatorLayersReferenceControl({ map }) {
-  const dispatch = useDispatch()
-  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
-  const {
-    referenceLayer
-  } = useSelector(state => state.dashboard.data);
+export default function IndicatorLayersReferenceControl() {
+  const dispatch = useDispatch();
+  const selectedIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const selectedIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const referenceLayer = useSelector(
+    (state) => state.dashboard.data?.referenceLayer,
+  );
 
   /** When indicator layer and second layer changed
    * Update reference layer views
    * */
   useEffect(() => {
-    const views = []
+    const views = [];
     if (Object.keys(selectedIndicatorLayer).length) {
-      const view = referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorLayer)
-      if (!views.find(view => view.identifier === view)) {
-        views.push(view)
+      const view = referenceLayerIndicatorLayer(
+        referenceLayer,
+        selectedIndicatorLayer,
+      );
+      if (
+        !views.find((_view) =>
+          [view, view.identifier].includes(_view.identifier),
+        )
+      ) {
+        views.push(view);
       }
     }
     if (Object.keys(selectedIndicatorSecondLayer).length) {
-      const view = referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorSecondLayer)
-      if (!views.find(view => view.identifier === view)) {
-        views.push(view)
+      const view = referenceLayerIndicatorLayer(
+        referenceLayer,
+        selectedIndicatorSecondLayer,
+      );
+      if (
+        !views.find((_view) =>
+          [view, view.identifier].includes(_view.identifier),
+        )
+      ) {
+        views.push(view);
       }
     }
-    views.map(view => {
+    views.map((view) => {
       if (view.is_local) {
-        view.detail_url = `/reference-dataset/${view.identifier}/`
+        view.detail_url = `/reference-dataset/${view.identifier}/`;
       }
-    })
-    dispatch(Actions.Map.changeReferenceLayers(views))
+    });
+    if (views.length === 0) {
+      views.push(referenceLayer);
+    }
+    dispatch(Actions.Map.changeReferenceLayers(views));
   }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
 
-  return null
+  return null;
 }

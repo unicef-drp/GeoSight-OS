@@ -91,6 +91,8 @@ test.describe('Related table list admin', () => {
     // Test Project Selection
     // ----------------------------------
     await page.goto('/admin/project/create');
+    await page.getByRole('textbox', { name: 'Select View' }).click();
+    await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
     await page.locator('.DashboardFormHeader').getByText('Related Tables').click();
     await page.getByRole('button', { name: 'Add Related Table' }).click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()

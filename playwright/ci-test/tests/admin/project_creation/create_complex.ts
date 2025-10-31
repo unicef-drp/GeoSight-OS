@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
-import { deleteProject } from "../../utils/project";
+import { deleteProject, editProject, fillProjectName } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -32,6 +32,7 @@ test.describe('Create complex project', () => {
 
   // A use case tests scenarios
   test('Create with complex config', async ({ page }) => {
+    const name = "Test Project Complex Config";
     const checkToolConfigActive = async () => {
       for (const tool of Object.keys(TOOLS)) {
         await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS[tool]}"]`).locator('.VisibilityIconOn')).toBeVisible();
@@ -66,7 +67,7 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
-    await page.locator("#GeneralName").fill('Test Project Complex Config');
+    await fillProjectName(page,name);
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Complex');
     await page.keyboard.press('Enter');
@@ -342,7 +343,7 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE
     // --------------------------------------------------------------
-    await page.goto(editUrl);
+    await editProject(page, name);
 
     // Check other configurations
     {
@@ -396,7 +397,7 @@ test.describe('Create complex project', () => {
       availableLayers.push(await page.locator(selector).nth(i).innerText());
     }
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
-    await expect(page.locator('.General #GeneralName')).toHaveValue('Test Project Complex Config');
+    await expect(page.locator('.General #GeneralName')).toHaveValue(name);
     expect(await page.locator('.General #GeneralCategory .ReactSelect__single-value').innerText()).toEqual('Complex');
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
@@ -446,7 +447,7 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     // OVERRIDE AGAIN
     // --------------------------------------------------------------
-    await page.goto(editUrl);
+    await editProject(page, name);
     {
       const tabVisibility = await page.locator('.tabs-visibility');
       await tabVisibility.evaluate(el => el.scrollIntoView({
@@ -476,7 +477,7 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     // OVERRIDE AGAIN
     // --------------------------------------------------------------
-    await page.goto(editUrl);
+    await editProject(page, name);
     await page.getByText('Show map toolbar').click();
 
     await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
@@ -493,6 +494,6 @@ test.describe('Create complex project', () => {
     // ------------------------------------
     // DELETE PROJECT
     // ------------------------------------
-    await deleteProject(page, "Test Project Complex Config")
+    await deleteProject(page, name)
   });
 });

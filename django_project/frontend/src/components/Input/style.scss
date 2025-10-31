@@ -16,7 +16,7 @@
 .MultipleSelectWithSearch {
 
   .OtherOptions {
-    color: #adb5bd !important;
+    color: var(--gray-500) !important;
     z-index: 1;
 
     button {
@@ -151,17 +151,6 @@
         }
       }
     }
-
-    input {
-      &::placeholder {
-        color: var(--base-black-color) !important;
-        opacity: 1 !important;
-      }
-
-      &::-ms-input-placeholder {
-        color: var(--base-black-color) !important;
-      }
-    }
   }
 
   &.FullWidth {
@@ -201,21 +190,6 @@
 
     input {
       color: rgba(0, 0, 0, 0);
-
-      &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-        color: #121212 !important;;
-        opacity: 0.6 !important;; /* Firefox */
-      }
-
-      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color: #121212 !important;;
-        opacity: 0.6 !important;; /* Firefox */
-      }
-
-      &::-ms-input-placeholder { /* Microsoft Edge */
-        color: #121212 !important;
-        opacity: 0.6 !important;; /* Firefox */
-      }
     }
   }
 }

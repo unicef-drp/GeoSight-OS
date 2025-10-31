@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
+import { fillProjectName } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -12,6 +13,7 @@ test.describe('Create project from dataset', () => {
 
   // A use case tests scenarios
   test('Create project from dataset', async ({ page }) => {
+    const name = "Test From Dataset";
     // --------------------------------------------------------------
     // CREATE PROJECT FROM DATASET
     // --------------------------------------------------------------
@@ -34,7 +36,7 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('button', { name: 'Add to New Project' }).click();
     await expect(page.locator("#GeneralName")).toBeVisible();
 
-    await page.locator("#GeneralName").fill('Test From Dataset');
+    await fillProjectName(page,name);
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Complex');
     await page.keyboard.press('Enter');
@@ -188,7 +190,7 @@ test.describe('Create project from dataset', () => {
       availableLayers.push(await page.locator(selector).nth(i).innerText());
     }
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
-    await expect(page.locator('.General #GeneralName')).toHaveValue('Test From Dataset');
+    await expect(page.locator('.General #GeneralName')).toHaveValue(name);
     expect(await page.locator('.General #GeneralCategory .ReactSelect__single-value').innerText()).toEqual('Complex');
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
