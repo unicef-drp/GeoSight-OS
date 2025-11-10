@@ -9,7 +9,6 @@ import { ThemeButton } from "../../../../../../../components/Elements/Button";
 import { fetchAgencies, fetchDataflows, fetchDataflowVersions, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
 import DropdownSection from "./DropdownSection.jsx";
 import DimensionDropdown from "./DimensionDropdown.jsx";
- 
 
 /**
  * DsdForm Component
@@ -21,6 +20,9 @@ import DimensionDropdown from "./DimensionDropdown.jsx";
  * @returns {JSX.Element} A frontend component containing all the selection/input fields.
  */
 const DsdForm = ({ urlChanged, setRequest }) => {
+  const [sdmx, setSdmx] = useState(null);
+  const sdmxUrls = sdmx?.urls;
+
   // State Variables
   const [agencyOptions, setAgencyOptions] = useState([]);
   const [selectedAgency, setSelectedAgency] = useState(null);
@@ -51,28 +53,36 @@ const DsdForm = ({ urlChanged, setRequest }) => {
 
   // Fetch agency options on mount
   useEffect(() => {
-    fetchAgencies(setLoading, setAgencyOptions, setError);
-  }, []);
+    if (!sdmxUrls) return;
+    setAgencyOptions([])
+    setLoading({loading, agency: true})
+    fetchAgencies(sdmxUrls.agencies, setLoading, setAgencyOptions, setError);
+  }, [sdmx]);
 
   // Fetch dataflows on agency selection
   useEffect(() => {
+    if (!sdmxUrls) return;
     if (!selectedAgency) return;
     setRequest([]);
-    fetchDataflows(setLoading, setDataflowOptions, setError, selectedAgency);
+    fetchDataflows(sdmxUrls.dataflow, setLoading, setDataflowOptions, setError, selectedAgency);
   }, [selectedAgency]);
 
   // Fetch dataflow versions on dataflow selection
   useEffect(() => {
+    if (!sdmxUrls) return;
     if (!selectedDataflow) return;
     setRequest([]);
-    fetchDataflowVersions(setLoading, setDataflowVersionOptions, setError, selectedDataflow);
+    fetchDataflowVersions(sdmxUrls.dataflow_versions, setLoading, setDataflowVersionOptions, setError, selectedDataflow);
   }, [selectedDataflow]);
 
   // Handle updates when a dataflowVersion is selected
   useEffect(() => {
+    if (!sdmxUrls) return;
     if (selectedDataflowVersion && selectedDataflow) {
       // Fetch dimensions for the updated dataflow
       fetchDimensions(
+        sdmxUrls.data_structure,
+        sdmxUrls.data,
         setLoading,
         setError,
         setDimensionOptions,
@@ -83,12 +93,12 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     }
   }, [selectedDataflowVersion, selectedDataflow]);
 
-
   // Fetch DSD on dimension change
   useEffect(() => {
     if (!selectedDataflow || !selectedDataflowVersion) return;
 
     fetchDsd(
+      sdmxUrls.data,
       selectedDataflow,
       selectedDataflowVersion.value,
       dimensionSelections,
@@ -111,6 +121,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
 
   // Handle dimension selection change
   const handleDimensionChange = async (dimensionId, selectedOptions) => {
+    if (!sdmxUrls) return;
     const values = selectedOptions?.map(({ value }) => value) || [];
     const updatedSelections = { ...dimensionSelections, [dimensionId]: values };
 
@@ -118,7 +129,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     setLoading((prev) => ({ ...prev, dimensions: true }));
 
     try {
-      const result = await updateDsd(selectedDataflow, updatedSelections, selectedDataflowVersion.value);
+      const result = await updateDsd(sdmxUrls.data, selectedDataflow, updatedSelections, selectedDataflowVersion.value);
 
       if (result.error) throw new Error(result.error);
 
@@ -145,20 +156,40 @@ const DsdForm = ({ urlChanged, setRequest }) => {
   return (
     <div className="FormAttribute">
       <DropdownSection
-        title="Agency"
-        options={agencyOptions}
-        selectedOption={selectedAgency}
+        title="SDMX Config"
+        options={sdmxData.map((_) => {
+          return { value: _.name, label: _.name };
+        })}
+        selectedOption={sdmx ? { value: sdmx.name, label: sdmx.name } : null}
         onChange={(selected) => {
-          setSelectedAgency(selected);
+          setSdmx(sdmxData.find((_) => _.name === selected.value));
+          setSelectedAgency(null);
           setSelectedDataflow(null);
           setDimensionSelections({});
           setDimensionOptions({});
           setDataflowVersionOptions([]);
           setSelectedDataflowVersion(null);
         }}
-        loading={loading.agency}
-        error={error.agency ? "An error has occurred" : null}
+        loading={false}
       />
+
+      {sdmx && (
+        <DropdownSection
+          title="Agency"
+          options={agencyOptions}
+          selectedOption={selectedAgency}
+          onChange={(selected) => {
+            setSelectedAgency(selected);
+            setSelectedDataflow(null);
+            setDimensionSelections({});
+            setDimensionOptions({});
+            setDataflowVersionOptions([]);
+            setSelectedDataflowVersion(null);
+          }}
+          loading={loading.agency}
+          error={error.agency ? "An error has occurred" : null}
+        />
+      )}
 
       {selectedAgency && (
         <DropdownSection

@@ -46,7 +46,10 @@ const DropdownSection = ({
             menuPlacement={'auto'}
             options={options}
             value={selectedOption}
-            getOptionLabel={(option) => `${option.label} [${option.value}]`}
+            getOptionLabel={(option) => {
+              if (option.value === option.label) return option.label
+              return `${option.label} [${option.value}]`
+            }}
             getOptionValue={(option) => option.value}
             classNamePrefix={classNamePrefix}
             styles={{

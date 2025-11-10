@@ -51,14 +51,14 @@ class SDMXConfig(AbstractTerm):
             ),
             "dataflow": f"{url}dataflow/",
             "dataflow_versions": (
-                f"{url}<agency>/<dataflow>/all/?format=sdmx-2.1&"
+                f"{url}dataflow/<agency>/<dataflow>/all/?format=sdmx-2.1&"
                 f"detail=full&references=none"
             ),
             "data_structure": (
                 f"{url}datastructure/<agency>/<dataflow>/<dataflow_version>"
             ),
             "data": (
-                f"{url}data/<agency>,<dataflow>,<dataflow_version>/<url_set>"
+                f"{url}data/<agency>,<dataflow>,<dataflow_version>/<dimensions>"
                 f"?format=fusion-json&dimensionAtObservation=AllDimensions"
                 f"&detail=structureOnly&includeMetrics=true"
                 f"&includeAllAnnotations=true"

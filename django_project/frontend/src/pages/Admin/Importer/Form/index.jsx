@@ -53,7 +53,7 @@ import './style.scss';
 /** ---- Definitions ---- **/
 const defaultData = {
   import_type: _importTypes.IndicatorValue,
-  input_format: _inputFormats.ExcelLongFormat,
+  input_format: _inputFormats.SDMXFormat,
   schedule_type: _scheduleTypes.SingleImport,
   schedule_status: 'Active',
   run_on_create: true
