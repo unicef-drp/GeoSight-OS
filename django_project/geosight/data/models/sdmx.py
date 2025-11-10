@@ -22,7 +22,7 @@ from core.models import AbstractTerm
 class SDMXError(Exception):
     """Exception raised for errors in sdmx request."""
 
-    def __init__(self, message="SDMX request error."):
+    def __init__(self, message="SDMX request error."):  # noqa: DOC101, DOC103
         """Init function."""
         self.message = message
         super().__init__(self.message)
@@ -34,7 +34,11 @@ class SDMXConfig(AbstractTerm):
     url = models.URLField()
 
     def full_name(self):
-        """Return full name."""
+        """Return full name.
+
+        :rtype: str
+        :return: Full name of the config.
+        """
         return f'{self.name} ({self.url})'
 
     @property
@@ -58,7 +62,8 @@ class SDMXConfig(AbstractTerm):
                 f"{url}datastructure/<agency>/<dataflow>/<dataflow_version>"
             ),
             "data": (
-                f"{url}data/<agency>,<dataflow>,<dataflow_version>/<dimensions>"
+                f"{url}data/<agency>,<dataflow>,<dataflow_version>"
+                f"/<dimensions>"
                 f"?format=fusion-json&dimensionAtObservation=AllDimensions"
                 f"&detail=structureOnly&includeMetrics=true"
                 f"&includeAllAnnotations=true"
