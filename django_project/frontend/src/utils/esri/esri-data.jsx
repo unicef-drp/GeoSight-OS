@@ -17,21 +17,21 @@
    Context Layers SELECTOR
    ========================================================================== */
 
-import React from 'react';
-import { fetchJSON } from '../../Requests'
-import { hexToRGB, jsonToUrlParams } from '../main'
-import parseArcRESTStyle from './esri-style'
+import { fetchJSON } from "../../Requests";
+import { jsonToUrlParams } from "../main";
+import parseArcRESTStyle from "./esri-style";
+import { hexToRgba } from "../color";
 
 export default class EsriData {
   constructor(name, url, params, options, style, onEachFeature) {
-    const urls = url.split('?')
+    const urls = url.split("?");
     if (urls[1]) {
-      let updatedParams = urls[1].split('&')
-      updatedParams.map(param => {
-        const split = param.split('=')
+      let updatedParams = urls[1].split("&");
+      updatedParams.map((param) => {
+        const split = param.split("=");
         const value = split.splice(1);
-        params[split[0]] = value.join('=')
-      })
+        params[split[0]] = value.join("=");
+      });
     }
 
     this.name = name;
@@ -41,7 +41,7 @@ export default class EsriData {
 
     // for the options
     if (!options) {
-      options = {}
+      options = {};
     }
     this.token = options.token;
     this.username = options.username;
@@ -60,17 +60,16 @@ export default class EsriData {
      * @param  {string} url URL that will be requested
      * @return {array}     str url and fetch options (including GET method and headers)
      */
-    let options = { method: 'GET', mode: "cors" }
+    let options = { method: "GET", mode: "cors" };
     if (this.token) {
-      url += `&token=${this.token}`
+      url += `&token=${this.token}`;
     } else if (this.username && this.password) {
-      options['headers'] = new Headers({
-        'Authorization': 'Basic ' + btoa(`${this.username}:${this.password}`)
-      })
+      options["headers"] = new Headers({
+        Authorization: "Basic " + btoa(`${this.username}:${this.password}`),
+      });
     }
-    return [url, options]
+    return [url, options];
   }
-
 
   async load() {
     /**
@@ -79,103 +78,130 @@ export default class EsriData {
      * Return esri data
      */
     const that = this;
-    const urls = this.url.split('?')
-    const params = JSON.parse(JSON.stringify(this.params))
-    params['f'] = 'json'
-    const url = urls[0] + '?' + jsonToUrlParams(params)
+    const urls = this.url.split("?");
+    const params = JSON.parse(JSON.stringify(this.params));
+    params["f"] = "json";
+    const url = urls[0] + "?" + jsonToUrlParams(params);
     return fetchJSON(...this.preFetch(url))
-      .then(data => {
+      .then((data) => {
         if (data.error) {
           return {
             layer: null,
-            error: data.error.message ? data.error.message : data.error.details ? data.error.details : data.error
-          }
+            error: data.error.message
+              ? data.error.message
+              : data.error.details
+                ? data.error.details
+                : data.error,
+          };
         }
         if (data.drawingInfo === undefined) {
-          if (data.type === "Raster Layer" || (data.layers && data.layers[0] && data.layers[0].type === "Raster Layer")) {
+          if (
+            data.type === "Raster Layer" ||
+            (data.layers &&
+              data.layers[0] &&
+              data.layers[0].type === "Raster Layer")
+          ) {
             return {
               layer: null,
-              error: 'Drawing info is empty'
-            }
+              error: "Drawing info is empty",
+            };
           }
         }
         this.data = data;
         return {
           layer: this,
-          error: null
-        }
+          error: null,
+        };
       })
-      .catch(error => {
+      .catch((error) => {
         return {
           layer: null,
-          error: error.details ? error.details : error
-        }
-      })
+          error: error.details ? error.details : error,
+        };
+      });
   }
 
   /**
    * Add Legend
    */
   getLegend() {
-    const style = this.defaultStyle ? this.defaultStyle : parseArcRESTStyle(this.data);
+    const style = this.defaultStyle
+      ? this.defaultStyle
+      : parseArcRESTStyle(this.data);
     if (!style) {
-      return null
+      return null;
     }
     const that = this;
-    let legend = '';
+    let legend = "";
 
     /** LINE LEGEND **/
     const line = (styleData, label) => {
-      const color = hexToRGB(styleData.color, 1);
-      return '<tr>' +
+      const color = hexToRgba(styleData.color, 1, "string");
+      return (
+        "<tr>" +
         `<td><div class="line" style="width: 30px; height: 2px; background-color: ${color};"></div></td>` +
         `<td>${label ? label : ""}</td>` +
-        '</tr>'
-    }
+        "</tr>"
+      );
+    };
 
     /** CIRCLE LEGEND **/
     const circle = (styleData, label) => {
       const size = parseInt(styleData.radius) + 4;
-      const fillColor = hexToRGB(styleData.fillColor, styleData.fillOpacity);
+      const fillColor = hexToRgba(
+        styleData.fillColor,
+        styleData.fillOpacity,
+        "string",
+      );
       const outlineColor = styleData.color;
       const weight = styleData.weight;
-      return '<tr>' +
+      return (
+        "<tr>" +
         `<td><div class="circle" style="width: ${size}px; height: ${size}px; background-color: ${fillColor};border: ${weight ? weight : 1}px solid ${outlineColor}"></div></td>` +
         `<td>${label ? label : ""}</td>` +
-        '</tr>'
-    }
+        "</tr>"
+      );
+    };
 
     /** SQUARE LEGEND **/
     const square = (styleData, label) => {
       const size = styleData.radius ? parseInt(styleData.radius) + 4 : 10;
-      const fillColor = hexToRGB(styleData.fillColor, styleData.fillOpacity);
+      const fillColor = hexToRgba(
+        styleData.fillColor,
+        styleData.fillOpacity,
+        "string",
+      );
       const outlineColor = styleData.color;
       const weight = styleData.weight;
-      return '<tr>' +
+      return (
+        "<tr>" +
         `<td><div class="square" style="width: ${size}px; height: ${size}px; background-color: ${fillColor};border: ${weight ? weight : 1}px solid ${outlineColor}"></div></td>` +
         `<td>${label ? label : ""}</td>` +
-        '</tr>'
-    }
+        "</tr>"
+      );
+    };
 
     /** ICON LEGEND **/
     const icon = (styleData, label) => {
-      const url = styleData.iconUrl
-      const size = styleData.iconSize ? styleData.iconSize : [0, 0]
+      const url = styleData.iconUrl;
+      const size = styleData.iconSize ? styleData.iconSize : [0, 0];
 
-      return '<tr>' +
+      return (
+        "<tr>" +
         `<td><img src="${url}" width="${size[0]}" height="${size[1]}"></td>` +
         `<td>${label ? label : ""}</td>` +
-        '</tr>'
-    }
+        "</tr>"
+      );
+    };
     switch (style.geometryType) {
       // This is for esriGeometryPolyline
       case "esriGeometryPolyline": {
         if (style.classifications) {
           style.classifications.forEach(function (classification, index) {
-            legend += line(classification.style.style, classification.label)
+            legend += line(classification.style.style, classification.label);
           });
         } else {
-          legend += line(style.style.style, that.name)
+          legend += line(style.style.style, that.name);
         }
         break;
       }
@@ -183,10 +209,10 @@ export default class EsriData {
       case "esriGeometryPolygon": {
         if (style.classifications) {
           style.classifications.forEach(function (classification, index) {
-            legend += square(classification.style.style, classification.label)
+            legend += square(classification.style.style, classification.label);
           });
         } else {
-          legend += square(style.style.style, that.name)
+          legend += square(style.style.style, that.name);
         }
         break;
       }
@@ -196,52 +222,56 @@ export default class EsriData {
           style.classifications.forEach(function (classification, index) {
             const color = classification.style.style.color;
             const width = classification.style.style.width * 2;
-            legend += '' +
-              '<tr>' +
+            legend +=
+              "" +
+              "<tr>" +
               `<td><div class="line" style="height: ${width}px; background-color: ${color}"></div></td>` +
               `<td>${classification.label}</td>` +
-              '</tr>'
+              "</tr>";
           });
         }
         break;
       }
       // This is for point
-      case 'esriGeometryPoint': {
+      case "esriGeometryPoint": {
         if (style.classifications) {
           style.classifications.forEach(function (classification, index) {
-            const label = style.classifications.length === 1 ? that.name : classification.label;
+            const label =
+              style.classifications.length === 1
+                ? that.name
+                : classification.label;
             switch (classification.style.type) {
-              case 'circle': {
-                legend += circle(classification.style.style, label)
-                break
+              case "circle": {
+                legend += circle(classification.style.style, label);
+                break;
               }
-              case 'square': {
-                legend += square(classification.style.style, label)
-                break
+              case "square": {
+                legend += square(classification.style.style, label);
+                break;
               }
-              case 'icon':
-                legend += icon(classification.style.style, label)
-                break
+              case "icon":
+                legend += icon(classification.style.style, label);
+                break;
             }
           });
         } else {
           switch (style.style.type) {
-            case 'circle': {
-              legend += circle(style.style.style, that.name)
-              break
+            case "circle": {
+              legend += circle(style.style.style, that.name);
+              break;
             }
-            case 'square': {
-              legend += square(style.style.style, that.name)
-              break
+            case "square": {
+              legend += square(style.style.style, that.name);
+              break;
             }
-            case 'icon':
-              legend += icon(style.style.style, that.name)
-              break
+            case "icon":
+              legend += icon(style.style.style, that.name);
+              break;
           }
         }
         break;
       }
     }
-    return `<table>${legend}</table>`;
+    return `<table class="LayerLegend">${legend}</table>`;
   }
 }

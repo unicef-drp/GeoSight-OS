@@ -106,27 +106,12 @@ export default function PointInput({ style, update }) {
                   color={style.style.fillColor}
                   onChange={evt => {
                     style.style.fillColor = evt.target.value
+                    style.style.fillOpacity = 1
                     update()
                   }}
                   hideInput={true}
                   fullWidth={true}
                 />
-              </div>
-            </div>
-            <div className="BasicFormSection">
-              <div>
-                <label className="form-label">Fill Color Opacity</label>
-              </div>
-              <div>
-                <input
-                  type="number" spellCheck="false"
-                  value={style.style.fillOpacity}
-                  step={0.1}
-                  max={1}
-                  onChange={evt => {
-                    style.style.fillOpacity = evt.target.value
-                    update()
-                  }}/>
               </div>
             </div>
           </div>
