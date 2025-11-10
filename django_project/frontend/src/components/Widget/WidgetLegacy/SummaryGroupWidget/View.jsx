@@ -282,10 +282,6 @@ export default function SummaryGroupWidgetView({ data }) {
         break;
     }
     // render widget by the type
-    console.log("----------------");
-    console.log(filteredGeometries);
-    console.log(layerData);
-    console.log(indicatorData);
     switch (type) {
       case WidgetType.SUMMARY_WIDGET: {
         const _data = cleanLayerData(

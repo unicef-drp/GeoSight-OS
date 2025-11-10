@@ -286,6 +286,17 @@
       padding: 0 10px 0 10px;
     }
   }
+
+  .LayerLegend {
+    color: var(--map-legend-label-color);
+    font-size: var(--map-legend-label-size);
+  }
+
+  .mapboxgl-ctrl-legend {
+    .list {
+      margin: 0 1rem 0 20px;
+    }
+  }
 }
 
 .MuiAccordionSummary-content {
