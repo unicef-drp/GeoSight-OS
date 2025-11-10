@@ -24,6 +24,8 @@ from django.shortcuts import get_object_or_404, reverse
 from core.utils import string_is_true
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.models.related_table import RelatedTableGroup
+from geosight.data.models.sdmx import SDMXConfig
+from geosight.data.serializer.sdmx import SDMXConfigSerializer
 from geosight.georepo.models import ReferenceLayerView
 from geosight.importer.exception import ImporterError, ImporterDoesNotExist
 from geosight.importer.form import ImporterForm
@@ -142,6 +144,12 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
         context['related_table_options'] = [
             {"value": group.name, "label": group.name} for group in
             RelatedTableGroup.objects.all()
+        ]
+        context['sdmx_data'] = [
+            {"name": _["name"], "url": _["url"], "urls": _["urls"]} for _ in
+            SDMXConfigSerializer(
+                SDMXConfig.objects.all(), many=True
+            ).data
         ]
         return context
 

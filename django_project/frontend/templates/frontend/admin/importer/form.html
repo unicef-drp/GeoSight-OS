@@ -29,6 +29,7 @@
           'detail': '{% url 'importer-detail-api' obj_id %}',
         {% endif %}
       }
-      const relatedTableOptions = {{ related_table_options|safe }}
+      const relatedTableOptions = {{ related_table_options|safe }};
+      const sdmxData = {{ sdmx_data|safe }};
     </script>
 {% endblock %}
