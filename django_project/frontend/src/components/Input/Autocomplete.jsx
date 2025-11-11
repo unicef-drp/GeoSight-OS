@@ -28,19 +28,6 @@ export default function Autocomplete({ ...props }) {
   return (
     <ReactAutocomplete
       {...props}
-      PopperComponent={(popperProps) => (
-        <Popper
-          {...popperProps}
-          transition
-          modifiers={[{ name: "offset", options: { offset: [0, 0] } }]}
-        >
-          {({ TransitionProps }) => (
-            <Grow {...TransitionProps} timeout={300}>
-              <div>{popperProps.children}</div>
-            </Grow>
-          )}
-        </Popper>
-      )}
       className={
         "ReactAutocomplete " + (props.className ? props.className : "")
       }

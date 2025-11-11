@@ -43,7 +43,7 @@ import {
   SelectWithSearch,
 } from "../../Input/SelectWithSearch";
 import { INTERNEXT_IDENTIFIER, INTERVAL_IDENTIFIER } from "./index";
-import { MapboxOperator } from "../../MapBoxStyleEditor/style";
+import { FilterIcon } from "../../Icons";
 
 // VARIABLES
 // export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
@@ -527,6 +527,17 @@ export default function WhereInput({
         (isDate ? " IsDate" : "")
       }
     >
+      {currentField.isFiltered && (
+        <div style={{ float: "right", marginTop: "3px" }}>
+          <FilterIcon
+            onClick={() => {
+              if (props.resetFilter) {
+                props.resetFilter(currentField.name);
+              }
+            }}
+          />
+        </div>
+      )}
       <SelectPlaceholder
         placeholder="Pick the field"
         className={"WhereConfigurationField"}
@@ -548,6 +559,7 @@ export default function WhereInput({
         }}
         disabled={disabledChanges.field}
       />
+
       <SelectPlaceholder
         placeholder="Pick an operation"
         className={
@@ -602,7 +614,8 @@ export default function WhereInput({
         operator={operator}
         value={value}
         setValue={(value) => {
-          console.log(value);
+          if (props.onValueInputChange)
+            props.onValueInputChange(currentField.name);
           where.value = value;
           updateWhere();
         }}
