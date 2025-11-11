@@ -3,6 +3,7 @@ import { propagateAgencyOptions, restrictDataflowOptions, propagateDataflowVersi
 /**
  * fetchAgencies Function
  *
+ * @param {string} apiUrl - String input for api url for fetching data.
  * @param {function} setLoading - A function to update the loading state for agency fetching. Accepts a callback.
  * @param {function} setAgencyOptions - A function to update the list of agency options. Expects an array of objects with the following keys:
  *   @property {string} value - The agency ID.
@@ -10,10 +11,10 @@ import { propagateAgencyOptions, restrictDataflowOptions, propagateDataflowVersi
  * @param {function} setError - A function to set error messages related to agency fetching. Accepts a callback.
  */
 
-export const fetchAgencies = async (setLoading, setAgencyOptions, setError) => {
+export const fetchAgencies = async (apiUrl, setLoading, setAgencyOptions, setError) => {
   setLoading((prev) => ({ ...prev, agency: true }));
   try {
-    const agencies = await propagateAgencyOptions();
+    const agencies = await propagateAgencyOptions(apiUrl);
     setAgencyOptions(agencies.map(({ id, name }) => ({ value: id, label: name })));
     setError((prev) => ({ ...prev, agency: null }));
   } catch {
@@ -26,6 +27,7 @@ export const fetchAgencies = async (setLoading, setAgencyOptions, setError) => {
 /**
  * fetchDataflows Function
  *
+ * @param {string} apiUrl - String input for api url for fetching data.
  * @param {function} setLoading - A function to update the loading state for dataflow fetching. Accepts a callback.
  * @param {function} setDataflowOptions - A function to update the list of dataflow options. Expects an array of objects with the following keys:
  *   @property {string} value - The dataflow ID.
@@ -38,10 +40,10 @@ export const fetchAgencies = async (setLoading, setAgencyOptions, setError) => {
  *   @property {string} label - The agency name.
  */ 
 
-export const fetchDataflows = async (setLoading, setDataflowOptions, setError, selectedAgency) => {
+export const fetchDataflows = async (apiUrl, setLoading, setDataflowOptions, setError, selectedAgency) => {
   setLoading((prev) => ({ ...prev, dataflow: true }));
   try {
-    const dataflows = await restrictDataflowOptions(selectedAgency.value);
+    const dataflows = await restrictDataflowOptions(apiUrl, selectedAgency.value);
     setDataflowOptions(dataflows);
     setError((prev) => ({ ...prev, dataflow: null }));
   } catch {
@@ -54,6 +56,7 @@ export const fetchDataflows = async (setLoading, setDataflowOptions, setError, s
 /**
  * fetchDataflowVersions Function
  *
+ * @param {string} apiUrl - String input for api url for fetching data.
  * @param {function} setLoading - A function to update the loading state for fetching dataflow versions. Accepts a callback.
  * @param {function} setDataflowVersionOptions - A function to update the list of dataflow version options. Expects an array of objects with the following keys:
  *   @property {string} value - The version number of the dataflow.
@@ -64,10 +67,10 @@ export const fetchDataflows = async (setLoading, setDataflowOptions, setError, s
  *   @property {string} dataflowAgency - The ID of the agency owning the dataflow.
  */
 
-export const fetchDataflowVersions = async (setLoading, setDataflowVersionOptions, setError, selectedDataflow) => {
+export const fetchDataflowVersions = async (apiUrl, setLoading, setDataflowVersionOptions, setError, selectedDataflow) => {
   setLoading((prev) => ({ ...prev, dataflowVersion: true }));
   try {
-    const dataflowVersions = await propagateDataflowVersions(selectedDataflow);
+    const dataflowVersions = await propagateDataflowVersions(apiUrl, selectedDataflow);
     setDataflowVersionOptions(dataflowVersions.map((version) => ({
       value: version,
       label: `Version ${version}`,
@@ -83,6 +86,8 @@ export const fetchDataflowVersions = async (setLoading, setDataflowVersionOption
 /**
  * fetchDimensions Function
  *
+ * @param {string} apiUrl - String input for api url for fetching data.
+ * @param {string} apiDataUrl - String input for api url for fetching data.
  * @param {function} setLoading - A function to update the loading state for dimension fetching. Accepts a callback.
  * @param {function} setError - A function to set error messages related to dimension fetching. Accepts a callback.
  * @param {function} setDimensionOptions - A function to update the available dimension options. Expects an object where each key is a dimension ID, and the value is an array of objects with:
@@ -94,10 +99,10 @@ export const fetchDataflowVersions = async (setLoading, setDataflowVersionOption
  *   @property {string} dataflowAgency - The ID of the agency owning the dataflow.
  *   @property {string} dsdId - The ID of the associated DSD.
  */
-export const fetchDimensions = async (setLoading, setError, setDimensionOptions, setDimensionSelections, selectedDataflow, selectedDataflowVersion) => {
+export const fetchDimensions = async (apiUrl, apiDataUrl, setLoading, setError, setDimensionOptions, setDimensionSelections, selectedDataflow, selectedDataflowVersion) => {
   setLoading((prev) => ({ ...prev, dimensions: true }));
   try {
-    const result = await updateDimensions(selectedDataflow, selectedDataflowVersion);
+    const result = await updateDimensions(apiUrl, apiDataUrl, selectedDataflow, selectedDataflowVersion);
     if (result.error) throw new Error(result.error);
 
     const formattedOptions = Object.fromEntries(
@@ -121,6 +126,7 @@ export const fetchDimensions = async (setLoading, setError, setDimensionOptions,
 /**
  * fetchDsd Function
  *
+ * @param {string} apiUrl - String input for api url for fetching data.
  * @param {Object} selectedDataflow - The selected dataflow object with the following keys:
  *   @property {string} value - The dataflow ID.
  *   @property {string} dataflowAgency - The ID of the agency owning the dataflow.
@@ -136,10 +142,10 @@ export const fetchDimensions = async (setLoading, setError, setDimensionOptions,
  * @param {function} setLoading - A function to update the loading state for DSD fetching. Accepts a callback.
  */
 
-export const fetchDsd = async (selectedDataflow, selectedDataflowVersion, dimensionSelections, setDsdResult, setCurrentUrl, setError, setLoading) => {
+export const fetchDsd = async (apiUrl, selectedDataflow, selectedDataflowVersion, dimensionSelections, setDsdResult, setCurrentUrl, setError, setLoading) => {
   setLoading((prev) => ({ ...prev, dsd: true }));
   try {
-    const result = await updateDsd(selectedDataflow, dimensionSelections, selectedDataflowVersion);
+    const result = await updateDsd(apiUrl, selectedDataflow, dimensionSelections, selectedDataflowVersion);
 
     if (result.error) throw new Error(result.error);
 

@@ -11,17 +11,16 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
-__copyright__ = ('Copyright 2023, Unicef')
+__date__ = '10/11/2025'
+__copyright__ = ('Copyright 2025, Unicef')
 
-from .arcgis import *
-from .basemap_layer import *
-from .code import *
-from .context_layer import *
-from .dashboard import *
-from .indicator import *
-from .link import *
-from .related_table import *
-from .sdmx import *
-from .sharepoint import *
-from .style import *
+from django.contrib import admin
+
+from geosight.data.models.sdmx import SDMXConfig
+
+
+@admin.register(SDMXConfig)
+class SDMXConfigAdmin(admin.ModelAdmin):
+    """SDMX Config admin."""
+
+    list_display = ('name', 'url')
