@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, urlencode, urlunparse
 import pytz
 from dateutil import parser as date_parser
 from django.conf import settings
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -30,6 +31,7 @@ from rest_framework.views import APIView
 from core.cache import VersionCache
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.models.indicator import Indicator
+from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
@@ -46,7 +48,23 @@ from geosight.permission.models.resource import (
 def version_cache(
         url: str, indicator: Indicator, reference_layer: ReferenceLayerView
 ):
-    """Return version cache."""
+    """
+    Return a version cache for a given indicator and reference layer.
+
+    This function builds a version cache key by removing the
+    ``reference_layer_uuid`` query parameter from the provided URL,
+    then associates the resulting URL with the indicator version that
+    matches the given reference layer.
+
+    :param str url: The URL used to generate the cache key.
+    :param Indicator indicator: The indicator object, which provides
+        version information relative to the reference layer.
+    :param ReferenceLayerView reference_layer: The reference layer
+        view containing the ``version_with_uuid`` value.
+    :return: A ``VersionCache`` instance containing the processed key
+        and version.
+    :rtype: VersionCache
+    """
     version = indicator.version_with_reference_layer_uuid(
         reference_layer.version_with_uuid
     )
@@ -64,7 +82,21 @@ class _DashboardIndicatorValuesAPI(APIView):
     """Base indicator values API."""
 
     def check_permission(self, user, indicator):
-        """Check permission."""
+        """
+        Check user permission for a given indicator and reference layer.
+
+        This method ensures the user has read permissions for the given
+        indicator within the associated reference layer. If the permission
+        record does not exist, it initializes a default permission with
+        ``PERMISSIONS.NONE``.
+
+        :param user: The user whose permissions are being checked.
+        :type user: User
+        :param indicator: The indicator object to check permission against.
+        :type indicator: Indicator
+        :return: The reference layer associated with the check.
+        :rtype: ReferenceLayerView
+        """
         reference_layer = self.return_reference_view()
         if not reference_layer:
             return Response([])
@@ -86,7 +118,19 @@ class _DashboardIndicatorValuesAPI(APIView):
         return reference_layer
 
     def return_parameters(self, request):
-        """Return parameters for data."""
+        """
+        Extract and return the time range parameters from a request.
+
+        This method parses the ``time__gte`` and ``time__lte`` query
+        parameters to determine the minimum and maximum timestamps used
+        for data filtering. If ``time__lte`` is not provided, the current
+        datetime is used as the maximum time.
+
+        :param request: The incoming HTTP request containing query parameters.
+        :type request: rest_framework.request.Request
+        :return: A tuple containing ``(min_time, max_time)``.
+        :rtype: tuple[datetime.date | None, datetime]
+        """
         max_time = request.GET.get('time__lte', None)
         if max_time:
             max_time = date_parser.parse(max_time)
@@ -102,7 +146,16 @@ class _DashboardIndicatorValuesAPI(APIView):
         return min_time, max_time
 
     def return_reference_view(self):
-        """Return reference view."""
+        """
+        Retrieve or create the reference layer view for the current request.
+
+        This method fetches the reference layer view based on the
+        ``reference_layer_uuid`` query parameter, or falls back to the
+        dashboard's default reference layer identifier.
+
+        :return: The reference layer view associated with the current request.
+        :rtype: ReferenceLayerView
+        """
         slug = self.kwargs['slug']
         dashboard = get_object_or_404(Dashboard, slug=slug)
         identifier = self.request.GET.get(
@@ -119,28 +172,64 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
     """Return all values for the geometry code."""
 
     def get(self, request, slug, geom_id):
-        """Return values of all indicators in specific geometry.
+        """
+        Return values of all datafor a specific geometry.
 
-        :param slug: slug of the dashboard
-        :param geom_id: the geom_id
+        This method retrieves all indicators and related table data associated
+        with the specified geometry (`geom_id`) within a dashboard (`slug`).
+        It compiles indicator values, related table records, and hierarchical
+        entity relationships (parent, siblings, and children) into a structured
+        response.
+
+        The returned data includes:
+            - Indicator values for the selected entity and its related entities
+            - Related table data per concept
+            - Hierarchical structure (parent, siblings, children)
+            - Attribute details for each indicator value
+
+        :param request: The HTTP request object containing query parameters.
+        :type request: rest_framework.request.Request
+        :param str slug: The unique slug identifier of the dashboard.
+        :param str geom_id: The geometry ID or concept UUID of the entity.
         :return:
+            A JSON response containing indicator and related table data for
+            the specified geometry and its related entities.
+        :rtype: rest_framework.response.Response
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         reference_layer = self.return_reference_view()
-        entity = reference_layer.entities_set.filter(
-            geom_id=geom_id
-        ).first()
-        if not entity:
+
+        entities = Entity.objects.filter(
+            Q(geom_id=geom_id) | Q(concept_uuid=geom_id)
+        )
+        if not entities.first():
             return HttpResponseBadRequest(
                 f'Entity with geom_id: {geom_id} does not exist.'
             )
+
+        entities_id = []
+        for entity in entities:
+            entities_id.append(entity.id)
+
+            # parent
+            parent = entity.parent
+            if parent:
+                entities_id.append(parent.id)
+
+            # siblings
+            siblings = entity.siblings
+            for sibling in siblings:
+                entities_id.append(sibling.id)
+
+            # children
+            children = entity.children
+            for child in children:
+                entities_id.append(child.id)
+
+        entity = entities.first()
         siblings = entity.siblings
         children = entity.children
         parent = entity.parent
-
-        entities_id = [entity.id] + \
-                      [sibling.id for sibling in siblings] + \
-                      [children.id for children in children]
         if parent:
             entities_id.append(parent.id)
 
@@ -155,7 +244,6 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 values = indicator.values(
                     date_data=None,
                     min_date_data=None,
-                    reference_layer=reference_layer,
                     entities_id=entities_id,
                     last_value=False
                 )
