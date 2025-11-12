@@ -98,6 +98,8 @@ export function WhereInputValue({
     if (operator === IS_BETWEEN) {
       setInitBetweenMin(betweenMin);
       setInitBetweenMax(betweenMax);
+    } else {
+      setInitValue(value);
     }
   }, [operator, value]);
 
@@ -473,6 +475,8 @@ export default function WhereInput({
   onDelete,
   ...props
 }) {
+  const [originalValue, setOriginalValue] = useState(where.value);
+
   // UPDATE THE OPERATOR
   // If it has :interval, it is last x (time)
   const value = where.value;
@@ -518,6 +522,16 @@ export default function WhereInput({
       showOperator = true;
     }
   }
+
+  useEffect(() => {
+    if (props.resetFilter) {
+      if (!currentField.isFiltered && value !== originalValue) {
+        where.value = originalValue;
+        updateWhere();
+      }
+    }
+  }, [currentField.isFiltered]);
+
   return (
     <div
       className={
@@ -527,6 +541,7 @@ export default function WhereInput({
         (isDate ? " IsDate" : "")
       }
     >
+      {/* This is for the filtered */}
       {currentField.isFiltered && (
         <div style={{ float: "right", marginTop: "3px" }}>
           <FilterIcon
@@ -534,10 +549,13 @@ export default function WhereInput({
               if (props.resetFilter) {
                 props.resetFilter(currentField.name);
               }
+              where.value = originalValue;
+              updateWhere();
             }}
           />
         </div>
       )}
+
       <SelectPlaceholder
         placeholder="Pick the field"
         className={"WhereConfigurationField"}
