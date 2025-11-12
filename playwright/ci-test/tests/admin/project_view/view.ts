@@ -95,6 +95,25 @@ test.describe('View project', () => {
     await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
 
     // ------------------------------------------------------------
+    // Check drilldown
+    // ------------------------------------------------------------
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 575,
+        y: 359
+      }
+    });
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(0).locator('td').nth(0)).toContainText('SOM_TEST_IND_A');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(0).locator('td').nth(1)).toContainText('40');
+
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(0).locator('td').nth(0)).toContainText('Awdal');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(0).locator('td').nth(1)).toContainText('61');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(0).locator('td').nth(2)).toContainText('2020-01-01');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(1).locator('td').nth(0)).toContainText('Bakool');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(1).locator('td').nth(1)).toContainText('78');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(1).locator('td').nth(2)).toContainText('2020-01-01');
+
+    // ------------------------------------------------------------
     // LABEL
     // ------------------------------------------------------------
     const layerB = 'Sample Indicator B'
