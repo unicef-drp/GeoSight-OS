@@ -22,5 +22,6 @@ from .dashboard import *
 from .dashboard_embed import *
 from .indicator import *
 from .related_table import *
+from .sdmx import *
 from .sharepoint import *
 from .style import *

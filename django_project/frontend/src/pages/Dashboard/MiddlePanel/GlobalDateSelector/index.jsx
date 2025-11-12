@@ -45,6 +45,7 @@ import { Session } from "../../../../utils/Sessions";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
+import { PROJECT_TERMS } from "../../../../class/Project";
 
 import "./style.scss";
 
@@ -59,7 +60,9 @@ export default function GlobalDateSelector() {
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
-  const geoField = useSelector((state) => state.dashboard.data?.geoField);
+  const isUsingConceptUUID = useSelector(
+    (state) => state.dashboard.data?.geoField === PROJECT_TERMS.CONCEPT_UUID,
+  );
   const indicators = useSelector((state) => state.dashboard.data?.indicators);
   const indicatorLayers = useSelector(
     (state) => state.dashboard.data?.indicatorLayers,
@@ -392,7 +395,7 @@ export default function GlobalDateSelector() {
         let metadataUrl =
           `/api/indicator/metadata?reference_layer_uuid=` +
           referenceLayer?.identifier;
-        if (geoField === "concept_uuid") {
+        if (isUsingConceptUUID) {
           metadataUrl += `&is_using_uuid=true`;
         }
         await axiosPostWithSession(
@@ -456,7 +459,7 @@ export default function GlobalDateSelector() {
           const indicators = datasetWithIndicators[identifier];
           let metadataUrl =
             `/api/indicator/metadata?reference_layer_uuid=` + identifier;
-          if (geoField === "concept_uuid") {
+          if (isUsingConceptUUID) {
             metadataUrl += `&is_using_uuid=true`;
           }
           if (indicators?.length) {
