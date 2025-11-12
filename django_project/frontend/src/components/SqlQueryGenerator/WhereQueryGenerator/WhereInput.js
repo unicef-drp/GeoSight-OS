@@ -543,7 +543,7 @@ export default function WhereInput({
     >
       {/* This is for the filtered */}
       {currentField.isFiltered && (
-        <div style={{ float: "right", marginTop: "3px" }}>
+        <div className="ResetFilterQuery" style={{ float: "right", marginTop: "3px" }}>
           <FilterIcon
             onClick={() => {
               if (props.resetFilter) {

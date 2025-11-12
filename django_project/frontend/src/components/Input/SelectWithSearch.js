@@ -104,7 +104,7 @@ export function MultipleSelectWithSearch(
 ) {
   const isCompact = props.isCompact
   const selectAllText = 'Select all'
-  const allSelected = value.length === options.length && value.length > 0
+  const allSelected = value.length >= options.length && value.length > 0
   const optionsWithSelectAll = [selectAllText].concat(options)
   return <>
     <Autocomplete

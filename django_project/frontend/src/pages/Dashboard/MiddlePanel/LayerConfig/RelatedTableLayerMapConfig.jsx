@@ -116,6 +116,8 @@ export default function RelatedTableLayerMapConfig() {
   const updateOptions = (where) => {
     if (relatedTableData) {
       const layerMetadata = metadata[relatedTableLayer.id];
+      if (layerMetadata.sequenceFieldSelected.length === 0) return;
+
       const rows = queryData(relatedTableData, updateWhereQuery(where));
       relatedFields.map((field) => {
         if (sequenceFieldSelected.includes(field.name)) return;
@@ -158,6 +160,8 @@ export default function RelatedTableLayerMapConfig() {
     metadata[relatedTableLayer.id] = layerMetadata;
     setMetadata({ ...metadata });
   };
+
+  console.log(metadata);
 
   return (
     <div className={"IndicatorLayerMiddleConfig " + (open ? "Open" : "")}>
