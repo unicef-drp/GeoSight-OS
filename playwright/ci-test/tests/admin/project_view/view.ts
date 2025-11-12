@@ -329,17 +329,44 @@ test.describe('View project', () => {
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer2);
 
     // Click the slicer
-    await page.getByRole('combobox', { name: 'Select 1 option' }).click();
+    await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
     await page.getByRole('option', { name: 'Blank' }).click();
     await expect(lastLog).toEqual(assertLogs[1]);
 
+    await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
+    await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner B' })).not.toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner C' })).not.toBeVisible();
+
+    await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
     await page.getByRole('option', { name: 'HEALTH' }).click();
     await expect(lastLog).toEqual(assertLogs[2]);
 
+    await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
+    await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
+
+    await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
+    await page.getByRole('option', { name: 'WASH' }).click();
+    await expect(lastLog).toEqual(assertLogs[4]);
+
+    await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
+    await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
+
+    await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
     await page.getByRole('option', { name: 'EDU' }).click();
     await expect(lastLog).toEqual(assertLogs[3]);
 
-    await page.getByRole('option', { name: 'WASH' }).click();
+    await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
+    await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
+
+    // Reset
+    await page.locator('.ResetFilterQuery svg').click();
     await expect(lastLog).toEqual(assertLogs[4]);
 
     await expect(page.getByLabel(layer1)).not.toBeChecked();
@@ -351,6 +378,7 @@ test.describe('View project', () => {
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRowName').nth(0)).toContainText('994');
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRowName').nth(1)).toContainText('991');
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRowName').nth(2)).toContainText('No data');
+    await page.getByRole('spinbutton').first().fill('0');
 
     // ----------------------------------------------------------------------------
     // CHECK TOOLS VISIBILITY
@@ -361,6 +389,7 @@ test.describe('View project', () => {
     await expect(page.getByTitle('Zonal Analysis')).toBeHidden();
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
+    await page.getByTitle('Start Measurement').click();
 
     // COMPARE
     await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
