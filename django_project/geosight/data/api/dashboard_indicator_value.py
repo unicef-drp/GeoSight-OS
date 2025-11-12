@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, urlencode, urlunparse
 import pytz
 from dateutil import parser as date_parser
 from django.conf import settings
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -30,6 +31,7 @@ from rest_framework.views import APIView
 from core.cache import VersionCache
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.models.indicator import Indicator
+from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
@@ -127,20 +129,38 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         reference_layer = self.return_reference_view()
-        entity = reference_layer.entities_set.filter(
-            geom_id=geom_id
-        ).first()
-        if not entity:
+
+        entities = Entity.objects.filter(
+            Q(geom_id=geom_id) | Q(concept_uuid=geom_id)
+        )
+        if not entities.first():
             return HttpResponseBadRequest(
                 f'Entity with geom_id: {geom_id} does not exist.'
             )
+
+        entities_id = []
+        for entity in entities:
+            entities_id.append(entity.id)
+
+            # parent
+            parent = entity.parent
+            if parent:
+                entities_id.append(parent.id)
+
+            # siblings
+            siblings = entity.siblings
+            for sibling in siblings:
+                entities_id.append(sibling.id)
+
+            # children
+            children = entity.children
+            for child in children:
+                entities_id.append(child.id)
+
+        entity = entities.first()
         siblings = entity.siblings
         children = entity.children
         parent = entity.parent
-
-        entities_id = [entity.id] + \
-                      [sibling.id for sibling in siblings] + \
-                      [children.id for children in children]
         if parent:
             entities_id.append(parent.id)
 
@@ -155,7 +175,6 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 values = indicator.values(
                     date_data=None,
                     min_date_data=None,
-                    reference_layer=reference_layer,
                     entities_id=entities_id,
                     last_value=False
                 )
