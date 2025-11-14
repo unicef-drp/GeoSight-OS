@@ -27,12 +27,12 @@ class Command(BaseCommand):
 
     fixtures = [
         'core/fixtures/demo/1.core.json',
-        'core/fixtures/demo/2.preferences.json',
         'core/fixtures/demo/2.user_group.json',
         'core/fixtures/demo/3.geosight_georepo.json',
         'core/fixtures/demo/3.geosight_georepo_levels.json',
         'core/fixtures/demo/4.geosight_data.json',
         'core/fixtures/demo/5.geosight_permission.json'
+        'core/fixtures/demo/2.preferences_default_dataset.json',
     ]
 
     def handle(self, *args, **options):

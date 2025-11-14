@@ -160,6 +160,7 @@ export default function DatasetViewSelector({
       // Table properties
       multipleSelection={multipleSelection}
       rowIdKey={"uuid"}
+      ableToReceiveEmptyData={true}
       topChildren={
         <div
           className={
