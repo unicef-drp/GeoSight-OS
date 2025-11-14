@@ -198,7 +198,7 @@ export default function IndicatorDataDownloader() {
         return {
           IndicatorCode: shortcode ? shortcode : "",
           IndicatorName: name,
-          Value: row?.value !== undefined ? "" + row?.value : "",
+          Value: row?.value !== undefined ? row?.value : null,
           Date: row?.date ? row?.date : "",
         };
       });
@@ -250,7 +250,9 @@ export default function IndicatorDataDownloader() {
       );
       if (data) {
         data.map((dataRow) => {
-          tableData.push(Object.assign({}, row, dataRow));
+          tableData.push(
+            Object.assign({}, row, { ...dataRow, Value: "" + dataRow.Value }),
+          );
         });
       }
     });
