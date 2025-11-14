@@ -8,6 +8,13 @@ import { deleteProject, fillProjectName } from "../../utils/project";
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('View kenya latest project', () => {
+
+  const expectExcel = async (expected, received) => {
+    const rowReceived = { ...received }
+    rowReceived.Value = "" + received.Value
+    await expect(expected).toStrictEqual(rowReceived);
+  }
+
   test('Check data', async ({ page }) => {
     /**
      * This test is to check the data of the latest view of Kenya
@@ -91,7 +98,7 @@ test.describe('View kenya latest project', () => {
         GeographyLevel: 'Level 0',
         IndicatorCode: 'KENYA_A',
         IndicatorName: 'Kenya Indicator A',
-        Value: '1',
+        Value: 1,
         Date: '2025-01-01'
       }
     ]
@@ -103,7 +110,7 @@ test.describe('View kenya latest project', () => {
       const workbook = xlsx.readFile(filePath);
       const sheetName = workbook.SheetNames[0];
       const jsonData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-      await expect(jsonData[0]).toStrictEqual(output[0]);
+      await expectExcel(jsonData[0], output[0]);
 
       // GEOJSON
       await page.getByRole('combobox', { name: 'Select 1 option' }).nth(1).click();
