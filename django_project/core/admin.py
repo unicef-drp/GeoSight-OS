@@ -77,7 +77,8 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'georepo_url',
                 'georepo_api_key_level_1', 'georepo_api_key_level_1_email',
                 'georepo_api_key_level_4', 'georepo_api_key_level_4_email',
-                'georepo_using_user_api_key'
+                'georepo_using_user_api_key',
+                'georepo_default_view'
             ),
         }),
         ('Landing Page', {
@@ -151,6 +152,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         'tenants_enabled',
         'ogr_version'
     )
+    raw_id_fields = ('georepo_default_view',)
 
 
 admin.site.register(SitePreferences, SitePreferencesAdmin)

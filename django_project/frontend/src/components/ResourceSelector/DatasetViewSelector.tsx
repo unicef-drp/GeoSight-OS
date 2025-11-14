@@ -80,7 +80,8 @@ export default function DatasetViewSelector({
   // @ts-ignore
   const isLocalEnabled = localReferenceDatasetEnabled;
   const [sourceType, setSourceType] = useState(
-    isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE,
+    // @ts-ignore
+    preferences?.georepo_api?.api_key ? VALUE_REMOTE : VALUE_LOCAL,
   );
 
   // TODO:
@@ -181,7 +182,7 @@ export default function DatasetViewSelector({
                 <FormControlLabel
                   control={<Radio />}
                   value={VALUE_REMOTE}
-                  label={VALUE_REMOTE}
+                  label={"Remote (GeoRepo)"}
                 />
               </RadioGroup>
             </FormControl>

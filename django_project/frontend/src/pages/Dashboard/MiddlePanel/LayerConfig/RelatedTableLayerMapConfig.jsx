@@ -161,8 +161,6 @@ export default function RelatedTableLayerMapConfig() {
     setMetadata({ ...metadata });
   };
 
-  console.log(metadata);
-
   return (
     <div className={"IndicatorLayerMiddleConfig " + (open ? "Open" : "")}>
       <Fragment>

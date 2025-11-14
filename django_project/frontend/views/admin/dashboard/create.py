@@ -23,7 +23,7 @@ from frontend.views.dashboard._base import BaseDashboardView
 from geosight.data.forms.dashboard import DashboardForm
 from geosight.data.models.dashboard import Dashboard
 from geosight.permission.access import RoleCreatorRequiredMixin
-
+from core.models.preferences import SitePreferences
 
 class DashboardCreateViewBase:
     """Dashboard create view base View."""
