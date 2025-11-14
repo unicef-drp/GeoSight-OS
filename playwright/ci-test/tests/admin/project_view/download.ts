@@ -9,6 +9,12 @@ test.describe('Download feature project', () => {
     await page.getByRole('button', { name: 'Close' }).click();
   });
 
+  const expectExcel = async (expected, received) => {
+    const rowReceived = { ...received }
+    rowReceived.Value = "" + received.Value
+    await expect(expected).toStrictEqual(rowReceived);
+  }
+
   // A use case tests scenarios
   test('Download feature project with current date', async ({ page }) => {
     const output = [
@@ -18,7 +24,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 0',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '77',
+        Value: 77,
         Date: '2020-01-01'
       },
       {
@@ -27,7 +33,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 1',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '61',
+        Value: 61,
         Date: '2020-01-01'
       },
       {
@@ -36,7 +42,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 1',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '78',
+        Value: 78,
         Date: '2020-01-01'
       }
     ]
@@ -50,9 +56,9 @@ test.describe('Download feature project', () => {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const jsonData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    await expect(jsonData[0]).toStrictEqual(output[0]);
-    await expect(jsonData[1]).toStrictEqual(output[1]);
-    await expect(jsonData[2]).toStrictEqual(output[2]);
+    await expectExcel(jsonData[0], output[0])
+    await expectExcel(jsonData[1], output[1])
+    await expectExcel(jsonData[2], output[2])
 
     // GEOJSON
     await page.getByRole('combobox', { name: 'Select 1 option' }).nth(1).click();
@@ -85,7 +91,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 0',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '77',
+        Value: 77,
         Date: '2020-01-01'
       },
       {
@@ -94,7 +100,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 0',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '90',
+        Value: 90,
         Date: '2015-01-01'
       },
       {
@@ -103,7 +109,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 0',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '86',
+        Value: 86,
         Date: '2010-01-01'
       },
       {
@@ -112,7 +118,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 0',
         IndicatorCode: 'SOM_TEST_IND_A',
         IndicatorName: 'Sample Indicator A',
-        Value: '50',
+        Value: 50,
         Date: '2000-01-01'
       },
       {
@@ -121,7 +127,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 2',
         IndicatorCode: '',
         IndicatorName: 'Dynamic Layer based on a list of interventions',
-        Value: '178',
+        Value: 178,
         Date: '2020-01-01T00:00:00+00:00'
       },
       {
@@ -130,7 +136,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 2',
         IndicatorCode: '',
         IndicatorName: 'Dynamic Layer based on a list of interventions',
-        Value: '159',
+        Value: 159,
         Date: '2010-01-01T00:00:00+00:00'
       },
       {
@@ -139,7 +145,7 @@ test.describe('Download feature project', () => {
         GeographyLevel: 'Admin Level 2',
         IndicatorCode: '',
         IndicatorName: 'Dynamic Layer based on a list of interventions',
-        Value: '594',
+        Value: 594,
         Date: '2020-01-01T00:00:00+00:00'
       }
     ]
@@ -157,13 +163,13 @@ test.describe('Download feature project', () => {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const jsonData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    await expect(jsonData[0]).toStrictEqual(output[0]);
-    await expect(jsonData[1]).toStrictEqual(output[1]);
-    await expect(jsonData[2]).toStrictEqual(output[2]);
-    await expect(jsonData[3]).toStrictEqual(output[3]);
-    await expect(jsonData[372]).toStrictEqual(output[4]);
-    await expect(jsonData[373]).toStrictEqual(output[5]);
-    await expect(jsonData[374]).toStrictEqual(output[6]);
+    await expectExcel(jsonData[0], output[0])
+    await expectExcel(jsonData[1], output[1])
+    await expectExcel(jsonData[2], output[2])
+    await expectExcel(jsonData[3], output[3])
+    await expectExcel(jsonData[372], output[4])
+    await expectExcel(jsonData[373], output[5])
+    await expectExcel(jsonData[374], output[6])
 
     // GEOJSON
     await page.getByRole('combobox', { name: 'Select 1 option' }).nth(1).click();
