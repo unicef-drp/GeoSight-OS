@@ -84,6 +84,7 @@ test.describe('Reference dataset selector admin', () => {
     await page.goto('/admin/importer/#Reference%20Layer%20&%20Time');
     await page.getByPlaceholder('Select View').click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
+    await page.getByText('Local', { exact: true }).click();
     await testFunction(page, page.locator('.ModalDataSelector'))
 
     // Select
@@ -101,6 +102,7 @@ test.describe('Reference dataset selector admin', () => {
     await page.goto('/admin/dataset/dataset');
     await page.locator('.FilterControl').nth(1).click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
+    await page.getByText('Local', { exact: true }).click()
     await testFunction(page, page.locator('.ModalDataSelector'), 'Country')
 
     // Check Show Selected

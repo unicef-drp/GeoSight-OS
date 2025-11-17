@@ -126,6 +126,8 @@ jobs:
           { id: "e2e-contributor", mode: "e2e", path: "tests/contributor/", workers: 3, script: "make load-test-data" },
           # Mobile
           { id: "e2e-project-view-mobile", mode: "e2e", path: "tests/admin/project_view_mobile/", workers: 3, script: "make load-test-data" },
+          # With default dataset
+          { id: "e2e-project-creation-with-default-dataset", mode: "e2e", path: "tests/admin/project_creation_with_default_dataset/", workers: 3, script: "make load-test-data-default-dataset" },
         ]
     env:
       APP_IMAGE: kartoza/geosight

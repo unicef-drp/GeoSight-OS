@@ -54,6 +54,7 @@ export interface ServerTableProps extends MainDataGridProps {
     select: boolean;
     delete: boolean;
     singleSelection: boolean;
+    emptyData: boolean;
     filter: boolean
   }
 }

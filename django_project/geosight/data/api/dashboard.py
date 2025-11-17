@@ -232,14 +232,19 @@ class DashboardData(APIView):
                 cache.set(data)
 
         else:
+            preferences = SitePreferences.preferences()
             dashboard = Dashboard()
             dashboard.filters_being_hidden = True
 
             # Get default by dataset
-            dataset = request.GET.get('dataset', None)
+            default_dataset = None
+            if preferences.georepo_default_view:
+                default_dataset = preferences.georepo_default_view.identifier
+
+            dataset = request.GET.get('dataset', default_dataset)
             if dataset:
                 try:
-                    view, _ = ReferenceLayerView.objects.get(
+                    view = ReferenceLayerView.objects.get(
                         identifier=dataset
                     )
                 except ReferenceLayerView.DoesNotExist:
@@ -309,7 +314,6 @@ class DashboardData(APIView):
                 }
 
             # Put the default basemap
-            preferences = SitePreferences.preferences()
             if preferences.default_basemap:
                 try:
                     default_basemap = BasemapLayer.objects.get(
