@@ -287,8 +287,13 @@ test.describe('View project', () => {
     await page.getByLabel(layer3).click();
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer3);
     await expect(page.getByLabel(layer3)).toBeChecked();
-    await expect(page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-chart"]')).toHaveCSS("height", "40px");
-    await expect(page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-chart"]')).toHaveCSS("width", "40px");
+    const element = page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-chart"]')
+    await expect(element).toHaveCSS("height", "40px");
+    await expect(element).toHaveCSS("width", "40px");
+    const parent = element.locator('..').locator('..').locator('..');
+    await expect(parent).toHaveClass("maplibregl-popup maplibregl-popup-anchor-center");
+    await expect(parent).toHaveCSS("height", "40px");
+    await expect(parent).toHaveCSS("width", "40px");
 
     // Pin layer, checking the style should be pin
     const layer4 = 'Pins Indicator Layer'
@@ -301,6 +306,11 @@ test.describe('View project', () => {
 
     const pin1 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(0)
     await expect(page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"]')).toHaveCSS('display', 'flex');
+    {
+      const parent = page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"]').locator('..').locator('..');
+      await expect(parent).toHaveCSS('width', '109px');
+      await expect(parent).toHaveCSS('height', '36px');
+    }
     await expect(pin1).toHaveAttribute('title', 'Test/Sample Indicator A (SOM_TEST_IND_A) - 96');
     await expect(pin1).toHaveCSS('background-color', 'rgb(215, 48, 39)');
     await expect(pin1).toHaveCSS('height', '30px');
