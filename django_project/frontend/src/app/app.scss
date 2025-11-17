@@ -239,7 +239,6 @@ header {
   margin: 0;
   background: unset !important;
   box-shadow: unset !important;
-  min-width: 150px;
 
   .header {
     padding: 5px 25px;
@@ -278,6 +277,7 @@ header {
 
   .maplibregl-popup-content-raw-data {
     display: none;
+    min-width: 150px;
 
     table {
       display: none;
