@@ -121,6 +121,14 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
         blank=True, null=True
     )
     georepo_using_user_api_key = models.BooleanField(default=True)
+    georepo_default_view = models.ForeignKey(
+        "geosight_georepo.ReferenceLayerView",
+        null=True, blank=True,
+        help_text=(
+            'Default view for georepo.'
+        ),
+        on_delete=models.SET_NULL
+    )
 
     # -----------------------------------------------
     # LANDING PAGE

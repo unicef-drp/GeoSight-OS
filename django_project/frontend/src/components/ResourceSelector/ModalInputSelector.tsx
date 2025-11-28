@@ -58,7 +58,8 @@ export function ModalInputSelector(
     rowIdKeyParameter = 'id',
     topChildren,
     opener,
-    searchKey = 'q'
+    searchKey = 'q',
+    ableToReceiveEmptyData = false
   }: Props
 ) {
   const tableRef = useRef(null);
@@ -229,7 +230,8 @@ export function ModalInputSelector(
               {
                 delete: false,
                 select: true,
-                singleSelection: !multipleSelection
+                singleSelection: !multipleSelection,
+                emptyData: ableToReceiveEmptyData
               }
             }
             rowIdKey={rowIdKey}
@@ -245,6 +247,9 @@ export function ModalInputSelector(
                   )
                   if (selected) {
                     dataSelected([selected])
+                    setOpen(false)
+                  } else if (data.length === 0){
+                    dataSelected([])
                     setOpen(false)
                   }
                 }

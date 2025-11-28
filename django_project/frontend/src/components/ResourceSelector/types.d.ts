@@ -75,6 +75,9 @@ export interface ModalInputSelectorProps {
   /** If the input selector has other opener. */
   opener?: ReactElement;
 
+  /** Able to receive empty data. */
+  ableToReceiveEmptyData?: boolean;
+
   /** Defaults properties. */
   defaults?: DefaultProps;
 }

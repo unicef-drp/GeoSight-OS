@@ -90,7 +90,8 @@ export default function DatasetCountrySelector({
   // @ts-ignore
   const isLocalEnabled = localReferenceDatasetEnabled;
   const [sourceType, setSourceType] = useState(
-    isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE,
+    // @ts-ignore
+    preferences?.georepo_api?.api_key ? VALUE_REMOTE : VALUE_LOCAL,
   );
   const url = URLS.ReferenceLayer.COUNTRY.List(
     "" + dataset,
