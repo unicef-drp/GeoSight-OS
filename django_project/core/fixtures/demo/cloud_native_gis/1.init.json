@@ -25,6 +25,32 @@
     }
   },
   {
+    "model": "geosight_data.contextlayer",
+    "pk": 3,
+    "fields": {
+      "name": "RRR as Context Layer",
+      "description": "",
+      "source": null,
+      "creator": 1,
+      "created_at": "2025-11-28T02:35:16.952Z",
+      "modified_by": 1,
+      "modified_at": "2025-11-28T02:35:23.872Z",
+      "group": 21,
+      "url": null,
+      "layer_type": "Related Table",
+      "arcgis_config": null,
+      "related_table": 30,
+      "url_legend": null,
+      "token": null,
+      "username": null,
+      "password": null,
+      "styles": "\"[\\n    {\\n        \\\"id\\\": \\\"pointLayer\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"source\\\": \\\"source\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"#ff7800\\\",\\n            \\\"circle-opacity\\\": 0.6\\n        },\\n        \\\"filter\\\": [\\n            \\\"==\\\",\\n            \\\"$type\\\",\\n            \\\"Point\\\"\\n        ]\\n    }\\n]\"",
+      "label_styles": "\"\"",
+      "configuration": "{\"latitude_field\":\"Latitude\",\"longitude_field\":\"Longitude\",\"query\":\"\\\"Partner\\\" IN ('Partner A','Partner B','Partner C')\",\"field_aggregation\":\"NoBeneficiaries\"}",
+      "cloud_native_gis_layer_id": null
+    }
+  },
+  {
     "model": "geosight_data.dashboardcontextlayer",
     "pk": 110,
     "fields": {

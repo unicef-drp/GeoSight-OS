@@ -15,8 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-from django.utils import timezone
 
+from geosight.data.admin.base import BaseAdminResourceMixin, invalidate_cache
 from geosight.data.models.dashboard import (
     Dashboard, DashboardWidget,
     DashboardBasemap, DashboardIndicator, DashboardContextLayer,
@@ -28,7 +28,6 @@ from geosight.data.models.dashboard import (
     DashboardRelatedTable,
     DashboardTool
 )
-from geosight.data.admin.base import BaseAdminResourceMixin
 
 
 class DashboardWidgetInline(admin.StackedInline):
@@ -110,18 +109,12 @@ class DashboardContextLayerInline(admin.TabularInline):
     extra = 0
 
 
-@admin.action(description='Invalidate cache')
-def invalidate_cache(modeladmin, request, queryset):
-    """Invalidate cache of value on frontend."""
-    queryset.update(version_data=timezone.now())
-
-
 class DashboardAdmin(BaseAdminResourceMixin):
     """Dashboard admin."""
 
     list_display = (
-        'slug', 'name', 'reference_layer'
-    ) + BaseAdminResourceMixin.list_display
+                       'slug', 'name', 'reference_layer'
+                   ) + BaseAdminResourceMixin.list_display
     inlines = (
         DashboardBasemapInline,
         DashboardContextLayerInline,

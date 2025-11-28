@@ -77,7 +77,7 @@ test.describe('Create project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
-    await fillProjectName(page,name);
+    await fillProjectName(page, name);
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Test');
     await page.keyboard.press('Enter');
@@ -93,8 +93,41 @@ test.describe('Create project', () => {
     await page.getByText('Sample Indicator C').first().click();
     await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
 
-    // Add indicator Layers
+    // Add Related table
+    await page.locator('.TabPrimary').getByText('Related Tables').click();
+    await page.getByRole('button', { name: 'Add Related Table' }).click();
+    await page.getByRole('cell', { name: 'RRR' }).click();
+    await page.getByRole('button', { name: 'Update Selection' }).click();
+    await page.getByRole('button', { name: 'Open' }).first().click();
+    await page.getByRole('option', { name: 'Ucode' }).click();
+
+    // Add 2 RT Layer
     await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
+    await page.getByText('Related Table LayerCreate').click();
+    await page.getByRole('textbox').first().fill('RT 1');
+    await page.getByRole('textbox', { name: 'SQL Filter' }).click();
+    await page.locator('.WhereConfigurationResult > svg').click();
+    await page.getByRole('combobox').filter({ hasText: 'Date' }).click();
+    await page.getByRole('option', { name: 'Partner' }).click();
+    await page.getByRole('combobox', { name: 'Select 1 option' }).click();
+    await page.getByRole('option', { name: 'Partner A' }).click();
+    await page.getByRole('button', { name: 'Apply' }).click();
+    await page.getByRole('button', { name: 'Apply Changes' }).click();
+    await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
+    await page.getByText('Related Table LayerCreate').click();
+    await page.getByRole('textbox').first().fill('RT 2');
+    await page.getByRole('textbox', { name: 'SQL Filter' }).click();
+    await page.locator('.WhereConfigurationResult > svg').click();
+    await page.getByRole('combobox').filter({ hasText: 'Date' }).click();
+    await page.getByRole('option', { name: 'Partner' }).click();
+    await page.getByRole('option', { name: 'Partner' }).click();
+    await page.getByRole('combobox', { name: 'Select 1 option' }).click();
+    await page.getByRole('option', { name: 'Partner B' }).click();
+    await page.getByRole('button', { name: 'Apply' }).click();
+    await page.getByRole('button', { name: 'Apply Changes' }).click();
+
+    // Add indicator Layers
     await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
     await page.getByText('Single Indicator LayerSelect').click();
     await page.getByRole('cell', {
@@ -112,13 +145,13 @@ test.describe('Create project', () => {
     await page.locator('.AdminSelectDataForm .Save-Button button').click();
 
     // We check the count
-    expect(await page.locator('.TabPrimary').getByText('Indicator Layers (3)')).toBeVisible();
+    expect(await page.locator('.TabPrimary').getByText('Indicator Layers (5)')).toBeVisible();
 
     // We delete the indicator
     await page.locator('.TabPrimary').getByText('Indicators').click();
     await page.getByRole('row', { name: 'Select row Sample Indicator C' }).getByLabel('Select row').check();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await expect(page.getByText('Indicator Layers (2)')).toBeVisible();
+    await expect(page.getByText('Indicator Layers (4)')).toBeVisible();
     await page.locator('.TabPrimary').getByText('Indicator Layers').click();
 
 
@@ -180,6 +213,7 @@ test.describe('Create project', () => {
     await page.getByText('Context Layers', { exact: true }).nth(1).click();
     await page.getByRole('button', { name: 'Add Context Layer' }).click();
     await page.getByRole('cell', { name: 'Somalia healthsites' }).click();
+    await page.getByRole('cell', { name: 'RRR as Context Layer' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByText('Configuration has been saved!')).toBeVisible()
@@ -188,6 +222,14 @@ test.describe('Create project', () => {
     await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
     await page.getByRole('tab', { name: 'Indicators' }).click();
     await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+
+    // Check RRR as Context Layer visualization
+    await page.getByRole('tab', { name: 'Context Layers' }).click();
+    await page.getByText('RRR as Context Layer').click();
+    await page.getByRole('combobox', { name: 'All selected' }).click();
+    await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
 
     // --------------------------------------------
     // TEST FILTERS
@@ -223,6 +265,14 @@ test.describe('Create project', () => {
     await page.locator('.FilterInputWrapper').nth(1).locator('input').first().fill('SOM_002');
     await page.waitForTimeout(1000);
     await expect(lastLog).toEqual([])
+
+    // Check RT
+    await page.getByRole('tab', { name: 'Layers', exact: true }).click();
+    await page.getByRole('tab', { name: 'Indicators' }).click();
+    await page.getByTitle('RT 1').click();
+    await expect(page.locator('.WhereConfigurationQuery ').getByRole('combobox', { name: 'Select 1 option' })).toHaveValue('Partner A');
+    await page.getByTitle('RT 2').click();
+    await expect(page.locator('.WhereConfigurationQuery ').getByRole('combobox', { name: 'Select 1 option' })).toHaveValue('Partner B');
 
     // Check values
     await page.getByTitle('Edit project').getByRole('link').click();

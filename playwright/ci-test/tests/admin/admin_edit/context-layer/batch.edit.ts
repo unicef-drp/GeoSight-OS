@@ -61,7 +61,8 @@ test.describe('Batch edit context-layer', () => {
 
     // batch edit permission
     await delay(1000);
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await page.getByRole('cell', { name: 'Select row' }).nth(1).click();
+    await page.getByRole('cell', { name: 'Select row' }).nth(2).click();
     await expect(page.locator('.AdminListHeader-Count ')).toContainText('2 items on this list are selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();

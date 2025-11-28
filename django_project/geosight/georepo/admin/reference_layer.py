@@ -15,10 +15,10 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from geosight.data.admin.base import invalidate_cache
 from geosight.georepo.models import ReferenceLayerView
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
@@ -153,21 +153,6 @@ def action_create_data_access(modeladmin, request, queryset):
     :type queryset: django.db.models.QuerySet
     """
     create_data_access.delay()
-
-
-@admin.action(description='Invalidate cache')
-def invalidate_cache(modeladmin, request, queryset):
-    """
-    Invalidate the frontend cache for selected objects.
-
-    :param modeladmin: The current ModelAdmin instance.
-    :type modeladmin: django.contrib.admin.ModelAdmin
-    :param request: The current HttpRequest object.
-    :type request: django.http.HttpRequest
-    :param queryset: The queryset of selected model instances.
-    :type queryset: django.db.models.QuerySet
-    """
-    queryset.update(version_data=timezone.now())
 
 
 @admin.action(description='Assign countries')

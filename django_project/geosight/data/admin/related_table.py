@@ -15,30 +15,41 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-from django.utils import timezone
 
+from geosight.data.admin.base import BaseAdminResourceMixin, invalidate_cache
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
 from geosight.importer.models.attribute import ImporterAttribute
-from geosight.data.admin.base import BaseAdminResourceMixin
-
-
-@admin.action(description='Invalidate cache')
-def invalidate_cache(modeladmin, request, queryset):
-    """Invalidate cache of value on frontend."""
-    queryset.update(version_data=timezone.now())
 
 
 @admin.action(description='Change non to empty sting')
 def make_none_to_empty_string(modeladmin, request, queryset):
-    """Change non to empty string."""
+    """
+    Change None values to empty strings in selected RelatedTable instances.
+
+    Iterates through the queryset and calls make_none_to_empty_string()
+    on each RelatedTable instance to convert None values to empty strings.
+
+    :param modeladmin: The admin model instance associated with this action.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HTTP request object.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected RelatedTable objects.
+    :type queryset: django.db.models.QuerySet
+    """
     for query in queryset:
         query.make_none_to_empty_string()
 
 
 class RelatedTableFieldInline(admin.TabularInline):
-    """RelatedTableField inline."""
+    """
+    Inline admin interface for RelatedTableField model.
+
+    Displays RelatedTableField entries as a tabular inline within the
+    RelatedTable admin page, allowing management of fields associated
+    with a related table.
+    """
 
     model = RelatedTableField
     extra = 0
@@ -46,7 +57,12 @@ class RelatedTableFieldInline(admin.TabularInline):
 
 @admin.register(RelatedTableRow)
 class RelatedTableRowAdmin(admin.ModelAdmin):
-    """RelatedTableRow admin."""
+    """
+    Django admin configuration for RelatedTableRow model.
+
+    Provides admin interface for managing individual rows within related
+    tables. Allows inline editing of the row order.
+    """
 
     list_display = ('table', 'order')
     list_editable = ('order',)
@@ -54,18 +70,36 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
 
 @admin.register(RelatedTable)
 class RelatedTableAdmin(BaseAdminResourceMixin):
-    """RelatedTable admin."""
+    """
+    Django admin configuration for RelatedTable model.
+
+    Provides comprehensive admin interface for managing related tables,
+    including their fields, metadata, and associated importers. Extends
+    BaseAdminResourceMixin to track creator and modification information.
+    Includes inline editing of related table fields and actions for cache
+    invalidation and data cleanup.
+    """
 
     list_display = (
-        'name', 'description',
-        'importer'
-    ) + BaseAdminResourceMixin.list_display
+                       'name', 'description',
+                       'importer'
+                   ) + BaseAdminResourceMixin.list_display
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache, make_none_to_empty_string)
     readonly_fields = ('last_importer',) + BaseAdminResourceMixin.readonly_fields  # noqa
 
     def importer(self, obj: RelatedTable):
-        """Return importer from this RT."""
+        """
+        Get the importer associated with this RelatedTable.
+
+        Looks up the ImporterAttribute with name 'related_table_id' that
+        references this RelatedTable's ID and returns the associated importer.
+
+        :param obj: The RelatedTable instance.
+        :type obj: RelatedTable
+        :return: The importer instance if found, None otherwise.
+        :rtype: geosight.importer.models.Importer or None
+        """
         attribute = ImporterAttribute.objects.filter(
             name='related_table_id'
         ).filter(
