@@ -34,6 +34,8 @@ const MapConfig = memo(({}: Props) => {
     const dispatcher = useDispatch();
 
     // @ts-ignore
+    let id = useSelector(state => state.dashboard.data?.id);
+    // @ts-ignore
     let extent = useSelector(state => state.dashboard.data?.extent);
 
     const {
@@ -145,7 +147,7 @@ const MapConfig = memo(({}: Props) => {
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
-        if (entity_ids || !identifierState.current || (!!extent && !isInit)) {
+        if (entity_ids || !identifierState.current || (!!extent && !isInit) || !id) {
           setEditedExtent(referenceLayerData?.data?.bbox)
           identifierState.current = identifier
         }

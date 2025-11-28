@@ -64,6 +64,7 @@ const ServerTable = forwardRef(
         select: true,
         delete: true,
         singleSelection: false,
+        emptyData: false,
         filter: false,
       },
       rowIdKey = "id",
@@ -469,6 +470,8 @@ const ServerTable = forwardRef(
                 });
                 if (selected) {
                   setSelectionModel([selected]);
+                } else if (enable.emptyData && !newSelectionModel.length) {
+                  setSelectionModel([]);
                 }
               } else {
                 if (

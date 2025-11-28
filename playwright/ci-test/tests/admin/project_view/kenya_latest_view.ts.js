@@ -31,6 +31,7 @@ test.describe('View kenya latest project', () => {
     // Create project
     await page.getByRole('button', { name: 'Create New Project' }).click();
     await page.getByRole('textbox', { name: 'Select View' }).click();
+    await page.getByText('Local', { exact: true }).click();
     await page.getByRole('cell', { name: 'Kenya (Latest)' }).click();
 
     await fillProjectName(page,name)

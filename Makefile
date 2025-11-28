@@ -181,6 +181,13 @@ load-test-data:
 	@echo "------------------------------------------------------------------"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py load_demo_data"
 
+load-test-data-default-dataset:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Load demo data for dev"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py load_demo_data_default_dataset"
+
 dev-test:
 	@echo
 	@echo "------------------------------------------------------------------"
