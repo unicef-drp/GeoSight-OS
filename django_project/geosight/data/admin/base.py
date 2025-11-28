@@ -15,6 +15,7 @@ __date__ = '14/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 BASE_RESOURCE_FIELD = (
     'creator', 'created_at', 'modified_by', 'modified_at'
@@ -36,3 +37,8 @@ class BaseAdminResourceMixin(admin.ModelAdmin):
         instance.save()
         form.save_m2m()
         return instance
+
+@admin.action(description='Invalidate cache')
+def invalidate_cache(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())

@@ -15,19 +15,12 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-from django.utils import timezone
 
+from geosight.data.admin.base import BaseAdminResourceMixin, invalidate_cache
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
 from geosight.importer.models.attribute import ImporterAttribute
-from geosight.data.admin.base import BaseAdminResourceMixin
-
-
-@admin.action(description='Invalidate cache')
-def invalidate_cache(modeladmin, request, queryset):
-    """Invalidate cache of value on frontend."""
-    queryset.update(version_data=timezone.now())
 
 
 @admin.action(description='Change non to empty sting')
@@ -57,9 +50,9 @@ class RelatedTableAdmin(BaseAdminResourceMixin):
     """RelatedTable admin."""
 
     list_display = (
-        'name', 'description',
-        'importer'
-    ) + BaseAdminResourceMixin.list_display
+                       'name', 'description',
+                       'importer'
+                   ) + BaseAdminResourceMixin.list_display
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache, make_none_to_empty_string)
     readonly_fields = ('last_importer',) + BaseAdminResourceMixin.readonly_fields  # noqa

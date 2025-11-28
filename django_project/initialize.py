@@ -14,11 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import django
 import os
 import shutil
 import time
-
-import django
 
 from core.utils import create_superuser
 
@@ -152,16 +151,17 @@ except Exception as e:
     pass
 
 #########################################################
-# 8. Create thumbnails for Dashboard
+# 8. Update the version of data
 #########################################################
 try:
+    from django.utils import timezone
     from geosight.data.models.dashboard import Dashboard
+    from geosight.data.models.indicator import Indicator
+    from geosight.data.models.related_table import RelatedTable
 
     print("-----------------------------------------------------")
-    print("8. Create thumbnails for Dashboard")
-    for dashboard in Dashboard.objects.all():
-        dashboard.save()
-
+    print("8. Update the version of data")
+    Dashboard.objects.all().update(version_data=timezone.now())
 except Exception as e:
     print(f'{e}')
     pass

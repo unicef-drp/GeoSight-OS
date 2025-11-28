@@ -16,11 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 from django.db import connection
-from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from geosight.data.admin.base import BaseAdminResourceMixin
+from geosight.data.admin.base import BaseAdminResourceMixin, invalidate_cache
 from geosight.data.models.indicator import (
     Indicator, IndicatorGroup,
     IndicatorValue, IndicatorRule, IndicatorExtraValue
@@ -209,21 +208,6 @@ class IndicatorRuleInline(admin.TabularInline):
 
     model = IndicatorRule
     extra = 0
-
-
-@admin.action(description='Invalidate cache')
-def invalidate_cache(modeladmin, request, queryset):  # noqa: DOC109, DOC110
-    """
-    Invalidate the cached values on the frontend by updating the version data.
-
-    :param modeladmin: The admin model instance associated with this action.
-    :type modeladmin: django.contrib.admin.ModelAdmin
-    :param request: The current HTTP request object.
-    :type request: django.http.HttpRequest
-    :param queryset: The queryset of selected objects to invalidate.
-    :type queryset: django.db.models.QuerySet
-    """
-    queryset.update(version_data=timezone.now())
 
 
 class IndicatorAdmin(BaseAdminResourceMixin):
