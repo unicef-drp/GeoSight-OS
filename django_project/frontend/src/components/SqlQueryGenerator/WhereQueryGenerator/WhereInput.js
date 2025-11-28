@@ -530,7 +530,7 @@ export default function WhereInput({
         updateWhere();
       }
     }
-  }, [currentField.isFiltered]);
+  }, [currentField?.isFiltered]);
 
   return (
     <div
@@ -542,7 +542,7 @@ export default function WhereInput({
       }
     >
       {/* This is for the filtered */}
-      {currentField.isFiltered && (
+      {currentField?.isFiltered && (
         <div className="ResetFilterQuery" style={{ float: "right", marginTop: "3px" }}>
           <FilterIcon
             onClick={() => {

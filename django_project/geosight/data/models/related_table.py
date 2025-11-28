@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import uuid
-
 from dateutil import parser
 from django.contrib.gis.db import models
 from django.db import connection, transaction

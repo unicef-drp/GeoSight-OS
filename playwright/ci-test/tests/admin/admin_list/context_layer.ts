@@ -20,7 +20,7 @@ test.describe('Context layer list admin', () => {
   }
 
   const testFunction = async (originalPage, page) => {
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–12 of 12');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
 
     // Check search
     await page.getByPlaceholder('Search Context Layer').fill('A2');
@@ -41,10 +41,10 @@ test.describe('Context layer list admin', () => {
       exact: true
     }).click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Context Layer A0');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 13');
     await page.getByLabel('Go to next page').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia healthsites');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–12 of 12');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('RRR as Context Layer');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–13 of 13');
 
     // Orders
     await page.getByLabel('Go to previous page').click();
@@ -103,7 +103,7 @@ test.describe('Context layer list admin', () => {
     await page.getByRole('cell', { name: 'Unselect row' }).nth(2).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
     await page.getByRole('button', { name: 'Show selected' }).click();
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 13');
     await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
     await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
     await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
@@ -135,6 +135,6 @@ test.describe('Context layer list admin', () => {
 
     // Reload
     await page.reload();
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–3 of 3');
   });
 })

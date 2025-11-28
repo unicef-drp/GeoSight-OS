@@ -26314,6 +26314,8 @@
         "Ucode": "SOM_0001_0001_V1",
         "Sector": "",
         "Partner": "Partner A",
+        "Latitude": 10.224881735,
+        "Longitude": 43.53291619493366,
         "NoBeneficiaries": 371.0
       }
     }
@@ -26331,6 +26333,8 @@
         "Ucode": "SOM_0001_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 10.09387252,
+        "Longitude": 43.18190062632189,
         "NoBeneficiaries": 159.0
       }
     }
@@ -26348,6 +26352,8 @@
         "Ucode": "SOM_0001_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.65983718,
+        "Longitude": 43.56777399460487,
         "NoBeneficiaries": 817.0
       }
     }
@@ -26365,6 +26371,8 @@
         "Ucode": "SOM_0001_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.8922892,
+        "Longitude": 43.24549004734895,
         "NoBeneficiaries": 908.0
       }
     }
@@ -26382,6 +26390,8 @@
         "Ucode": "SOM_0002_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 4.6942246,
+        "Longitude": 43.93229801189854,
         "NoBeneficiaries": 456.0
       }
     }
@@ -26399,6 +26409,8 @@
         "Ucode": "SOM_0002_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 4.21541909,
+        "Longitude": 43.21641527887574,
         "NoBeneficiaries": 922.0
       }
     }
@@ -26416,6 +26428,8 @@
         "Ucode": "SOM_0002_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 3.78149414,
+        "Longitude": 44.5385284425,
         "NoBeneficiaries": 730.0
       }
     }
@@ -26433,6 +26447,8 @@
         "Ucode": "SOM_0002_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.775889895,
+        "Longitude": 43.42135960649223,
         "NoBeneficiaries": 710.0
       }
     }
@@ -26450,6 +26466,8 @@
         "Ucode": "SOM_0002_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 4.031642075000001,
+        "Longitude": 43.9709343325,
         "NoBeneficiaries": 129.0
       }
     }
@@ -26467,6 +26485,8 @@
         "Ucode": "SOM_0003_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 2.07649714,
+        "Longitude": 45.32529713304848,
         "NoBeneficiaries": 108.0
       }
     }
@@ -26484,6 +26504,8 @@
         "Ucode": "SOM_0004_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 9.1266393,
+        "Longitude": 50.28890658374632,
         "NoBeneficiaries": 989.0
       }
     }
@@ -26501,6 +26523,8 @@
         "Ucode": "SOM_0004_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 10.9939396,
+        "Longitude": 49.41597061706351,
         "NoBeneficiaries": 856.0
       }
     }
@@ -26518,6 +26542,8 @@
         "Ucode": "SOM_0004_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 11.6951291,
+        "Longitude": 50.85590650921409,
         "NoBeneficiaries": 310.0
       }
     }
@@ -26535,6 +26561,8 @@
         "Ucode": "SOM_0004_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.657927635,
+        "Longitude": 50.79581057986083,
         "NoBeneficiaries": 681.0
       }
     }
@@ -26552,6 +26580,8 @@
         "Ucode": "SOM_0004_0005_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 11.03776227,
+        "Longitude": 50.12250942805919,
         "NoBeneficiaries": 391.0
       }
     }
@@ -26569,6 +26599,8 @@
         "Ucode": "SOM_0004_0006_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 9.41523786,
+        "Longitude": 49.56791722685186,
         "NoBeneficiaries": 161.0
       }
     }
@@ -26586,6 +26618,8 @@
         "Ucode": "SOM_0005_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 3.15658569,
+        "Longitude": 43.5849717077492,
         "NoBeneficiaries": 687.0
       }
     }
@@ -26603,6 +26637,8 @@
         "Ucode": "SOM_0005_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 2.501708985,
+        "Longitude": 44.02555665065324,
         "NoBeneficiaries": 769.0
       }
     }
@@ -26620,6 +26656,8 @@
         "Ucode": "SOM_0005_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 1.9967041,
+        "Longitude": 42.80988507810294,
         "NoBeneficiaries": 222.0
       }
     }
@@ -26637,6 +26675,8 @@
         "Ucode": "SOM_0005_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 2.87973064,
+        "Longitude": 42.84348584275028,
         "NoBeneficiaries": 161.0
       }
     }
@@ -26654,6 +26694,8 @@
         "Ucode": "SOM_0006_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 5.83895936,
+        "Longitude": 46.13634372539151,
         "NoBeneficiaries": 40.0
       }
     }
@@ -26671,6 +26713,8 @@
         "Ucode": "SOM_0006_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 6.143965834999999,
+        "Longitude": 47.07444234472148,
         "NoBeneficiaries": 102.0
       }
     }
@@ -26688,6 +26732,8 @@
         "Ucode": "SOM_0006_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 4.6820583,
+        "Longitude": 46.82490038001757,
         "NoBeneficiaries": 137.0
       }
     }
@@ -26705,6 +26751,8 @@
         "Ucode": "SOM_0006_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.977637555,
+        "Longitude": 46.95422203065473,
         "NoBeneficiaries": 266.0
       }
     }
@@ -26722,6 +26770,8 @@
         "Ucode": "SOM_0006_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 5.422321615,
+        "Longitude": 46.73882059266055,
         "NoBeneficiaries": 435.0
       }
     }
@@ -26739,6 +26789,8 @@
         "Ucode": "SOM_0007_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 2.083238095,
+        "Longitude": 41.70957360248143,
         "NoBeneficiaries": 65.0
       }
     }
@@ -26756,6 +26808,8 @@
         "Ucode": "SOM_0007_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.46031613,
+        "Longitude": 41.74256186829171,
         "NoBeneficiaries": 787.0
       }
     }
@@ -26773,6 +26827,8 @@
         "Ucode": "SOM_0007_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 2.718431525,
+        "Longitude": 41.45012533889222,
         "NoBeneficiaries": 485.0
       }
     }
@@ -26790,6 +26846,8 @@
         "Ucode": "SOM_0007_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.99320231,
+        "Longitude": 42.11790772207714,
         "NoBeneficiaries": 797.0
       }
     }
@@ -26807,6 +26865,8 @@
         "Ucode": "SOM_0007_0005_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.15658569,
+        "Longitude": 42.44797760748234,
         "NoBeneficiaries": 813.0
       }
     }
@@ -26824,6 +26884,8 @@
         "Ucode": "SOM_0007_0006_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.736511235,
+        "Longitude": 42.59720664362428,
         "NoBeneficiaries": 331.0
       }
     }
@@ -26841,6 +26903,8 @@
         "Ucode": "SOM_0008_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 4.806610105,
+        "Longitude": 45.37880139084887,
         "NoBeneficiaries": 54.0
       }
     }
@@ -26858,6 +26922,8 @@
         "Ucode": "SOM_0008_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.830200195,
+        "Longitude": 45.53826761267229,
         "NoBeneficiaries": 565.0
       }
     }
@@ -26875,6 +26941,8 @@
         "Ucode": "SOM_0008_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.38720703,
+        "Longitude": 45.61103792469689,
         "NoBeneficiaries": 516.0
       }
     }
@@ -26892,6 +26960,8 @@
         "Ucode": "SOM_0009_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 0.56542988,
+        "Longitude": 41.83238849235676,
         "NoBeneficiaries": 221.0
       }
     }
@@ -26909,6 +26979,8 @@
         "Ucode": "SOM_0009_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": -0.9022276250000001,
+        "Longitude": 41.47450263705605,
         "NoBeneficiaries": 850.0
       }
     }
@@ -26926,6 +26998,8 @@
         "Ucode": "SOM_0009_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 0.08854552,
+        "Longitude": 42.75496388641732,
         "NoBeneficiaries": 594.0
       }
     }
@@ -26943,6 +27017,8 @@
         "Ucode": "SOM_0009_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": -0.52025977,
+        "Longitude": 41.98693052123907,
         "NoBeneficiaries": 497.0
       }
     }
@@ -26960,6 +27036,8 @@
         "Ucode": "SOM_0010_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.31167603,
+        "Longitude": 45.0697377623431,
         "NoBeneficiaries": 825.0
       }
     }
@@ -26977,6 +27055,8 @@
         "Ucode": "SOM_0010_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 1.103197665,
+        "Longitude": 43.816310204743,
         "NoBeneficiaries": 906.0
       }
     }
@@ -26994,6 +27074,8 @@
         "Ucode": "SOM_0010_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.651702885,
+        "Longitude": 44.1364129258174,
         "NoBeneficiaries": 464.0
       }
     }
@@ -27011,6 +27093,8 @@
         "Ucode": "SOM_0010_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.711069525,
+        "Longitude": 44.66333811960108,
         "NoBeneficiaries": 730.0
       }
     }
@@ -27028,6 +27112,8 @@
         "Ucode": "SOM_0010_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.97171021,
+        "Longitude": 44.45041196731147,
         "NoBeneficiaries": 583.0
       }
     }
@@ -27045,6 +27131,8 @@
         "Ucode": "SOM_0010_0006_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.338381575,
+        "Longitude": 43.52442207443247,
         "NoBeneficiaries": 869.0
       }
     }
@@ -27062,6 +27150,8 @@
         "Ucode": "SOM_0010_0007_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 2.7612915,
+        "Longitude": 44.98571273539854,
         "NoBeneficiaries": 879.0
       }
     }
@@ -27079,6 +27169,8 @@
         "Ucode": "SOM_0011_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.177093505,
+        "Longitude": 42.82605734323676,
         "NoBeneficiaries": 850.0
       }
     }
@@ -27096,6 +27188,8 @@
         "Ucode": "SOM_0011_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 0.699402345,
+        "Longitude": 43.07034407343952,
         "NoBeneficiaries": 580.0
       }
     }
@@ -27113,6 +27207,8 @@
         "Ucode": "SOM_0011_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 1.60699463,
+        "Longitude": 42.1717983886014,
         "NoBeneficiaries": 867.0
       }
     }
@@ -27130,6 +27226,8 @@
         "Ucode": "SOM_0012_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 3.502381375,
+        "Longitude": 46.56687123516815,
         "NoBeneficiaries": 642.0
       }
     }
@@ -27147,6 +27245,8 @@
         "Ucode": "SOM_0012_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 2.456258845,
+        "Longitude": 45.68564923622257,
         "NoBeneficiaries": 413.0
       }
     }
@@ -27164,6 +27264,8 @@
         "Ucode": "SOM_0012_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 3.0517478,
+        "Longitude": 46.30092067090455,
         "NoBeneficiaries": 302.0
       }
     }
@@ -27181,6 +27283,8 @@
         "Ucode": "SOM_0012_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.986297605,
+        "Longitude": 45.55515595920596,
         "NoBeneficiaries": 468.0
       }
     }
@@ -27198,6 +27302,8 @@
         "Ucode": "SOM_0013_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 6.955817925,
+        "Longitude": 47.90989936868584,
         "NoBeneficiaries": 188.0
       }
     }
@@ -27215,6 +27321,8 @@
         "Ucode": "SOM_0013_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 7.04826088,
+        "Longitude": 47.22668992828474,
         "NoBeneficiaries": 840.0
       }
     }
@@ -27232,6 +27340,8 @@
         "Ucode": "SOM_0013_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 5.91374549,
+        "Longitude": 48.16751059039721,
         "NoBeneficiaries": 926.0
       }
     }
@@ -27249,6 +27359,8 @@
         "Ucode": "SOM_0013_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.155232835,
+        "Longitude": 48.99119335097649,
         "NoBeneficiaries": 933.0
       }
     }
@@ -27266,6 +27378,8 @@
         "Ucode": "SOM_0013_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 4.772972395,
+        "Longitude": 47.84185999640059,
         "NoBeneficiaries": 49.0
       }
     }
@@ -27283,6 +27397,8 @@
         "Ucode": "SOM_0014_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.80981655,
+        "Longitude": 48.44775756858062,
         "NoBeneficiaries": 75.0
       }
     }
@@ -27300,6 +27416,8 @@
         "Ucode": "SOM_0014_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.04485706,
+        "Longitude": 49.5660938864259,
         "NoBeneficiaries": 150.0
       }
     }
@@ -27317,6 +27435,8 @@
         "Ucode": "SOM_0014_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.576996484999999,
+        "Longitude": 48.81097785520912,
         "NoBeneficiaries": 196.0
       }
     }
@@ -27334,6 +27454,8 @@
         "Ucode": "SOM_0015_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.14022383,
+        "Longitude": 46.69579903965978,
         "NoBeneficiaries": 664.0
       }
     }
@@ -27351,6 +27473,8 @@
         "Ucode": "SOM_0015_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.32403207,
+        "Longitude": 47.92028403536129,
         "NoBeneficiaries": 934.0
       }
     }
@@ -27368,6 +27492,8 @@
         "Ucode": "SOM_0015_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.445062555,
+        "Longitude": 48.82374587796524,
         "NoBeneficiaries": 568.0
       }
     }
@@ -27385,6 +27511,8 @@
         "Ucode": "SOM_0016_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.38424659,
+        "Longitude": 46.53600466974044,
         "NoBeneficiaries": 366.0
       }
     }
@@ -27402,6 +27530,8 @@
         "Ucode": "SOM_0016_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.434691115,
+        "Longitude": 47.65754477565876,
         "NoBeneficiaries": 748.0
       }
     }
@@ -27419,6 +27549,8 @@
         "Ucode": "SOM_0016_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.21816514,
+        "Longitude": 48.5709387771567,
         "NoBeneficiaries": 576.0
       }
     }
@@ -27436,6 +27568,8 @@
         "Ucode": "SOM_0016_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.03868558,
+        "Longitude": 47.48615775991117,
         "NoBeneficiaries": 363.0
       }
     }
@@ -27453,6 +27587,8 @@
         "Ucode": "SOM_0017_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.18920544,
+        "Longitude": 45.73752715517706,
         "NoBeneficiaries": 236.0
       }
     }
@@ -27470,6 +27606,8 @@
         "Ucode": "SOM_0017_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.344034820000001,
+        "Longitude": 46.6550163835587,
         "NoBeneficiaries": 940.0
       }
     }
@@ -27487,6 +27625,8 @@
         "Ucode": "SOM_0017_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.258589105,
+        "Longitude": 44.98705092780503,
         "NoBeneficiaries": 168.0
       }
     }
@@ -27504,6 +27644,8 @@
         "Ucode": "SOM_0017_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.986083985,
+        "Longitude": 45.37812393176339,
         "NoBeneficiaries": 73.0
       }
     }
@@ -27521,6 +27663,8 @@
         "Ucode": "SOM_0018_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.4048891,
+        "Longitude": 45.46228272412216,
         "NoBeneficiaries": 193.0
       }
     }
@@ -27538,6 +27682,8 @@
         "Ucode": "SOM_0018_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.822087544999999,
+        "Longitude": 43.64489923150281,
         "NoBeneficiaries": 77.0
       }
     }
@@ -27555,6 +27701,8 @@
         "Ucode": "SOM_0018_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.618523445000001,
+        "Longitude": 44.25728347205476,
         "NoBeneficiaries": 11.0
       }
     }
@@ -27572,6 +27720,8 @@
         "Ucode": "SOM_0001_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.224881735,
+        "Longitude": 43.53291619493366,
         "NoBeneficiaries": 125.0
       }
     }
@@ -27589,6 +27739,8 @@
         "Ucode": "SOM_0001_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.09387252,
+        "Longitude": 43.18190062632189,
         "NoBeneficiaries": 234.0
       }
     }
@@ -27606,6 +27758,8 @@
         "Ucode": "SOM_0001_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.65983718,
+        "Longitude": 43.56777399460487,
         "NoBeneficiaries": 471.0
       }
     }
@@ -27623,6 +27777,8 @@
         "Ucode": "SOM_0001_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.8922892,
+        "Longitude": 43.24549004734895,
         "NoBeneficiaries": 276.0
       }
     }
@@ -27640,6 +27796,8 @@
         "Ucode": "SOM_0002_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 4.6942246,
+        "Longitude": 43.93229801189854,
         "NoBeneficiaries": 705.0
       }
     }
@@ -27657,6 +27815,8 @@
         "Ucode": "SOM_0002_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 4.21541909,
+        "Longitude": 43.21641527887574,
         "NoBeneficiaries": 85.0
       }
     }
@@ -27674,6 +27834,8 @@
         "Ucode": "SOM_0002_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.78149414,
+        "Longitude": 44.5385284425,
         "NoBeneficiaries": 547.0
       }
     }
@@ -27691,6 +27853,8 @@
         "Ucode": "SOM_0002_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.775889895,
+        "Longitude": 43.42135960649223,
         "NoBeneficiaries": 582.0
       }
     }
@@ -27708,6 +27872,8 @@
         "Ucode": "SOM_0002_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 4.031642075000001,
+        "Longitude": 43.9709343325,
         "NoBeneficiaries": 629.0
       }
     }
@@ -27725,6 +27891,8 @@
         "Ucode": "SOM_0003_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 2.07649714,
+        "Longitude": 45.32529713304848,
         "NoBeneficiaries": 297.0
       }
     }
@@ -27742,6 +27910,8 @@
         "Ucode": "SOM_0004_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 9.1266393,
+        "Longitude": 50.28890658374632,
         "NoBeneficiaries": 208.0
       }
     }
@@ -27759,6 +27929,8 @@
         "Ucode": "SOM_0004_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.9939396,
+        "Longitude": 49.41597061706351,
         "NoBeneficiaries": 829.0
       }
     }
@@ -27776,6 +27948,8 @@
         "Ucode": "SOM_0004_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 11.6951291,
+        "Longitude": 50.85590650921409,
         "NoBeneficiaries": 137.0
       }
     }
@@ -27793,6 +27967,8 @@
         "Ucode": "SOM_0004_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.657927635,
+        "Longitude": 50.79581057986083,
         "NoBeneficiaries": 797.0
       }
     }
@@ -27810,6 +27986,8 @@
         "Ucode": "SOM_0004_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 11.03776227,
+        "Longitude": 50.12250942805919,
         "NoBeneficiaries": 15.0
       }
     }
@@ -27827,6 +28005,8 @@
         "Ucode": "SOM_0004_0006_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 9.41523786,
+        "Longitude": 49.56791722685186,
         "NoBeneficiaries": 522.0
       }
     }
@@ -27844,6 +28024,8 @@
         "Ucode": "SOM_0005_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.15658569,
+        "Longitude": 43.5849717077492,
         "NoBeneficiaries": 302.0
       }
     }
@@ -27861,6 +28043,8 @@
         "Ucode": "SOM_0005_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 2.501708985,
+        "Longitude": 44.02555665065324,
         "NoBeneficiaries": 935.0
       }
     }
@@ -27878,6 +28062,8 @@
         "Ucode": "SOM_0005_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 1.9967041,
+        "Longitude": 42.80988507810294,
         "NoBeneficiaries": 633.0
       }
     }
@@ -27895,6 +28081,8 @@
         "Ucode": "SOM_0005_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 2.87973064,
+        "Longitude": 42.84348584275028,
         "NoBeneficiaries": 836.0
       }
     }
@@ -27912,6 +28100,8 @@
         "Ucode": "SOM_0006_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 5.83895936,
+        "Longitude": 46.13634372539151,
         "NoBeneficiaries": 949.0
       }
     }
@@ -27929,6 +28119,8 @@
         "Ucode": "SOM_0006_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 6.143965834999999,
+        "Longitude": 47.07444234472148,
         "NoBeneficiaries": 559.0
       }
     }
@@ -27946,6 +28138,8 @@
         "Ucode": "SOM_0006_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 4.6820583,
+        "Longitude": 46.82490038001757,
         "NoBeneficiaries": 507.0
       }
     }
@@ -27963,6 +28157,8 @@
         "Ucode": "SOM_0006_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.977637555,
+        "Longitude": 46.95422203065473,
         "NoBeneficiaries": 304.0
       }
     }
@@ -27980,6 +28176,8 @@
         "Ucode": "SOM_0006_0005_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 5.422321615,
+        "Longitude": 46.73882059266055,
         "NoBeneficiaries": 638.0
       }
     }
@@ -27997,6 +28195,8 @@
         "Ucode": "SOM_0007_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 2.083238095,
+        "Longitude": 41.70957360248143,
         "NoBeneficiaries": 179.0
       }
     }
@@ -28014,6 +28214,8 @@
         "Ucode": "SOM_0007_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.46031613,
+        "Longitude": 41.74256186829171,
         "NoBeneficiaries": 317.0
       }
     }
@@ -28031,6 +28233,8 @@
         "Ucode": "SOM_0007_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 2.718431525,
+        "Longitude": 41.45012533889222,
         "NoBeneficiaries": 58.0
       }
     }
@@ -28048,6 +28252,8 @@
         "Ucode": "SOM_0007_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.99320231,
+        "Longitude": 42.11790772207714,
         "NoBeneficiaries": 819.0
       }
     }
@@ -28065,6 +28271,8 @@
         "Ucode": "SOM_0007_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.15658569,
+        "Longitude": 42.44797760748234,
         "NoBeneficiaries": 663.0
       }
     }
@@ -28082,6 +28290,8 @@
         "Ucode": "SOM_0007_0006_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.736511235,
+        "Longitude": 42.59720664362428,
         "NoBeneficiaries": 900.0
       }
     }
@@ -28099,6 +28309,8 @@
         "Ucode": "SOM_0008_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 4.806610105,
+        "Longitude": 45.37880139084887,
         "NoBeneficiaries": 659.0
       }
     }
@@ -28116,6 +28328,8 @@
         "Ucode": "SOM_0008_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.830200195,
+        "Longitude": 45.53826761267229,
         "NoBeneficiaries": 305.0
       }
     }
@@ -28133,6 +28347,8 @@
         "Ucode": "SOM_0008_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.38720703,
+        "Longitude": 45.61103792469689,
         "NoBeneficiaries": 980.0
       }
     }
@@ -28150,6 +28366,8 @@
         "Ucode": "SOM_0009_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 0.56542988,
+        "Longitude": 41.83238849235676,
         "NoBeneficiaries": 92.0
       }
     }
@@ -28167,6 +28385,8 @@
         "Ucode": "SOM_0009_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": -0.9022276250000001,
+        "Longitude": 41.47450263705605,
         "NoBeneficiaries": 843.0
       }
     }
@@ -28184,6 +28404,8 @@
         "Ucode": "SOM_0009_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 0.08854552,
+        "Longitude": 42.75496388641732,
         "NoBeneficiaries": 980.0
       }
     }
@@ -28201,6 +28423,8 @@
         "Ucode": "SOM_0009_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": -0.52025977,
+        "Longitude": 41.98693052123907,
         "NoBeneficiaries": 485.0
       }
     }
@@ -28218,6 +28442,8 @@
         "Ucode": "SOM_0010_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 2.31167603,
+        "Longitude": 45.0697377623431,
         "NoBeneficiaries": 347.0
       }
     }
@@ -28235,6 +28461,8 @@
         "Ucode": "SOM_0010_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.103197665,
+        "Longitude": 43.816310204743,
         "NoBeneficiaries": 311.0
       }
     }
@@ -28252,6 +28480,8 @@
         "Ucode": "SOM_0010_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.651702885,
+        "Longitude": 44.1364129258174,
         "NoBeneficiaries": 46.0
       }
     }
@@ -28269,6 +28499,8 @@
         "Ucode": "SOM_0010_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.711069525,
+        "Longitude": 44.66333811960108,
         "NoBeneficiaries": 511.0
       }
     }
@@ -28286,6 +28518,8 @@
         "Ucode": "SOM_0010_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.97171021,
+        "Longitude": 44.45041196731147,
         "NoBeneficiaries": 557.0
       }
     }
@@ -28303,6 +28537,8 @@
         "Ucode": "SOM_0010_0006_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.338381575,
+        "Longitude": 43.52442207443247,
         "NoBeneficiaries": 393.0
       }
     }
@@ -28320,6 +28556,8 @@
         "Ucode": "SOM_0010_0007_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.7612915,
+        "Longitude": 44.98571273539854,
         "NoBeneficiaries": 253.0
       }
     }
@@ -28337,6 +28575,8 @@
         "Ucode": "SOM_0011_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 1.177093505,
+        "Longitude": 42.82605734323676,
         "NoBeneficiaries": 586.0
       }
     }
@@ -28354,6 +28594,8 @@
         "Ucode": "SOM_0011_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 0.699402345,
+        "Longitude": 43.07034407343952,
         "NoBeneficiaries": 94.0
       }
     }
@@ -28371,6 +28613,8 @@
         "Ucode": "SOM_0011_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.60699463,
+        "Longitude": 42.1717983886014,
         "NoBeneficiaries": 720.0
       }
     }
@@ -28388,6 +28632,8 @@
         "Ucode": "SOM_0012_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 3.502381375,
+        "Longitude": 46.56687123516815,
         "NoBeneficiaries": 103.0
       }
     }
@@ -28405,6 +28651,8 @@
         "Ucode": "SOM_0012_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.456258845,
+        "Longitude": 45.68564923622257,
         "NoBeneficiaries": 472.0
       }
     }
@@ -28422,6 +28670,8 @@
         "Ucode": "SOM_0012_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 3.0517478,
+        "Longitude": 46.30092067090455,
         "NoBeneficiaries": 423.0
       }
     }
@@ -28439,6 +28689,8 @@
         "Ucode": "SOM_0012_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.986297605,
+        "Longitude": 45.55515595920596,
         "NoBeneficiaries": 49.0
       }
     }
@@ -28456,6 +28708,8 @@
         "Ucode": "SOM_0013_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 6.955817925,
+        "Longitude": 47.90989936868584,
         "NoBeneficiaries": 2.0
       }
     }
@@ -28473,6 +28727,8 @@
         "Ucode": "SOM_0013_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.04826088,
+        "Longitude": 47.22668992828474,
         "NoBeneficiaries": 25.0
       }
     }
@@ -28490,6 +28746,8 @@
         "Ucode": "SOM_0013_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 5.91374549,
+        "Longitude": 48.16751059039721,
         "NoBeneficiaries": 811.0
       }
     }
@@ -28507,6 +28765,8 @@
         "Ucode": "SOM_0013_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.155232835,
+        "Longitude": 48.99119335097649,
         "NoBeneficiaries": 641.0
       }
     }
@@ -28524,6 +28784,8 @@
         "Ucode": "SOM_0013_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 4.772972395,
+        "Longitude": 47.84185999640059,
         "NoBeneficiaries": 835.0
       }
     }
@@ -28541,6 +28803,8 @@
         "Ucode": "SOM_0014_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 7.80981655,
+        "Longitude": 48.44775756858062,
         "NoBeneficiaries": 890.0
       }
     }
@@ -28558,6 +28822,8 @@
         "Ucode": "SOM_0014_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 8.04485706,
+        "Longitude": 49.5660938864259,
         "NoBeneficiaries": 252.0
       }
     }
@@ -28575,6 +28841,8 @@
         "Ucode": "SOM_0014_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 8.576996484999999,
+        "Longitude": 48.81097785520912,
         "NoBeneficiaries": 213.0
       }
     }
@@ -28592,6 +28860,8 @@
         "Ucode": "SOM_0015_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.14022383,
+        "Longitude": 46.69579903965978,
         "NoBeneficiaries": 664.0
       }
     }
@@ -28609,6 +28879,8 @@
         "Ucode": "SOM_0015_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.32403207,
+        "Longitude": 47.92028403536129,
         "NoBeneficiaries": 785.0
       }
     }
@@ -28626,6 +28898,8 @@
         "Ucode": "SOM_0015_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 10.445062555,
+        "Longitude": 48.82374587796524,
         "NoBeneficiaries": 293.0
       }
     }
@@ -28643,6 +28917,8 @@
         "Ucode": "SOM_0016_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.38424659,
+        "Longitude": 46.53600466974044,
         "NoBeneficiaries": 788.0
       }
     }
@@ -28660,6 +28936,8 @@
         "Ucode": "SOM_0016_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 8.434691115,
+        "Longitude": 47.65754477565876,
         "NoBeneficiaries": 346.0
       }
     }
@@ -28677,6 +28955,8 @@
         "Ucode": "SOM_0016_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.21816514,
+        "Longitude": 48.5709387771567,
         "NoBeneficiaries": 412.0
       }
     }
@@ -28694,6 +28974,8 @@
         "Ucode": "SOM_0016_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.03868558,
+        "Longitude": 47.48615775991117,
         "NoBeneficiaries": 471.0
       }
     }
@@ -28711,6 +28993,8 @@
         "Ucode": "SOM_0017_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.18920544,
+        "Longitude": 45.73752715517706,
         "NoBeneficiaries": 705.0
       }
     }
@@ -28728,6 +29012,8 @@
         "Ucode": "SOM_0017_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 8.344034820000001,
+        "Longitude": 46.6550163835587,
         "NoBeneficiaries": 677.0
       }
     }
@@ -28745,6 +29031,8 @@
         "Ucode": "SOM_0017_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.258589105,
+        "Longitude": 44.98705092780503,
         "NoBeneficiaries": 51.0
       }
     }
@@ -28762,6 +29050,8 @@
         "Ucode": "SOM_0017_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.986083985,
+        "Longitude": 45.37812393176339,
         "NoBeneficiaries": 85.0
       }
     }
@@ -28779,6 +29069,8 @@
         "Ucode": "SOM_0018_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 10.4048891,
+        "Longitude": 45.46228272412216,
         "NoBeneficiaries": 713.0
       }
     }
@@ -28796,6 +29088,8 @@
         "Ucode": "SOM_0018_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.822087544999999,
+        "Longitude": 43.64489923150281,
         "NoBeneficiaries": 392.0
       }
     }
@@ -28813,6 +29107,8 @@
         "Ucode": "SOM_0018_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.618523445000001,
+        "Longitude": 44.25728347205476,
         "NoBeneficiaries": 999.0
       }
     }
@@ -28830,6 +29126,8 @@
         "Ucode": "SOM_0001_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 10.224881735,
+        "Longitude": 43.53291619493366,
         "NoBeneficiaries": 178.0
       }
     }
@@ -28847,6 +29145,8 @@
         "Ucode": "SOM_0001_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 10.09387252,
+        "Longitude": 43.18190062632189,
         "NoBeneficiaries": 594.0
       }
     }
@@ -28864,6 +29164,8 @@
         "Ucode": "SOM_0001_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.65983718,
+        "Longitude": 43.56777399460487,
         "NoBeneficiaries": 161.0
       }
     }
@@ -28881,6 +29183,8 @@
         "Ucode": "SOM_0001_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.8922892,
+        "Longitude": 43.24549004734895,
         "NoBeneficiaries": 511.0
       }
     }
@@ -28898,6 +29202,8 @@
         "Ucode": "SOM_0002_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 4.6942246,
+        "Longitude": 43.93229801189854,
         "NoBeneficiaries": 108.0
       }
     }
@@ -28915,6 +29221,8 @@
         "Ucode": "SOM_0002_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 4.21541909,
+        "Longitude": 43.21641527887574,
         "NoBeneficiaries": 213.0
       }
     }
@@ -28932,6 +29240,8 @@
         "Ucode": "SOM_0002_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 3.78149414,
+        "Longitude": 44.5385284425,
         "NoBeneficiaries": 612.0
       }
     }
@@ -28949,6 +29259,8 @@
         "Ucode": "SOM_0002_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.775889895,
+        "Longitude": 43.42135960649223,
         "NoBeneficiaries": 536.0
       }
     }
@@ -28966,6 +29278,8 @@
         "Ucode": "SOM_0002_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 4.031642075000001,
+        "Longitude": 43.9709343325,
         "NoBeneficiaries": 241.0
       }
     }
@@ -28983,6 +29297,8 @@
         "Ucode": "SOM_0003_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 2.07649714,
+        "Longitude": 45.32529713304848,
         "NoBeneficiaries": 259.0
       }
     }
@@ -29000,6 +29316,8 @@
         "Ucode": "SOM_0004_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 9.1266393,
+        "Longitude": 50.28890658374632,
         "NoBeneficiaries": 5.0
       }
     }
@@ -29017,6 +29335,8 @@
         "Ucode": "SOM_0004_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 10.9939396,
+        "Longitude": 49.41597061706351,
         "NoBeneficiaries": 694.0
       }
     }
@@ -29034,6 +29354,8 @@
         "Ucode": "SOM_0004_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 11.6951291,
+        "Longitude": 50.85590650921409,
         "NoBeneficiaries": 188.0
       }
     }
@@ -29051,6 +29373,8 @@
         "Ucode": "SOM_0004_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.657927635,
+        "Longitude": 50.79581057986083,
         "NoBeneficiaries": 432.0
       }
     }
@@ -29068,6 +29392,8 @@
         "Ucode": "SOM_0004_0005_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 11.03776227,
+        "Longitude": 50.12250942805919,
         "NoBeneficiaries": 275.0
       }
     }
@@ -29085,6 +29411,8 @@
         "Ucode": "SOM_0004_0006_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 9.41523786,
+        "Longitude": 49.56791722685186,
         "NoBeneficiaries": 11.0
       }
     }
@@ -29102,6 +29430,8 @@
         "Ucode": "SOM_0005_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 3.15658569,
+        "Longitude": 43.5849717077492,
         "NoBeneficiaries": 613.0
       }
     }
@@ -29119,6 +29449,8 @@
         "Ucode": "SOM_0005_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 2.501708985,
+        "Longitude": 44.02555665065324,
         "NoBeneficiaries": 370.0
       }
     }
@@ -29136,6 +29468,8 @@
         "Ucode": "SOM_0005_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 1.9967041,
+        "Longitude": 42.80988507810294,
         "NoBeneficiaries": 491.0
       }
     }
@@ -29153,6 +29487,8 @@
         "Ucode": "SOM_0005_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 2.87973064,
+        "Longitude": 42.84348584275028,
         "NoBeneficiaries": 335.0
       }
     }
@@ -29170,6 +29506,8 @@
         "Ucode": "SOM_0006_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 5.83895936,
+        "Longitude": 46.13634372539151,
         "NoBeneficiaries": 802.0
       }
     }
@@ -29187,6 +29525,8 @@
         "Ucode": "SOM_0006_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 6.143965834999999,
+        "Longitude": 47.07444234472148,
         "NoBeneficiaries": 744.0
       }
     }
@@ -29204,6 +29544,8 @@
         "Ucode": "SOM_0006_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 4.6820583,
+        "Longitude": 46.82490038001757,
         "NoBeneficiaries": 920.0
       }
     }
@@ -29221,6 +29563,8 @@
         "Ucode": "SOM_0006_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.977637555,
+        "Longitude": 46.95422203065473,
         "NoBeneficiaries": 474.0
       }
     }
@@ -29238,6 +29582,8 @@
         "Ucode": "SOM_0006_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 5.422321615,
+        "Longitude": 46.73882059266055,
         "NoBeneficiaries": 679.0
       }
     }
@@ -29255,6 +29601,8 @@
         "Ucode": "SOM_0007_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 2.083238095,
+        "Longitude": 41.70957360248143,
         "NoBeneficiaries": 198.0
       }
     }
@@ -29272,6 +29620,8 @@
         "Ucode": "SOM_0007_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.46031613,
+        "Longitude": 41.74256186829171,
         "NoBeneficiaries": 591.0
       }
     }
@@ -29289,6 +29639,8 @@
         "Ucode": "SOM_0007_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 2.718431525,
+        "Longitude": 41.45012533889222,
         "NoBeneficiaries": 3.0
       }
     }
@@ -29306,6 +29658,8 @@
         "Ucode": "SOM_0007_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.99320231,
+        "Longitude": 42.11790772207714,
         "NoBeneficiaries": 557.0
       }
     }
@@ -29323,6 +29677,8 @@
         "Ucode": "SOM_0007_0005_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.15658569,
+        "Longitude": 42.44797760748234,
         "NoBeneficiaries": 251.0
       }
     }
@@ -29340,6 +29696,8 @@
         "Ucode": "SOM_0007_0006_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.736511235,
+        "Longitude": 42.59720664362428,
         "NoBeneficiaries": 619.0
       }
     }
@@ -29357,6 +29715,8 @@
         "Ucode": "SOM_0008_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 4.806610105,
+        "Longitude": 45.37880139084887,
         "NoBeneficiaries": 273.0
       }
     }
@@ -29374,6 +29734,8 @@
         "Ucode": "SOM_0008_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.830200195,
+        "Longitude": 45.53826761267229,
         "NoBeneficiaries": 932.0
       }
     }
@@ -29391,6 +29753,8 @@
         "Ucode": "SOM_0008_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.38720703,
+        "Longitude": 45.61103792469689,
         "NoBeneficiaries": 818.0
       }
     }
@@ -29408,6 +29772,8 @@
         "Ucode": "SOM_0009_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 0.56542988,
+        "Longitude": 41.83238849235676,
         "NoBeneficiaries": 110.0
       }
     }
@@ -29425,6 +29791,8 @@
         "Ucode": "SOM_0009_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": -0.9022276250000001,
+        "Longitude": 41.47450263705605,
         "NoBeneficiaries": 74.0
       }
     }
@@ -29442,6 +29810,8 @@
         "Ucode": "SOM_0009_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 0.08854552,
+        "Longitude": 42.75496388641732,
         "NoBeneficiaries": 107.0
       }
     }
@@ -29459,6 +29829,8 @@
         "Ucode": "SOM_0009_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": -0.52025977,
+        "Longitude": 41.98693052123907,
         "NoBeneficiaries": 884.0
       }
     }
@@ -29476,6 +29848,8 @@
         "Ucode": "SOM_0010_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.31167603,
+        "Longitude": 45.0697377623431,
         "NoBeneficiaries": 485.0
       }
     }
@@ -29493,6 +29867,8 @@
         "Ucode": "SOM_0010_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 1.103197665,
+        "Longitude": 43.816310204743,
         "NoBeneficiaries": 407.0
       }
     }
@@ -29510,6 +29886,8 @@
         "Ucode": "SOM_0010_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.651702885,
+        "Longitude": 44.1364129258174,
         "NoBeneficiaries": 383.0
       }
     }
@@ -29527,6 +29905,8 @@
         "Ucode": "SOM_0010_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.711069525,
+        "Longitude": 44.66333811960108,
         "NoBeneficiaries": 367.0
       }
     }
@@ -29544,6 +29924,8 @@
         "Ucode": "SOM_0010_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.97171021,
+        "Longitude": 44.45041196731147,
         "NoBeneficiaries": 148.0
       }
     }
@@ -29561,6 +29943,8 @@
         "Ucode": "SOM_0010_0006_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.338381575,
+        "Longitude": 43.52442207443247,
         "NoBeneficiaries": 939.0
       }
     }
@@ -29578,6 +29962,8 @@
         "Ucode": "SOM_0010_0007_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 2.7612915,
+        "Longitude": 44.98571273539854,
         "NoBeneficiaries": 663.0
       }
     }
@@ -29595,6 +29981,8 @@
         "Ucode": "SOM_0011_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.177093505,
+        "Longitude": 42.82605734323676,
         "NoBeneficiaries": 710.0
       }
     }
@@ -29612,6 +30000,8 @@
         "Ucode": "SOM_0011_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 0.699402345,
+        "Longitude": 43.07034407343952,
         "NoBeneficiaries": 197.0
       }
     }
@@ -29629,6 +30019,8 @@
         "Ucode": "SOM_0011_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 1.60699463,
+        "Longitude": 42.1717983886014,
         "NoBeneficiaries": 683.0
       }
     }
@@ -29646,6 +30038,8 @@
         "Ucode": "SOM_0012_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 3.502381375,
+        "Longitude": 46.56687123516815,
         "NoBeneficiaries": 262.0
       }
     }
@@ -29663,6 +30057,8 @@
         "Ucode": "SOM_0012_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 2.456258845,
+        "Longitude": 45.68564923622257,
         "NoBeneficiaries": 772.0
       }
     }
@@ -29680,6 +30076,8 @@
         "Ucode": "SOM_0012_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 3.0517478,
+        "Longitude": 46.30092067090455,
         "NoBeneficiaries": 268.0
       }
     }
@@ -29697,6 +30095,8 @@
         "Ucode": "SOM_0012_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.986297605,
+        "Longitude": 45.55515595920596,
         "NoBeneficiaries": 688.0
       }
     }
@@ -29714,6 +30114,8 @@
         "Ucode": "SOM_0013_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 6.955817925,
+        "Longitude": 47.90989936868584,
         "NoBeneficiaries": 138.0
       }
     }
@@ -29731,6 +30133,8 @@
         "Ucode": "SOM_0013_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 7.04826088,
+        "Longitude": 47.22668992828474,
         "NoBeneficiaries": 925.0
       }
     }
@@ -29748,6 +30152,8 @@
         "Ucode": "SOM_0013_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 5.91374549,
+        "Longitude": 48.16751059039721,
         "NoBeneficiaries": 336.0
       }
     }
@@ -29765,6 +30171,8 @@
         "Ucode": "SOM_0013_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.155232835,
+        "Longitude": 48.99119335097649,
         "NoBeneficiaries": 577.0
       }
     }
@@ -29782,6 +30190,8 @@
         "Ucode": "SOM_0013_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 4.772972395,
+        "Longitude": 47.84185999640059,
         "NoBeneficiaries": 751.0
       }
     }
@@ -29799,6 +30209,8 @@
         "Ucode": "SOM_0014_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.80981655,
+        "Longitude": 48.44775756858062,
         "NoBeneficiaries": 139.0
       }
     }
@@ -29816,6 +30228,8 @@
         "Ucode": "SOM_0014_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.04485706,
+        "Longitude": 49.5660938864259,
         "NoBeneficiaries": 149.0
       }
     }
@@ -29833,6 +30247,8 @@
         "Ucode": "SOM_0014_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.576996484999999,
+        "Longitude": 48.81097785520912,
         "NoBeneficiaries": 991.0
       }
     }
@@ -29850,6 +30266,8 @@
         "Ucode": "SOM_0015_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.14022383,
+        "Longitude": 46.69579903965978,
         "NoBeneficiaries": 564.0
       }
     }
@@ -29867,6 +30285,8 @@
         "Ucode": "SOM_0015_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.32403207,
+        "Longitude": 47.92028403536129,
         "NoBeneficiaries": 147.0
       }
     }
@@ -29884,6 +30304,8 @@
         "Ucode": "SOM_0015_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.445062555,
+        "Longitude": 48.82374587796524,
         "NoBeneficiaries": 371.0
       }
     }
@@ -29901,6 +30323,8 @@
         "Ucode": "SOM_0016_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.38424659,
+        "Longitude": 46.53600466974044,
         "NoBeneficiaries": 845.0
       }
     }
@@ -29918,6 +30342,8 @@
         "Ucode": "SOM_0016_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.434691115,
+        "Longitude": 47.65754477565876,
         "NoBeneficiaries": 865.0
       }
     }
@@ -29935,6 +30361,8 @@
         "Ucode": "SOM_0016_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.21816514,
+        "Longitude": 48.5709387771567,
         "NoBeneficiaries": 958.0
       }
     }
@@ -29952,6 +30380,8 @@
         "Ucode": "SOM_0016_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.03868558,
+        "Longitude": 47.48615775991117,
         "NoBeneficiaries": 343.0
       }
     }
@@ -29969,6 +30399,8 @@
         "Ucode": "SOM_0017_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.18920544,
+        "Longitude": 45.73752715517706,
         "NoBeneficiaries": 623.0
       }
     }
@@ -29986,6 +30418,8 @@
         "Ucode": "SOM_0017_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 8.344034820000001,
+        "Longitude": 46.6550163835587,
         "NoBeneficiaries": 108.0
       }
     }
@@ -30003,6 +30437,8 @@
         "Ucode": "SOM_0017_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.258589105,
+        "Longitude": 44.98705092780503,
         "NoBeneficiaries": 833.0
       }
     }
@@ -30020,6 +30456,8 @@
         "Ucode": "SOM_0017_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.986083985,
+        "Longitude": 45.37812393176339,
         "NoBeneficiaries": 124.0
       }
     }
@@ -30037,6 +30475,8 @@
         "Ucode": "SOM_0018_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.4048891,
+        "Longitude": 45.46228272412216,
         "NoBeneficiaries": 88.0
       }
     }
@@ -30054,6 +30494,8 @@
         "Ucode": "SOM_0018_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.822087544999999,
+        "Longitude": 43.64489923150281,
         "NoBeneficiaries": 994.0
       }
     }
@@ -30071,6 +30513,8 @@
         "Ucode": "SOM_0018_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.618523445000001,
+        "Longitude": 44.25728347205476,
         "NoBeneficiaries": 749.0
       }
     }
@@ -30088,6 +30532,8 @@
         "Ucode": "SOM_0001_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.224881735,
+        "Longitude": 43.53291619493366,
         "NoBeneficiaries": 981.0
       }
     }
@@ -30105,6 +30551,8 @@
         "Ucode": "SOM_0001_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.09387252,
+        "Longitude": 43.18190062632189,
         "NoBeneficiaries": 42.0
       }
     }
@@ -30122,6 +30570,8 @@
         "Ucode": "SOM_0001_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.65983718,
+        "Longitude": 43.56777399460487,
         "NoBeneficiaries": 320.0
       }
     }
@@ -30139,6 +30589,8 @@
         "Ucode": "SOM_0001_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.8922892,
+        "Longitude": 43.24549004734895,
         "NoBeneficiaries": 664.0
       }
     }
@@ -30156,6 +30608,8 @@
         "Ucode": "SOM_0002_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 4.6942246,
+        "Longitude": 43.93229801189854,
         "NoBeneficiaries": 669.0
       }
     }
@@ -30173,6 +30627,8 @@
         "Ucode": "SOM_0002_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 4.21541909,
+        "Longitude": 43.21641527887574,
         "NoBeneficiaries": 75.0
       }
     }
@@ -30190,6 +30646,8 @@
         "Ucode": "SOM_0002_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.78149414,
+        "Longitude": 44.5385284425,
         "NoBeneficiaries": 657.0
       }
     }
@@ -30207,6 +30665,8 @@
         "Ucode": "SOM_0002_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.775889895,
+        "Longitude": 43.42135960649223,
         "NoBeneficiaries": 301.0
       }
     }
@@ -30224,6 +30684,8 @@
         "Ucode": "SOM_0002_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 4.031642075000001,
+        "Longitude": 43.9709343325,
         "NoBeneficiaries": 669.0
       }
     }
@@ -30241,6 +30703,8 @@
         "Ucode": "SOM_0003_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 2.07649714,
+        "Longitude": 45.32529713304848,
         "NoBeneficiaries": 401.0
       }
     }
@@ -30258,6 +30722,8 @@
         "Ucode": "SOM_0004_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 9.1266393,
+        "Longitude": 50.28890658374632,
         "NoBeneficiaries": 445.0
       }
     }
@@ -30275,6 +30741,8 @@
         "Ucode": "SOM_0004_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.9939396,
+        "Longitude": 49.41597061706351,
         "NoBeneficiaries": 866.0
       }
     }
@@ -30292,6 +30760,8 @@
         "Ucode": "SOM_0004_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 11.6951291,
+        "Longitude": 50.85590650921409,
         "NoBeneficiaries": 721.0
       }
     }
@@ -30309,6 +30779,8 @@
         "Ucode": "SOM_0004_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner A",
+        "Latitude": 10.657927635,
+        "Longitude": 50.79581057986083,
         "NoBeneficiaries": 421.0
       }
     }
@@ -30326,6 +30798,8 @@
         "Ucode": "SOM_0004_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner A",
+        "Latitude": 11.03776227,
+        "Longitude": 50.12250942805919,
         "NoBeneficiaries": 320.0
       }
     }
@@ -30343,6 +30817,8 @@
         "Ucode": "SOM_0004_0006_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 9.41523786,
+        "Longitude": 49.56791722685186,
         "NoBeneficiaries": 210.0
       }
     }
@@ -30360,6 +30836,8 @@
         "Ucode": "SOM_0005_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 3.15658569,
+        "Longitude": 43.5849717077492,
         "NoBeneficiaries": 31.0
       }
     }
@@ -30377,6 +30855,8 @@
         "Ucode": "SOM_0005_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner A",
+        "Latitude": 2.501708985,
+        "Longitude": 44.02555665065324,
         "NoBeneficiaries": 354.0
       }
     }
@@ -30394,6 +30874,8 @@
         "Ucode": "SOM_0005_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 1.9967041,
+        "Longitude": 42.80988507810294,
         "NoBeneficiaries": 703.0
       }
     }
@@ -30411,6 +30893,8 @@
         "Ucode": "SOM_0005_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 2.87973064,
+        "Longitude": 42.84348584275028,
         "NoBeneficiaries": 89.0
       }
     }
@@ -30428,6 +30912,8 @@
         "Ucode": "SOM_0006_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 5.83895936,
+        "Longitude": 46.13634372539151,
         "NoBeneficiaries": 589.0
       }
     }
@@ -30445,6 +30931,8 @@
         "Ucode": "SOM_0006_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 6.143965834999999,
+        "Longitude": 47.07444234472148,
         "NoBeneficiaries": 884.0
       }
     }
@@ -30462,6 +30950,8 @@
         "Ucode": "SOM_0006_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 4.6820583,
+        "Longitude": 46.82490038001757,
         "NoBeneficiaries": 375.0
       }
     }
@@ -30479,6 +30969,8 @@
         "Ucode": "SOM_0006_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.977637555,
+        "Longitude": 46.95422203065473,
         "NoBeneficiaries": 417.0
       }
     }
@@ -30496,6 +30988,8 @@
         "Ucode": "SOM_0006_0005_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 5.422321615,
+        "Longitude": 46.73882059266055,
         "NoBeneficiaries": 510.0
       }
     }
@@ -30513,6 +31007,8 @@
         "Ucode": "SOM_0007_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 2.083238095,
+        "Longitude": 41.70957360248143,
         "NoBeneficiaries": 680.0
       }
     }
@@ -30530,6 +31026,8 @@
         "Ucode": "SOM_0007_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 3.46031613,
+        "Longitude": 41.74256186829171,
         "NoBeneficiaries": 28.0
       }
     }
@@ -30547,6 +31045,8 @@
         "Ucode": "SOM_0007_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 2.718431525,
+        "Longitude": 41.45012533889222,
         "NoBeneficiaries": 540.0
       }
     }
@@ -30564,6 +31064,8 @@
         "Ucode": "SOM_0007_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.99320231,
+        "Longitude": 42.11790772207714,
         "NoBeneficiaries": 498.0
       }
     }
@@ -30581,6 +31083,8 @@
         "Ucode": "SOM_0007_0005_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.15658569,
+        "Longitude": 42.44797760748234,
         "NoBeneficiaries": 357.0
       }
     }
@@ -30598,6 +31102,8 @@
         "Ucode": "SOM_0007_0006_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 3.736511235,
+        "Longitude": 42.59720664362428,
         "NoBeneficiaries": 179.0
       }
     }
@@ -30615,6 +31121,8 @@
         "Ucode": "SOM_0008_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner B",
+        "Latitude": 4.806610105,
+        "Longitude": 45.37880139084887,
         "NoBeneficiaries": 304.0
       }
     }
@@ -30632,6 +31140,8 @@
         "Ucode": "SOM_0008_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.830200195,
+        "Longitude": 45.53826761267229,
         "NoBeneficiaries": 92.0
       }
     }
@@ -30649,6 +31159,8 @@
         "Ucode": "SOM_0008_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner B",
+        "Latitude": 3.38720703,
+        "Longitude": 45.61103792469689,
         "NoBeneficiaries": 425.0
       }
     }
@@ -30666,6 +31178,8 @@
         "Ucode": "SOM_0009_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 0.56542988,
+        "Longitude": 41.83238849235676,
         "NoBeneficiaries": 265.0
       }
     }
@@ -30683,6 +31197,8 @@
         "Ucode": "SOM_0009_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": -0.9022276250000001,
+        "Longitude": 41.47450263705605,
         "NoBeneficiaries": 359.0
       }
     }
@@ -30700,6 +31216,8 @@
         "Ucode": "SOM_0009_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner B",
+        "Latitude": 0.08854552,
+        "Longitude": 42.75496388641732,
         "NoBeneficiaries": 860.0
       }
     }
@@ -30717,6 +31235,8 @@
         "Ucode": "SOM_0009_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": -0.52025977,
+        "Longitude": 41.98693052123907,
         "NoBeneficiaries": 972.0
       }
     }
@@ -30734,6 +31254,8 @@
         "Ucode": "SOM_0010_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 2.31167603,
+        "Longitude": 45.0697377623431,
         "NoBeneficiaries": 455.0
       }
     }
@@ -30751,6 +31273,8 @@
         "Ucode": "SOM_0010_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.103197665,
+        "Longitude": 43.816310204743,
         "NoBeneficiaries": 803.0
       }
     }
@@ -30768,6 +31292,8 @@
         "Ucode": "SOM_0010_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.651702885,
+        "Longitude": 44.1364129258174,
         "NoBeneficiaries": 968.0
       }
     }
@@ -30785,6 +31311,8 @@
         "Ucode": "SOM_0010_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 1.711069525,
+        "Longitude": 44.66333811960108,
         "NoBeneficiaries": 935.0
       }
     }
@@ -30802,6 +31330,8 @@
         "Ucode": "SOM_0010_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.97171021,
+        "Longitude": 44.45041196731147,
         "NoBeneficiaries": 870.0
       }
     }
@@ -30819,6 +31349,8 @@
         "Ucode": "SOM_0010_0006_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.338381575,
+        "Longitude": 43.52442207443247,
         "NoBeneficiaries": 441.0
       }
     }
@@ -30836,6 +31368,8 @@
         "Ucode": "SOM_0010_0007_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.7612915,
+        "Longitude": 44.98571273539854,
         "NoBeneficiaries": 24.0
       }
     }
@@ -30853,6 +31387,8 @@
         "Ucode": "SOM_0011_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 1.177093505,
+        "Longitude": 42.82605734323676,
         "NoBeneficiaries": 772.0
       }
     }
@@ -30870,6 +31406,8 @@
         "Ucode": "SOM_0011_0002_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 0.699402345,
+        "Longitude": 43.07034407343952,
         "NoBeneficiaries": 641.0
       }
     }
@@ -30887,6 +31425,8 @@
         "Ucode": "SOM_0011_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 1.60699463,
+        "Longitude": 42.1717983886014,
         "NoBeneficiaries": 873.0
       }
     }
@@ -30904,6 +31444,8 @@
         "Ucode": "SOM_0012_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 3.502381375,
+        "Longitude": 46.56687123516815,
         "NoBeneficiaries": 297.0
       }
     }
@@ -30921,6 +31463,8 @@
         "Ucode": "SOM_0012_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.456258845,
+        "Longitude": 45.68564923622257,
         "NoBeneficiaries": 60.0
       }
     }
@@ -30938,6 +31482,8 @@
         "Ucode": "SOM_0012_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 3.0517478,
+        "Longitude": 46.30092067090455,
         "NoBeneficiaries": 907.0
       }
     }
@@ -30955,6 +31501,8 @@
         "Ucode": "SOM_0012_0004_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 2.986297605,
+        "Longitude": 45.55515595920596,
         "NoBeneficiaries": 324.0
       }
     }
@@ -30972,6 +31520,8 @@
         "Ucode": "SOM_0013_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 6.955817925,
+        "Longitude": 47.90989936868584,
         "NoBeneficiaries": 812.0
       }
     }
@@ -30989,6 +31539,8 @@
         "Ucode": "SOM_0013_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.04826088,
+        "Longitude": 47.22668992828474,
         "NoBeneficiaries": 64.0
       }
     }
@@ -31006,6 +31558,8 @@
         "Ucode": "SOM_0013_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 5.91374549,
+        "Longitude": 48.16751059039721,
         "NoBeneficiaries": 538.0
       }
     }
@@ -31023,6 +31577,8 @@
         "Ucode": "SOM_0013_0004_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 7.155232835,
+        "Longitude": 48.99119335097649,
         "NoBeneficiaries": 480.0
       }
     }
@@ -31040,6 +31596,8 @@
         "Ucode": "SOM_0013_0005_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 4.772972395,
+        "Longitude": 47.84185999640059,
         "NoBeneficiaries": 907.0
       }
     }
@@ -31057,6 +31615,8 @@
         "Ucode": "SOM_0014_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 7.80981655,
+        "Longitude": 48.44775756858062,
         "NoBeneficiaries": 190.0
       }
     }
@@ -31074,6 +31634,8 @@
         "Ucode": "SOM_0014_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 8.04485706,
+        "Longitude": 49.5660938864259,
         "NoBeneficiaries": 161.0
       }
     }
@@ -31091,6 +31653,8 @@
         "Ucode": "SOM_0014_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 8.576996484999999,
+        "Longitude": 48.81097785520912,
         "NoBeneficiaries": 528.0
       }
     }
@@ -31108,6 +31672,8 @@
         "Ucode": "SOM_0015_0001_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.14022383,
+        "Longitude": 46.69579903965978,
         "NoBeneficiaries": 972.0
       }
     }
@@ -31125,6 +31691,8 @@
         "Ucode": "SOM_0015_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 10.32403207,
+        "Longitude": 47.92028403536129,
         "NoBeneficiaries": 283.0
       }
     }
@@ -31142,6 +31710,8 @@
         "Ucode": "SOM_0015_0003_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 10.445062555,
+        "Longitude": 48.82374587796524,
         "NoBeneficiaries": 459.0
       }
     }
@@ -31159,6 +31729,8 @@
         "Ucode": "SOM_0016_0001_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.38424659,
+        "Longitude": 46.53600466974044,
         "NoBeneficiaries": 457.0
       }
     }
@@ -31176,6 +31748,8 @@
         "Ucode": "SOM_0016_0002_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 8.434691115,
+        "Longitude": 47.65754477565876,
         "NoBeneficiaries": 873.0
       }
     }
@@ -31193,6 +31767,8 @@
         "Ucode": "SOM_0016_0003_V1",
         "Sector": "EDU",
         "Partner": "Partner C",
+        "Latitude": 9.21816514,
+        "Longitude": 48.5709387771567,
         "NoBeneficiaries": 497.0
       }
     }
@@ -31210,6 +31786,8 @@
         "Ucode": "SOM_0016_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.03868558,
+        "Longitude": 47.48615775991117,
         "NoBeneficiaries": 3.0
       }
     }
@@ -31227,6 +31805,8 @@
         "Ucode": "SOM_0017_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.18920544,
+        "Longitude": 45.73752715517706,
         "NoBeneficiaries": 357.0
       }
     }
@@ -31244,6 +31824,8 @@
         "Ucode": "SOM_0017_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 8.344034820000001,
+        "Longitude": 46.6550163835587,
         "NoBeneficiaries": 454.0
       }
     }
@@ -31261,6 +31843,8 @@
         "Ucode": "SOM_0017_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.258589105,
+        "Longitude": 44.98705092780503,
         "NoBeneficiaries": 319.0
       }
     }
@@ -31278,6 +31862,8 @@
         "Ucode": "SOM_0017_0004_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 9.986083985,
+        "Longitude": 45.37812393176339,
         "NoBeneficiaries": 284.0
       }
     }
@@ -31295,6 +31881,8 @@
         "Ucode": "SOM_0018_0001_V1",
         "Sector": "WASH",
         "Partner": "Partner C",
+        "Latitude": 10.4048891,
+        "Longitude": 45.46228272412216,
         "NoBeneficiaries": 392.0
       }
     }
@@ -31312,6 +31900,8 @@
         "Ucode": "SOM_0018_0002_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.822087544999999,
+        "Longitude": 43.64489923150281,
         "NoBeneficiaries": 649.0
       }
     }
@@ -31329,6 +31919,8 @@
         "Ucode": "SOM_0018_0003_V1",
         "Sector": "HEALTH",
         "Partner": "Partner C",
+        "Latitude": 9.618523445000001,
+        "Longitude": 44.25728347205476,
         "NoBeneficiaries": 303.0
       }
     }

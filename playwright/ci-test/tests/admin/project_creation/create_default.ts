@@ -77,7 +77,7 @@ test.describe('Create project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
-    await fillProjectName(page,name);
+    await fillProjectName(page, name);
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Test');
     await page.keyboard.press('Enter');
@@ -180,6 +180,7 @@ test.describe('Create project', () => {
     await page.getByText('Context Layers', { exact: true }).nth(1).click();
     await page.getByRole('button', { name: 'Add Context Layer' }).click();
     await page.getByRole('cell', { name: 'Somalia healthsites' }).click();
+    await page.getByRole('cell', { name: 'RRR as Context Layer' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByText('Configuration has been saved!')).toBeVisible()
@@ -188,6 +189,14 @@ test.describe('Create project', () => {
     await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
     await page.getByRole('tab', { name: 'Indicators' }).click();
     await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+
+    // Check RRR as Context Layer visualization
+    await page.getByRole('tab', { name: 'Context Layers' }).click();
+    await page.getByText('RRR as Context Layer').click();
+    await page.getByRole('combobox', { name: 'All selected' }).click();
+    await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
 
     // --------------------------------------------
     // TEST FILTERS
