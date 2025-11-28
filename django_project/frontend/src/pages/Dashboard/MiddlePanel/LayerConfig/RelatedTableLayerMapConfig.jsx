@@ -116,7 +116,7 @@ export default function RelatedTableLayerMapConfig() {
   const updateOptions = (where) => {
     if (relatedTableData) {
       const layerMetadata = metadata[relatedTableLayer.id];
-      if (layerMetadata.sequenceFieldSelected.length === 0) return;
+      if (!layerMetadata?.sequenceFieldSelected?.length) return;
 
       const rows = queryData(relatedTableData, updateWhereQuery(where));
       relatedFields.map((field) => {
