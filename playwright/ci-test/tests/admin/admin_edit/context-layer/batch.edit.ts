@@ -89,6 +89,9 @@ test.describe('Batch edit context-layer', () => {
     await page.goto(_url);
     await page.waitForURL(_url)
     await page.getByLabel('Select all rows').check();
+    if (!await page.getByRole('button', { name: 'Edit' }).isEnabled()) {
+      await page.getByLabel('Select all rows').check();
+    }
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
@@ -185,6 +188,7 @@ test.describe('Batch edit context-layer', () => {
 
     // Wait 2 second
     await delay(2000);
+
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
