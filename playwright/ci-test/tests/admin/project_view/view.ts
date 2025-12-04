@@ -59,6 +59,10 @@ test.describe('View project', () => {
     // Check search
     // ------------------------------------------------------------
     await page.goto('/project/demo-geosight-project');
+
+    // ------------------------------------------------------------
+    // CONTEXT LAYER
+    // ------------------------------------------------------------
     await page.getByRole('button', { name: 'Close' }).click();
     await page.getByRole('combobox', { name: 'Search Geography Entity' }).click();
     await page.getByRole('option', { name: 'Banadir Admin Level' }).click();
@@ -443,6 +447,17 @@ test.describe('View project', () => {
     await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
     await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
     await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
+
+    // ------------------------------------------------------------
+    // CONTEXT LAYER
+    // ------------------------------------------------------------
+    await page.getByRole('tab', { name: 'Layers', exact: true } ).click();
+    await page.getByRole('tab', { name: 'Context Layers' }).click();
+    await page.locator('.LayerInfoIcon').first().hover()
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div')).toHaveCount(3);
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(0)).toHaveText('Somalia sample context layer');
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(1)).toHaveText('Description: Somalia sample context layer');
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(2)).toHaveText('Source: Source of somalia sample');
   }
 
   // A use case tests scenarios
