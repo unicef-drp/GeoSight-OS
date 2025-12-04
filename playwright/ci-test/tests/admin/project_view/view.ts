@@ -59,10 +59,6 @@ test.describe('View project', () => {
     // Check search
     // ------------------------------------------------------------
     await page.goto('/project/demo-geosight-project');
-
-    // ------------------------------------------------------------
-    // CONTEXT LAYER
-    // ------------------------------------------------------------
     await page.getByRole('button', { name: 'Close' }).click();
     await page.getByRole('combobox', { name: 'Search Geography Entity' }).click();
     await page.getByRole('option', { name: 'Banadir Admin Level' }).click();
@@ -83,6 +79,18 @@ test.describe('View project', () => {
     // ------------------------------------------------------------
     await page.goto('/project/demo-geosight-project');
     await page.getByRole('button', { name: 'Close' }).click();
+
+    // Check the info
+    await expect(page.locator('#simple-tabpanel-1 .LayerName').nth(1)).toHaveText('Sample Indicator A');
+    await page.locator('#simple-tabpanel-1 .LayerInfoIcon').first().hover()
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div')).toHaveCount(5);
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(0)).toHaveText('Sample Indicator A');
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(1)).toHaveText('Last Update: 2020-01-01 00:00:00');
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(2)).toHaveText('Description: This is the description for the sample indicator A. It is only for GeoSight demo purposes.');
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(3)).toHaveText('Source: Sample Source');
+    await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(4)).toHaveText('Unit: Percentage');
+
+    // Check layer
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Dynamic Layer based on a list of interventions'
     await expect(page.getByLabel(layer1)).toBeVisible();
@@ -451,8 +459,9 @@ test.describe('View project', () => {
     // ------------------------------------------------------------
     // CONTEXT LAYER
     // ------------------------------------------------------------
-    await page.getByRole('tab', { name: 'Layers', exact: true } ).click();
+    await page.getByRole('tab', { name: 'Layers', exact: true }).click();
     await page.getByRole('tab', { name: 'Context Layers' }).click();
+    await page.locator('.LayerInfoIcon').first().waitFor({ state: 'visible' })
     await page.locator('.LayerInfoIcon').first().hover()
     await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div')).toHaveCount(3);
     await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(0)).toHaveText('Somalia sample context layer');
