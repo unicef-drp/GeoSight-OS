@@ -81,6 +81,11 @@ export default function LayerDescription({ layer }) {
       }
     }
   });
+  if (layerType === LAYER_TYPE_CONTEXT_LAYER) {
+    if (layer.source) {
+      sources.push(layer.source);
+    }
+  }
 
   /***
    * Fetch last update.
@@ -181,15 +186,17 @@ export default function LayerDescription({ layer }) {
                     <b className="light">Source: </b>
                     {sources.length ? sources.join(",") : "-"}
                   </div>
-                  <div
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      marginTop: "5px",
-                    }}
-                  >
-                    <b className="light">Unit: </b>
-                    {units.length ? units.join(",") : "-"}
-                  </div>
+                  {layerType === LAYER_TYPE_INDICATOR && (
+                    <div
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        marginTop: "5px",
+                      }}
+                    >
+                      <b className="light">Unit: </b>
+                      {units.length ? units.join(",") : "-"}
+                    </div>
+                  )}
                 </Fragment>
               )}
             </div>

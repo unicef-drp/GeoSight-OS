@@ -32,10 +32,11 @@ export default function CloudNativeGISFields({ data, onSetData }) {
     if (data.cloud_native_gis_layer_id) {
       (async () => {
         const newData = await updateDataWithMapbox(data);
-        if (data.last_update) {
+        if (data.last_update && newData.mapbox_style?.layers) {
           newData.styles = JSON.stringify(newData.mapbox_style.layers, null, 4);
         }
         onSetData(newData);
+        setDataFields(null);
       })();
     }
   }, [data.last_update]);
@@ -44,20 +45,17 @@ export default function CloudNativeGISFields({ data, onSetData }) {
   useEffect(() => {
     (async () => {
       if (!dataFields) {
-        if (data.cloud_native_gis_layer_id && !data.data_fields.length) {
-          // Get data_field
-          if (!data.data_fields.length) {
-            try {
-              const response = await GET_RESOURCE.CLOUD_NATIVE_GIS.ATTRIBUTES(
-                data.cloud_native_gis_layer_id,
-              );
-              setDataFields(response);
-            } catch (error) {}
-          }
+        if (data.cloud_native_gis_layer_id && !data.data_fields?.length) {
+          try {
+            const response = await GET_RESOURCE.CLOUD_NATIVE_GIS.ATTRIBUTES(
+              data.cloud_native_gis_layer_id,
+            );
+            setDataFields(response);
+          } catch (error) {}
         }
       }
     })();
-  }, [dataFields]);
+  }, [data]);
 
   // Getting data fields
   useEffect(() => {
