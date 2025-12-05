@@ -101,6 +101,7 @@ function ContextLayers() {
   }, [layers, selectedLayer]);
 
   const initialize = (_contextLayers) => {
+    // INITIALIZED
     if (selectedLayer.length > 0) {
       selectedLayer.forEach((layer) => {
         dispatch(Actions.Map.removeContextLayer(layer));
@@ -108,10 +109,7 @@ function ContextLayers() {
     }
     setSelectedLayer(
       contextLayers
-        .filter(
-          (row) =>
-            row.visible_by_default || selectedLayer.includes(row.id + ""),
-        )
+        .filter((row) => selectedLayer.includes(row.id + ""))
         .map((row) => row.id + ""),
     );
 
