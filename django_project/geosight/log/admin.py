@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import mimetypes
 import os
 from datetime import datetime
-
 from django.conf import settings
 from django.contrib import admin, messages
 from django.http import (
@@ -33,7 +32,14 @@ from geosight.log.models import LogFile
 
 
 def list_log_files(parent_dir):
-    """Get list of log files from parent_dir."""
+    """Get list of log files from parent_dir.
+
+    :param parent_dir: Parent directory to search for log files
+    :type parent_dir: str
+
+    :return: List of tuples containing (file_path, file_size, created_on)
+    :rtype: list
+    """
     log_files = []
     for root, dirs, files in os.walk(parent_dir):
         for file in files:
@@ -47,16 +53,65 @@ def list_log_files(parent_dir):
     return log_files
 
 
+@admin.action(description='Delete selected logs file')
+def delete_selected_logs_file(modeladmin, request, queryset):
+    """Delete selected log files from filesystem.
+
+    :param modeladmin: The ModelAdmin instance
+    :type modeladmin: ModelAdmin
+    :param request: The HttpRequest object
+    :type request: HttpRequest
+    :param queryset: QuerySet of selected LogFile instances
+    :type queryset: QuerySet
+    """
+    for instance in queryset:
+        if instance.path and os.path.exists(instance.path):
+            try:
+                os.remove(instance.path)
+            except OSError:
+                pass
+
+
 @admin.register(LogFile)
 class LogFileAdmin(admin.ModelAdmin):
     """Class that represents LogFile Admin."""
 
     list_display = (
-        'filename', 'size', 'created_on', 'download_link')
-    actions = ['refresh_log_files']
+        'filename', 'human_readable_size', 'created_on', 'download_link'
+    )
+    actions = ['refresh_log_files', delete_selected_logs_file]
+
+    def human_readable_size(self, obj):
+        """Display file size in human-readable format.
+
+        :param obj: LogFile instance
+        :type obj: LogFile
+
+        :return: Human-readable file size (e.g., '4.80 MB', '1.23 GB')
+        :rtype: str
+        """
+        if obj.size is None:
+            return '-'
+
+        size = obj.size
+        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+            if size < 1024.0:
+                return f"{size:.2f} {unit}"
+            size /= 1024.0
+        return f"{size:.2f} PB"
+
+    human_readable_size.short_description = 'Size'
+    human_readable_size.admin_order_field = 'size'
 
     def download_link(self, obj):
-        """Get download link for LogFile."""
+        """Get download link for LogFile.
+
+        :param obj: LogFile instance
+        :type obj: LogFile
+
+        :return: HTML formatted download link
+        :rtype: str
+        """
         return format_html(
             '<a href="{}">Download</a>',
             reverse(
@@ -68,7 +123,11 @@ class LogFileAdmin(admin.ModelAdmin):
     download_link.short_description = 'Download Log File'
 
     def get_urls(self):
-        """Add url for download link LogFile."""
+        """Add custom URL patterns for LogFile admin.
+
+        :return: List of URL patterns including custom download endpoint
+        :rtype: list
+        """
         urls = super().get_urls()
         custom_urls = [
             re_path(
@@ -80,7 +139,18 @@ class LogFileAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def download_log_file(self, request, pk):
-        """Download log file action."""
+        """Download log file action.
+
+        :param request: The HttpRequest object
+        :type request: HttpRequest
+        :param pk: Primary key of the LogFile instance
+        :type pk: int
+
+        :return: File response with log file content
+        :rtype: FileResponse or HttpResponse
+
+        :raises Http404: If log file is not found in database
+        """
         try:
             log_file = LogFile.objects.get(pk=pk)
             file_path = log_file.path
@@ -101,7 +171,16 @@ class LogFileAdmin(admin.ModelAdmin):
             return HttpResponse(f"Error: {e}", status=500)
 
     def refresh_log_files(self, request, queryset):
-        """Refresh log file list."""
+        """Refresh log file list from filesystem.
+
+        :param request: The HttpRequest object
+        :type request: HttpRequest
+        :param queryset: QuerySet of selected LogFile instances (unused)
+        :type queryset: QuerySet
+
+        :return: Redirect to the log file list page
+        :rtype: HttpResponseRedirect
+        """
         LogFile.objects.all().delete()
 
         # Insert new log files
