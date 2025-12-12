@@ -108,6 +108,7 @@ export function ZonalAnalysisConfiguration(
 
   // Loading data
   useEffect(() => {
+    console.log(newLayer.id)
     if (newLayer.id) {
       // Get metadata
       const contextLayer = contextLayers.find(
@@ -192,7 +193,7 @@ export function ZonalAnalysisConfiguration(
               `/cloud-native-gis/api/layer/${contextLayer.cloud_native_gis_layer_id}/attributes/?page_size=1000`
             ).then(response => {
               // @ts-ignore
-              const fields = response.results.filter(result => result.attribute_type !== 'text').map(result => result.attribute_name)
+              const fields = response.data.results.filter(result => result.attribute_type !== 'text').map(result => result.attribute_name)
               if (fields.length) {
                 setNewLayerFieldOptions(fields)
                 setNewLayer({

@@ -84,7 +84,7 @@ export const fetchFromAPIValues = async (
     data
   ).then(async response => {
     const analysisUUID = response.data.uuid
-     await pollZonalAnalysis(analysisUUID, 5000, 10).then((result: string) => {
+     await pollZonalAnalysis(analysisUUID, 1000, 60).then((result: string) => {
       value = result
     });
 
