@@ -177,16 +177,19 @@ test.describe('Composite index layer', () => {
     await expect(page.locator(classForm).getByRole('cell', { name: 'Sample Indicator B' })).toBeVisible();
     await expect(page.locator(classForm).locator('tbody tr').nth(0)).toContainText('75%');
     await expect(page.locator(classForm).locator('tbody tr').nth(1)).toContainText('25%');
+    // Make Sample Indicator A inversed
+    await page.locator(classForm).locator('tbody > tr').nth(0).locator('td').nth(3).locator('span').first().click();
     await page.getByText('Apply Changes').click();
 
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('This is the test');
     await page.getByTestId('AddCircleIcon').click();
     await expect(page.getByTitle('Activate composite index layer')).toBeVisible();
     await Promise.all(
-      [8.33, 7.78, 7.39, 7.21, 6.95, 6.46, 6.19, 6.11, 4.87, 4.03, 3.73, 3.57, 3.5, 3.2, 2.25, 2.02, 1.53, 0.69].map(
+      [8.19, 8.17, 7.61, 7.46, 6.63, 6.43, 5.86, 5.11, 4.91, 4.54, 4.13, 3.22, 3.11, 2.55, 2.43, 0.83, 0.59, 0.55].map(
         (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
       )
     );
+
     await expect(page.getByText('Dynamic Composite Layers')).toBeVisible();
     await expect(page.locator('.MuiTreeItem-label').getByText('This is the test')).toBeVisible();
     await page.locator('.MuiTreeItem-label').getByText('Sample Indicator A').click();
@@ -199,7 +202,7 @@ test.describe('Composite index layer', () => {
     await page.locator('.MuiTreeItem-label').getByText('This is the test').click();
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('This is the test');
     await Promise.all(
-      [8.33, 7.78, 7.39, 7.21, 6.95, 6.46, 6.19, 6.11, 4.87, 4.03, 3.73, 3.57, 3.5, 3.2, 2.25, 2.02, 1.53, 0.69].map(
+      [8.19, 8.17, 7.61, 7.46, 6.63, 6.43, 5.86, 5.11, 4.91, 4.54, 4.13, 3.22, 3.11, 2.55, 2.43, 0.83, 0.59, 0.55].map(
         (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
       )
     );
