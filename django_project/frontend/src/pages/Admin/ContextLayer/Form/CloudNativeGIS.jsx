@@ -13,10 +13,14 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CloudNativeGISStreamUpload from "./CloudNativeGISStreamUpload";
 import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
+import {
+  Notification,
+  NotificationStatus,
+} from "../../../../components/Notification";
 
 /**
  * Cloud Native GIS specific fields
@@ -26,6 +30,14 @@ import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 export default function CloudNativeGISFields({ data, onSetData }) {
   const [initialized, setInitialized] = useState(false);
   const [dataFields, setDataFields] = useState(null);
+
+  // Notification
+  const notificationRef = useRef(null);
+
+  /** OnError callback */
+  const onError = (error) => {
+    notificationRef?.current?.notify(error, NotificationStatus.ERROR);
+  };
 
   // Loading data
   useEffect(() => {
@@ -83,7 +95,9 @@ export default function CloudNativeGISFields({ data, onSetData }) {
           }
           setInitialized(true);
         }}
+        onError={onError}
       />
+      <Notification ref={notificationRef} />
     </div>
   );
 }
