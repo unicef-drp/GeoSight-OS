@@ -18,6 +18,11 @@
    ========================================================================== */
 
 .ProjectOverview {
+
+  .modal--content {
+    padding-top: 0;
+  }
+
   .modal--footer {
     display: flex;
     text-align: center;
@@ -43,5 +48,20 @@
   th, td {
     padding: 6px;
     border: 1px solid var(--border-gray);
+  }
+
+  .ProjectDescription {
+
+    table {
+      width: 100%;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
+    u {
+      text-decoration: underline;
+    }
   }
 }
