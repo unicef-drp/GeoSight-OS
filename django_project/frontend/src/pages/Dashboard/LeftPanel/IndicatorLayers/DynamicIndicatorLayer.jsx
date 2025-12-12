@@ -244,6 +244,10 @@ export function DynamicIndicatorLayerConfig({ indicatorLayer }) {
     }
   }, [activated]);
 
+  if (!indicatorLayer.config.exposedVariables?.length) {
+    return;
+  }
+
   return (
     <div
       className="LayerIcon LayerConfig"
