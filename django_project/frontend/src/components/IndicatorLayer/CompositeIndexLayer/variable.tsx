@@ -62,11 +62,19 @@ export const configToExpression = (
   indicatorLayers: IndicatorLayer[],
 ) => {
   const expression: string[] = [];
+  const total =
+    // @ts-ignore
+    composite?.config?.indicatorLayers?.reduce(
+      (sum: number, layer: any) => sum + (layer.weight || 0),
+      0,
+    ) || 0;
+
   // @ts-ignore
   composite?.config?.indicatorLayers.map((layer: any) => {
     const indicatorLayer = indicatorLayers.find(
       (indicatorLayer) => indicatorLayer.id.toString() === layer.id.toString(),
     );
+    const weight = layer.weight / total;
     if (indicatorLayer) {
       if (indicatorLayer.indicators.length) {
         indicatorLayer.indicators.map((indicator) => {
@@ -75,7 +83,7 @@ export const configToExpression = (
           if (layer.invert) {
             normalized = `10 - ${normalized}`;
           }
-          expression.push(`(${layer.weight} * ${normalized})`);
+          expression.push(`(${weight} * ${normalized})`);
         });
       } else {
         const id = "layer_" + layer.id;
@@ -83,7 +91,7 @@ export const configToExpression = (
         if (layer.invert) {
           normalized = `10 - ${normalized}`;
         }
-        expression.push(`(${layer.weight} * ${normalized})`);
+        expression.push(`(${weight} * ${normalized})`);
       }
     }
   });

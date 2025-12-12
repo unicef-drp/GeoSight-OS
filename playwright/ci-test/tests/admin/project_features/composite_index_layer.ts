@@ -95,17 +95,23 @@ test.describe('Composite index layer', () => {
     // Check the style
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Composite Index Layer');
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow')).toHaveCount(18);
-    [10, 9.79, 9.26, 8.11, 7.68, 7.05, 6.53, 6.32, 6.11, 4.11, 3.58, 3.26, 3.05, 1.37, 1.05, 0.95, 0].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      [10, 9.79, 9.26, 8.11, 7.68, 7.05, 6.53, 6.32, 6.11, 4.11, 3.58, 3.26, 3.05, 1.37, 1.05, 0.95, 0].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.getByRole('checkbox', { name: 'Sample Indicator A' }).click();
     await page.getByRole('checkbox', { name: 'Sample Indicator B' }).click();
-    [10, 6.32, 5.83, 5.49, 4.86, 4.51, 4.17, 3.96, 3.61, 3.33, 3.26, 2.78, 1.94, 1.74, 1.18, 0.49, 0].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      [10, 6.32, 5.83, 5.49, 4.86, 4.51, 4.17, 3.96, 3.61, 3.33, 3.26, 2.78, 1.94, 1.74, 1.18, 0.49, 0].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.getByRole('checkbox', { name: 'Sample Indicator A' }).click();
-    [16.53, 13.33, 12.62, 11.8, 11.53, 10.66, 10.46, 9.58, 9.26, 7.91, 7.75, 7.29, 6.89, 6.05, 5.33, 4.59, 4.21, 2.78].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      [8.26, 6.67, 6.31, 5.9, 5.76, 5.33, 5.23, 4.79, 4.63, 3.96, 3.87, 3.64, 3.44, 3.02, 2.66, 2.3, 2.11, 1.39].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.getByRole('checkbox', { name: 'Sample Indicator A' }).click();
     await page.getByRole('checkbox', { name: 'Sample Indicator B' }).click();
@@ -113,21 +119,27 @@ test.describe('Composite index layer', () => {
       name: 'Dynamic Layer',
       exact: true
     }).click();
-    [10, 6.2, 6.14, 5.96, 4.94, 4.76, 4.7, 4.4, 3.55, 3.25, 2.89, 2.11, 1.81, 1.63, 0.96, 0.36, 0].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      [10, 6.2, 6.14, 5.96, 4.94, 4.76, 4.7, 4.4, 3.55, 3.25, 2.89, 2.11, 1.81, 1.63, 0.96, 0.36, 0].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.getByRole('checkbox', {
       name: 'Dynamic Layer',
       exact: true
     }).click();
     await page.getByRole('checkbox', { name: 'Dynamic Layer based on a list of interventions' }).click();
-    ["No data"].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      ["No data"].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.hover('.ReferenceLayerLevelSelected')
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 2').click();
-    [10, 9.13, 8.99, 8.77, 8.7, 8.65, 7.87, 7.72, 7.51, 7.3, 7.25, 7.13, 7.01, 7, 6.75, 6.25, 6.23, 5.75, 5.69, 5.52, 5.46, 5.4, 5.31, 4.99, 4.94, 4.65, 4.48, 4.47, 4.33, 4.19, 3.95, 3.94, 3.91, 3.86, 3.73, 3.64, 3.36, 3.31, 3.19, 3.1, 2.94, 1.43, 0.91, 0.72, 0.63, 0.49, 0.46, 0.24, 0].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      [10, 9.13, 8.99, 8.77, 8.7, 8.65, 7.87, 7.72, 7.51, 7.3, 7.25, 7.13, 7.01, 7, 6.75, 6.25, 6.23, 5.75, 5.69, 5.52, 5.46, 5.4, 5.31, 4.99, 4.94, 4.65, 4.48, 4.47, 4.33, 4.19, 3.95, 3.94, 3.91, 3.86, 3.73, 3.64, 3.36, 3.31, 3.19, 3.1, 2.94, 1.43, 0.91, 0.72, 0.63, 0.49, 0.46, 0.24, 0].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.hover('.ReferenceLayerLevelSelected')
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 1').click();
@@ -168,22 +180,28 @@ test.describe('Composite index layer', () => {
     await page.getByText('Apply Changes').click();
 
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('This is the test');
-    [33.33, 31.1, 29.58, 28.83, 27.79, 25.83, 24.77, 24.43, 19.5, 16.11, 14.9, 14.26, 14.02, 12.8, 8.99, 8.06, 6.11, 2.78].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
-    );
     await page.getByTestId('AddCircleIcon').click();
     await expect(page.getByTitle('Activate composite index layer')).toBeVisible();
+    await Promise.all(
+      [8.33, 7.78, 7.39, 7.21, 6.95, 6.46, 6.19, 6.11, 4.87, 4.03, 3.73, 3.57, 3.5, 3.2, 2.25, 2.02, 1.53, 0.69].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
+    );
     await expect(page.getByText('Dynamic Composite Layers')).toBeVisible();
     await expect(page.locator('.MuiTreeItem-label').getByText('This is the test')).toBeVisible();
     await page.locator('.MuiTreeItem-label').getByText('Sample Indicator A').click();
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Sample Indicator A');
-    ["80 - 100", "60 - 80", "40 - 60", "20 - 40", "0 - 20"].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      ["80 - 100", "60 - 80", "40 - 60", "20 - 40", "0 - 20"].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
     await page.locator('.MuiTreeItem-label').getByText('This is the test').click();
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('This is the test');
-    [33.33, 31.1, 29.58, 28.83, 27.79, 25.83, 24.77, 24.43, 19.5, 16.11, 14.9, 14.26, 14.02, 12.8, 8.99, 8.06, 6.11, 2.78].map(
-      (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+    await Promise.all(
+      [8.33, 7.78, 7.39, 7.21, 6.95, 6.46, 6.19, 6.11, 4.87, 4.03, 3.73, 3.57, 3.5, 3.2, 2.25, 2.02, 1.53, 0.69].map(
+        (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
+      )
     );
 
 
