@@ -239,7 +239,7 @@ const ArcGisStyle = async (map, id, layer) => {
       break;
     }
   }
-  console.log(casesByType);
+
   // Let's repaint
   for (const [layerId, values] of Object.entries(casesByType)) {
     if (style.fieldName && !style.multipleField) {
