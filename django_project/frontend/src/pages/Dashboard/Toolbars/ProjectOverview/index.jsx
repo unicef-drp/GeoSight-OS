@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 import Checkbox from "@mui/material/Checkbox";
 import { useTranslation } from 'react-i18next';
 import { FormControlLabel } from "@mui/material";
@@ -93,7 +94,7 @@ export default function ProjectOverview() {
             </ModalHeader>
             <ModalContent>
               <div className="ProjectDescription">
-                <Markdown remarkPlugins={[remarkGfm]}>
+                <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                   {overview
                     ? overview
                     : "*There is no information for this project.*"}
