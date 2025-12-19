@@ -138,6 +138,11 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         if data.get('permission', None):
             form.permission_data = data.get('permission', None)
         context['form'] = form
+        context['errors'] = {}
+        try:
+            context['errors'] = json.dumps(form.errors)
+        except Exception:
+            pass
         return render(request, self.template_name, context)
 
 

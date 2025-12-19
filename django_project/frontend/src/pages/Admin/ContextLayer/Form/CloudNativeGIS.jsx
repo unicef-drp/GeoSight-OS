@@ -28,6 +28,10 @@ import {
  * @param {function} onSetData Set the data.
  */
 export default function CloudNativeGISFields({ data, onSetData }) {
+  let fieldErrors;
+  try {
+    fieldErrors = errors;
+  } catch (err) {}
   const [initialized, setInitialized] = useState(false);
   const [dataFields, setDataFields] = useState(null);
 
@@ -82,6 +86,14 @@ export default function CloudNativeGISFields({ data, onSetData }) {
   return (
     <div className="BasicFormSection">
       <label className="form-label required">Cloud Native GIS detail</label>
+
+      {fieldErrors?.cloud_native_gis_layer_id && (
+        <div>
+          <span className="form-error">
+            <span>{fieldErrors.cloud_native_gis_layer_id}</span>
+          </span>
+        </div>
+      )}
       <CloudNativeGISStreamUpload
         layerId={data.cloud_native_gis_layer_id}
         setLayerIdChanged={(id) => {

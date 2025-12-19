@@ -16,16 +16,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import os
+import requests
 import uuid
 from base64 import b64encode
-from urllib.parse import urlparse, parse_qs
-
-import requests
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
+from urllib.parse import urlparse, parse_qs
 
 from core.models import AbstractEditData, AbstractTerm, AbstractSource
 from geosight.data.models.arcgis import ArcgisConfig
@@ -178,6 +178,58 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
             'Using layer from cloud native gis.'
         )
     )
+
+    def save(self, *args, **kwargs):
+        """Save this context layer instance to the database.
+
+        Performs full validation before saving by calling full_clean().
+
+        :param args: Variable length argument list passed to parent save()
+        :type args: list
+        :param kwargs: Arbitrary keyword arguments passed to parent save()
+        :type kwargs: dict
+        :return: None
+        """
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        """Clean and validate the ContextLayer model instance.
+
+        Performs validation checks specific to ContextLayer, in addition to
+        parent class validation.
+
+        Checks that the related_table field is populated when layer_type is
+        RELATED_TABLE.
+
+        :raises ValidationError: If layer_type is RELATED_TABLE but no related_table
+            is specified.
+
+        :return: None
+        """
+        super().clean()
+        if (
+                self.layer_type == LayerType.RELATED_TABLE and
+                not self.related_table
+        ):
+            raise ValidationError(
+                {
+                    'related_table': (
+                        'This field is required.'
+                    )
+                }
+            )
+        elif (
+                self.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER and
+                not self.cloud_native_gis_layer_id
+        ):
+            raise ValidationError(
+                {
+                    'cloud_native_gis_layer_id': (
+                        'This field is required.'
+                    )
+                }
+            )
 
     def save_relations(self, data):
         """

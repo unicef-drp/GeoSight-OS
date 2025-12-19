@@ -8,6 +8,7 @@
 {% block extra_html %}
     <script>
       const objectId = {% if id %}{{ id }}{% else %}null{% endif %};
+      let errors = {% if errors %}{{ errors|safe }}{% else %}null{% endif %};
     </script>
     {# To create form, please use this template #}
     <div id='FormTemplate' style="display: none">
