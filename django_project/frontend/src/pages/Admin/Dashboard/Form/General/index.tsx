@@ -59,6 +59,8 @@ export interface GeneralData {
   levelConfig: string;
   default_time_mode: DefaultTimeMode;
 
+  overview: string;
+
   // Configurations
   show_splash_first_open: boolean;
   truncate_indicator_layer_name: boolean;
@@ -84,6 +86,8 @@ const GeneralForm = memo(({}: Props) => {
     icon: projectData.icon,
     name: projectData.name,
     description: projectData.description,
+    overview: projectData.overview,
+
     group: projectData.group,
     referenceLayer: projectData.referenceLayer,
     geoField: projectData.geoField,
@@ -105,6 +109,7 @@ const GeneralForm = memo(({}: Props) => {
       "icon",
       "name",
       "description",
+      "overview",
       "group",
       "referenceLayer",
       "geoField",
@@ -158,6 +163,11 @@ const GeneralForm = memo(({}: Props) => {
   useEffect(() => {
     update("description", data.description);
   }, [data.description]);
+
+  /** Name **/
+  useEffect(() => {
+    update("overview", data.overview);
+  }, [data.overview]);
 
   if (!data) {
     return null;
@@ -663,7 +673,14 @@ const GeneralForm = memo(({}: Props) => {
               Project overview
             </label>
           </div>
-          <OverviewForm />
+          <OverviewForm
+            onChange={(value: string) => {
+              setData({
+                ...data,
+                overview: value,
+              });
+            }}
+          />
         </div>
       </div>
     </div>

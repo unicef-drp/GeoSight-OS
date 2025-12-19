@@ -13,102 +13,129 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  MDXEditor,
-  UndoRedo,
+  BlockTypeSelect,
   BoldItalicUnderlineToggles,
   CodeToggle,
-  ListsToggle,
-  BlockTypeSelect,
   CreateLink,
+  headingsPlugin,
   InsertTable,
   InsertThematicBreak,
-  toolbarPlugin,
+  linkDialogPlugin,
   linkPlugin,
-  headingsPlugin,
   listsPlugin,
+  ListsToggle,
+  MDXEditor,
   quotePlugin,
   tablePlugin,
   thematicBreakPlugin,
-  linkDialogPlugin
-} from '@mdxeditor/editor'
+  toolbarPlugin,
+  UndoRedo,
+} from "@mdxeditor/editor";
+import { debounce } from "@mui/material/utils";
 
-
-import '@mdxeditor/editor/style.css';
-import './style.scss';
-
+import "@mdxeditor/editor/style.css";
+import "./style.scss";
 
 /** Overview dashboard */
-export default function OverviewForm() {
-  const {
-    overview,
-  } = useSelector(state => state.dashboard.data);
-  const [overviewData, setOverviewData] = useState(overview ? overview : '');
+export default function OverviewForm({ onChange }) {
+  const { overview } = useSelector((state) => state.dashboard.data);
+  const [overviewData, setOverviewData] = useState(overview ? overview : "");
+  const [isInit, setIsInit] = useState(true);
+
+  // Update overviewData when overview prop changes
+  useEffect(() => {
+    if (overview !== overviewData) {
+      setOverviewData(overview ? overview : "");
+    }
+  }, [overview]);
+
+  const update = useMemo(
+    () =>
+      debounce((newValue) => {
+        if (!isInit && newValue !== overviewData) {
+          onChange(newValue);
+        }
+        setIsInit(false);
+      }, 500),
+    [isInit],
+  );
+
+  useEffect(() => {
+    update(overviewData);
+  }, [overviewData]);
 
   return (
-    <div className='Overview'>
+    <div className="Overview">
       <textarea
-        id='GeneralOverview'
+        id="GeneralOverview"
         name="textarea"
         value={overviewData}
         readOnly
       />
       <Suspense fallback={<div>Loading...</div>}>
         <MDXEditor
-          key={overview}
           markdown={overviewData}
-          plugins={
-            [
-              headingsPlugin(),
-              listsPlugin(),
-              quotePlugin(),
-              thematicBreakPlugin(),
-              tablePlugin(),
-              linkPlugin(),
-              linkDialogPlugin(),
-              toolbarPlugin({
-                toolbarContents: () => (
-                  <>
-                    <UndoRedo/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <BoldItalicUnderlineToggles/>
-                    <CodeToggle/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <ListsToggle/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <BlockTypeSelect/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <CreateLink/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <InsertTable/>
-                    <InsertThematicBreak/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                  </>
-                )
-              }),
-            ]
-          }
-          onChange={
-            val => {
-              setOverviewData(val)
-            }
-          }
+          plugins={[
+            headingsPlugin(),
+            listsPlugin(),
+            quotePlugin(),
+            thematicBreakPlugin(),
+            tablePlugin(),
+            linkPlugin(),
+            linkDialogPlugin(),
+            toolbarPlugin({
+              toolbarContents: () => (
+                <>
+                  <UndoRedo />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <BoldItalicUnderlineToggles />
+                  <CodeToggle />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <ListsToggle />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <BlockTypeSelect />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <CreateLink />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <InsertTable />
+                  <InsertThematicBreak />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                </>
+              ),
+            }),
+          ]}
+          onChange={(val) => {
+            setOverviewData(val);
+          }}
         />
       </Suspense>
     </div>
-  )
+  );
 }
