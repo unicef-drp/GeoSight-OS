@@ -62,4 +62,20 @@ test.describe('Mapbox style', () => {
       await delay(1000)
     }
   })
+  test('Styling with raw', async ({ page }) => {
+    await page.goto(`/en-us/admin/context-layer/3/edit`);
+    await page.getByText('Preview').first().click();
+    await page.getByText('Raw input').first().click();
+
+    // Heatmap
+    await page.locator('.ContextLayerConfig textarea').nth(0).fill(
+      `
+      [{"id":"heatmapLayer","type":"heatmap","source":"source","maxzoom":15,"paint":{"heatmap-weight":["interpolate",["linear"],["get","value"],0,0,1,1],"heatmap-intensity":["interpolate",["linear"],["zoom"],0,1,15,3],"heatmap-color":["interpolate",["linear"],["heatmap-density"],0,"rgba(33,102,172,0)",0.2,"rgb(103,169,207)",0.4,"rgb(209,229,240)",0.6,"rgb(253,219,199)",0.8,"rgb(239,138,98)",1,"rgb(178,24,43)"],"heatmap-radius":["interpolate",["linear"],["zoom"],0,2,9,20],"heatmap-opacity":["interpolate",["linear"],["zoom"],7,1,15,0]}}]
+      `
+    );
+    await page.getByText('Editor').first().click();
+    await page.getByRole('button', { name: 'drag heatmapLayer' }).click();
+    await expect(page.getByText('This type does not have editor')).toBeVisible();
+    await expect(page.getByText('00.20.40.60.81')).toBeVisible();
+  });
 });
