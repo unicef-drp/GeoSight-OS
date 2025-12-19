@@ -22,13 +22,13 @@ test.describe('Context layer create admin', () => {
 
     // Error for related table
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.locator('[data-wrapper-name="related_table"]')).toContainText('This field is required.');
+    await expect(page.locator('[data-wrapper-name="related_table_selector"]')).toContainText('This field is required.');
 
     // Correct
     await page.getByRole('textbox', { name: 'Select Related Table' }).click();
     await page.getByRole('cell', { name: 'RRR' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.locator('[data-wrapper-name="related_table"]')).not.toContainText('This field is required.');
+    await expect(page.locator('[data-wrapper-name="related_table_selector"]')).not.toContainText('This field is required.');
 
     // Wait 2 second
     await delay(2000);
