@@ -14,9 +14,11 @@
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
-        'detail': '{% url 'related-table-detail-api' id %}',
         'dataView': '{% url 'admin-related-table-data-view' 0 %}'
       }
+      {% if id %}
+          urls.api.detail = '{% url 'related-table-detail-api' id %}'
+      {% endif %}
 
       if (permission.read_data) {
         {% if id %}
