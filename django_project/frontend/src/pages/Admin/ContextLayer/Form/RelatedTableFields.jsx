@@ -97,7 +97,7 @@ export default function RelatedTableFields({ data, onSetData }) {
 
   return (
     <>
-      <div className="BasicFormSection">
+      <div className="BasicFormSection" data-wrapper-name="related_table">
         <label className="form-label required">Related Table</label>
         <RelatedTableSelector
           initData={relatedTableInfo ? [relatedTableInfo] : []}
