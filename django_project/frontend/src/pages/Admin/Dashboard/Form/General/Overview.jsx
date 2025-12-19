@@ -13,108 +13,129 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { MDXEditor } from '@mdxeditor/editor/MDXEditor'
 import {
-  UndoRedo
-} from '@mdxeditor/editor/plugins/toolbar/components/UndoRedo'
-import {
-  BoldItalicUnderlineToggles
-} from '@mdxeditor/editor/plugins/toolbar/components/BoldItalicUnderlineToggles'
-import {
-  CodeToggle
-} from '@mdxeditor/editor/plugins/toolbar/components/CodeToggle'
-import {
-  ListsToggle
-} from '@mdxeditor/editor/plugins/toolbar/components/ListsToggle'
-import {
-  BlockTypeSelect
-} from '@mdxeditor/editor/plugins/toolbar/components/BlockTypeSelect'
-import {
-  CreateLink
-} from '@mdxeditor/editor/plugins/toolbar/components/CreateLink'
-import {
-  InsertTable
-} from '@mdxeditor/editor/plugins/toolbar/components/InsertTable'
-import {
-  InsertThematicBreak
-} from '@mdxeditor/editor/plugins/toolbar/components/InsertThematicBreak'
-import { toolbarPlugin } from '@mdxeditor/editor/plugins/toolbar'
-import { linkPlugin } from '@mdxeditor/editor/plugins/link'
-import { headingsPlugin } from '@mdxeditor/editor/plugins/headings'
-import { listsPlugin } from '@mdxeditor/editor/plugins/lists'
-import { quotePlugin } from '@mdxeditor/editor/plugins/quote'
-import { tablePlugin } from '@mdxeditor/editor/plugins/table'
-import { thematicBreakPlugin } from '@mdxeditor/editor/plugins/thematic-break'
-import { linkDialogPlugin } from '@mdxeditor/editor/plugins/link-dialog'
+  BlockTypeSelect,
+  BoldItalicUnderlineToggles,
+  CodeToggle,
+  CreateLink,
+  headingsPlugin,
+  InsertTable,
+  InsertThematicBreak,
+  linkDialogPlugin,
+  linkPlugin,
+  listsPlugin,
+  ListsToggle,
+  MDXEditor,
+  quotePlugin,
+  tablePlugin,
+  thematicBreakPlugin,
+  toolbarPlugin,
+  UndoRedo,
+} from "@mdxeditor/editor";
+import { debounce } from "@mui/material/utils";
 
-
-import './style.scss';
-
+import "@mdxeditor/editor/style.css";
+import "./style.scss";
 
 /** Overview dashboard */
-export default function OverviewForm() {
-  const {
-    overview,
-  } = useSelector(state => state.dashboard.data);
-  const [overviewData, setOverviewData] = useState(overview ? overview : '');
+export default function OverviewForm({ onChange }) {
+  const { overview } = useSelector((state) => state.dashboard.data);
+  const [overviewData, setOverviewData] = useState(overview ? overview : "");
+  const [isInit, setIsInit] = useState(true);
+
+  // Update overviewData when overview prop changes
+  useEffect(() => {
+    if (overview !== overviewData) {
+      setOverviewData(overview ? overview : "");
+    }
+  }, [overview]);
+
+  const update = useMemo(
+    () =>
+      debounce((newValue) => {
+        if (!isInit && newValue !== overviewData) {
+          onChange(newValue);
+        }
+        setIsInit(false);
+      }, 500),
+    [isInit],
+  );
+
+  useEffect(() => {
+    update(overviewData);
+  }, [overviewData]);
 
   return (
-    <div className='Overview'>
+    <div className="Overview">
       <textarea
-        id='GeneralOverview'
+        id="GeneralOverview"
         name="textarea"
         value={overviewData}
+        readOnly
       />
       <Suspense fallback={<div>Loading...</div>}>
         <MDXEditor
           markdown={overviewData}
-          plugins={
-            [
-              headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(),
-              tablePlugin(), linkPlugin(), linkDialogPlugin(),
-              toolbarPlugin({
-                toolbarContents: () => (
-                  <>
-                    <UndoRedo/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <BoldItalicUnderlineToggles/>
-                    <CodeToggle/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <ListsToggle/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <BlockTypeSelect/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <CreateLink/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                    <InsertTable/>
-                    <InsertThematicBreak/>
-                    <div data-orientation="vertical"
-                         aria-orientation="vertical"
-                         role="separator"/>
-                  </>
-                )
-              }),
-            ]
-          }
-          onChange={
-            val => {
-              setOverviewData(val)
-            }
-          }
+          plugins={[
+            headingsPlugin(),
+            listsPlugin(),
+            quotePlugin(),
+            thematicBreakPlugin(),
+            tablePlugin(),
+            linkPlugin(),
+            linkDialogPlugin(),
+            toolbarPlugin({
+              toolbarContents: () => (
+                <>
+                  <UndoRedo />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <BoldItalicUnderlineToggles />
+                  <CodeToggle />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <ListsToggle />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <BlockTypeSelect />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <CreateLink />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                  <InsertTable />
+                  <InsertThematicBreak />
+                  <div
+                    data-orientation="vertical"
+                    aria-orientation="vertical"
+                    role="separator"
+                  />
+                </>
+              ),
+            }),
+          ]}
+          onChange={(val) => {
+            setOverviewData(val);
+          }}
         />
       </Suspense>
     </div>
-  )
+  );
 }
