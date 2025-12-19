@@ -179,7 +179,7 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         )
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):  # noqa: DOC202, DOC103
         """Save this context layer instance to the database.
 
         Performs full validation before saving by calling full_clean().
@@ -188,7 +188,6 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         :type args: list
         :param kwargs: Arbitrary keyword arguments passed to parent save()
         :type kwargs: dict
-        :return: None
         """
         self.full_clean()
         super().save(*args, **kwargs)
@@ -202,10 +201,8 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         Checks that the related_table field is populated when layer_type is
         RELATED_TABLE.
 
-        :raises ValidationError: If layer_type is RELATED_TABLE but no related_table
-            is specified.
-
-        :return: None
+        :raises ValidationError:
+            If layer_type is RELATED_TABLE but no related_table is specified.
         """
         super().clean()
         if (
