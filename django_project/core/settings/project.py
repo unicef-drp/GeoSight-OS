@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
-
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
@@ -152,6 +151,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'geosight.georepo.tasks.fetch_datasets',
         'schedule': crontab(minute='0', hour='0'),
         'args': (True,),
+    },
+    'cleanup-old-layer-downloads': {
+        'task': 'cloud_native_gis.tasks.cleanup_old_layer_downloads',
+        'schedule': crontab(minute='*/30')
     }
 }
 

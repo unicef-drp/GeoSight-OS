@@ -15,7 +15,6 @@ __date__ = '13/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import copy
-import json
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.models.layer_upload import LayerUpload
 from django.contrib.auth import get_user_model
@@ -81,82 +80,35 @@ class ContextLayerCloudNativeDownloadTest(BasePermissionTest.TestCase):
     def test_download(self):
         """Test attributes."""
         key = "context_layers_data-download"
-        self.assertRequestGetView(
+        self.assertRequestPostView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ),
             code=403,
-            user=self.viewer
+            user=self.viewer,
+            data={}
         )
-        self.assertRequestGetView(
+        self.assertRequestPostView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ),
             code=403,
-            user=self.creator
+            user=self.creator,
+            data={}
         )
-        self.assertRequestGetView(
+        self.assertRequestPostView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource_2.id}
             ),
             code=400,
-            user=self.admin
+            user=self.admin,
+            data={}
         )
-        response = self.assertRequestGetView(
+        self.assertRequestPostView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ),
             code=200,
-            user=self.admin
+            user=self.admin,
+            data={}
         )
-        self.assertTrue(response.as_attachment)
-        self.assertEqual(response.filename, "somalia.zip")
-
-        response = self.assertRequestGetView(
-            url=reverse(
-                key,
-                kwargs={'context_layer_id': self.resource.id}
-            ) + "?file_format=shapefile",
-            code=200,
-            user=self.admin
-        )
-        self.assertTrue(response.as_attachment)
-        self.assertNotEqual(response.filename, "somalia.zip")
-        self.assertTrue(response.filename.endswith('.zip'))
-
-        response = self.assertRequestGetView(
-            url=reverse(
-                key,
-                kwargs={'context_layer_id': self.resource.id}
-            ) + "?file_format=kml",
-            code=200,
-            user=self.admin
-        )
-        self.assertTrue(response.as_attachment)
-        self.assertTrue(response.filename.endswith('.kml'))
-
-        response = self.assertRequestGetView(
-            url=reverse(
-                key,
-                kwargs={'context_layer_id': self.resource.id}
-            ) + "?file_format=geojson",
-            code=200,
-            user=self.admin
-        )
-        self.assertTrue(response.as_attachment)
-        self.assertTrue(response.filename.endswith('.geojson'))
-        file_bytes = b''.join(response.streaming_content)
-        content = file_bytes.decode('utf-8')
-        data = json.loads(content)
-        self.assertEqual(len(data['features']), 47)
-
-        response = self.assertRequestGetView(
-            url=reverse(
-                key,
-                kwargs={'context_layer_id': self.resource.id}
-            ) + "?file_format=geopackage",
-            code=200,
-            user=self.admin
-        )
-        self.assertTrue(response.as_attachment)
-        self.assertTrue(response.filename.endswith('.gpkg'))

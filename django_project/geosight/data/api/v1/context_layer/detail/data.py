@@ -14,15 +14,14 @@ __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import os
-import shutil
-
-from django.conf import settings
 from cloud_native_gis.models.layer import Layer
+from cloud_native_gis.models.layer_download import LayerDownload
 from cloud_native_gis.utils.connection import fields
 from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
 from cloud_native_gis.utils.type import FileType
+from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
-from django.http import HttpResponse, FileResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from psycopg2.errors import UndefinedColumn, InvalidParameterValue
@@ -30,7 +29,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 
 from core.api_utils import (
-    common_api_params, ApiTag, ApiParams, FileTypeOriginal
+    common_api_params, ApiTag, ApiParams
 )
 from geosight.cloud_native_gis.factory.model import model_factory
 from geosight.cloud_native_gis.factory.queryset import delete_queryset
@@ -39,8 +38,9 @@ from geosight.data.api.v1.context_layer.detail.base_detail import (
     ContextBaseDetailDataView
 )
 from geosight.data.models import LayerType
-from geosight.permission.access import read_data_permission_resource, \
-    edit_data_permission_resource
+from geosight.permission.access import (
+    read_data_permission_resource, edit_data_permission_resource
+)
 
 request_body = openapi.Schema(
     description='Geojson data.',
@@ -309,7 +309,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         return output
 
     @swagger_auto_schema(
-        method='get',
+        method='post',
         operation_id='context-layer-features-download',
         tags=[ApiTag.CONTEXT_LAYER],
         manual_parameters=[
@@ -319,7 +319,7 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
                 'Download data based on output type.'
         )
     )
-    @action(detail=False, methods=['get'], pagination_class=None)
+    @action(detail=False, methods=['post'], pagination_class=None)
     def download(self, request, *args, **kwargs):  # noqa DOC110, DOC103
         """
         Download data for a specific context layer features.
@@ -337,85 +337,38 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
             layer = self.get_context_layer_object()
         except ValueError as e:
             return HttpResponseBadRequest(e)
-        file_format = request.GET.get('file_format', FileTypeOriginal)
+
+        file_format = request.GET.get('file_format', FileType.ORIGINAL)
         if file_format not in ApiParams.VECTOR_FILE_FORMAT.enum:
             return HttpResponseBadRequest(
                 "Invalid format. "
                 "Extension should be either original or zip."
             )
-        if isinstance(layer, Layer):
-            temp_dir = os.path.join(settings.MEDIA_ROOT, 'tmp')
-            if not os.path.exists(temp_dir):
-                os.makedirs(temp_dir)
 
-            if file_format == FileTypeOriginal:
-                # If it has upload, use original one
-                upload = layer.layerupload_set.order_by('-created_at').first()
-                if upload:
-                    for file in upload.files:
-                        # If it has zip, just return the zip file
-                        if file.endswith('.zip'):
-                            file_path = os.path.join(upload.folder, file)
-                            if os.path.exists(file_path):
-                                response = FileResponse(
-                                    open(file_path, 'rb'),
-                                    as_attachment=True,
-                                    filename=os.path.basename(file_path)
-                                )
-                                return response
-                            else:
-                                return HttpResponseBadRequest(
-                                    "File not found."
-                                )
-                    # if no zip file, try to zipping the folder
-                    folder_to_zip = upload.folder
-                    if os.path.exists(folder_to_zip):
-                        zip_base = os.path.join(
-                            temp_dir, os.path.basename(folder_to_zip)
-                        )
-                        zip_path = shutil.make_archive(
-                            zip_base, 'zip', folder_to_zip
-                        )
-                        return FileResponse(
-                            open(zip_path, 'rb'),
-                            as_attachment=True,
-                            filename=os.path.basename(zip_path)
-                        )
-            if file_format == FileTypeOriginal:
-                file_format = FileType.SHAPEFILE
-
-            file_path, success = layer.export_layer(
-                file_format, temp_dir
+        # Create LayerDownload instance
+        working_dir = os.path.join(settings.MEDIA_ROOT, 'tmp')
+        if file_format == FileType.ORIGINAL:
+            layer_download = LayerDownload.export_layer(
+                request.user, layer, file_format, working_dir
             )
-            if not success:
-                return HttpResponseBadRequest(success)
-            else:
-                if os.path.exists(file_path):
-                    filename = os.path.basename(file_path)
-                    ext = os.path.splitext(filename)[1]
-                    response = FileResponse(
-                        open(file_path, 'rb'),
-                        as_attachment=True,
-                        filename=obj.name + ext
-                    )
+        else:
+            layer_download = LayerDownload.export_layer(
+                request.user, layer, file_format, working_dir,
+                filename=obj.name
+            )
 
-                    def cleanup_file():
-                        """Cleanup file after response is sent."""
-                        try:
-                            os.remove(file_path)
-                        except OSError:
-                            pass
-
-                    response.close = cleanup_file
-                    return response
-                else:
-                    return HttpResponseBadRequest(
-                        "File not found."
-                    )
+        # Schedule async task
+        layer_download.schedule_task()
 
         # If not cloud native layer, return error
-        return HttpResponseBadRequest(
-            "Invalid layer type for this request."
+        return JsonResponse(
+            {
+                "uuid": layer_download.unique_id,
+                "path": (
+                    f'/cloud-native-gis/api/download/'
+                    f'{layer_download.unique_id}/'
+                )
+            }
         )
 
     @swagger_auto_schema(auto_schema=None)

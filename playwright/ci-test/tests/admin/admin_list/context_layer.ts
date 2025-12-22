@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import * as fs from 'fs';
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -137,4 +138,26 @@ test.describe('Context layer list admin', () => {
     await page.reload();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–3 of 3');
   });
+
+  test('Test download', async ({ page }) => {
+    let downloadPromise = page.waitForEvent('download');
+    await page.goto(_url);
+    await page.getByRole('menuitem', { name: 'Download data.' }).getByRole('link').click();
+    await page.getByRole('menuitem', { name: 'original' }).click();
+    await expect(page.getByText('Error on downloading, please')).toBeVisible();
+
+    await page.getByRole('menuitem', { name: '.geojson' }).click();
+    await expect(page.getByText('Error on downloading, please')).not.toBeVisible();
+    let download = await downloadPromise;
+    let filePath = await download.path();
+
+    // Read and verify GeoJSON content
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const geojson = JSON.parse(fileContent);
+
+    // Verify it's valid GeoJSON
+    expect(geojson).toHaveProperty('type');
+    expect(geojson).toHaveProperty('features');
+    expect(geojson.features.length).toEqual(47);
+  })
 })

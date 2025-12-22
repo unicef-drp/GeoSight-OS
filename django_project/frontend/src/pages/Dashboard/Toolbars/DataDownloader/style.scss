@@ -133,12 +133,19 @@
     display: flex;
     gap: 0.5rem;
 
-    a {
+    a, div {
       padding: 3px 0.5rem;
       background-color: var(--primary-color);
       color: var(--anti-primary-color);
       cursor: pointer;
       border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .MuiCircularProgress-root {
+        color: white !important;
+      }
     }
   }
 }
