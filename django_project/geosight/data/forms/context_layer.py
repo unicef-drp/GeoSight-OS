@@ -36,7 +36,7 @@ class ContextLayerBatchForm(forms.ModelForm):
         )
     )
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = ContextLayer
         exclude = [
             'created_at', 'creator', 'modified_at', 'modified_by',

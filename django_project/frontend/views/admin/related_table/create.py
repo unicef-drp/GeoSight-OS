@@ -30,12 +30,20 @@ class BaseRelatedTableEditView(AdminBaseView):
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """Return page title that used on tab bar.
+
+        :return: Page title for the tab bar
+        :rtype: str
+        """
         return 'Create Related Table'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """Return content title that used on page title indicator.
+
+        :return: HTML content title for page title indicator
+        :rtype: str
+        """
         list_url = reverse('admin-related-table-list-view')
         create_url = reverse('admin-related-table-create-view')
         return (
@@ -46,11 +54,21 @@ class BaseRelatedTableEditView(AdminBaseView):
 
     @property
     def form(self):
-        """Return form."""
+        """Return form.
+
+        :return: Form class for related table
+        :rtype: type[RelatedTableForm]
+        """
         return RelatedTableForm
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+    def get_context_data(self, **kwargs) -> dict:  # noqa: DOC103
+        """Return context data.
+
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: Context data for rendering the template
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         rules = []
         initial = None
@@ -79,8 +97,14 @@ class BaseRelatedTableEditView(AdminBaseView):
         )
         return context
 
-    def post(self, request, **kwargs):
-        """Create indicator."""
+    def post(self, request, **kwargs):  # noqa: DOC103, DOC110
+        """Create indicator.
+
+        :param request: HTTP request object
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: Redirect response or rendered template
+        """
         form = RelatedTableForm(request.POST)
         if form.is_valid():
             instance = form.instance

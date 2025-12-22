@@ -36,12 +36,20 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """Return page title that used on tab bar.
+
+        :return: Page title for the tab bar
+        :rtype: str
+        """
         return 'Edit Related Table'
 
     @property
     def content_title(self):
-        """Return content title that used on page title related table."""
+        """Return content title that used on page title related table.
+
+        :return: HTML content title for page title indicator
+        :rtype: str
+        """
         obj = get_object_or_404(
             RelatedTable, id=self.kwargs.get('pk', '')
         )
@@ -53,8 +61,14 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
             f'<a href="{edit_url}">{obj.__str__()}</a> '
         )
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+    def get_context_data(self, **kwargs) -> dict:  # noqa: DOC103
+        """Return context data.
+
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: Context data for rendering the template
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         obj = get_object_or_404(
             RelatedTable, id=self.kwargs.get('pk', '')
@@ -73,8 +87,16 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
         return context
 
-    def post(self, request, **kwargs):
-        """Edit related table."""
+    def post(self, request, **kwargs):  # noqa: DOC103
+        """Edit related table.
+
+        :param request: HTTP request object
+        :type request: django.http.HttpRequest
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: Redirect response or rendered template
+        :rtype: django.http.HttpResponse
+        """
         obj = get_object_or_404(
             RelatedTable, id=self.kwargs.get('pk', '')
         )
@@ -114,12 +136,20 @@ class RelatedTableEditBatchView(
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """Return page title that used on tab bar.
+
+        :return: Page title for the tab bar
+        :rtype: str
+        """
         return 'Edit Batch Related Table'
 
     @property
     def content_title(self):
-        """Return content title that used on page title related-table."""
+        """Return content title that used on page title related-table.
+
+        :return: HTML content title for page title indicator
+        :rtype: str
+        """
         list_url = reverse('admin-related-table-list-view')
         return (
             f'<a href="{list_url}">Related tables</a> '
@@ -129,15 +159,27 @@ class RelatedTableEditBatchView(
 
     @property
     def edit_query(self):
-        """Return query for edit."""
+        """Return query for edit.
+
+        :return: Query for editing related tables
+        :rtype: django.db.models.QuerySet
+        """
         return RelatedTable.permissions.edit(self.request.user)
 
     @property
     def form(self):
-        """Return form."""
+        """Return form.
+
+        :return: Form class for batch editing related tables
+        :rtype: type[RelatedTableBatchForm]
+        """
         return RelatedTableBatchForm
 
     @property
     def redirect_url(self):
-        """Return redirect url."""
+        """Return redirect url.
+
+        :return: URL to redirect to after batch edit
+        :rtype: str
+        """
         return reverse('admin-related-table-list-view')

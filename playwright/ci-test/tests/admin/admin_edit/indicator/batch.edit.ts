@@ -56,7 +56,7 @@ test.describe('Batch edit indicator', () => {
     const requestPromise = page.waitForRequest(request => {
       return (
         request.method() === 'POST' &&
-        request.url().includes(_url)
+        request.url().includes(_url + "edit/batch")
       );
     });
 
