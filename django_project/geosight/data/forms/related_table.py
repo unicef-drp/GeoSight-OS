@@ -15,7 +15,6 @@ __date__ = '31/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django import forms
 from django.forms.models import model_to_dict
 
@@ -100,3 +99,9 @@ class RelatedTableForm(forms.ModelForm):
         except RelatedTableGroup.DoesNotExist:
             initial['group'] = None
         return initial
+
+
+class RelatedTableBatchForm(RelatedTableForm):
+    """RelatedTable batch form."""
+
+    data_fields = None

@@ -15,16 +15,18 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
-from unittest.mock import MagicMock, patch
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from unittest.mock import MagicMock, patch
 
 from core.tests.base_tests import TestCase
+from geosight.data.models.context_layer import LayerType
 from geosight.data.serializer.context_layer import ContextLayerSerializer
-from geosight.data.tests.model_factories import ContextLayerF
+from geosight.data.tests.model_factories import ContextLayerF, RelatedTableF
 
 
-class BasemapLayerTest(TestCase):
-    """Test for Basemap model."""
+class ContextLayerTest(TestCase):
+    """Test for ContextLayer model."""
 
     def setUp(self):
         """To setup test."""
@@ -53,6 +55,29 @@ class BasemapLayerTest(TestCase):
         self.assertEquals(context_layer_data['name'], self.name)
         for key, value in context_layer_data['parameters'].items():
             self.assertEquals(self.params[key], value)
+
+    def test_create_error(self):
+        """Test error."""
+        with self.assertRaises(ValidationError):
+            ContextLayerF(
+                name=self.name,
+                layer_type=LayerType.RELATED_TABLE,
+            )
+        ContextLayerF(
+            name=self.name,
+            layer_type=LayerType.RELATED_TABLE,
+            related_table=RelatedTableF()
+        )
+        with self.assertRaises(ValidationError):
+            ContextLayerF(
+                name=self.name,
+                layer_type=LayerType.CLOUD_NATIVE_GIS_LAYER
+            )
+        ContextLayerF(
+            name=self.name,
+            layer_type=LayerType.CLOUD_NATIVE_GIS_LAYER,
+            cloud_native_gis_layer_id=1
+        )
 
     @patch('requests.get')
     def test_download_raster_cog(self, mock_get):

@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
@@ -28,6 +27,16 @@ class BaseContextLayerEditView(AdminBaseView):
     """Base Context Layer Edit View."""
 
     template_name = 'frontend/admin/context_layer/form.html'
+
+    @property
+    def form(self):
+        """
+        Return the form class used for editing context layers.
+
+        :return: The form class.
+        :rtype: type[ContextLayerForm]
+        """
+        return ContextLayerForm
 
     @property
     def page_title(self):
@@ -86,7 +95,7 @@ class BaseContextLayerEditView(AdminBaseView):
         }
         context.update(
             {
-                'form': ContextLayerForm(initial=initial),
+                'form': self.form(initial=initial),
                 'permission': json.dumps(permission)
             }
         )
@@ -126,6 +135,10 @@ class BaseContextLayerEditView(AdminBaseView):
         if data.get('permission', None):
             form.permission_data = data.get('permission', None)
         context['form'] = form
+        try:
+            context['errors'] = json.dumps(form.errors)
+        except Exception:
+            pass
         return render(
             request,
             self.template_name,

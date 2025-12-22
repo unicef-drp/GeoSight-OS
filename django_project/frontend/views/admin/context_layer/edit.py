@@ -15,14 +15,15 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
 from frontend.views.admin.context_layer.create import (
     BaseContextLayerEditView
 )
-from geosight.data.forms.context_layer import ContextLayerForm
+from geosight.data.forms.context_layer import (
+    ContextLayerForm, ContextLayerBatchForm
+)
 from geosight.data.models.context_layer import ContextLayer
 from geosight.permission.access import (
     edit_permission_resource,
@@ -138,6 +139,11 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         if data.get('permission', None):
             form.permission_data = data.get('permission', None)
         context['form'] = form
+        context['errors'] = {}
+        try:
+            context['errors'] = json.dumps(form.errors)
+        except Exception:
+            pass
         return render(request, self.template_name, context)
 
 
@@ -192,7 +198,7 @@ class ContextLayerEditBatchView(
         :return: The form class.
         :rtype: type[ContextLayerForm]
         """
-        return ContextLayerForm
+        return ContextLayerBatchForm
 
     @property
     def redirect_url(self):

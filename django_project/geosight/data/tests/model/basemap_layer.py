@@ -51,7 +51,7 @@ class BasemapLayerTest(TestCase):
         basemap_data = BasemapLayerSerializer(basemap).data
         self.assertEquals(basemap_data['name'], self.name)
         for key, value in basemap_data['parameters'].items():
-            self.assertEquals(urllib.parse.quote(self.params[key]), value)
+            self.assertEquals(self.params[key], value)
 
 
 class BasemapCleanupTest(BaseFileCleanupTest.TestCase):

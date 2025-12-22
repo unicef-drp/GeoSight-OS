@@ -15,7 +15,6 @@ __date__ = '13/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import copy
-
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.models.layer_upload import LayerUpload
 from django.contrib.auth import get_user_model
@@ -66,6 +65,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
         payload = copy.deepcopy(self.payload)
         return ContextLayer.permissions.create(
             user=user,
+            cloud_native_gis_layer_id=Layer.objects.create(created_by=user).pk,
             **payload
         )
 

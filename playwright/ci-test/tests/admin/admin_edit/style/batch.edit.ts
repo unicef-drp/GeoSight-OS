@@ -6,53 +6,31 @@ import { parseMultipartFormData } from "../../../utils";
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-const _url = `${BASE_URL}/admin/indicators/`
+const _url = `${BASE_URL}/admin/style/`
 const description = 'This is test';
 const defaultPermission = {
-  318: {
+  1: {
     public_access: 'Read',
     users: ['contributor', 'creator'],
     groups: ['Group 1', 'Group 2']
-  },
-  319: {
-    public_access: 'Read',
-    users: ['contributor', 'creator'],
-    groups: ['Group 1', 'Group 2']
-  },
-  362: {
-    public_access: 'None', users: ['creator'], groups: ['Group 2']
-  },
-  370: {
-    public_access: 'None', users: ['creator'], groups: ['Group 2',]
-  },
+  }
 }
 const newPermission = {
-  318: {
+  1: {
     public_access: 'Read',
     users: ['contributor'],
     groups: ['Group 1']
-  },
-  319: {
-    public_access: 'Read',
-    users: ['contributor'],
-    groups: ['Group 1']
-  },
-  362: {
-    public_access: 'None', users: [], groups: []
-  },
-  370: {
-    public_access: 'None', users: [], groups: []
-  },
+  }
 }
 
-const ids = [318, 319, 362, 370]
-test.describe('Batch edit indicator', () => {
+const ids = [1]
+test.describe('Batch edit style', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(_url);
   });
 
   // A use case tests scenarios
-  test('Batch edit description indicator', async ({ page }) => {
+  test('Batch edit description style', async ({ page }) => {
     const requestPromise = page.waitForRequest(request => {
       return (
         request.method() === 'POST' &&
@@ -60,9 +38,7 @@ test.describe('Batch edit indicator', () => {
       );
     });
 
-    await delay(1000);
-    await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await delay(2000);
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
@@ -79,14 +55,15 @@ test.describe('Batch edit indicator', () => {
     await page.waitForURL(_url)
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
-      await page.goto(`/admin/indicators/${_id}/edit`);
+      await page.goto(`/admin/style/${_id}/edit`);
       await expect(page.locator('#Form #id_description').first()).toHaveValue(description);
     }
   });
 
   // A use case tests scenarios
-  test('Batch edit permission indicator', async ({ page }) => {
-    await delay(1000);
+  test('Batch edit permission style', async ({ page }) => {
+    await delay(2000);
+
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
       await editPermission(page, _id, defaultPermission[_id])
@@ -94,11 +71,9 @@ test.describe('Batch edit indicator', () => {
     }
 
     // batch edit permission
-    await delay(1000);
-    await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await delay(2000);
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
-    await expect(page.locator('.AdminListHeader-Count ')).toContainText('4 items on this list are selected.');
+    await expect(page.locator('.AdminListHeader-Count ')).toContainText('1 item on this list is selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
 
@@ -122,9 +97,14 @@ test.describe('Batch edit indicator', () => {
     // Edit the public access
     await page.goto(_url);
     await page.waitForURL(_url)
-    await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
     await page.getByLabel('Select all rows').check();
+    await delay(1000);
+    const selectAll = page.getByLabel('Select all rows');
+    if (await selectAll.isVisible()) {
+      await page.getByLabel('Select all rows').check();
+      await delay(1000);
+    }
+    await expect(page.locator('.AdminListHeader-Count ')).toContainText('1 item on this list is selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
@@ -136,12 +116,7 @@ test.describe('Batch edit indicator', () => {
     // Check after setup
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
-      await checkPermission(page, _id,
-        {
-          ...newPermission[_id],
-          public_access: 'Read'
-        }
-      )
+      await checkPermission(page, _id, newPermission[_id])
     }
 
     // Revert to default

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
 import { BASE_URL } from "../../../variables";
+import { parseMultipartFormData } from "../../../utils";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -46,12 +47,27 @@ test.describe('Batch edit basemap', () => {
 
   // A use case tests scenarios
   test('Batch edit description basemap', async ({ page }) => {
+    const requestPromise = page.waitForRequest(request => {
+      return (
+        request.method() === 'POST' &&
+        request.url().includes(_url + "edit/batch")
+      );
+    });
+
     await delay(2000);
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
     await page.getByRole('button', { name: 'Save' }).click();
+
+    const request = await requestPromise;
+    const body = request.postData()!;
+    const json = parseMultipartFormData(body);
+    const keys = Object.keys(json);
+    keys.sort();
+    await expect(keys).toEqual(["csrfmiddlewaretoken", "description", "ids"]);
+
     await page.waitForURL(_url)
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
