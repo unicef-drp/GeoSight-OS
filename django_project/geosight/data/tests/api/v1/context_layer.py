@@ -16,13 +16,14 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import json
 import urllib.parse
-
+from cloud_native_gis.models.layer import Layer
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
 )
+from geosight.data.models.related_table import RelatedTable
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -281,12 +282,27 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
             },
             content_type=self.JSON_CONTENT
         )
+        self.cloud_native_layer = Layer.objects.create(
+            created_by=self.creator
+        )
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New name',
+                "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
+                "category": 'Test',
+                "styles": styles
+            },
+            content_type=self.JSON_CONTENT
+        )
         response = self.assertRequestPostView(
             url, 201,
             user=self.creator,
             data={
                 "name": 'New name',
                 "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
+                "cloud_native_gis_layer_id": self.cloud_native_layer.pk,
                 "category": 'Test',
                 "styles": styles
             },
@@ -352,11 +368,22 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
             content_type=self.JSON_CONTENT
         )
         self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "layer_type": LayerType.RELATED_TABLE,
+                "category": 'Test'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        self.assertRequestPutView(
             url, 200,
             user=self.creator_in_group,
             data={
                 "name": self.resource_3.name,
                 "layer_type": LayerType.RELATED_TABLE,
+                "related_table": RelatedTable.objects.create(name="RT Name").pk,
                 "category": 'Test'
             },
             content_type=self.JSON_CONTENT

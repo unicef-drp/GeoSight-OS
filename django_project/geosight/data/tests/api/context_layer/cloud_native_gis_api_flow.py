@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import copy
 import json
-
+from cloud_native_gis.models.layer import Layer
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -45,12 +45,16 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
         """Create resource function."""
         payload = copy.deepcopy(self.payload)
         return ContextLayer.permissions.create(
+            name='name',
             user=user,
             **payload
         )
 
     def test_api_flow(self):
         """Test attributes."""
+        self.cloud_native_layer = Layer.objects.create(
+            created_by=self.creator
+        )
         # ----------------------------------------
         # CREATE LAYER
         # ----------------------------------------
@@ -93,12 +97,24 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
             },
             content_type=self.JSON_CONTENT
         )
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New name',
+                "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
+                "category": 'Test',
+                "styles": styles
+            },
+            content_type=self.JSON_CONTENT
+        )
         response = self.assertRequestPostView(
             url, 201,
             user=self.creator,
             data={
                 "name": 'New name',
                 "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
+                "cloud_native_gis_layer_id": self.cloud_native_layer.pk,
                 "category": 'Test',
                 "styles": styles
             },
@@ -120,45 +136,6 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
 
         # Update geojson
         context_layer = obj
-
-        # Can't update geojson
-        # Because layer is not created
-        self.assertRequestPostView(
-            url=reverse(
-                "context_layers_data-features",
-                kwargs={'context_layer_id': context_layer.id}
-            ),
-            code=400,
-            user=self.admin,
-            data={
-                "type": "FeatureCollection",
-                "features": [
-                    {
-                        "type": "Feature",
-                        "properties": {
-                            "name": "New clinic",
-                            "amenity": "clinic"
-                        },
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [0, 0]
-                        }
-                    },
-                    {
-                        "type": "Feature",
-                        "properties": {
-                            "name": "New clinic 2",
-                            "amenity": "clinic"
-                        },
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [0, 1]
-                        }
-                    }
-                ]
-            },
-            content_type=self.JSON_CONTENT
-        )
 
         # Just able to replace
         self.assertRequestPostView(

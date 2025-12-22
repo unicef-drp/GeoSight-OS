@@ -11,7 +11,7 @@ test.describe('Context layer create admin', () => {
     const name = "Context Layer Related Table";
     await page.goto('/admin/context-layer/create#General');
     await page.locator('#Form #id_name').fill(name);
-    await page.locator('#Form #id_description').fill(name.replace(" ", "_"));
+    await page.locator('#Form #id_description').fill("Description");
     await page.locator("#Form #id_source").fill('Source');
     await page.locator("#Form #id_group").click();
     await page.keyboard.type("Test");
@@ -50,7 +50,7 @@ test.describe('Context layer create admin', () => {
 
     // Fill correct values
     await page.locator('#Form #id_name').fill(name);
-    await page.locator("#Form #id_description").fill('Context layer test description');
+    await page.locator("#Form #id_description").fill('Description');
     await page.locator("#Form #id_source").fill('Source');
     await page.locator("#Form #id_group").click();
     await page.keyboard.type("Test");
@@ -89,7 +89,7 @@ test.describe('Context layer create admin', () => {
 
     // CHECK VALUES
     await expect(page.locator('#Form #id_name')).toHaveValue(name);
-    await expect(page.locator('#Form #id_description')).toHaveValue('Context layer test description');
+    await expect(page.locator('#Form #id_description')).toHaveValue('Description');
     await expect(page.locator('#Form #id_source')).toHaveValue('Source');
     await expect(page.locator("#Form [name='group']")).toHaveValue("Test");
 

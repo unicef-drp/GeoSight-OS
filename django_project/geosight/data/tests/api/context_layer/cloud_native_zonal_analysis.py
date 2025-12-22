@@ -16,17 +16,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import copy
 import uuid
-from unittest.mock import patch
-
 from cloud_native_gis.forms import LayerUploadForm
 from cloud_native_gis.models import (
     LayerUpload, Layer, LayerType as CloudNativeLayerType
 )
 from cloud_native_gis.utils.connection import count_features
-from django.test import override_settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from django.urls import reverse
+from unittest.mock import patch
 
 from core.settings.utils import ABS_PATH
 from geosight.data.models.context_layer import (
@@ -95,6 +94,7 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
         del payload['group']
         return ContextLayer.permissions.create(
             user=user,
+            cloud_native_gis_layer_id=Layer.objects.create(created_by=user).pk,
             **payload
         )
 
