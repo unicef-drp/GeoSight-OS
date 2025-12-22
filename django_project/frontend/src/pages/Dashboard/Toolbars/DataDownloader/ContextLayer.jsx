@@ -15,9 +15,12 @@
 
 import React from "react";
 import { useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import { Variables } from "../../../../utils/Variables";
+import { CloudNativeDownloadComponent } from "../../../../components/ContextLayerDownload";
 
 export const CLOUD_NATIVE_DOWNLOAD_FORMATS = {
+  original: "original",
   geojson: ".geojson",
   shapefile: ".shp",
   kml: ".kml",
@@ -59,21 +62,14 @@ export default function ContextLayerDownloader() {
               >
                 <div>{contextLayer.name}</div>
                 <div className="ContextLayerDownloaderExtensions">
-                  {Object.keys(CLOUD_NATIVE_DOWNLOAD_FORMATS).map((format) => (
-                    <a
-                      href={
-                        urls.contextLayerDownload.replaceAll(
-                          "0",
-                          contextLayer.id,
-                        ) +
-                        "?file_format=" +
-                        format
-                      }
-                      target="_blank"
-                    >
-                      {CLOUD_NATIVE_DOWNLOAD_FORMATS[format]}
-                    </a>
-                  ))}
+                  <CloudNativeDownloadComponent
+                    id={contextLayer.id}
+                    ItemComponent={Box}
+                    baseUrl={urls.contextLayerDownload.replaceAll(
+                      "0",
+                      contextLayer.id,
+                    )}
+                  />
                 </div>
               </div>
             </td>

@@ -27,9 +27,9 @@ import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 import { Variables } from "../../../../utils/Variables";
 import { DownloadIcon } from "../../../../components/Icons";
 import { useDisclosure } from "../../../../hooks";
-import { CLOUD_NATIVE_DOWNLOAD_FORMATS } from "../../../Dashboard/Toolbars/DataDownloader/ContextLayer";
 
 import "./style.scss";
+import { CloudNativeDownloadComponent } from "../../../../components/ContextLayerDownload";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.contextLayerList);
@@ -58,30 +58,7 @@ export function CloudNativeDownload({ id }) {
         </div>
       </a>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem>
-          <a
-            href={urls.api.download.replace("/0", `/${id}`)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            original
-          </a>
-        </MenuItem>
-        {Object.keys(CLOUD_NATIVE_DOWNLOAD_FORMATS).map((format) => (
-          <MenuItem>
-            <a
-              href={
-                urls.api.download.replace("/0", `/${id}`) +
-                "?file_format=" +
-                format
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              {CLOUD_NATIVE_DOWNLOAD_FORMATS[format]}
-            </a>
-          </MenuItem>
-        ))}
+        <CloudNativeDownloadComponent id={id} ItemComponent={MenuItem} />
       </Menu>
     </>
   );

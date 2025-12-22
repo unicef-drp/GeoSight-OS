@@ -375,6 +375,14 @@ export const DjangoRequests = {
       data: data,
     });
   },
+  head: (url, options = {}, params = null) => {
+    if (params) {
+      url = constructUrl(url, params);
+    }
+    return axios.head(url, {
+      ...options,
+    });
+  },
 };
 
 export const DjangoRequestPagination = {
