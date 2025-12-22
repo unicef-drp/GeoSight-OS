@@ -6,31 +6,31 @@ import { parseMultipartFormData } from "../../../utils";
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-const _url = `${BASE_URL}/admin/related-table/`
+const _url = `${BASE_URL}/admin/style/`
 const description = 'This is test';
 const defaultPermission = {
-  30: {
+  1: {
     public_access: 'Read',
     users: ['contributor', 'creator'],
     groups: ['Group 1', 'Group 2']
   }
 }
 const newPermission = {
-  30: {
+  1: {
     public_access: 'Read',
     users: ['contributor'],
     groups: ['Group 1']
   }
 }
 
-const ids = [30]
-test.describe('Batch edit related table', () => {
+const ids = [1]
+test.describe('Batch edit style', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(_url);
   });
 
   // A use case tests scenarios
-  test('Batch edit description related table', async ({ page }) => {
+  test('Batch edit description style', async ({ page }) => {
     const requestPromise = page.waitForRequest(request => {
       return (
         request.method() === 'POST' &&
@@ -55,13 +55,13 @@ test.describe('Batch edit related table', () => {
     await page.waitForURL(_url)
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
-      await page.goto(`/admin/related-table/${_id}/edit`);
+      await page.goto(`/admin/style/${_id}/edit`);
       await expect(page.locator('#Form #id_description').first()).toHaveValue(description);
     }
   });
 
   // A use case tests scenarios
-  test('Batch edit permission related table', async ({ page }) => {
+  test('Batch edit permission style', async ({ page }) => {
     await delay(2000);
 
     for (let i = 0; i < ids.length; i++) {
@@ -99,6 +99,11 @@ test.describe('Batch edit related table', () => {
     await page.waitForURL(_url)
     await page.getByLabel('Select all rows').check();
     await delay(1000);
+    const selectAll = page.getByLabel('Select all rows');
+    if (await selectAll.isVisible()) {
+      await page.getByLabel('Select all rows').check();
+      await delay(1000);
+    }
     await expect(page.locator('.AdminListHeader-Count ')).toContainText('1 item on this list is selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();

@@ -15,12 +15,13 @@ __date__ = '31/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
 from frontend.views.admin.related_table.create import BaseRelatedTableEditView
-from geosight.data.forms.related_table import RelatedTableForm
+from geosight.data.forms.related_table import (
+    RelatedTableForm, RelatedTableBatchForm
+)
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.access import (
     edit_permission_resource,
@@ -134,7 +135,7 @@ class RelatedTableEditBatchView(
     @property
     def form(self):
         """Return form."""
-        return RelatedTableForm
+        return RelatedTableBatchForm
 
     @property
     def redirect_url(self):

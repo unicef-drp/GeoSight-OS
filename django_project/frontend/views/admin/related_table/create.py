@@ -15,7 +15,6 @@ __date__ = '31/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
@@ -45,6 +44,11 @@ class BaseRelatedTableEditView(AdminBaseView):
             f'<a href="{create_url}">Create</a> '
         )
 
+    @property
+    def form(self):
+        """Return form."""
+        return RelatedTableForm
+
     def get_context_data(self, **kwargs) -> dict:
         """Return context data."""
         context = super().get_context_data(**kwargs)
@@ -68,7 +72,7 @@ class BaseRelatedTableEditView(AdminBaseView):
         }
         context.update(
             {
-                'form': RelatedTableForm(initial=initial),
+                'form': self.form(initial=initial),
                 'rules': rules,
                 'permission': json.dumps(permission)
             }
