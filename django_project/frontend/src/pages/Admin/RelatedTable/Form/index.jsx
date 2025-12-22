@@ -63,7 +63,7 @@ export default function RelatedTableForm() {
             : null}
           <SaveButton
             variant="primary"
-            text="Submit"
+            text="Save"
             onClick={() => {
               formRef.current.submit(true);
               setSubmitted(true);

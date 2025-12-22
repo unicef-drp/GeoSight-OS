@@ -41,6 +41,11 @@ export function Filter({
 }) {
   // When selected changed
   useEffect(() => {
+    // @ts-ignore
+    if (!DEFAULT_STYLES[layerType]) {
+      return;
+    }
+
     if (!filter) {
       // @ts-ignore
       setFilter(DEFAULT_STYLES[layerType].filter);
