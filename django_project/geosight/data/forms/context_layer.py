@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django import forms
 from django.conf import settings
 from django.forms.models import model_to_dict
@@ -25,6 +24,53 @@ from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
 )
 from geosight.data.models.related_table import RelatedTable
+
+
+class ContextLayerBatchForm(forms.ModelForm):
+    """ContextLayer form."""
+
+    group = forms.ChoiceField(
+        label='Category',
+        widget=forms.Select(
+            attrs={'data-autocreated': 'True'}
+        )
+    )
+
+    class Meta:
+        model = ContextLayer
+        exclude = [
+            'created_at', 'creator', 'modified_at', 'modified_by',
+            'layer_type', 'arcgis_config', 'related_table', 'url_legend',
+            'token', 'username', 'password', 'styles', 'label_styles',
+            'configuration', 'cloud_native_gis_layer_id'
+        ]
+
+    def __init__(self, *args, **kwargs):  # noqa
+        """Initialize the form."""
+        super().__init__(*args, **kwargs)
+        self.fields['group'].choices = [
+            (group.name, group.name)
+            for group in ContextLayerGroup.objects.all().order_by('name')
+        ]
+
+        try:
+            if self.data['group']:
+                self.fields['group'].choices += [
+                    (self.data['group'], self.data['group'])
+                ]
+        except KeyError:
+            pass
+
+    def clean_group(self):
+        """Validate and return a :class:`ContextLayerGroup` instance.
+
+        :return: The existing or newly created :class:`ContextLayerGroup`.
+        :rtype: ContextLayerGroup
+        """
+        group, created = ContextLayerGroup.objects.get_or_create(
+            name=self.cleaned_data['group']
+        )
+        return group
 
 
 class ContextLayerForm(forms.ModelForm):

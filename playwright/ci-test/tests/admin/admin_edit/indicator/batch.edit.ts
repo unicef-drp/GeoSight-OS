@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
 import { BASE_URL } from "../../../variables";
+import { parseMultipartFormData } from "../../../utils";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -52,6 +53,13 @@ test.describe('Batch edit indicator', () => {
 
   // A use case tests scenarios
   test('Batch edit description indicator', async ({ page }) => {
+    const requestPromise = page.waitForRequest(request => {
+      return (
+        request.method() === 'POST' &&
+        request.url().includes(_url)
+      );
+    });
+
     await delay(1000);
     await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
@@ -60,6 +68,14 @@ test.describe('Batch edit indicator', () => {
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
     await page.getByRole('button', { name: 'Save' }).click();
+
+    const request = await requestPromise;
+    const body = request.postData()!;
+    const json = parseMultipartFormData(body);
+    const keys = Object.keys(json);
+    keys.sort();
+    await expect(keys).toEqual(["csrfmiddlewaretoken", "description", "ids"]);
+
     await page.waitForURL(_url)
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]

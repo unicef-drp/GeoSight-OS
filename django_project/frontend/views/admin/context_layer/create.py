@@ -29,6 +29,16 @@ class BaseContextLayerEditView(AdminBaseView):
     template_name = 'frontend/admin/context_layer/form.html'
 
     @property
+    def form(self):
+        """
+        Return the form class used for editing context layers.
+
+        :return: The form class.
+        :rtype: type[ContextLayerForm]
+        """
+        return ContextLayerForm
+
+    @property
     def page_title(self):
         """
         Return the page title used on the browser tab bar.
@@ -85,7 +95,7 @@ class BaseContextLayerEditView(AdminBaseView):
         }
         context.update(
             {
-                'form': ContextLayerForm(initial=initial),
+                'form': self.form(initial=initial),
                 'permission': json.dumps(permission)
             }
         )

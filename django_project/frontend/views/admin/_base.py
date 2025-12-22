@@ -1,6 +1,5 @@
 """Base dashboard View."""
 from abc import ABC
-
 from django.forms.models import model_to_dict
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect

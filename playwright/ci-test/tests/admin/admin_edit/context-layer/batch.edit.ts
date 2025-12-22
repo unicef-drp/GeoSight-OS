@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
+import { parseMultipartFormData } from "../../../utils";
 import { BASE_URL } from "../../../variables";
 
 const timeout = 2000;
@@ -36,17 +37,37 @@ test.describe('Batch edit context-layer', () => {
 
   // A use case tests scenarios
   test('Batch edit description context-layer', async ({ page }) => {
+    const requestPromise = page.waitForRequest(request => {
+      return (
+        request.method() === 'POST' &&
+        request.url().includes(_url)
+      );
+    });
+
     await delay(2000);
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
     await page.getByRole('button', { name: 'Save' }).click();
+
+    const request = await requestPromise;
+    const body = request.postData()!;
+    const json = parseMultipartFormData(body);
+    const keys = Object.keys(json);
+    keys.sort();
+    await expect(keys).toEqual(["csrfmiddlewaretoken", "description", "ids"]);
+
     await page.waitForURL(_url)
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
       await page.goto(`/admin/context-layer/${_id}/edit`);
       await expect(page.locator('#Form #id_description').first()).toHaveValue(description);
+
+      if (_id === 2) {
+        await expect(page.locator('#Form [name="layer_type"]').first()).toHaveValue("Cloud Native GIS Layer");
+        await expect(page.locator('#Form #id_cloud_native_gis_layer_id').first()).toHaveValue("1");
+      }
     }
   });
 

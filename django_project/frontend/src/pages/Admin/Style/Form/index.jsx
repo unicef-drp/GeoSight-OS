@@ -37,6 +37,7 @@ export default function StyleForm() {
   const [submitted, setSubmitted] = useState(false);
   const [styleData, setStyleData] = useState(style);
   const selectableInput = batch !== null;
+  const isBatch = batch !== null;
 
   /** Render **/
   const typeChoices = types.map((type) => {
@@ -72,56 +73,71 @@ export default function StyleForm() {
         </Fragment>
       }
     >
-      <AdminForm
-        ref={formRef}
-        selectableInput={selectableInput}
-        forms={{
-          General: (
-            <DjangoTemplateForm
-              selectableInput={selectableInput}
-              selectableInputExcluded={["name", "shortcode"]}
-            >
-              <AdminFormInput
+      {isBatch ? (
+        <AdminForm
+          ref={formRef}
+          selectableInput={selectableInput}
+          forms={{
+            General: (
+              <DjangoTemplateForm
                 selectableInput={selectableInput}
-                label="Value type"
-                attrName="value_type"
-                required={true}
+                selectableInputExcluded={["name", "shortcode"]}
+              />
+            ),
+          }}
+        />
+      ) : (
+        <AdminForm
+          ref={formRef}
+          selectableInput={selectableInput}
+          forms={{
+            General: (
+              <DjangoTemplateForm
+                selectableInput={selectableInput}
+                selectableInputExcluded={["name", "shortcode"]}
               >
-                <Select
-                  options={typeChoices}
-                  value={typeChoices.find(
-                    (type) => type.value === styleData.value_type,
-                  )}
-                  name="value_type"
-                  onChange={(evt) => {
-                    styleData.value_type = evt.value;
-                    setStyleData({ ...styleData });
-                  }}
-                  menuPlacement="top"
-                />
-              </AdminFormInput>
-            </DjangoTemplateForm>
-          ),
-          "Style Config": (
-            <StyleConfig
-              data={dictDeepCopy(styleData)}
-              setData={(style) => {
-                if (JSON.stringify(style) !== JSON.stringify(styleData)) {
-                  setStyleData({ ...style });
+                <AdminFormInput
+                  selectableInput={selectableInput}
+                  label="Value type"
+                  attrName="value_type"
+                  required={true}
+                >
+                  <Select
+                    options={typeChoices}
+                    value={typeChoices.find(
+                      (type) => type.value === styleData.value_type,
+                    )}
+                    name="value_type"
+                    onChange={(evt) => {
+                      styleData.value_type = evt.value;
+                      setStyleData({ ...styleData });
+                    }}
+                    menuPlacement="top"
+                  />
+                </AdminFormInput>
+              </DjangoTemplateForm>
+            ),
+            "Style Config": (
+              <StyleConfig
+                data={dictDeepCopy(styleData)}
+                setData={(style) => {
+                  if (JSON.stringify(style) !== JSON.stringify(styleData)) {
+                    setStyleData({ ...style });
+                  }
+                }}
+                defaultStyleRules={
+                  styleData.style
+                    ? styleData.style
+                    : currentRules
+                      ? currentRules
+                      : []
                 }
-              }}
-              defaultStyleRules={
-                styleData.style
-                  ? styleData.style
-                  : currentRules
-                    ? currentRules
-                    : []
-              }
-              useLibrary={false}
-            />
-          ),
-        }}
-      />
+                useLibrary={false}
+              />
+            ),
+          }}
+        />
+      )}
     </Admin>
   );
 }
