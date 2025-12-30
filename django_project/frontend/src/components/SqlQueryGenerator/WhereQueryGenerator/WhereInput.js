@@ -82,7 +82,6 @@ export function WhereInputValue({
         placeholder="Put the value"
         value={value ? value : ""}
         onChange={(evt) => {
-          console.log(evt.target.value);
           if ([IS_IN, IS_NOT_IN].includes(operator)) {
             setValue(evt.target.value.split(","));
           } else {
@@ -289,12 +288,14 @@ export function WhereInputValue({
           Array.isArray(value) ? value : !Array.isArray(value) ? [value] : []
         }
         onChangeFn={(value) => {
+          const isAllSelected = optionsData === value;
           if (Array.isArray(value)) {
             setValue(
               value.map((val) => (val.value !== undefined ? val.value : val)),
+              isAllSelected
             );
           } else {
-            setValue(value.value !== undefined ? value.value : value);
+            setValue(value.value !== undefined ? value.value : value, isAllSelected);
           }
         }}
         options={optionsData ? optionsData : []}
@@ -631,9 +632,9 @@ export default function WhereInput({
         fieldType={fieldType}
         operator={operator}
         value={value}
-        setValue={(value) => {
+        setValue={(value, allSelected) => {
           if (props.onValueInputChange)
-            props.onValueInputChange(currentField.name);
+            props.onValueInputChange(currentField.name, allSelected);
           where.value = value;
           updateWhere();
         }}
