@@ -338,3 +338,52 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             url, 200, user=self.creator_in_group
         )
         self.assertEqual(response.json(), ['Group 3'])
+
+    def test_feature(self):
+        """Test Feature API."""
+        dashboard = Dashboard.permissions.create(
+            user=self.resource_creator,
+            name='Name feature test',
+            group=DashboardGroup.objects.create(name='Group 4')
+        )
+
+        # Verify dashboard starts as not featured
+        self.assertFalse(dashboard.featured)
+
+        # Test as_feature endpoint
+        url = reverse('dashboards-as-feature', kwargs={'slug': dashboard.slug})
+
+        # Non-logged in user should get 403
+        self.assertRequestPostView(url, 403, {})
+
+        # Non-admin users should get 403
+        self.assertRequestPostView(url, 403, {}, user=self.viewer)
+        self.assertRequestPostView(url, 403, {}, user=self.creator)
+        self.assertRequestPostView(url, 403, {}, user=self.resource_creator)
+
+        # Admin should be able to feature the dashboard
+        self.assertRequestPostView(url, 204, {}, user=self.admin)
+
+        # Verify dashboard is now featured
+        dashboard.refresh_from_db()
+        self.assertTrue(dashboard.featured)
+
+        # Test remove_as_feature endpoint
+        url = reverse(
+            'dashboards-remove-as-feature', kwargs={'slug': dashboard.slug}
+        )
+
+        # Non-logged in user should get 403
+        self.assertRequestPostView(url, 403, {})
+
+        # Non-admin users should get 403
+        self.assertRequestPostView(url, 403, {}, user=self.viewer)
+        self.assertRequestPostView(url, 403, {}, user=self.creator)
+        self.assertRequestPostView(url, 403, {}, user=self.resource_creator)
+
+        # Admin should be able to remove feature from dashboard
+        self.assertRequestPostView(url, 204, {}, user=self.admin)
+
+        # Verify dashboard is no longer featured
+        dashboard.refresh_from_db()
+        self.assertFalse(dashboard.featured)

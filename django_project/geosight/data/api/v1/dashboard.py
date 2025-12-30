@@ -15,12 +15,14 @@ __date__ = '08/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.serializer.dashboard import DashboardBasicSerializer
+from geosight.permission.access import ResourcePermissionDenied
 from .base import (
     BaseApiV1ResourceReadOnly,
     BaseApiV1ResourceDeleteOnly
@@ -87,3 +89,43 @@ class DashboardViewSet(
     def destroy(self, request, slug=None):
         """Destroy an object."""
         return super().destroy(request, slug=slug)
+
+    @swagger_auto_schema(
+        operation_id='dashboard-detail-as-feature',
+        tags=[ApiTag.DASHBOARD],
+        manual_parameters=[],
+        operation_description='Feature a dashboard.'
+    )
+    @action(detail=True, methods=['post'], url_path='as-feature')
+    def as_feature(self, request, slug=None):
+        """Feature a dashboard."""
+        try:
+            if not request.user.profile.is_admin:
+                raise ResourcePermissionDenied
+        except AttributeError:
+            raise ResourcePermissionDenied
+        instance = self.get_object()
+        instance.featured = True
+        instance.modified_by = request.user
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @swagger_auto_schema(
+        operation_id='dashboard-detail-remove-as-feature',
+        tags=[ApiTag.DASHBOARD],
+        manual_parameters=[],
+        operation_description='Remove feature a dashboard.'
+    )
+    @action(detail=True, methods=['post'], url_path='remove-as-feature')
+    def remove_as_feature(self, request, slug=None):
+        """Feature a dashboard."""
+        try:
+            if not request.user.profile.is_admin:
+                raise ResourcePermissionDenied
+        except AttributeError:
+            raise ResourcePermissionDenied
+        instance = self.get_object()
+        instance.featured = False
+        instance.modified_by = request.user
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

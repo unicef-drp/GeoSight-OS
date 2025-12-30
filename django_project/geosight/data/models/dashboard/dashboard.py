@@ -768,7 +768,11 @@ class Dashboard(
     def check_data(data, user: User):
         """Exclude data from specific user"""
         # Remove
-        if not user.profile.is_admin:
+        try:
+            is_admin = user.profile.is_admin
+        except AttributeError:
+            is_admin = False
+        if not is_admin:
             try:
                 if data['featured']:
                     raise PermissionError(
