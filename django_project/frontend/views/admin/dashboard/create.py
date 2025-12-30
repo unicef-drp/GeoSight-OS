@@ -41,13 +41,13 @@ class DashboardCreateViewBase:
         :rtype: HttpResponseRedirect or HttpResponseBadRequest
         """
         try:
-            data = DashboardForm.update_data(data)
+            data = DashboardForm.update_data(data, user=user)
             if Dashboard.name_is_exist_of_all(data['slug']):
                 return HttpResponseBadRequest(
                     f'Dashboard with this url shortcode : {data["slug"]} '
                     f'is exist. Please choose other url shortcode.'
                 )
-        except ValueError as e:
+        except (PermissionError, ValueError) as e:
             return HttpResponseBadRequest(e)
 
         # Get origin project

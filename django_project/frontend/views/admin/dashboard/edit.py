@@ -104,14 +104,18 @@ class DashboardEditView(
             or a bad request response if validation fails.
         :rtype: HttpResponse or HttpResponseBadRequest
         """
-        try:
-            data = DashboardForm.update_data(request.POST.copy().dict())
-        except ValueError as e:
-            return HttpResponseBadRequest(e)
         dashboard = get_object_or_404(
             Dashboard, slug=slug
         )
         edit_permission_resource(dashboard, self.request.user)
+
+        try:
+            data = DashboardForm.update_data(
+                request.POST.copy().dict(), user=self.request.user
+            )
+        except (PermissionError, ValueError) as e:
+            return HttpResponseBadRequest(e)
+
         if dashboard.name_is_exist(data['slug']):
             return HttpResponseBadRequest(
                 f'Dashboard with this url shortcode : {data["slug"]} '

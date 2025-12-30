@@ -16,11 +16,14 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
 
 from geosight.data.models.dashboard import Dashboard, DashboardGroup
 from geosight.georepo.models import ReferenceLayerView
+
+User = get_user_model()
 
 
 class DashboardForm(forms.ModelForm):
@@ -93,7 +96,7 @@ class DashboardForm(forms.ModelForm):
         return reference_layer
 
     @staticmethod
-    def update_data(data):  # noqa DOC503
+    def update_data(data, user: User):  # noqa DOC503
         """
         Normalize and prepare dashboard data for saving.
 
@@ -116,6 +119,9 @@ class DashboardForm(forms.ModelForm):
         :raises ValueError:
             If `extent` is invalid or cannot be converted to a Polygon.
         """
+        # Remove
+        Dashboard.check_data(data, user)
+
         if 'slug' not in data:
             data['slug'] = slugify(data['name'])
         else:
