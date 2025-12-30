@@ -13,102 +13,89 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { store } from '../../store/admin';
-import { render } from '../../app';
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { useTranslation } from "react-i18next";
+import { store } from "../../store/admin";
+import { render } from "../../app";
 import { ThemeButton } from "../../components/Elements/Button";
 import ProjectList from "../../components/Home";
 import { VisibilityIcon } from "../../components/Icons";
 import Footer from "../../components/Footer";
-import BasicPage from '../Basic'
+import BasicPage from "../Basic";
 
-import './style.scss';
-
+import "./style.scss";
 
 /**
  * Home Page App
  */
 export default function Home() {
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showBanner, setShowBanner] = useState(true);
 
   // @ts-ignore
-  const userId: number = user.id;
   const mainImageTs = "{{ preferences.landing_page_banner }}";
 
   // @ts-ignore
-  const hasProject = user?.is_creator;
-  const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&fields=__all__&page=1&page_size=12` : null;
-  const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&fields=__all__&page=1&page_size=12` :
-    '/api/v1/dashboards?fields=__all__&page=1&page_size=12';
+  const projectsUrl =
+    "/api/v1/dashboards?fields=__all__&page=1&page_size=12&featured=True";
 
   return (
-    <BasicPage className='Home'>
+    <BasicPage className="Home">
       {
         // @ts-ignore
-        mainImageTs ?
-          <div className={showBanner ? 'banner' : 'banner Hide'}>
-            <div className='BannerContent'>
-              <div className='Separator'/>
+        mainImageTs ? (
+          <div className={showBanner ? "banner" : "banner Hide"}>
+            <div className="BannerContent">
+              <div className="Separator" />
               {
                 // @ts-ignore
-                preferences.landing_page_banner_text ?
-                  <div dangerouslySetInnerHTML={{
-                    // @ts-ignore
-                    __html: preferences.landing_page_banner_text
-                  }}/>
-                  :
-                  null
+                preferences.landing_page_banner_text ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      // @ts-ignore
+                      __html: preferences.landing_page_banner_text,
+                    }}
+                  />
+                ) : null
               }
               <ThemeButton
                 variant="primary Basic HideBanner"
-                onClick={_ => setShowBanner(false)}>
-                Hide this banner <HighlightOffIcon/>
+                onClick={(_) => setShowBanner(false)}
+              >
+                Hide this banner <HighlightOffIcon />
               </ThemeButton>
             </div>
             <ThemeButton
               variant="Basic ShowBanner"
-              onClick={_ => setShowBanner(true)}>
-              <VisibilityIcon/> Show banner
+              onClick={(_) => setShowBanner(true)}
+            >
+              <VisibilityIcon /> Show banner
             </ThemeButton>
-          </div> : null
+          </div>
+        ) : null
       }
-      <div className={'HomePageContent ' + (isLoading ? 'Loading' : '')}>
-        {
-          isLoading ? (
-            <div className='LoadingElement'>
-              <div className='Throbber'>
-                <CircularProgress size="10rem"/>
-              </div>
+      <div className={"HomePageContent " + (isLoading ? "Loading" : "")}>
+        {isLoading ? (
+          <div className="LoadingElement">
+            <div className="Throbber">
+              <CircularProgress size="10rem" />
             </div>
-          ) : null
-        }
-        {
-          hasProject && ownProjectsUrl ?
-            <ProjectList
-              baseUrl={ownProjectsUrl}
-              setParentLoading={setIsLoading}
-              showTitle={hasProject}
-            >
-            </ProjectList> : null
-        }
-        {
-          sharedProjectsUrl ?
-            <ProjectList
-              baseUrl={sharedProjectsUrl}
-              setParentLoading={setIsLoading}
-              showTitle={hasProject}
-            >
-            </ProjectList> : null
-        }
+          </div>
+        ) : null}
+        <ProjectList
+          baseUrl={projectsUrl}
+          setParentLoading={setIsLoading}
+          title={t("featured projects")}
+        />
       </div>
       <div>
-        <Footer/>
+        <Footer />
       </div>
     </BasicPage>
-  )
+  );
 }
 
-render(Home, store)
+render(Home, store);

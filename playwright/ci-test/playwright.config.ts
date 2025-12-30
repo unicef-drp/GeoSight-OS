@@ -68,5 +68,22 @@ export default defineConfig({
       },
       dependencies: ['contributor-setup'],
     },
+    // Creator project
+    {
+      name: 'creator-setup',
+      testDir: './tests/creator',
+      testMatch: /.*\.setup\.ts/
+    },
+    {
+      name: 'creator-chromium',
+      testDir: './tests/creator',
+      testMatch: /.*\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Use prepared auth state.
+        storageState: 'states/.auth/creator.json',
+      },
+      dependencies: ['creator-setup'],
+    },
   ],
 });

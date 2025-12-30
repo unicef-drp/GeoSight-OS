@@ -59,6 +59,8 @@ export interface GeneralData {
   levelConfig: string;
   default_time_mode: DefaultTimeMode;
 
+  featured: boolean;
+
   overview: string;
 
   // Configurations
@@ -98,8 +100,9 @@ const GeneralForm = memo(({}: Props) => {
     transparency_config: projectData.transparency_config,
     layer_tabs_visibility: projectData.layer_tabs_visibility,
     show_map_toolbar: projectData.show_map_toolbar,
+    featured: !!projectData.featured,
   });
-
+  console.log(projectData);
   /** referenceLayerProject changed **/
   useEffect(() => {
     const updates: any = {};
@@ -119,6 +122,7 @@ const GeneralForm = memo(({}: Props) => {
       "transparency_config",
       "layer_tabs_visibility",
       "show_map_toolbar",
+      "featured",
     ].map((key) => {
       if (projectData[key] instanceof Object) {
         // @ts-ignore
@@ -193,6 +197,7 @@ const GeneralForm = memo(({}: Props) => {
     geoField,
     levelConfig,
     default_time_mode,
+    featured,
   } = data;
 
   const {
@@ -305,7 +310,8 @@ const GeneralForm = memo(({}: Props) => {
                 </span>
               </div>
             </Grid>
-            <Grid item xs={3}>
+            {/* @ts-ignore*/}
+            <Grid item xs={user.is_admin ? 2 : 3}>
               <label className="form-label required" htmlFor="name">
                 {t("category")}
               </label>
@@ -334,6 +340,27 @@ const GeneralForm = memo(({}: Props) => {
                 </span>
               </div>
             </Grid>
+            {/* @ts-ignore*/}
+            {user.is_admin && (
+              <Grid item xs={1}>
+                <label className="form-label required" htmlFor="name">
+                  {t("featured")}
+                </label>
+                <div>
+                  <Checkbox
+                    id="ProjectFeatured"
+                    checked={!!featured}
+                    onClick={() => {
+                      dispatch(
+                        Actions.Dashboard.updateProps({
+                          featured: !featured,
+                        }),
+                      );
+                    }}
+                  />
+                </div>
+              </Grid>
+            )}
             <Grid item xs={3}>
               <label className="form-label" htmlFor="name">
                 {t("admin.dashboard.urlShortcode")}

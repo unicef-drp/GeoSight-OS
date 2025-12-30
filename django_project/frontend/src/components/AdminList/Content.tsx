@@ -252,6 +252,9 @@ export const AdminListContent = forwardRef(
             url={url.list}
             dataName={dataName}
             columns={columns}
+            additionalFilters={
+              props.additionalFilters ? props.additionalFilters : []
+            }
             selectionModel={selectionModel}
             setSelectionModel={setSelectionModel}
             getParameters={getParameters}

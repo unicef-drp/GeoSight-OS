@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import os
-
 from django.shortcuts import reverse
 from rest_framework import serializers
 
@@ -478,7 +477,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'show_splash_first_open',
             'truncate_indicator_layer_name',
             'layer_tabs_visibility', 'transparency_config',
-            'show_map_toolbar'
+            'show_map_toolbar', 'featured'
         )
 
 
@@ -570,5 +569,5 @@ class DashboardBasicSerializer(ResourceSerializer):
         fields = (
                      'id', 'slug', 'icon', 'thumbnail', 'name',
                      'description', 'group', 'category', 'permission',
-                     'reference_layer', 'creator'
+                     'reference_layer', 'creator', 'featured'
                  ) + ResourceSerializer.Meta.fields

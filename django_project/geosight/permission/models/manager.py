@@ -27,7 +27,9 @@ User = get_user_model()
 class PermissionException(Exception):
     """Exception raised error of permission."""
 
-    def __init__(self, message="Don't have access to do the action."):
+    def __init__(  # noqa: DOC101, DOC103
+            self, message="Don't have access to do the action."
+    ):
         """Init class."""
         self.message = message
         super().__init__(self.message)
@@ -40,7 +42,18 @@ class PermissionManager(models.Manager):
     """
 
     def save_creator(self, obj, user):
-        """Save creator of object."""
+        """
+        Save the creator of an object.
+
+        Attempts to set the creator field on the object itself, or if that
+        fails, on the object's permission attribute.
+
+        :param obj: The object to set the creator for.
+        :type obj: django.db.models.Model
+
+        :param user: The user to set as creator.
+        :type user: User
+        """
         try:
             obj.creator = user
             obj.save()
@@ -51,9 +64,32 @@ class PermissionManager(models.Manager):
             except AttributeError:
                 pass
 
-    def get_or_create(
+    def get_or_create(  # noqa: DOC103
             self, user: User, defaults=None, have_creator=True, **kwargs):
-        """Get or create function with user."""
+        """
+        Get or create an object with user permission validation.
+
+        Retrieves an existing object or creates a new one with the given
+        parameters. Validates user permissions and sets the creator if
+        the object is newly created.
+
+        :param user: The user attempting to get or create the object.
+        :type user: User
+
+        :param defaults: Default values for creating a new object.
+        :type defaults: dict
+
+        :param have_creator: Whether to check if user has creator permission.
+        :type have_creator: bool
+
+        :param kwargs: Additional keyword arguments for object lookup/creation.
+        :type kwargs: dict
+
+        :raises PermissionException: If user lacks creator permission.
+
+        :return: Tuple of (object, created) where created is a boolean.
+        :rtype: tuple
+        """
         if have_creator:
             try:
                 if not user.profile.is_creator:
@@ -61,18 +97,43 @@ class PermissionManager(models.Manager):
             except AttributeError:
                 raise PermissionException()
 
+        # Check if model has exclude_data
+        if hasattr(self.model, 'check_data'):
+            self.model.check_data(kwargs, user)
+
         obj, created = super().get_or_create(defaults=defaults, **kwargs)
         if created:
             self.save_creator(obj, user)
         return obj, created
 
-    def create(self, user: User, **kwargs):
-        """Create function with user."""
+    def create(self, user: User, **kwargs):  # noqa: DOC103
+        """
+        Create a new object with user permission validation.
+
+        Creates a new object with the given parameters after validating
+        the user has creator permissions. Sets the creator field on the
+        newly created object.
+
+        :param user: The user attempting to create the object.
+        :type user: User
+
+        :param kwargs: Keyword arguments for object creation.
+        :type kwargs: dict
+
+        :raises PermissionException: If user lacks creator permission.
+
+        :return: The newly created object.
+        :rtype: django.db.models.Model
+        """
         try:
             if not user.profile.is_creator:
                 raise PermissionException()
         except AttributeError:
             raise PermissionException()
+
+        # Check if model has exclude_data
+        if hasattr(self.model, 'check_data'):
+            self.model.check_data(kwargs, user)
 
         obj = super().create(**kwargs)
         if not obj.creator:
@@ -82,7 +143,26 @@ class PermissionManager(models.Manager):
     def query_by_permission(
             self, user, minimum_permission, minimum_role=None
     ):
-        """Query based on the permission."""
+        """
+        Query objects based on user permissions.
+
+        Filters objects based on the user's permission level and role.
+        Administrators see all objects. Other users see only objects they
+        have permission to access through direct ownership, public
+        permissions, user-specific permissions, or group permissions.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :param minimum_permission: The minimum permission level required.
+        :type minimum_permission: str
+
+        :param minimum_role: Optional minimum role level required.
+        :type minimum_role: int
+
+        :return: QuerySet of objects the user has permission to access.
+        :rtype: django.db.models.QuerySet
+        """
         from core.models.profile import ROLES
         from geosight.georepo.models.reference_layer import (
             ReferenceLayerIndicator
@@ -188,23 +268,63 @@ class PermissionManager(models.Manager):
                 return self.filter(query)
 
     def list(self, user: User):
-        """Get list resources by user."""
+        """
+        Get resources the user can list.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of listable resources.
+        :rtype: django.db.models.QuerySet
+        """
         return self.query_by_permission(user, PERMISSIONS.LIST)
 
     def read(self, user: User):
-        """Get read resources by user."""
+        """
+        Get resources the user can read.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of readable resources.
+        :rtype: django.db.models.QuerySet
+        """
         return self.query_by_permission(user, PERMISSIONS.READ)
 
     def read_data(self, user: User):
-        """Get read data resources by user."""
+        """
+        Get resources the user can read data from.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of resources with readable data.
+        :rtype: django.db.models.QuerySet
+        """
         return self.query_by_permission(user, PERMISSIONS.READ_DATA)
 
     def share(self, user: User):
-        """Get share resources by user."""
+        """
+        Get resources the user can share with others.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of shareable resources.
+        :rtype: django.db.models.QuerySet
+        """
         return self.query_by_permission(user, PERMISSIONS.SHARE)
 
     def edit(self, user: User):
-        """Get read resources by user."""
+        """
+        Get resources the user can edit.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of editable resources.
+        :rtype: django.db.models.QuerySet
+        """
         try:
             minimum_role = self.first().minimum_edit_role_level
         except AttributeError:
@@ -213,7 +333,15 @@ class PermissionManager(models.Manager):
         return self.query_by_permission(user, PERMISSIONS.WRITE, minimum_role)
 
     def edit_data(self, user: User):
-        """Get create resources by user."""
+        """
+        Get resources the user can edit data for.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of resources with editable data.
+        :rtype: django.db.models.QuerySet
+        """
         try:
             minimum_role = self.first().minimum_edit_role_level
         except AttributeError:
@@ -224,7 +352,15 @@ class PermissionManager(models.Manager):
         )
 
     def delete(self, user: User):
-        """Get create resources by user."""
+        """
+        Get resources the user can delete.
+
+        :param user: The user to check permissions for.
+        :type user: User
+
+        :return: QuerySet of deletable resources.
+        :rtype: django.db.models.QuerySet
+        """
         try:
             minimum_role = self.first().minimum_delete_role_level
         except AttributeError:

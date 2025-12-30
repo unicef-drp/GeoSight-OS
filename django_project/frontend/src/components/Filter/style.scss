@@ -1,11 +1,12 @@
 .react-datepicker-popper {
-  z-index: 9999!important;
+  z-index: 9999 !important;
 }
 
-.MuiDataGrid-columnHeaders{
+.MuiDataGrid-columnHeaders {
   .Popover-Btn {
     padding-top: 7px;
   }
+
   svg {
     fill: #808080;
 
@@ -18,8 +19,8 @@
 .DataGridFilter-Popover {
 
   .MuiPaper-root {
-    position: sticky!important;
-    width: 20%!important;
+    position: sticky !important;
+    width: 20% !important;
     max-height: 400px;
     overflow-y: scroll;
 
@@ -48,6 +49,15 @@
           .MuiInputBase-root {
             width: 100%;
           }
+        }
+      }
+
+      .ReactSelect {
+        width: 100%;
+        height: 50px;
+
+        .ReactSelect__control {
+          height: 50px;
         }
       }
 

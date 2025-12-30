@@ -43,6 +43,7 @@ const ServerTable = forwardRef(
       urlHeader,
       dataName,
       columns,
+      additionalFilters = [],
 
       // Selection model with ids
       selectionModel,
@@ -90,7 +91,7 @@ const ServerTable = forwardRef(
             // @ts-ignore
             column.headerName = (
               <DataGridFilter
-                fields={columns}
+                fields={[...columns, ...additionalFilters]}
                 filterModel={filterModel}
                 setFilterModel={setFilterModel}
               />

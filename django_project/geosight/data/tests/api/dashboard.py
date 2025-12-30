@@ -15,13 +15,13 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from core.models.preferences import SitePreferences
 from geosight.data.models.dashboard import Dashboard
 from geosight.permission.models.factory import PERMISSIONS
+from geosight.permission.models.manager import PermissionException
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -103,6 +103,59 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
 
         response = self.assertRequestGetView(url, 200)  # Viewer
         self.assertEqual(len(response.json()), 1)
+
+    def test_featured_api(self):
+        """Test list API."""
+        with self.assertRaises(PermissionException):
+            Dashboard.permissions.create(
+                user=self.contributor,
+                name='Dashboard test 1'
+            )
+        dashboard_1 = Dashboard.permissions.create(
+            user=self.creator,
+            name='Featured 1',
+            indicator_layers_structure={"children": []},
+            context_layers_structure={"children": []},
+            basemaps_layers_structure={"children": []},
+            widgets_structure={"children": []},
+        )
+        self.assertEqual(dashboard_1.featured, False)
+        with self.assertRaises(PermissionError):
+            Dashboard.permissions.create(
+                user=self.creator,
+                name='Featured 2',
+                featured=True
+            )
+        dashboard_2 = Dashboard.permissions.create(
+            user=self.admin,
+            name='Featured 2',
+            featured=True,
+            indicator_layers_structure={"children": []},
+            context_layers_structure={"children": []},
+            basemaps_layers_structure={"children": []},
+            widgets_structure={"children": []},
+        )
+        self.assertEqual(dashboard_2.featured, True)
+
+        # Duplicate
+        url = reverse(
+            'dashboard-duplicate-api', kwargs={'slug': dashboard_1.slug}
+        )
+        self.assertRequestPostView(
+            url, 302, data={}, user=self.creator
+        )  # Creator
+        dashboard = Dashboard.objects.get(slug=dashboard_1.slug + '-1')
+        self.assertEqual(dashboard.featured, False)
+
+        # Duplicate
+        url = reverse(
+            'dashboard-duplicate-api', kwargs={'slug': dashboard_2.slug}
+        )
+        self.assertRequestPostView(
+            url, 302, data={}, user=self.admin
+        )  # Creator
+        dashboard = Dashboard.objects.get(slug=dashboard_2.slug + '-1')
+        self.assertEqual(dashboard.featured, False)
 
     def test_data_api(self):
         """Test list API."""

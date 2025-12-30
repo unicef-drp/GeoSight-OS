@@ -147,6 +147,9 @@ class Dashboard(
         blank=True
     )
 
+    # Featured
+    featured = models.BooleanField(default=False)
+
     content_limitation_description = 'Limit the number of project items'
 
     @staticmethod
@@ -760,3 +763,35 @@ class Dashboard(
             except KeyError:
                 pass
         return ids_new
+
+    @staticmethod
+    def check_data(data, user: User):
+        """
+        Validate dashboard data based on user permissions.
+
+        Checks if the user has permission to set the featured flag.
+        Only administrators are allowed to mark a dashboard as featured.
+        Non-admin users attempting to set featured=True will trigger
+        a PermissionError.
+
+        :param data: Dictionary containing dashboard data to validate.
+        :type data: dict
+
+        :param user: The user attempting to create/update the dashboard.
+        :type user: User
+
+        :raises PermissionError: If non-admin user tries to set featured=True.
+        """
+        # Remove
+        try:
+            is_admin = user.profile.is_admin
+        except AttributeError:
+            is_admin = False
+        if not is_admin:
+            try:
+                if data['featured']:
+                    raise PermissionError(
+                        "Only admins can change the Featured status."
+                    )
+            except KeyError:
+                pass

@@ -5,6 +5,7 @@
   },
   "name": "Name",
   "category": "Category",
+  "featured": "Featured",
   "mapboxStyleInformation": "Mapbox style information.",
   "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
   "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
@@ -202,5 +203,8 @@
     "projectOverviewClose": "Close",
     "adminPanelButton": "Admin panel",
     "loadingDashboardData": "Loading Dashboard Data..."
-  }
+  },
+  "Remove from featured": "Remove from featured",
+  "Feature it": "Feature it",
+  "featured projects": "Featured Projects"
 }
