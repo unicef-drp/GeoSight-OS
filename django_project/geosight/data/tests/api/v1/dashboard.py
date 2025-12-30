@@ -15,7 +15,6 @@ __date__ = '08/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import urllib.parse
-
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -51,6 +50,19 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             group=DashboardGroup.objects.create(name='Group 3'),
             description='Resource 3'
         )
+        self.resource_3.featured = True
+        self.resource_3.save()
+
+        # Create by creator with featured
+        # But it can't change the featured, as just admin can change it
+        with self.assertRaises(PermissionError):
+            Dashboard.permissions.create(
+                user=self.resource_creator,
+                name='Name C',
+                group=DashboardGroup.objects.create(name='Group 3'),
+                description='Resource 3',
+                featured=True
+            )
         self.resource_3.permission.update_user_permission(
             self.creator, PERMISSIONS.LIST
         )
@@ -147,7 +159,9 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             self.assertTrue(
                 result['id'] in [self.resource_3.slug])
 
-        # Search
+        # ---------------------------------
+        # SEARCH
+        # ---------------------------------
         params = urllib.parse.urlencode(
             {
                 'q': 'Resource '
@@ -157,6 +171,75 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 1)
         self.assertEqual(response.json()['results'][0]['name'], 'Name C')
+
+        # -----------------------------------
+        # Featured
+        # -----------------------------------
+        params = urllib.parse.urlencode(
+            {
+                'featured': False
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 2)
+        for result in response.json()['results']:
+            self.assertTrue(
+                result['id'] in [self.resource_1.slug, self.resource_2.slug])
+
+        params = urllib.parse.urlencode(
+            {
+                'featured': True
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        for result in response.json()['results']:
+            self.assertTrue(
+                result['id'] in [self.resource_3.slug])
+
+        # For viewer
+        # We create 2 public dashboard
+        resource_1 = Dashboard.permissions.create(
+            user=self.resource_creator,
+            name='Name Public 1',
+            group=DashboardGroup.objects.create(name='Group 4')
+        )
+        resource_1.permission.public_permission = PERMISSIONS.READ.name
+        resource_1.permission.save()
+        resource_2 = Dashboard.permissions.create(
+            user=self.admin,
+            name='Name Public Featured',
+            group=DashboardGroup.objects.create(name='Group 4'),
+            featured=True
+        )
+        resource_2.permission.public_permission = PERMISSIONS.READ.name
+        resource_2.permission.save()
+
+        params = urllib.parse.urlencode(
+            {
+                'featured': True
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertEqual(len(response.json()['results']), 1)
+        for result in response.json()['results']:
+            self.assertTrue(
+                result['id'] in [resource_2.slug])
+
+        params = urllib.parse.urlencode(
+            {
+                'featured': False
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertEqual(len(response.json()['results']), 1)
+        for result in response.json()['results']:
+            self.assertTrue(
+                result['id'] in [resource_1.slug])
 
     def test_list_api_sort(self):
         """Test GET LIST API."""
@@ -216,6 +299,7 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         self.assertEqual(
             response.json()['created_by'], self.resource_3.creator.username
         )
+        self.assertEqual(response.json()['featured'], True)
 
     def test_delete_api(self):
         """Test DELETE API."""

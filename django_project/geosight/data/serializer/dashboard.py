@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import os
-
 from django.shortcuts import reverse
 from rest_framework import serializers
 
@@ -570,5 +569,5 @@ class DashboardBasicSerializer(ResourceSerializer):
         fields = (
                      'id', 'slug', 'icon', 'thumbnail', 'name',
                      'description', 'group', 'category', 'permission',
-                     'reference_layer', 'creator'
+                     'reference_layer', 'creator', 'featured'
                  ) + ResourceSerializer.Meta.fields

@@ -147,6 +147,9 @@ class Dashboard(
         blank=True
     )
 
+    # Featured
+    featured = models.BooleanField(default=False)
+
     content_limitation_description = 'Limit the number of project items'
 
     @staticmethod
@@ -760,3 +763,16 @@ class Dashboard(
             except KeyError:
                 pass
         return ids_new
+
+    @staticmethod
+    def check_data(data, user: User):
+        """Exclude data from specific user"""
+        # Remove
+        if not user.profile.is_admin:
+            try:
+                if data['featured']:
+                    raise PermissionError(
+                        "Only admins can change the Featured status."
+                    )
+            except KeyError:
+                pass

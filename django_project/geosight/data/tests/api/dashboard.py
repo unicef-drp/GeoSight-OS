@@ -15,13 +15,13 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from core.models.preferences import SitePreferences
 from geosight.data.models.dashboard import Dashboard
 from geosight.permission.models.factory import PERMISSIONS
+from geosight.permission.models.manager import PermissionException
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -103,6 +103,31 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
 
         response = self.assertRequestGetView(url, 200)  # Viewer
         self.assertEqual(len(response.json()), 1)
+
+    def test_featured_api(self):
+        """Test list API."""
+        with self.assertRaises(PermissionException):
+            Dashboard.permissions.create(
+                user=self.contributor,
+                name='Dashboard test 1'
+            )
+        dashboard = Dashboard.permissions.create(
+            user=self.creator,
+            name='Featured 1'
+        )
+        self.assertEqual(dashboard.featured, False)
+        with self.assertRaises(PermissionError):
+            Dashboard.permissions.create(
+                user=self.creator,
+                name='Featured 2',
+                featured=True
+            )
+        dashboard = Dashboard.permissions.create(
+            user=self.admin,
+            name='Featured 2',
+            featured=True
+        )
+        self.assertEqual(dashboard.featured, True)
 
     def test_data_api(self):
         """Test list API."""

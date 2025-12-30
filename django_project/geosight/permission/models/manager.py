@@ -61,6 +61,10 @@ class PermissionManager(models.Manager):
             except AttributeError:
                 raise PermissionException()
 
+        # Check if model has exclude_data
+        if hasattr(self.model, 'exclude_data'):
+            kwargs = self.model.exclude_data(kwargs, user)
+
         obj, created = super().get_or_create(defaults=defaults, **kwargs)
         if created:
             self.save_creator(obj, user)
@@ -73,6 +77,10 @@ class PermissionManager(models.Manager):
                 raise PermissionException()
         except AttributeError:
             raise PermissionException()
+
+        # Check if model has exclude_data
+        if hasattr(self.model, 'check_data'):
+            self.model.check_data(kwargs, user)
 
         obj = super().create(**kwargs)
         if not obj.creator:
