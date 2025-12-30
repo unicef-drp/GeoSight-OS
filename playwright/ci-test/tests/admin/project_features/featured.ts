@@ -33,6 +33,11 @@ test.describe('Project feature', () => {
     const editUrl = `${BASE_URL}/admin/project/${name.toLowerCase().replace(' ', '-')}/edit`
     await page.waitForURL(editUrl)
 
+    const homeUrl = `${BASE_URL}/`
+    await page.goto(homeUrl);
+    await page.waitForURL(homeUrl);
+    await expect(page.getByRole('link', { name: name })).toBeVisible();
+
     const listUrl = `${BASE_URL}/admin/project/`
     await page.goto(listUrl);
     await page.waitForURL(listUrl);
@@ -103,6 +108,11 @@ test.describe('Project feature', () => {
 
     // Await edit url and check featured should be checked
     await expect(page.locator('#ProjectFeatured')).not.toBeChecked();
+
+    await page.goto(homeUrl);
+    await page.waitForURL(homeUrl);
+    await delay(500);
+    await expect(page.getByRole('link', { name: name })).not.toBeVisible();
 
     // ------------------------------------
     // DELETE PROJECT
