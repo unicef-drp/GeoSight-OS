@@ -203,5 +203,7 @@
     "projectOverviewClose": "Close",
     "adminPanelButton": "Admin panel",
     "loadingDashboardData": "Loading Dashboard Data..."
-  }
+  },
+  "Remove from featured": "Remove from featured",
+  "Feature it": "Feature it"
 }

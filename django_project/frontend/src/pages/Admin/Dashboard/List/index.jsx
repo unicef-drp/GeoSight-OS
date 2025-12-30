@@ -13,26 +13,78 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Tooltip from "@mui/material/Tooltip";
+import { useTranslation } from "react-i18next";
+import CircularProgress from "@mui/material/CircularProgress";
 import { render } from "../../../../app";
 import { store } from "../../../../store/admin";
 import { pageNames } from "../../index";
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
-import { VisibilityIcon } from "../../../../components/Icons";
+import {
+  StarOffIcon,
+  StarOnIcon,
+  VisibilityIcon,
+} from "../../../../components/Icons";
 import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 import { DjangoRequests } from "../../../../Requests";
-import { useTranslation } from "react-i18next";
 
 import "./style.scss";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.dashboardList);
+}
+
+function Feature({ feature }) {
+  const { t } = useTranslation();
+  const [isFeatured, setIsFeatured] = useState(feature.featured);
+  const [updating, setUpdating] = useState(false);
+
+  const updateFeatured = async () => {
+    if (updating) return;
+    setUpdating(true);
+    let api;
+    if (isFeatured) {
+      api = `/api/v1/dashboards/${feature.slug}/remove-as-feature/`;
+    } else {
+      api = `/api/v1/dashboards/${feature.slug}/as-feature/`;
+    }
+    await DjangoRequests.post(api, {}).then((response) => {
+      feature.featured = response.featured;
+      setUpdating(false);
+      setIsFeatured(!isFeatured);
+    });
+  };
+
+  return (
+    <GridActionsCellItem
+      icon={
+        <Tooltip
+          title={isFeatured ? t("Remove from featured") : t("Feature it")}
+          onClick={updateFeatured}
+        >
+          {updating ? (
+            <a className={"MuiButtonLike CellLink"}>
+              <div className="ButtonIcon">
+                <CircularProgress size={14} thickness={2} />
+              </div>
+            </a>
+          ) : (
+            <a className={"MuiButtonLike CellLink"}>
+              <div className="ButtonIcon">
+                {isFeatured ? <StarOnIcon /> : <StarOffIcon />}
+              </div>
+            </a>
+          )}
+        </Tooltip>
+      }
+    />
+  );
 }
 
 export function resourceActionsList(params) {
@@ -96,7 +148,7 @@ export default function DashboardList() {
     flex: 0.5,
     serverKey: "group__name",
   };
-  const columnMeta = useResourceMeta()
+  const columnMeta = useResourceMeta();
   columns[4] = columnMeta[0];
   columns[5] = columnMeta[1];
   columns[6] = columnMeta[2];
@@ -129,7 +181,7 @@ export default function DashboardList() {
         actions.unshift(
           <GridActionsCellItem
             icon={
-              <Tooltip title={t("admin.actions.changeShareConfig")}>
+              <Tooltip title={t("admin.actions.previewDashboard")}>
                 <a
                   className={"MuiButtonLike CellLink"}
                   href={urls.api.map.replace("/0", `/${params.id}`)}
@@ -143,6 +195,9 @@ export default function DashboardList() {
             label={t("admin.actions.previewDashboard")}
           />,
         );
+      }
+      if (user.is_admin) {
+        actions.unshift(<Feature feature={params.row} />);
       }
       if (!params.row.reference_layer) {
         actions.unshift(
@@ -167,6 +222,14 @@ export default function DashboardList() {
       }}
       title={contentTitle}
       columns={columns}
+      additionalFilters={[
+        {
+          field: "featured",
+          headerName: t("Featured"),
+          serverKey: "featured",
+          type: "boolean",
+        },
+      ]}
       pageName={pageName}
       multipleDelete={true}
       enableFilter={true}

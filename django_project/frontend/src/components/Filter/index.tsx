@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 // @ts-ignore
-import { TextField } from "@mui/material";
+import { FormControl, TextField } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import CustomPopover from "../CustomPopover";
@@ -13,6 +13,8 @@ import {
 } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+
+import { Select } from "../Input";
 
 import './style.scss';
 
@@ -37,6 +39,7 @@ export const DataGridFilter = (
   });
 
   const handleApplyFilters = () => {
+    console.log(newFilterModel)
     if (!newFilterModel || Object.values(newFilterModel).every(value => value === null)) {
       setIsFiltered(false);
     } else {
@@ -81,54 +84,106 @@ export const DataGridFilter = (
             fields.filter(field => !field.disabledFilter).filter(field => !['actions', 'id'].includes(field.field)).map((field: any, idx: number) => (
               <Grid container direction='row' className={'FilterRow'}>
                 {
-                  field.type == 'date' ?
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                      <DesktopDatePicker
-                        className={'Filter-DateStart'}
-                        value={newFilterModel[`${field.serverKey}__gte`] ? new Date(newFilterModel[`${field.serverKey}__gte`]) : null}
-                        label={`${field.headerName} (from)`}
-                        inputFormat="YYYY-MM-DD"
-                        onChange={(date: any) => {
-                          const key = `${field.serverKey}__gte`;
-                          const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                          const value = selectedDate ? `${selectedDate}T00:00:00` : null;
+                  field.type == 'boolean' ?
+                    <div style={{
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "center",
+                      width: "100%",
+                      flexGrow: 1,
+                      paddingLeft: "1rem"
+                    }}>
+                      <div><b>{field.headerName}</b></div>
+                      <Select
+                        className="form-control"
+                        options={[
+                          { label: "Both", value: "" },
+                          { label: "True", value: "True" },
+                          { label: "False", value: "False" },
+                        ]}
+                        value={
+                          [null, undefined].includes(
+                            newFilterModel[
+                              `${field.serverKey ? field.serverKey : field.field}`
+                            ],
+                          )
+                            ? {
+                                label: "Both",
+                                value: "",
+                              }
+                            : newFilterModel[
+                                  `${field.serverKey ? field.serverKey : field.field}`
+                                ] === "True"
+                              ? {
+                                  label: "True",
+                                  value: "True",
+                                }
+                              : { label: "False", value: "False" }
+                        }
+                        onChange={(event: any) => {
+                          const key = `${field.serverKey ? field.serverKey : field.field}`;
+                          if (event.value) {
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: event.value,
+                            });
+                          } else {
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: null,
+                            });
+                          }
+                        }}
+                      />
+                    </div> :
+                    field.type == 'date' ?
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DesktopDatePicker
+                          className={'Filter-DateStart'}
+                          value={newFilterModel[`${field.serverKey}__gte`] ? new Date(newFilterModel[`${field.serverKey}__gte`]) : null}
+                          label={`${field.headerName} (from)`}
+                          inputFormat="YYYY-MM-DD"
+                          onChange={(date: any) => {
+                            const key = `${field.serverKey}__gte`;
+                            const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
+                            const value = selectedDate ? `${selectedDate}T00:00:00` : null;
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: value
+                            })
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                        <DesktopDatePicker
+                          value={newFilterModel[`${field.serverKey}__lte`] ? new Date(newFilterModel[`${field.serverKey}__lte`]) : null}
+                          label={`${field.headerName} (to)`}
+                          inputFormat="YYYY-MM-DD"
+                          onChange={(date: any) => {
+                            const key = `${field.serverKey}__lte`;
+                            const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
+                            const value = selectedDate ? `${selectedDate}T23:59:59` : null;
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: value
+                            })
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                      :
+                      <TextField
+                        type='text'
+                        label={field.headerName}
+                        value={newFilterModel[`${field.serverKey ? field.serverKey : field.field}__icontains`]}
+                        onChange={(event) => {
+                          const key = `${field.serverKey ? field.serverKey : field.field}__icontains`;
+                          const value = event.target.value ? event.target.value : null
                           setNewFilterModel({
                             ...newFilterModel,
                             [key]: value
                           })
                         }}
-                        renderInput={(params) => <TextField {...params} />}
                       />
-                      <DesktopDatePicker
-                        value={newFilterModel[`${field.serverKey}__lte`] ? new Date(newFilterModel[`${field.serverKey}__lte`]) : null}
-                        label={`${field.headerName} (to)`}
-                        inputFormat="YYYY-MM-DD"
-                        onChange={(date: any) => {
-                          const key = `${field.serverKey}__lte`;
-                          const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                          const value = selectedDate ? `${selectedDate}T23:59:59` : null;
-                          setNewFilterModel({
-                            ...newFilterModel,
-                            [key]: value
-                          })
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </LocalizationProvider>
-                    :
-                    <TextField
-                      type='text'
-                      label={field.headerName}
-                      value={newFilterModel[`${field.serverKey ? field.serverKey : field.field}__icontains`]}
-                      onChange={(event) => {
-                        const key = `${field.serverKey ? field.serverKey : field.field}__icontains`;
-                        const value = event.target.value ? event.target.value : null
-                        setNewFilterModel({
-                          ...newFilterModel,
-                          [key]: value
-                        })
-                      }}
-                    />
                 }
               </Grid>
             ))
