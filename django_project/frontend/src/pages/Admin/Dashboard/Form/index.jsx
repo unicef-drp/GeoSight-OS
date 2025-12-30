@@ -349,6 +349,12 @@ export function DashboardSaveForm() {
       formData.append("data", JSON.stringify(dashboardData));
       formData.append("geoField", geoField);
 
+      // Check featured
+      const $projectFeatured = $("#ProjectFeatured");
+      if ($projectFeatured.length) {
+        formData.append("featured", $projectFeatured.prop("checked"));
+      }
+
       // Configurations
       formData.append("show_splash_first_open", show_splash_first_open);
       formData.append(

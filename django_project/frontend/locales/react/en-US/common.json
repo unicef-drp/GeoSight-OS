@@ -5,6 +5,7 @@
   },
   "name": "Name",
   "category": "Category",
+  "featured": "Featured",
   "mapboxStyleInformation": "Mapbox style information.",
   "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
   "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",

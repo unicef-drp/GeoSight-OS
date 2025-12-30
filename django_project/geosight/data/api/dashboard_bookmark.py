@@ -62,7 +62,7 @@ class DashboardBookmarksAPI(APIView):
         default_level = None
         try:
             default_level = level_config['default_level']
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         selected_indicator_layers = []
         if first_layer:
