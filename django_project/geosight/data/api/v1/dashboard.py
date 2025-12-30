@@ -51,8 +51,22 @@ class DashboardViewSet(
         ],
         operation_description='Return list of accessed dashboard for the user.'
     )
-    def list(self, request, *args, **kwargs):
-        """List of dashboard."""
+    def list(self, request, *args, **kwargs):  # noqa: DOC103
+        """
+        Return list of accessible dashboards for the authenticated user.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :param args: Additional positional arguments.
+        :type args: tuple
+
+        :param kwargs: Additional keyword arguments.
+        :type kwargs: dict
+
+        :return: Paginated list of dashboard objects.
+        :rtype: rest_framework.response.Response
+        """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -63,7 +77,18 @@ class DashboardViewSet(
     )
     @action(detail=False, methods=['get'])
     def groups(self, request):
-        """Return dashboard group list."""
+        """
+        Return list of dashboard groups accessible to the user.
+
+        Retrieves distinct group names from all dashboards that the
+        authenticated user has access to.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :return: List of unique dashboard group names.
+        :rtype: rest_framework.response.Response
+        """
         querysets = self.get_queryset()
         groups = querysets.values_list(
             'group__name', flat=True
@@ -77,7 +102,18 @@ class DashboardViewSet(
         operation_description='Return detailed of dashboard.'
     )
     def retrieve(self, request, slug=None):
-        """Return detailed of dashboard."""
+        """
+        Return detailed information for a specific dashboard.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :param slug: The unique slug identifier of the dashboard.
+        :type slug: str
+
+        :return: Detailed dashboard object.
+        :rtype: rest_framework.response.Response
+        """
         return super().retrieve(request, slug=slug)
 
     @swagger_auto_schema(
@@ -87,7 +123,18 @@ class DashboardViewSet(
         operation_description='Delete a dashboard.'
     )
     def destroy(self, request, slug=None):
-        """Destroy an object."""
+        """
+        Delete a dashboard by its slug.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :param slug: The unique slug identifier of the dashboard to delete.
+        :type slug: str
+
+        :return: Empty response with 204 status code on success.
+        :rtype: rest_framework.response.Response
+        """
         return super().destroy(request, slug=slug)
 
     @swagger_auto_schema(
@@ -97,8 +144,25 @@ class DashboardViewSet(
         operation_description='Feature a dashboard.'
     )
     @action(detail=True, methods=['post'], url_path='as-feature')
-    def as_feature(self, request, slug=None):
-        """Feature a dashboard."""
+    def as_feature(self, request, slug=None):  # noqa: DOC503
+        """
+        Mark a dashboard as featured.
+
+        Sets the featured flag to True for the specified dashboard.
+        Only administrators are permitted to perform this action.
+
+        :param request: The HTTP request object containing user information.
+        :type request: rest_framework.request.Request
+
+        :param slug: The unique slug identifier of the dashboard to feature.
+        :type slug: str
+
+        :return: Empty response with 204 status code on success.
+        :rtype: rest_framework.response.Response
+
+        :raises ResourcePermissionDenied: If user is not an administrator.
+        :raises Http404: If dashboard with given slug does not exist.
+        """
         try:
             if not request.user.profile.is_admin:
                 raise ResourcePermissionDenied
@@ -117,8 +181,25 @@ class DashboardViewSet(
         operation_description='Remove feature a dashboard.'
     )
     @action(detail=True, methods=['post'], url_path='remove-as-feature')
-    def remove_as_feature(self, request, slug=None):
-        """Feature a dashboard."""
+    def remove_as_feature(self, request, slug=None):  # noqa: DOC503
+        """
+        Remove featured status from a dashboard.
+
+        Sets the featured flag to False for the specified dashboard.
+        Only administrators are permitted to perform this action.
+
+        :param request: The HTTP request object containing user information.
+        :type request: rest_framework.request.Request
+
+        :param slug: The unique slug identifier of the dashboard to unfeature.
+        :type slug: str
+
+        :return: Empty response with 204 status code on success.
+        :rtype: rest_framework.response.Response
+
+        :raises ResourcePermissionDenied: If user is not an administrator.
+        :raises Http404: If dashboard with given slug does not exist.
+        """
         try:
             if not request.user.profile.is_admin:
                 raise ResourcePermissionDenied
