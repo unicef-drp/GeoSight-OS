@@ -39,7 +39,6 @@ export const DataGridFilter = (
   });
 
   const handleApplyFilters = () => {
-    console.log(newFilterModel)
     if (!newFilterModel || Object.values(newFilterModel).every(value => value === null)) {
       setIsFiltered(false);
     } else {
