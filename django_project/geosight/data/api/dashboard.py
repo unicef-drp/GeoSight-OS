@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import uuid
-
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -185,6 +184,10 @@ class DashboardDuplicate(APIView, DashboardCreateViewBase):
             pass
         data['data'] = data
         data['origin_id'] = dashboard.id
+        try:
+            del data['featured']
+        except KeyError:
+            pass
         return self.save(data, request.user, request.FILES)
 
 
