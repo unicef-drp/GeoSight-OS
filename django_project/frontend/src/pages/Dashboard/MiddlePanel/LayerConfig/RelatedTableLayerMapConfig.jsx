@@ -135,8 +135,15 @@ export default function RelatedTableLayerMapConfig() {
     }
   };
 
-  const resetFilter = (field, isDelete) => {
+  const resetFilter = (field, isDelete, allSelected) => {
     const layerMetadata = metadata[relatedTableLayer.id];
+
+    // We skip this if
+    // The field is not selected yet
+    // The value is all selected
+    if (!layerMetadata.sequenceFieldSelected.includes(field) && allSelected)
+      return;
+
     let sequenceFieldSelected = layerMetadata.sequenceFieldSelected;
     if (sequenceFieldSelected.includes(field)) {
       sequenceFieldSelected = sequenceFieldSelected.slice(
@@ -196,8 +203,8 @@ export default function RelatedTableLayerMapConfig() {
                   operator: true,
                 }}
                 isCompact={true}
-                onValueInputChange={(field) => {
-                  resetFilter(field);
+                onValueInputChange={(field, allSelected) => {
+                  resetFilter(field, false, allSelected);
                 }}
                 resetFilter={(field) => {
                   resetFilter(field, true);
