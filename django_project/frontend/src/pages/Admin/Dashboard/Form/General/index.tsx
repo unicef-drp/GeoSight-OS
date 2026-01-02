@@ -102,7 +102,7 @@ const GeneralForm = memo(({}: Props) => {
     show_map_toolbar: projectData.show_map_toolbar,
     featured: !!projectData.featured,
   });
-  console.log(projectData);
+
   /** referenceLayerProject changed **/
   useEffect(() => {
     const updates: any = {};
