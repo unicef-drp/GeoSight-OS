@@ -188,6 +188,16 @@ test.describe('Composite index layer', () => {
       )
     );
     await page.hover('.ReferenceLayerLevelSelected')
+    await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 0').click();
+    await Promise.all(
+      ["No data"].map((value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString()))
+    );
+    await page.getByRole('checkbox', { name: 'Sample Indicator A' }).click();
+    await Promise.all(
+      [0, "No data"].map((value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString()))
+    );
+
+    await page.hover('.ReferenceLayerLevelSelected')
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 1').click();
 
     // Check the config

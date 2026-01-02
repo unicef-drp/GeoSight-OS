@@ -98,8 +98,13 @@ export const configToExpression = (
   if (expression.length === 0) {
     return "0";
   }
+  const expressionString = expression
+    .map((exp, idx) => `{% set exp_${idx} = ${exp} %}`)
+    .join("\n");
+  const expressionResult = expression.map((exp, idx) => `(0 if exp_${idx} != exp_${idx} else exp_${idx})`).join(" + ");
   return `
-    {% set result = ${expression.join(" + ")} %}
+    ${expressionString}
+    {% set result = ${expressionResult} %}
     {{ result  | round(2)}}
   `;
 };
