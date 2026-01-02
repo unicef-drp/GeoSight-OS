@@ -98,10 +98,6 @@ export const configToExpression = (
   if (expression.length === 0) {
     return "0";
   }
-  console.log(`
-    {% set result = ${expression.join(" + ")} %}
-    {{ result  | round(2)}}
-  `);
   return `
     {% set result = ${expression.join(" + ")} %}
     {{ result  | round(2)}}

@@ -1,5 +1,5 @@
 import { IndicatorLayer } from "../../../types/IndicatorLayer";
-import { MultiIndicatorType } from "../../../utils/indicatorLayer";
+import { MultiIndicatorType, StringType } from "../../../utils/indicatorLayer";
 import { dataStructureToListData } from "../../SortableTreeForm/utilities";
 import { Actions } from "../../../store/dashboard";
 import { delay } from "../../../utils/main";
@@ -8,7 +8,7 @@ export function isEligibleForCompositeLayer(layer: IndicatorLayer): boolean {
   if (!layer.type) {
     return false;
   }
-  return ![MultiIndicatorType].includes(layer.type);
+  return ![MultiIndicatorType, StringType].includes(layer.type);
 }
 
 export function disabledCompositeLayer(

@@ -47,7 +47,9 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
       selectableInput={selectableInput}
       label='Indicator type'
       attrName='type'
-      required={true}>
+      required={true}
+      dataWrapperName="indicator_type"
+    >
       <Select
         options={typeChoices}
         value={typeChoices.find(type => type.value === indicatorData.type)}

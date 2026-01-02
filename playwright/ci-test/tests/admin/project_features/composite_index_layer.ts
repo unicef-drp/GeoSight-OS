@@ -4,6 +4,26 @@ import {
   saveAsProject,
   viewProject
 } from "../../utils/project";
+import { deleteIndicatorByName } from "../../utils/indicator";
+
+const indicatorName = `Indicator Category`
+const createIndicator = async (page) => {
+  await page.goto('/admin/indicators/create#General');
+
+  // Fill correct values
+  await page.locator('#Form #id_name').fill(indicatorName);
+  await page.locator('#Form #id_shortcode').fill(indicatorName.replace(' ', '_'));
+
+  await page.locator("#Form #id_group").click();
+  await page.keyboard.type("Test");
+  await page.keyboard.press('Enter');
+
+  await page.locator('[data-wrapper-name="indicator_type"]').click();
+  await page.getByRole('option', { name: 'Category' }).click();
+
+  await page.getByText('Save').isEnabled();
+  await page.getByText('Save').click();
+}
 
 test.describe('Composite index layer', () => {
   test('Config tool', async ({ page }) => {
@@ -23,6 +43,8 @@ test.describe('Composite index layer', () => {
       }
     });
 
+    await createIndicator(page);
+
     // --------------------------------------------------------------------
     // Check configuration
     // --------------------------------------------------------------------
@@ -31,6 +53,18 @@ test.describe('Composite index layer', () => {
     const name = 'Demo GeoSight Project Composite Index Layer'
     await saveAsProject(page, 'Demo GeoSight Project', name)
 
+    // Add indicators category
+    await page.getByText('Indicators (5)').click();
+    await page.getByRole('button', { name: 'Add Indicator' }).click();
+    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.getByRole('button', { name: 'Update Selection' }).click()
+    await page.getByText('Indicator Layers (10)').click();
+    await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
+    await page.getByText('Single Indicator LayerSelect').click();
+    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.getByRole('button', { name: 'Apply Selections : Selected' }).click()
+
+    // Update tools
     await page.getByText('Tools').click();
     await expect(await page.getByRole('listitem').filter({ hasText: 'Composite index layer' })).toBeVisible();
     const disable = await page
@@ -53,7 +87,6 @@ test.describe('Composite index layer', () => {
     await page.getByRole('row', { name: 'context.current.indicator.name Indicator String' }).getByRole('checkbox').uncheck();
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await expect(onRun).toEqual(`{"data_fields":[{"name":"context.current.indicator.name","alias":"Indicator","visible":false,"type":"string","order":0},{"name":"context.current.indicator.value","alias":"Value","visible":true,"type":"string","order":1},{"name":"context.current.indicator.label","alias":"Label","visible":true,"type":"string","order":2},{"name":"context.current.indicator.time","alias":"Date","visible":true,"type":"string","order":3},{"name":"context.current.geometry_data.admin_level","alias":"Admin level","visible":true,"type":"string","order":4},{"name":"context.current.geometry_data.admin_level_name","alias":"Admin level name","visible":true,"type":"string","order":5},{"name":"context.current.geometry_data.concept_uuid","alias":"Concept uuid","visible":false,"type":"string","order":6},{"name":"context.current.geometry_data.geom_code","alias":"Geom code","visible":false,"type":"string","order":7},{"name":"context.current.geometry_data.name","alias":"Name","visible":false,"type":"string","order":8},{"name":"context.current.indicator.attributes","alias":"","visible":false,"type":"string","order":9}],"config":{},"type":"Composite Index Layer","style_type":"Dynamic quantitative style.","style_config":{"dynamic_classification":"Equidistant.","dynamic_class_num":7,"sync_outline":false,"sync_filter":false,"outline_color":"#FFFFFF","outline_size":0.5,"color_palette":3,"no_data_rule":{"id":0,"name":"No data","rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":0.5,"active":true}},"style":[{"id":-1,"name":"No data","rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":0.5,"active":false},{"id":0,"name":"Other data","rule":"Other data","color":"#A6A6A6","outline_color":"#ffffff","outline_size":0.5,"active":false}],"label_config":{"text":"{name}\\n{value}.round(3)","style":{"minZoom":0,"maxZoom":24,"fontFamily":"\\"Rubik\\", sans-serif","fontSize":13,"fontColor":"#000000","fontWeight":300,"strokeColor":"#FFFFFF","strokeWeight":0,"haloColor":"#FFFFFF","haloWeight":3}}}`)
-
 
     await page.getByRole('listitem').filter({ hasText: 'Composite index layer' }).getByTestId('EditIcon').click();
     await page.getByText('Style', { exact: true }).first().click();
@@ -82,6 +115,19 @@ test.describe('Composite index layer', () => {
     await page.getByTitle('Activate composite index layer').click();
     await expect(page.getByTitle('Deactivate composite index')).toBeVisible();
     await expect(page.getByTitle('Turn on compare Layers')).toBeVisible();
+    // Check eligible layers
+    await expect(page.getByRole('checkbox', { name: 'Sample Indicator A', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Sample Indicator B', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Pie Chart layer', exact: true })).toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Pin layer', exact: true })).toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Pins Indicator Layer', exact: true })).toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Dynamic Layer based on a list of interventions', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Dynamic Layer', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Test Indicator C', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Test Indicator D', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: 'Kenya Indicator A', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', { name: indicatorName, exact: true })).toBeDisabled();
+
 
     await page.getByTitle('Turn on compare Layers').click();
     await expect(page.getByTitle('Activate composite index layer')).toBeVisible();
@@ -210,5 +256,6 @@ test.describe('Composite index layer', () => {
     // Delete project
     // --------------------------------------------------------------------
     await deleteProject(page, name)
+    await deleteIndicatorByName(page, indicatorName)
   })
 });

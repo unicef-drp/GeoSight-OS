@@ -19,6 +19,7 @@ import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
 import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 
+export const StringType = "String";
 export const SingleIndicatorType = "Single Indicator";
 export const SingleIndicatorTypes = [SingleIndicatorType, "Float"];
 export const MultiIndicatorType = "Multi Indicator";
