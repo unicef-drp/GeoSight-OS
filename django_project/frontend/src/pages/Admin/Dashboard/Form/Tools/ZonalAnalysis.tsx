@@ -108,7 +108,6 @@ export function ZonalAnalysisConfiguration(
 
   // Loading data
   useEffect(() => {
-    console.log(newLayer.id)
     if (newLayer.id) {
       // Get metadata
       const contextLayer = contextLayers.find(

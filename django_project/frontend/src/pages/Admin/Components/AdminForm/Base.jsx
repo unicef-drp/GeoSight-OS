@@ -21,13 +21,13 @@ import React, { useState } from "react";
 export function AdminFormInput(
   {
     attrName, label = null, helptext = null, required = false,
-    selectableInput, children
+    selectableInput, dataWrapperName = null, children
   }
 ) {
   const [selectableInputState, setSelectableInputState] = useState({});
   const selectableInputChecked = !selectableInputState[attrName] ? false : true
   const selectableInputEnabled = !selectableInput || selectableInputChecked
-  return <div className="BasicFormSection">
+  return <div className="BasicFormSection" data-wrapper-name={dataWrapperName}>
     {
       label ?
         <div>

@@ -19,6 +19,7 @@ import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
 import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 
+export const StringType = "String";
 export const SingleIndicatorType = "Single Indicator";
 export const SingleIndicatorTypes = [SingleIndicatorType, "Float"];
 export const MultiIndicatorType = "Multi Indicator";
@@ -67,8 +68,11 @@ export function indicatorLayersLikeIndicator(indicatorLayers) {
 export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
   return indicators.filter((indicator) => {
     return (
-      indicatorLayer?.config.expression?.includes(indicator.shortcode) ||
-      indicatorLayer?.config.expression?.includes(indicator.id)
+      indicatorLayer?.config.expression?.includes(`'${indicator.shortcode}'`) ||
+      indicatorLayer?.config.expression?.includes(`"${indicator.shortcode}"`) ||
+      indicatorLayer?.config.expression?.includes(`'${indicator.id}'`) ||
+      indicatorLayer?.config.expression?.includes(`"${indicator.id}"`) ||
+      indicatorLayer?.config.expression?.includes(`[${indicator.id}`)
     );
   });
 }
