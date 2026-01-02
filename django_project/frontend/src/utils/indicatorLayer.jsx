@@ -68,8 +68,11 @@ export function indicatorLayersLikeIndicator(indicatorLayers) {
 export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
   return indicators.filter((indicator) => {
     return (
-      indicatorLayer?.config.expression?.includes(indicator.shortcode) ||
-      indicatorLayer?.config.expression?.includes(indicator.id)
+      indicatorLayer?.config.expression?.includes(`'${indicator.shortcode}'`) ||
+      indicatorLayer?.config.expression?.includes(`"${indicator.shortcode}"`) ||
+      indicatorLayer?.config.expression?.includes(`'${indicator.id}'`) ||
+      indicatorLayer?.config.expression?.includes(`"${indicator.id}"`) ||
+      indicatorLayer?.config.expression?.includes(`[${indicator.id}`)
     );
   });
 }

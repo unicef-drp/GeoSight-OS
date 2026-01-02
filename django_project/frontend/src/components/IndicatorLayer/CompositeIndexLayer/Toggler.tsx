@@ -101,6 +101,12 @@ export default function CompositeIndexLayerToggler({
           </div>
         ),
       });
+    } else {
+      disabledCompositeLayer(
+        dispatch,
+        indicatorLayers,
+        indicatorLayersStructure,
+      );
     }
   };
   const handleInactiveClick = async () => {
