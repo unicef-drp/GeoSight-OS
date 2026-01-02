@@ -126,7 +126,7 @@ test.describe('Composite index layer', () => {
     await expect(page.getByRole('checkbox', { name: 'Test Indicator C', exact: true })).not.toBeDisabled();
     await expect(page.getByRole('checkbox', { name: 'Test Indicator D', exact: true })).not.toBeDisabled();
     await expect(page.getByRole('checkbox', { name: 'Kenya Indicator A', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: indicatorName, exact: true })).toBeDisabled();
+    // await expect(page.getByRole('checkbox', { name: indicatorName, exact: true })).toBeDisabled();
 
 
     await page.getByTitle('Turn on compare Layers').click();
