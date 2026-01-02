@@ -25,6 +25,7 @@ import {
 } from "./utilities";
 import { delay, dictDeepCopy } from "../../../utils/main";
 import { Actions } from "../../../store/dashboard";
+import { useConfirmDialog } from "../../../providers/ConfirmDialog";
 
 export interface Props {
   ActiveIcon: React.ReactElement;
@@ -35,6 +36,7 @@ export default function CompositeIndexLayerToggler({
   ActiveIcon,
   InactiveIcon,
 }: Props) {
+  const { openConfirmDialog } = useConfirmDialog();
   const dispatch = useDispatch();
   const indicatorLayers = useSelector(
     // @ts-ignore
@@ -81,22 +83,24 @@ export default function CompositeIndexLayerToggler({
   }, [cleanData]);
 
   const handleActiveClick = () => {
+    if (!enabled) return;
     if (JSON.stringify(cleanData) !== lastData) {
-      if (
-        window.confirm(
-          "You still have unsaved changes, do you want to discard them?",
-        )
-      ) {
-      } else {
-        return;
-      }
-    }
-    if (enabled) {
-      disabledCompositeLayer(
-        dispatch,
-        indicatorLayers,
-        indicatorLayersStructure,
-      );
+      openConfirmDialog({
+        header: "Cancel confirmation",
+        onConfirmed: async () => {
+          disabledCompositeLayer(
+            dispatch,
+            indicatorLayers,
+            indicatorLayersStructure,
+          );
+        },
+        onRejected: () => {},
+        children: (
+          <div>
+            You still have unsaved changes, do you want to discard them?
+          </div>
+        ),
+      });
     }
   };
   const handleInactiveClick = async () => {

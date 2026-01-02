@@ -145,10 +145,8 @@ test.describe('Composite index layer', () => {
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 1').click();
 
     // Check the config
-    page.on('dialog', async dialog => {
-      await dialog.accept();
-    });
     await page.getByTitle('Deactivate composite index').click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await page.getByTitle('Activate composite index layer').click();
     await page.getByRole('checkbox', { name: 'Sample Indicator B' }).check();
     await page.getByRole('treeitem', { name: 'Composite Index Layer' }).locator('.CogIcon').click();
