@@ -41,7 +41,12 @@ class BaseIndicatorValueApi(FilteredAPI):
     extra_exclude_fields = []
 
     def get_queryset(self):
-        """Return indicator value with geo."""
+        """
+        Retrieve a filtered queryset of indicator values based on permissions.
+
+        :return: The filtered queryset of indicator values.
+        :rtype: QuerySet
+        """
         query = None
         is_admin = False
         try:
