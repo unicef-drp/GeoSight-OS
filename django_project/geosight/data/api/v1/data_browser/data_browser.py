@@ -46,6 +46,7 @@ class BaseDataBrowserApiList(
         'time', 'geometry_code'
     ]
     extra_exclude_fields = ['permission']
+    default_sort = 'id'
 
     def get_serializer(self, *args, **kwargs):
         """Return the serializer instance."""

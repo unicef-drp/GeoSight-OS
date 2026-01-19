@@ -39,6 +39,7 @@ class BaseIndicatorValueApi(FilteredAPI):
     model = IndicatorValue
     filter_query_exclude = BaseApiV1.non_filtered_keys
     extra_exclude_fields = []
+    default_sort = None
 
     def get_queryset(self):
         """
@@ -73,6 +74,6 @@ class BaseIndicatorValueApi(FilteredAPI):
         # Filter by parameters
         query = self.filter_query(
             self.request, query, self.filter_query_exclude,
-            sort='id'
+            sort=self.default_sort
         )
         return query
