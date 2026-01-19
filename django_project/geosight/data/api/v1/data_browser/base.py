@@ -67,6 +67,7 @@ class BaseIndicatorValueApi(FilteredAPI):
 
         # Filter by parameters
         query = self.filter_query(
-            self.request, query, self.filter_query_exclude
+            self.request, query, self.filter_query_exclude,
+            sort='id'
         )
         return query
