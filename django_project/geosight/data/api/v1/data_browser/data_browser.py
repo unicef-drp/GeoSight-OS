@@ -49,7 +49,24 @@ class BaseDataBrowserApiList(
     default_sort = 'id'
 
     def get_serializer(self, *args, **kwargs):
-        """Return the serializer instance."""
+        """
+        Return the serializer instance with adjusted fields or exclusions.
+
+        This method determines the serializer class and context, and modifies 
+        the fields or exclusions based on the request parameters. It supports 
+        dynamic inclusion or exclusion of fields for the 'list' action.
+
+        :param args: Positional arguments passed to the serializer.
+        :param kwargs: Keyword arguments passed to the serializer.
+            - 'fields': A comma-separated list of fields to include in the 
+              serializer.
+            - 'exclude': A list of fields to exclude from the serializer.
+            - 'extra_fields': A comma-separated list of fields to include even 
+              if they are in the exclusion list.
+
+        :return: An instance of the serializer class.
+        :rtype: Serializer
+        """
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
 
@@ -76,7 +93,19 @@ class DataBrowserApiList(
     """Return Data List API List."""
 
     def get_serializer(self, *args, **kwargs):
-        """Return serializer of data."""
+        """
+        Return the serializer for the data.
+
+        If the 'detail' query parameter in the request is not set to 'true',
+        the 'permission' field will be excluded from the serializer.
+
+        :param args: Positional arguments passed to the serializer.
+        :param kwargs: Keyword arguments passed to the serializer. If 'detail'
+            is not 'true', the 'exclude' key will be set to exclude
+            the 'permission' field.
+        :return: An instance of the serializer class with the provided context
+            and arguments.
+        """
         if not string_is_true(self.request.GET.get('detail', 'false')):
             kwargs['exclude'] = ['permission']
         serializer_class = self.get_serializer_class()
@@ -84,7 +113,16 @@ class DataBrowserApiList(
         return serializer_class(*args, **kwargs)
 
     def get_serializer_context(self):
-        """For serializer context."""
+        """
+        Extend the serializer context with additional data.
+
+        This method overrides the `get_serializer_context` method to include
+        the current user in the serializer context.
+
+        Returns:
+            dict: The updated serializer context containing the default context
+            and the current user.
+        """
         context = super().get_serializer_context()
         context.update({"user": self.request.user})
         return context
@@ -104,7 +142,20 @@ class DataBrowserApiList(
         ]
     )
     def list(self, request, *args, **kwargs):
-        """List of dashboard."""
+        """
+        List of dashboard.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :param args: Additional positional arguments.
+        :type args: tuple
+        :param kwargs: Additional keyword arguments.
+        :type kwargs: dict
+        :return: The HTTP response containing the list of dashboard data or
+            a bad request response.
+        :rtype: HttpResponse
+        :raises SuspiciousOperation: If a suspicious operation is detected.
+        """
         try:
             return super().list(request, *args, **kwargs)
         except SuspiciousOperation as e:
@@ -121,7 +172,25 @@ class DataBrowserApiList(
         }
     )
     def post(self, request):
-        """Post new value."""
+        """
+        Handle POST request to save a new value for an indicator.
+
+        :param request: The HTTP request object containing the data payload.
+        :type request: HttpRequest
+
+        :raises HttpResponseBadRequest: If `indicator_id` or
+            `indicator_shortcode` is not provided in the payload.
+        :raises HttpResponseBadRequest: If the specified indicator
+            does not exist.
+        :raises HttpResponseBadRequest: If a required key is missing
+            in the payload.
+        :raises HttpResponseBadRequest: For any other exceptions that
+            occur during processing.
+
+        :return: HTTP response with status 201 if
+            the value is successfully saved.
+        :rtype: Response
+        """
         try:
             data = request.data
             if not data.get('indicator_id', 0) and not data.get(
@@ -157,7 +226,24 @@ class DataBrowserApiList(
 
     @swagger_auto_schema(auto_schema=None)
     def put(self, request):
-        """Batch update value of data."""
+        """
+        Batch update the value of data.
+
+        This method processes a batch update request for
+        `IndicatorValue` objects. It validates the data, checks user
+        permissions, and updates the values accordingly.
+
+        :param request: The HTTP request object containing
+            the batch update data.
+        :type request: HttpRequest
+
+        :raises HttpResponseBadRequest: If the `data` key is missing
+            in the payload or if an `IndicatorValueRejectedError` occurs.
+
+        :return: A response indicating the success or
+            failure of the operation.
+        :rtype: Response
+        """
         try:
             data = request.data
             try:
@@ -191,7 +277,23 @@ class DataBrowserApiList(
         Meta.delete_body,
     )
     def delete(self, request):
-        """Batch delete data."""
+        """
+        Batch delete data.
+
+        This method deletes multiple `IndicatorValue` objects based on
+            the provided IDs. It checks if the user has the necessary
+            permissions to delete each object before performing the deletion.
+
+        :param request: The HTTP request object containing the data. 
+            The `ids` field in the request data should contain
+            a list of IDs to delete.
+        :type request: rest_framework.request.Request
+        :return: An HTTP response with a 204 No Content status on
+            successful deletion.
+        :rtype: rest_framework.response.Response
+        :raises TypeError: If the `ids` field in the request data is
+            not properly formatted.
+        """
         try:
             ids = json.loads(request.data['ids'])
         except TypeError:
@@ -203,32 +305,71 @@ class DataBrowserApiList(
 
     @swagger_auto_schema(auto_schema=None)
     def retrieve(self, request, pk=None):
-        """Return detailed of code list."""
+        """
+        Retrieve detailed information of a code list.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :param pk: The primary key of the code list to retrieve,
+            defaults to None.
+        :type pk: int or None
+        :return: The detailed information of the code list.
+        :rtype: Response
+        """
         return super().retrieve(request, pk=pk)
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def ids(self, request):
-        """Get ids of data."""
+        """
+        Retrieve IDs of data.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: A response containing the IDs of the data.
+        :rtype: HttpResponse
+        """
         return super().ids(request)
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def values_string(self, request):
-        """Get value list of string of data."""
+        """
+        Get a list of string values of data.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: A list of string values.
+        :rtype: list
+        """
         return super().values_string(request)
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def values(self, request):
-        """Get values of data."""
+        """
+        Retrieve values of data.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: The values of the data.
+        :rtype: Any
+        """
         return super().values(request)
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def statistic(self, request):
-        """Get statistic of data.
+        """
+        Get statistics of data.
 
-        It returns {min, max, avg}
+        This method retrieves statistical information about the data,
+        including the minimum, maximum, and average values.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: A dictionary containing the statistical data
+            with keys 'min', 'max', and 'avg'.
+        :rtype: dict
         """
         return super().statistic(request)
