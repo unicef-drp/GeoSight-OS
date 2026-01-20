@@ -52,17 +52,19 @@ class BaseDataBrowserApiList(
         """
         Return the serializer instance with adjusted fields or exclusions.
 
-        This method determines the serializer class and context, and modifies 
-        the fields or exclusions based on the request parameters. It supports 
+        This method determines the serializer class and context, and modifies
+        the fields or exclusions based on the request parameters. It supports
         dynamic inclusion or exclusion of fields for the 'list' action.
 
-        :param args: Positional arguments passed to the serializer.
-        :param kwargs: Keyword arguments passed to the serializer.
-            - 'fields': A comma-separated list of fields to include in the 
+        :param *args: Positional arguments passed to the serializer.
+        :type *args: tuple
+        :param **kwargs: Keyword arguments passed to the serializer.
+            - 'fields': A comma-separated list of fields to include in the
               serializer.
             - 'exclude': A list of fields to exclude from the serializer.
-            - 'extra_fields': A comma-separated list of fields to include even 
+            - 'extra_fields': A comma-separated list of fields to include even
               if they are in the exclusion list.
+        :type **kwargs: dict
 
         :return: An instance of the serializer class.
         :rtype: Serializer
@@ -99,12 +101,15 @@ class DataBrowserApiList(
         If the 'detail' query parameter in the request is not set to 'true',
         the 'permission' field will be excluded from the serializer.
 
-        :param args: Positional arguments passed to the serializer.
-        :param kwargs: Keyword arguments passed to the serializer. If 'detail'
-            is not 'true', the 'exclude' key will be set to exclude
-            the 'permission' field.
+        :param *args: Positional arguments passed to the serializer.
+        :type *args: tuple
+        :param **kwargs: Keyword arguments passed to the serializer.
+            If 'detail' is not 'true', the 'exclude' key will be set to
+            exclude the 'permission' field.
+        :type **kwargs: dict
         :return: An instance of the serializer class with the provided context
             and arguments.
+        :rtype: Serializer
         """
         if not string_is_true(self.request.GET.get('detail', 'false')):
             kwargs['exclude'] = ['permission']
@@ -119,9 +124,9 @@ class DataBrowserApiList(
         This method overrides the `get_serializer_context` method to include
         the current user in the serializer context.
 
-        Returns:
-            dict: The updated serializer context containing the default context
+        :return: The updated serializer context containing the default context
             and the current user.
+        :rtype: dict
         """
         context = super().get_serializer_context()
         context.update({"user": self.request.user})
@@ -147,14 +152,13 @@ class DataBrowserApiList(
 
         :param request: The HTTP request object.
         :type request: HttpRequest
-        :param args: Additional positional arguments.
-        :type args: tuple
-        :param kwargs: Additional keyword arguments.
-        :type kwargs: dict
+        :param *args: Additional positional arguments.
+        :type *args: tuple
+        :param **kwargs: Additional keyword arguments.
+        :type **kwargs: dict
         :return: The HTTP response containing the list of dashboard data or
             a bad request response.
         :rtype: HttpResponse
-        :raises SuspiciousOperation: If a suspicious operation is detected.
         """
         try:
             return super().list(request, *args, **kwargs)
@@ -177,16 +181,6 @@ class DataBrowserApiList(
 
         :param request: The HTTP request object containing the data payload.
         :type request: HttpRequest
-
-        :raises HttpResponseBadRequest: If `indicator_id` or
-            `indicator_shortcode` is not provided in the payload.
-        :raises HttpResponseBadRequest: If the specified indicator
-            does not exist.
-        :raises HttpResponseBadRequest: If a required key is missing
-            in the payload.
-        :raises HttpResponseBadRequest: For any other exceptions that
-            occur during processing.
-
         :return: HTTP response with status 201 if
             the value is successfully saved.
         :rtype: Response
@@ -236,10 +230,6 @@ class DataBrowserApiList(
         :param request: The HTTP request object containing
             the batch update data.
         :type request: HttpRequest
-
-        :raises HttpResponseBadRequest: If the `data` key is missing
-            in the payload or if an `IndicatorValueRejectedError` occurs.
-
         :return: A response indicating the success or
             failure of the operation.
         :rtype: Response
@@ -284,15 +274,13 @@ class DataBrowserApiList(
             the provided IDs. It checks if the user has the necessary
             permissions to delete each object before performing the deletion.
 
-        :param request: The HTTP request object containing the data. 
+        :param request: The HTTP request object containing the data.
             The `ids` field in the request data should contain
             a list of IDs to delete.
         :type request: rest_framework.request.Request
         :return: An HTTP response with a 204 No Content status on
             successful deletion.
         :rtype: rest_framework.response.Response
-        :raises TypeError: If the `ids` field in the request data is
-            not properly formatted.
         """
         try:
             ids = json.loads(request.data['ids'])
