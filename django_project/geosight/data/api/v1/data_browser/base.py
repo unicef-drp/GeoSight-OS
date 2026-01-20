@@ -39,9 +39,15 @@ class BaseIndicatorValueApi(FilteredAPI):
     model = IndicatorValue
     filter_query_exclude = BaseApiV1.non_filtered_keys
     extra_exclude_fields = []
+    default_sort = None
 
     def get_queryset(self):
-        """Return indicator value with geo."""
+        """
+        Retrieve a filtered queryset of indicator values based on permissions.
+
+        :return: The filtered queryset of indicator values.
+        :rtype: QuerySet
+        """
         query = None
         is_admin = False
         try:
@@ -67,6 +73,7 @@ class BaseIndicatorValueApi(FilteredAPI):
 
         # Filter by parameters
         query = self.filter_query(
-            self.request, query, self.filter_query_exclude
+            self.request, query, self.filter_query_exclude,
+            sort=self.default_sort
         )
         return query
