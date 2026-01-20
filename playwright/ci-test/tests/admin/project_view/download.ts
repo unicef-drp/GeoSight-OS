@@ -163,10 +163,10 @@ test.describe('Download feature project', () => {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const jsonData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    await expectExcel(jsonData[0], output[0])
-    await expectExcel(jsonData[1], output[1])
-    await expectExcel(jsonData[2], output[2])
-    await expectExcel(jsonData[3], output[3])
+    await expectExcel(jsonData[0], output[3])
+    await expectExcel(jsonData[1], output[2])
+    await expectExcel(jsonData[2], output[1])
+    await expectExcel(jsonData[3], output[0])
     await expectExcel(jsonData[372], output[4])
     await expectExcel(jsonData[373], output[5])
     await expectExcel(jsonData[374], output[6])
@@ -188,10 +188,10 @@ test.describe('Download feature project', () => {
         await expect(first[field]).toEqual(second[field]);
       }
     }
-    await compare(geojson.features[0].properties, output[0])
-    await compare(geojson.features[1].properties, output[1])
-    await compare(geojson.features[2].properties, output[2])
-    await compare(geojson.features[3].properties, output[3])
+    await compare(geojson.features[0].properties, output[3])
+    await compare(geojson.features[1].properties, output[2])
+    await compare(geojson.features[2].properties, output[1])
+    await compare(geojson.features[3].properties, output[0])
     await compare(geojson.features[372].properties, output[4])
     await compare(geojson.features[373].properties, output[5])
     await compare(geojson.features[374].properties, output[6])
