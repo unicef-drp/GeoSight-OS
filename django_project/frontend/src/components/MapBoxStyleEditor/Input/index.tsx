@@ -159,13 +159,19 @@ export function ColorSelectorStyle({
         </label>
       </div>
       <div>
-        <ColorSelector
-          color={value}
-          onChange={(evt) => {
-            if (value === evt.target.value) return;
-            setValue(evt.target.value);
-          }}
-        />
+        {typeof inputValue === "string" ? (
+          <ColorSelector
+            color={value}
+            onChange={(evt) => {
+              if (value === evt.target.value) return;
+              setValue(evt.target.value);
+            }}
+          />
+        ) : (
+          <div style={{ color: "#666", fontStyle: "italic" }}>
+            {t("admin.complexColorValueDetected")}
+          </div>
+        )}
       </div>
     </div>
   );

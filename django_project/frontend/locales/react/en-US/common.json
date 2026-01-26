@@ -55,6 +55,7 @@
     "createNew": "Create New {{pageName}}",
     "edit": "Edit",
     "deleteConfirmationMessage": "Are you sure want to delete {{item}}?",
+    "complexColorValueDetected": "Complex color value detected. Please edit in raw input mode.",
     "pageNameFormats": {
       "singular": {
         "dashboard": "Project",
