@@ -55,6 +55,7 @@
     "createNew": "Crear Nuevo {{pageName}}",
     "edit": "Editar",
     "deleteConfirmationMessage": "¿Estás seguro de querer eliminar {{item}}?",
+    "complexColorValueDetected": "Valor de color complejo detectado. Por favor edite en modo de entrada sin procesar.",
     "pageNameFormats": {
       "singular": {
         "dashboard": "Proyecto",
