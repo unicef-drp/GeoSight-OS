@@ -176,3 +176,7 @@ services:
       - LOGROTATE_COPIES=${LOGROTATE_COPIES:-14}
       - LOGROTATE_SIZE=${LOGROTATE_SIZE:-10M}
       - LOGROTATE_INTERVAL=${LOGROTATE_INTERVAL:-daily}
+      # Logrotate cron schedule to override LOGROTATE_INTERVAL (optional)
+      # Format go-cron 6-field: second minute hour day month weekday
+      # e.g. 0 */15 * * * * for every 15 minutes
+      - LOGROTATE_CRONSCHEDULE=${LOGROTATE_CRONSCHEDULE}
