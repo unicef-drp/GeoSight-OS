@@ -10,20 +10,13 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
-__author__ = 'irwan@kartoza.com'
-__date__ = '20/08/2024'
+__author__ = 'danang@kartoza.com'
+__date__ = '22/10/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-PROJECT_APPS = [
-    # Project specified
-    'azure_auth',
-    'core',
-    'docs',
-    'geosight.data',
-    'geosight.georepo',
-    'geosight.permission',
-    'geosight.importer',
-    'geosight.log',
-    'geosight.health',
-    'frontend'
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('ready/', views.readiness_probe, name='health-readiness'),
 ]
