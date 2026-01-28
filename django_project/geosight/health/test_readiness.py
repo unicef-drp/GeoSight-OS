@@ -14,11 +14,13 @@ __author__ = 'danang@kartoza.com'
 __date__ = '22/10/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from django.urls import reverse
 from django.core.cache import cache
 from unittest.mock import patch, MagicMock
 import tempfile
+
+from core.tests.base_tests import APITestCase
 
 
 @override_settings(
@@ -29,7 +31,7 @@ import tempfile
         }
     }
 )
-class ReadinessProbeTest(TestCase):
+class ReadinessProbeTest(APITestCase):
     """Test suite for readiness probe endpoint."""
 
     def setUp(self):
@@ -64,7 +66,7 @@ class ReadinessProbeTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()['checks']['database'])
 
-    @patch('health.views.connection')
+    @patch('geosight.health.views.connection')
     def test_database_check_fails(self, mock_connection):
         """Test readiness probe fails when database is down.
 
@@ -90,7 +92,7 @@ class ReadinessProbeTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()['checks']['redis'])
 
-    @patch('health.views.cache')
+    @patch('geosight.health.views.cache')
     def test_redis_check_fails_on_set(self, mock_cache):
         """Test readiness probe fails when Redis set operation fails.
 
@@ -103,7 +105,7 @@ class ReadinessProbeTest(TestCase):
         self.assertEqual(response.json()['status'], 'not ready')
         self.assertFalse(response.json()['checks']['redis'])
 
-    @patch('health.views.cache')
+    @patch('geosight.health.views.cache')
     def test_redis_check_fails_on_get(self, mock_cache):
         """Test readiness probe fails when Redis get returns wrong value.
 
@@ -129,7 +131,7 @@ class ReadinessProbeTest(TestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertTrue(response.json()['checks']['storage'])
 
-    @patch('health.views.shutil.disk_usage')
+    @patch('geosight.health.views.shutil.disk_usage')
     def test_storage_check_fails_when_usage_exceeds_threshold(
         self, mock_disk_usage
     ):
@@ -154,7 +156,7 @@ class ReadinessProbeTest(TestCase):
                 self.assertEqual(response.json()['status'], 'not ready')
                 self.assertFalse(response.json()['checks']['storage'])
 
-    @patch('health.views.shutil.disk_usage')
+    @patch('geosight.health.views.shutil.disk_usage')
     def test_storage_check_passes_at_threshold_boundary(self, mock_disk_usage):
         """Test storage check passes when exactly at 98% (not exceeding).
 
@@ -171,7 +173,7 @@ class ReadinessProbeTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()['checks']['storage'])
 
-    @patch('health.views.shutil.disk_usage')
+    @patch('geosight.health.views.shutil.disk_usage')
     def test_storage_check_with_custom_threshold(self, mock_disk_usage):
         """Test storage check respects custom threshold setting.
 
@@ -194,8 +196,8 @@ class ReadinessProbeTest(TestCase):
                 self.assertEqual(response.status_code, 503)
                 self.assertFalse(response.json()['checks']['storage'])
 
-    @patch('health.views.connection')
-    @patch('health.views.cache')
+    @patch('geosight.health.views.connection')
+    @patch('geosight.health.views.cache')
     def test_multiple_checks_fail(self, mock_cache, mock_connection):
         """Test readiness probe when multiple checks fail.
 
