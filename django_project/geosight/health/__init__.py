@@ -10,20 +10,18 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
-__author__ = 'irwan@kartoza.com'
-__date__ = '20/08/2024'
+__author__ = 'danang@kartoza.com'
+__date__ = '22/10/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-PROJECT_APPS = [
-    # Project specified
-    'azure_auth',
-    'core',
-    'docs',
-    'geosight.data',
-    'geosight.georepo',
-    'geosight.permission',
-    'geosight.importer',
-    'geosight.log',
-    'geosight.health',
-    'frontend'
-]
+from django.apps import AppConfig
+
+
+class Config(AppConfig):
+    """Health check application configuration."""
+
+    label = 'geosight_health'
+    name = 'geosight.health'
+    verbose_name = "GeoSight Health"
+
+default_app_config = 'geosight.health.Config'
