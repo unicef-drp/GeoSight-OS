@@ -186,6 +186,16 @@ function receive(data, error = null) {
         delete widget.config.geographicalUnitList;
       }
     });
+
+    // Min and Max zoom
+    if (!data.minZoom) {
+      data.minZoom = data.min_zoom;
+      delete data.min_zoom;
+    }
+    if (!data.maxZoom) {
+      data.maxZoom = data.max_zoom;
+      delete data.max_zoom;
+    }
   }
 
   return {

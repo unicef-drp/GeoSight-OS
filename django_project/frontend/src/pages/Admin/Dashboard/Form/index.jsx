@@ -204,6 +204,8 @@ export function DashboardSaveForm() {
     widgets,
     widgetsStructure,
     extent,
+    minZoom,
+    maxZoom,
     filters,
     filtersAllowModify,
     filtersBeingHidden,
@@ -255,6 +257,12 @@ export function DashboardSaveForm() {
     }
     if (basemapsLayers.length === 0) {
       errors.push("Basemap is empty, please select one or more basemap.");
+    }
+    if (minZoom > maxZoom) {
+      errors.push("Min zoom level cannot be higher than max zoom level.");
+    }
+    if (maxZoom > 24 || minZoom < 0) {
+      errors.push("Zoom level should be between 0 and 24.");
     }
 
     // Submit dashboard
@@ -326,6 +334,8 @@ export function DashboardSaveForm() {
           };
         }),
         extent: extent,
+        min_zoom: minZoom,
+        max_zoom: maxZoom,
         widgets: widgets,
         widgets_structure: widgetsStructure,
         filters: filters,
