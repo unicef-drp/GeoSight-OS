@@ -214,6 +214,8 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
                 pref.show_last_known_value_in_range,
             'default_interval': pref.default_interval,
         })
+        self.assertEqual(data['min_zoom'], 0)
+        self.assertEqual(data['max_zoom'], 24)
 
         # Test from updates site preferences
         pref.fit_to_current_indicator_range = True
