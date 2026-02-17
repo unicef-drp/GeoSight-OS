@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import copy
 import json
+
 from cloud_native_gis.models.layer import Layer
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -98,7 +99,7 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
             content_type=self.JSON_CONTENT
         )
         self.assertRequestPostView(
-            url, 400,
+            url, 201,
             user=self.creator,
             data={
                 "name": 'New name',
@@ -121,6 +122,23 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
             content_type=self.JSON_CONTENT
         )
         obj = ContextLayer.objects.get(id=response.json()['id'])
+
+        # Now we update using the API
+        # But no cloud_native_gis_layer_id
+        patch_data = response.json()
+        patch_url = reverse('context-layers-detail', args=(obj.id,))
+        patch_data['cloud_native_gis_layer_id'] = None
+        patch_response = self.assertRequestPutView(
+            patch_url, 400,
+            user=self.creator,
+            data=patch_data,
+            content_type=self.JSON_CONTENT
+        )
+        self.assertEqual(
+            patch_response.json()['cloud_native_gis_layer_id'],
+            ['This field is required.']
+        )
+
         self.assertEqual(obj.name, 'New name')
         self.assertEqual(response.json()['name'], 'New name')
         self.assertEqual(obj.layer_type, LayerType.CLOUD_NATIVE_GIS_LAYER)

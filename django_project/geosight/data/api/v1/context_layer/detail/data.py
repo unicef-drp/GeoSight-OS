@@ -14,6 +14,7 @@ __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import os
+
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.models.layer_download import LayerDownload
 from cloud_native_gis.utils.connection import fields
@@ -360,13 +361,19 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         # Schedule async task
         layer_download.schedule_task()
 
+        absolute_url = request.build_absolute_uri(
+            f'/cloud-native-gis/api/download/{layer_download.unique_id}/'
+        )
+
         # If not cloud native layer, return error
         return JsonResponse(
             {
                 "uuid": layer_download.unique_id,
-                "path": (
-                    f'/cloud-native-gis/api/download/'
-                    f'{layer_download.unique_id}/'
+                "path": absolute_url,
+                "status": "pending",
+                "note": (
+                    "Download will be ready shortly using path provided. "
+                    "Please check path periodically until download is ready."
                 )
             }
         )
