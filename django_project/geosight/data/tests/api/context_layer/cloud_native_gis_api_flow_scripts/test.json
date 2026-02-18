@@ -1,0 +1,75 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Central Hospital",
+        "amenity": "hospital",
+        "capacity": 500,
+        "status": "operational",
+        "region": "north"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [45.3, 2.05]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Riverside Clinic",
+        "amenity": "clinic",
+        "capacity": 50,
+        "status": "operational",
+        "region": "south"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [45.35, 2.1]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hilltop Health Post",
+        "amenity": "health_post",
+        "capacity": 20,
+        "status": "under_construction",
+        "region": "north"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [44.9, 2.3]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Market Square Pharmacy",
+        "amenity": "pharmacy",
+        "capacity": 10,
+        "status": "operational",
+        "region": "east"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [45.5, 1.95]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lakeside Clinic",
+        "amenity": "clinic",
+        "capacity": 75,
+        "status": "closed",
+        "region": "west"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [44.8, 2.15]
+      }
+    }
+  ]
+}
