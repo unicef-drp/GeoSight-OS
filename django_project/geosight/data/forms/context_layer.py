@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+
 from django import forms
 from django.conf import settings
 from django.forms.models import model_to_dict
@@ -27,7 +28,7 @@ from geosight.data.models.related_table import RelatedTable
 
 
 class ContextLayerBatchForm(forms.ModelForm):
-    """ContextLayer form."""
+    """Batch form for :class:`ContextLayer`."""
 
     group = forms.ChoiceField(
         label='Category',
@@ -46,7 +47,12 @@ class ContextLayerBatchForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):  # noqa
-        """Initialize the form."""
+        """
+        Initialize the form.
+
+        :param args: Positional arguments passed to the parent form.
+        :param kwargs: Keyword arguments passed to the parent form.
+        """
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
             (group.name, group.name)
@@ -74,7 +80,7 @@ class ContextLayerBatchForm(forms.ModelForm):
 
 
 class ContextLayerForm(forms.ModelForm):
-    """ContextLayer form."""
+    """Form for :class:`ContextLayer`."""
 
     group = forms.ChoiceField(
         label='Category',
@@ -116,7 +122,12 @@ class ContextLayerForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):  # noqa
-        """Initialize the form."""
+        """
+        Initialize the form.
+
+        :param args: Positional arguments passed to the parent form.
+        :param kwargs: Keyword arguments passed to the parent form.
+        """
         try:
             args[0]['group'] = args[0]['category']
         except Exception:
@@ -272,6 +283,7 @@ class ContextLayerForm(forms.ModelForm):
             initial['data_fields'] = ''
         return initial
 
+
 class ContextLayerFrontendForm(ContextLayerForm):
     """ContextLayer frontend form."""
 
@@ -279,8 +291,12 @@ class ContextLayerFrontendForm(ContextLayerForm):
         """
         Validate the form data.
 
-        Adds a field error to ``cloud_native_gis_layer_id`` if layer_type
-        is CLOUD_NATIVE_GIS_LAYER but the field is not provided.
+        Adds a field error to ``cloud_native_gis_layer_id`` if
+        ``layer_type`` is ``CLOUD_NATIVE_GIS_LAYER`` but the field
+        is not provided.
+
+        :return: The cleaned form data.
+        :rtype: dict
         """
         cleaned_data = super().clean()
         if (
