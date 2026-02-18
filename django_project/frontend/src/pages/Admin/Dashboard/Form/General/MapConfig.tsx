@@ -37,6 +37,10 @@ const MapConfig = memo(({}: Props) => {
     let id = useSelector(state => state.dashboard.data?.id);
     // @ts-ignore
     let extent = useSelector(state => state.dashboard.data?.extent);
+    // @ts-ignore
+    const minZoomConfig = useSelector(state => state.dashboard.data?.minZoom);
+    // @ts-ignore
+    const maxZoomConfig = useSelector(state => state.dashboard.data?.maxZoom);
 
     const {
       identifier
@@ -53,6 +57,8 @@ const MapConfig = memo(({}: Props) => {
     // east = extent[2];
     // north = extent[3];
     const [editedExtent, setEditedExtent] = useState<Extent>(extent);
+    const [editedMinZoom, setEditedMinZoom] = useState(minZoomConfig);
+    const [editedMaxZoom, setEditedMaxZoom] = useState(maxZoomConfig);
 
     // @ts-ignore
     const referenceLayerData = useSelector(state => state.referenceLayerData[identifier]);
@@ -64,10 +70,11 @@ const MapConfig = memo(({}: Props) => {
           // @ts-ignore
           'MapConfig', {
             center: [0, 0],
-            zoom: 6,
+            zoom: minZoomConfig > 6 ? minZoomConfig : 6,
             zoomControl: false,
             // @ts-ignore
-            maxZoom: maxZoom,
+            maxZoom: maxZoomConfig,
+            minZoom: minZoomConfig,
             // @ts-ignore
             noWrap: true
           }
@@ -189,12 +196,46 @@ const MapConfig = memo(({}: Props) => {
       []
     );
 
+    const update = useMemo(
+        () =>
+          debounce((key, newValue) => {
+            let shouldUpdate = false;
+            if (key === "minZoom") {
+              shouldUpdate = minZoomConfig !== newValue;
+            } else if (key === "maxZoom") {
+              shouldUpdate = maxZoomConfig !== newValue;
+            }
+
+            if (shouldUpdate) {
+              const props: any = {};
+              props[key] = newValue;
+              dispatcher(Actions.Dashboard.updateProps(props));
+            }
+          }, 400),
+        [],
+      );
+
     /** Extent update **/
     useEffect(() => {
       if (map) {
         extentUpdate(editedExtent)
       }
     }, [editedExtent]);
+
+    /** Min and Max zoom update **/
+    useEffect(() => {
+      if (map) {
+        map.setMinZoom(editedMinZoom);
+        update("minZoom", editedMinZoom);
+      }
+    }, [editedMinZoom]);
+
+    useEffect(() => {
+      if (map) {
+        map.setMaxZoom(editedMaxZoom);
+        update("maxZoom", editedMaxZoom);
+      }
+    }, [editedMaxZoom]);
 
     return <div className='ExtentConfig'>
       <div className='ExtentInput'>
@@ -250,6 +291,32 @@ const MapConfig = memo(({}: Props) => {
                 )
               }
             }} type="number" min={-90} max={90}/>
+          <br/>
+          <br/>
+          <div className="ExtentZoomInput">
+            <div>
+              Min Zoom
+              <input
+                value={editedMinZoom}
+                onChange={(event) => {
+                  const value = parseInt(event.target.value)
+                  if (!isNaN(value)) {
+                    setEditedMinZoom(value)
+                  }
+                }} type="number" min={0} max={14}/>
+            </div>
+            <div>
+              Max Zoom
+              <input
+                value={editedMaxZoom}
+                onChange={(event) => {
+                  const value = parseInt(event.target.value)
+                  if (!isNaN(value)) {
+                    setEditedMaxZoom(value)
+                  }
+              }} type="number" min={0} max={14}/>
+            </div>
+          </div>
         </div>
       </div>
     </div>

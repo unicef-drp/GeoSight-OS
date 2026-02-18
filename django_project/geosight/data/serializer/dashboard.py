@@ -46,6 +46,8 @@ class DashboardSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     widgets = serializers.SerializerMethodField()
     extent = serializers.SerializerMethodField()
+    min_zoom = serializers.SerializerMethodField()
+    max_zoom = serializers.SerializerMethodField()
     reference_layer = serializers.SerializerMethodField()
 
     indicators = serializers.SerializerMethodField()
@@ -127,6 +129,28 @@ class DashboardSerializer(serializers.ModelSerializer):
         :rtype: list[float]
         """
         return obj.extent.extent if obj.extent else [-100, -60, 100, 60]
+
+    def get_min_zoom(self, obj: Dashboard):
+        """
+        Return the minimum zoom level for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The minimum zoom level, or 0 if not set.
+        :rtype: int
+        """
+        return obj.min_zoom if obj.min_zoom is not None else 0
+
+    def get_max_zoom(self, obj: Dashboard):
+        """
+        Return the maximum zoom level for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The maximum zoom level, or 24 if not set.
+        :rtype: int
+        """
+        return obj.max_zoom if obj.max_zoom is not None else 24
 
     def get_reference_layer(self, obj: Dashboard):
         """
@@ -454,7 +478,7 @@ class DashboardSerializer(serializers.ModelSerializer):
         model = Dashboard
         fields = (
             'id', 'slug', 'icon', 'name', 'description',
-            'category', 'group', 'extent',
+            'category', 'group', 'extent', 'min_zoom', 'max_zoom',
             'reference_layer', 'level_config',
             'indicators', 'indicator_layers', 'indicator_layers_structure',
             'context_layers', 'context_layers_structure',

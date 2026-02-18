@@ -76,6 +76,14 @@ class Dashboard(
             'Extent of the dashboard. If empty, it is the whole map'
         )
     )
+    min_zoom = models.IntegerField(
+        null=True, blank=True,
+        help_text=_('Minimum zoom level for the dashboard')
+    )
+    max_zoom = models.IntegerField(
+        null=True, blank=True,
+        help_text=_('Maximum zoom level for the dashboard')
+    )
     geo_field = models.CharField(
         max_length=64,
         default='geometry_code'

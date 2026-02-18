@@ -80,6 +80,8 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
   const extent = useSelector((state) => state.dashboard.data.extent);
+  const minZoomConfig = useSelector((state) => state.dashboard.data.minZoom);
+  const maxZoomConfig = useSelector((state) => state.dashboard.data.maxZoom);
   const { basemapLayer, is3dMode, position, force } = useSelector(
     (state) => state.map,
   );
@@ -138,7 +140,9 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
           glyphs: "/static/fonts/{fontstack}/{range}.pbf",
         },
         center: [0, 0],
-        zoom: 1,
+        zoom: minZoomConfig > 1 ? minZoomConfig : 1,
+        minZoom: minZoomConfig,
+        maxZoom: maxZoomConfig,
         attributionControl: false,
       }).addControl(
         new AttributionControl({

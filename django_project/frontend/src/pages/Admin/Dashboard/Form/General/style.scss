@@ -28,6 +28,12 @@
       width: 20%;
       padding: 1rem;
       box-sizing: border-box;
+
+      .ExtentZoomInput {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
     }
 
     #MapConfig {

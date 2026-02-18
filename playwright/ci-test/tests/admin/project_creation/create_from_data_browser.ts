@@ -86,7 +86,7 @@ test.describe('Create project from dataset', () => {
     // Widget 2
     await page.getByRole('button', { name: 'Add Widget' }).click();
     await page.getByRole('textbox', { name: 'Widget name' }).fill('Widget 2');
-    await page.getByText('MAX').click();
+    await page.getByText('MAX', { exact: true }).click();
     await page.getByText('None').click();
     await page.getByText('Sync with the current map').first().click();
     await page.getByText('Sync with the current map').nth(1).click();
