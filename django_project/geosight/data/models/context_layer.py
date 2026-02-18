@@ -192,7 +192,7 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def clean(self):
+    def clean(self):  # noqa: DOC201
         """Clean and validate the ContextLayer model instance.
 
         Performs validation checks specific to ContextLayer, in addition to

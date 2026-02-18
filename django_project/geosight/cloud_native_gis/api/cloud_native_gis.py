@@ -51,7 +51,14 @@ class CloudNativeGISLayerUploadCreate(APIView):
     )
 
     def post(self, request):
-        """Post file."""
+        """
+        Upload a file and create a new Cloud Native GIS layer.
+
+        :param request: The HTTP request containing the uploaded file.
+        :type request: rest_framework.request.Request
+        :return: The ID of the newly created layer.
+        :rtype: rest_framework.response.Response
+        """
         unique_id = uuid.uuid4()
         layer = Layer.objects.create(
             unique_id=unique_id,

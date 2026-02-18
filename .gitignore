@@ -1,5 +1,6 @@
 .idea
 .venv
+venv
 .env
 deployment/.env
 deployment/backups
