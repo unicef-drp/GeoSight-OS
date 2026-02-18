@@ -68,11 +68,10 @@ class ContextLayerTest(TestCase):
             layer_type=LayerType.RELATED_TABLE,
             related_table=RelatedTableF()
         )
-        with self.assertRaises(ValidationError):
-            ContextLayerF(
-                name=self.name,
-                layer_type=LayerType.CLOUD_NATIVE_GIS_LAYER
-            )
+        ContextLayerF(
+            name=self.name,
+            layer_type=LayerType.CLOUD_NATIVE_GIS_LAYER
+        )
         ContextLayerF(
             name=self.name,
             layer_type=LayerType.CLOUD_NATIVE_GIS_LAYER,

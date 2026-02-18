@@ -227,13 +227,11 @@ export const getLayer = function (
     );
 
     if (dispatch) {
-      layer.on(
-        "click",
-        function (event) {
-          dispatch(Actions.Map.updateCenter(event.latlng));
-        },
-        this,
-      );
+      const handleTap = (event) => {
+        dispatch(Actions.Map.updateCenter(event.latlng));
+      };
+      layer.on("click", handleTap, this);
+      layer.on("touchend", handleTap, this);
     }
   };
   switch (layerType) {

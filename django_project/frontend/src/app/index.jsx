@@ -22,12 +22,12 @@ import { EmbedConfig } from "../utils/embed";
 import { urlParams } from "../utils/main";
 import { ConfirmDialogProvider } from "../providers/ConfirmDialog";
 
-import './app-mobile.scss';
 import './app.scss';
 import './mui.scss';
 import './form.scss';
 import './form.small.scss';
 import '../utils/i18n.js';
+import './app-mobile.scss';
 
 
 /**

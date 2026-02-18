@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 
 from geosight.cloud_native_gis.api.cloud_native_gis import (
-    CloudNativeGISLayerUploadCreate
+    CloudNativeGISLayerUploadCreate, CloudNativeGISDownloadFileAPI
 )
 
 urlpatterns = [
@@ -26,4 +26,9 @@ urlpatterns = [
         CloudNativeGISLayerUploadCreate.as_view(),
         name='cloud-native-gis-upload-create'
     ),
+    url(
+        r'^download/(?P<unique_id>[^/]+)$',
+        CloudNativeGISDownloadFileAPI.as_view(),
+        name='cloud-native-gis-download-file-data'
+    )
 ]

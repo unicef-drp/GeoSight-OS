@@ -192,7 +192,7 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def clean(self):
+    def clean(self):  # noqa: DOC201
         """Clean and validate the ContextLayer model instance.
 
         Performs validation checks specific to ContextLayer, in addition to
@@ -205,6 +205,11 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
             If layer_type is RELATED_TABLE but no related_table is specified.
         """
         super().clean()
+
+        old_instance = None
+        if self.pk:
+            old_instance = type(self).objects.filter(pk=self.pk).first()
+
         if (
                 self.layer_type == LayerType.RELATED_TABLE and
                 not self.related_table
@@ -216,10 +221,16 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
                     )
                 }
             )
+
+        # Check if old instance has cloud native gis layer
         elif (
+                old_instance and
                 self.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER and
                 not self.cloud_native_gis_layer_id
         ):
+            if not old_instance.cloud_native_gis_layer_id:
+                return
+
             raise ValidationError(
                 {
                     'cloud_native_gis_layer_id': (

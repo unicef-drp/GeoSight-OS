@@ -285,17 +285,6 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
         self.cloud_native_layer = Layer.objects.create(
             created_by=self.creator
         )
-        self.assertRequestPostView(
-            url, 400,
-            user=self.creator,
-            data={
-                "name": 'New name',
-                "layer_type": LayerType.CLOUD_NATIVE_GIS_LAYER,
-                "category": 'Test',
-                "styles": styles
-            },
-            content_type=self.JSON_CONTENT
-        )
         response = self.assertRequestPostView(
             url, 201,
             user=self.creator,

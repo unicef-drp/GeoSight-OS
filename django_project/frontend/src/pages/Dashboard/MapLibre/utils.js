@@ -135,6 +135,7 @@ export const addPopup = (map, id, popupRenderFn) => {
   map.on("mouseleave", id, functionPopup[id].mouseleave);
 
   map.off("click", id, functionPopup[id].click);
+  map.off("touchend", id, functionPopup[id].click);
   functionPopup[id].click = function (e) {
     if (!map.drawingMode) {
       // Check the id that is the most top
@@ -187,6 +188,7 @@ export const addPopup = (map, id, popupRenderFn) => {
     }
   };
   map.on("click", id, functionPopup[id].click);
+  map.on("touchend", id, functionPopup[id].click);
 };
 /**
  * Add popup by properties
@@ -226,8 +228,10 @@ export const removeClickEvent = (map, layerId, functionId) => {
   if (functionPopup[functionId]?.click) {
     if (layerId) {
       map.off("click", layerId, functionPopup[functionId].click);
+      map.off("touchend", layerId, functionPopup[functionId].click);
     } else {
       map.off("click", functionPopup[functionId].click);
+      map.off("touchend", functionPopup[functionId].click);
     }
   }
 };
@@ -242,8 +246,10 @@ export const addClickEvent = (map, layerId, functionId, listenerFn) => {
   functionPopup[functionId].click = listenerFn;
   if (layerId) {
     map.on("click", layerId, functionPopup[functionId].click);
+    map.on("touchend", layerId, functionPopup[functionId].click);
   } else {
     map.on("click", functionPopup[functionId].click);
+    map.on("touchend", functionPopup[functionId].click);
   }
 };
 /**
@@ -264,8 +270,7 @@ export const addPopupEl = (
   el.addEventListener("mouseleave", function () {
     updateCursorOnLeave(map);
   });
-
-  el.addEventListener("click", function (e) {
+  const clickFn = function (e) {
     if (!map.drawingMode) {
       const popupHtml = popupRenderFn(properties);
       if (popup) {
@@ -276,7 +281,9 @@ export const addPopupEl = (
         .setHTML(popupHtml)
         .addTo(map);
     }
-  });
+  };
+  el.addEventListener("click", clickFn);
+  el.addEventListener("touchend", clickFn);
 };
 /*** Create element ***/
 export const createElement = (tag, options) => {

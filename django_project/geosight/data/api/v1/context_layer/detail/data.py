@@ -14,6 +14,7 @@ __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import os
+
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.models.layer_download import LayerDownload
 from cloud_native_gis.utils.connection import fields
@@ -22,6 +23,7 @@ from cloud_native_gis.utils.type import FileType
 from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.urls import reverse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from psycopg2.errors import UndefinedColumn, InvalidParameterValue
@@ -360,13 +362,21 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         # Schedule async task
         layer_download.schedule_task()
 
+        download_path = reverse(
+            'cloud-native-gis-download-file-data',
+            kwargs={'unique_id': layer_download.unique_id}
+        )
+        absolute_url = request.build_absolute_uri(download_path)
+
         # If not cloud native layer, return error
         return JsonResponse(
             {
                 "uuid": layer_download.unique_id,
-                "path": (
-                    f'/cloud-native-gis/api/download/'
-                    f'{layer_download.unique_id}/'
+                "path": absolute_url,
+                "status": "pending",
+                "note": (
+                    "Download will be ready shortly using path provided. "
+                    "Please check path periodically until download is ready."
                 )
             }
         )
