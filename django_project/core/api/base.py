@@ -57,6 +57,18 @@ class FilteredAPI(object):
             queryset = queryset.filter(queries)
         return queryset
 
+    BLOCKED_PARAM_FIELDS = {'password', 'last_login', 'is_superuser'}
+
+    @staticmethod
+    def _validate_orm_param(param):
+        """Block sensitive fields from being used in query parameters."""
+        parts = param.lstrip('-').split('__')
+        for part in parts:
+            if part in FilteredAPI.BLOCKED_PARAM_FIELDS:
+                raise SuspiciousOperation(
+                    f'Filtering on field is not allowed: {part}'
+                )
+
     def filter_query(
             self, request, query, ignores: list, fields: list = None,
             sort: str = None, distinct: str = None, none_is_null: bool = True,
@@ -145,8 +157,10 @@ class FilteredAPI(object):
 
             # Handle project filters
             if 'project_' in field:
+                derived_param = param.replace('project_', '')
+                self._validate_orm_param(derived_param)
                 projects = Dashboard.objects.filter(
-                    **{param.replace('project_', ''): value}
+                    **{derived_param: value}
                 )
                 if query.model.__name__ == "BasemapLayer":
                     value = DashboardBasemap.objects.filter(
@@ -165,10 +179,16 @@ class FilteredAPI(object):
                 except (ValueError, TypeError):
                     pass
             try:
-                if none_is_null and ('NaN' in value or 'None' in value):
+                if none_is_null and (
+                    (isinstance(value, list) and (
+                        'NaN' in value or 'None' in value
+                    )) or
+                    (isinstance(value, str) and value in ('NaN', 'None'))
+                ):
                     param = f'{field}__isnull'
                     value = True
 
+                self._validate_orm_param(param)
                 if is_equal:
                     query = query.filter(**{param: value})
                 else:
@@ -182,9 +202,13 @@ class FilteredAPI(object):
             query = self.query_search(request.GET.get('q'), query)
 
         if sort:
+            for sort_field in sort.split(','):
+                self._validate_orm_param(sort_field)
             query = query.order_by(*sort.split(','))
 
         if distinct:
+            for distinct_field in distinct.split(','):
+                self._validate_orm_param(distinct_field)
             if not sort:
                 query = query.order_by(*distinct.split(','))
             query = query.distinct(*distinct.split(','))
