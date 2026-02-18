@@ -61,7 +61,14 @@ class FilteredAPI(object):
 
     @staticmethod
     def _validate_orm_param(param):
-        """Block sensitive fields from being used in query parameters."""
+        """
+        Block sensitive fields from being used in query parameters.
+
+        :param param: The query parameter to validate.
+        :type param: str
+        :raises SuspiciousOperation:
+            If the parameter references a blocked field.
+        """
         parts = param.lstrip('-').split('__')
         for part in parts:
             if part in FilteredAPI.BLOCKED_PARAM_FIELDS:
