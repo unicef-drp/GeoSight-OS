@@ -37,6 +37,9 @@ export default function Dashboard({ children }) {
   const user_permission = useSelector(
     (state) => state.dashboard.data?.user_permission,
   );
+  const show_map_toolbar = useSelector(
+    (state) => state.dashboard.data.show_map_toolbar,
+  );
   const entitySearchEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
   );
@@ -90,7 +93,8 @@ export default function Dashboard({ children }) {
       className={
         "dashboard " +
         (leftExpanded ? "LeftExpanded" : "") +
-        (entitySearchEnable ? " EntitySearchEnable" : " EntitySearchDisable")
+        (entitySearchEnable ? " EntitySearchEnable" : " EntitySearchDisable") +
+        (show_map_toolbar ? "" : " HideToolbar")
       }
     >
       {user_permission ? (
