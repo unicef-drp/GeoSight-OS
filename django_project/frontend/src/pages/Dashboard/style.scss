@@ -157,3 +157,13 @@ html, body {
     padding: 1rem;
   }
 }
+
+.HideToolbar {
+  .Toolbar {
+    display: none;
+  }
+
+  .DashboardMiddlePanel {
+    padding-top: 0;
+  }
+}
