@@ -22,7 +22,7 @@ from frontend.views.admin.context_layer.create import (
     BaseContextLayerEditView
 )
 from geosight.data.forms.context_layer import (
-    ContextLayerForm, ContextLayerBatchForm
+    ContextLayerFrontendForm, ContextLayerBatchForm
 )
 from geosight.data.models.context_layer import ContextLayer
 from geosight.permission.access import (
@@ -90,8 +90,8 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         context.update(
             {
                 'id': instance.id,
-                'form': ContextLayerForm(
-                    initial=ContextLayerForm.model_to_initial(instance)
+                'form': ContextLayerFrontendForm(
+                    initial=ContextLayerFrontendForm.model_to_initial(instance)
                 ),
                 'permission': json.dumps(permission)
             }
@@ -116,7 +116,7 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         edit_permission_resource(instance, self.request.user)
         data = request.POST.copy()
         data['data_fields'] = request.POST.get('data_fields', '[]')
-        form = ContextLayerForm(
+        form = ContextLayerFrontendForm(
             data,
             instance=instance
         )

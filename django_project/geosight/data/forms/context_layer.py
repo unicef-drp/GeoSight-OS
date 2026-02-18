@@ -271,3 +271,25 @@ class ContextLayerForm(forms.ModelForm):
         except ContextLayerGroup.DoesNotExist:
             initial['data_fields'] = ''
         return initial
+
+class ContextLayerFrontendForm(ContextLayerForm):
+    """ContextLayer frontend form."""
+
+    def clean(self):
+        """
+        Validate the form data.
+
+        Adds a field error to ``cloud_native_gis_layer_id`` if layer_type
+        is CLOUD_NATIVE_GIS_LAYER but the field is not provided.
+        """
+        cleaned_data = super().clean()
+        if (
+                cleaned_data.get('layer_type') ==
+                LayerType.CLOUD_NATIVE_GIS_LAYER and
+                not cleaned_data.get('cloud_native_gis_layer_id')
+        ):
+            self.add_error(
+                'cloud_native_gis_layer_id',
+                'This field is required.'
+            )
+        return cleaned_data

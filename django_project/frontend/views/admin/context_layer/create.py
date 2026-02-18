@@ -18,7 +18,7 @@ import json
 from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
-from geosight.data.forms.context_layer import ContextLayerForm
+from geosight.data.forms.context_layer import ContextLayerFrontendForm
 from geosight.data.models.context_layer import ContextLayer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
@@ -36,7 +36,7 @@ class BaseContextLayerEditView(AdminBaseView):
         :return: The form class.
         :rtype: type[ContextLayerForm]
         """
-        return ContextLayerForm
+        return ContextLayerFrontendForm
 
     @property
     def page_title(self):
@@ -83,7 +83,7 @@ class BaseContextLayerEditView(AdminBaseView):
         if from_id:
             try:
                 model = ContextLayer.objects.get(id=from_id)
-                initial = ContextLayerForm.model_to_initial(model)
+                initial = ContextLayerFrontendForm.model_to_initial(model)
                 initial['name'] = None
                 initial['description'] = None
             except ContextLayer.DoesNotExist:
@@ -115,7 +115,7 @@ class BaseContextLayerEditView(AdminBaseView):
         """
         data = request.POST.copy()
         data['data_fields'] = data.get('data_fields', '[]')
-        form = ContextLayerForm(data)
+        form = ContextLayerFrontendForm(data)
 
         if form.is_valid():
             instance = form.instance
