@@ -205,4 +205,6 @@ class DashboardForm(forms.ModelForm):
                 'indicatorLayer': 100,
                 'contextLayer': 100,
             }
+        data['min_zoom'] = other_data.get('min_zoom', 0)
+        data['max_zoom'] = other_data.get('max_zoom', 24)
         return data

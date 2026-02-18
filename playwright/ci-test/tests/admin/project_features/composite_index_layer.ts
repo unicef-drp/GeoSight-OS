@@ -245,7 +245,7 @@ test.describe('Composite index layer', () => {
     );
 
     await expect(page.getByText('Dynamic Composite Layers')).toBeVisible();
-    await expect(page.locator('.MuiTreeItem-label').getByText('This is the test')).toBeVisible();
+    await expect(page.locator('.MuiTreeItem-label').getByText('This is the test').nth(0)).toBeVisible();
     await page.locator('.MuiTreeItem-label').getByText('Sample Indicator A').click();
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Sample Indicator A');
     await Promise.all(
@@ -253,7 +253,7 @@ test.describe('Composite index layer', () => {
         (value, index) => expect(page.locator('.IndicatorLegendSection .IndicatorLegendRow').nth(index)).toHaveText(value.toString())
       )
     );
-    await page.locator('.MuiTreeItem-label').getByText('This is the test').click();
+    await page.locator('.MuiTreeItem-label').getByText('This is the test').nth(0).click();
     await expect(page.locator('.MapLegendSectionTitle')).toHaveText('This is the test');
     await Promise.all(
       [8.19, 8.17, 7.61, 7.46, 6.63, 6.43, 5.86, 5.11, 4.91, 4.54, 4.13, 3.22, 3.11, 2.55, 2.43, 0.83, 0.59, 0.55].map(
