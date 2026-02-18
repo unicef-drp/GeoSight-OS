@@ -23,6 +23,7 @@ from cloud_native_gis.utils.type import FileType
 from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.urls import reverse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from psycopg2.errors import UndefinedColumn, InvalidParameterValue
@@ -361,9 +362,11 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         # Schedule async task
         layer_download.schedule_task()
 
-        absolute_url = request.build_absolute_uri(
-            f'/cloud-native-gis/api/download/{layer_download.unique_id}/'
+        download_path = reverse(
+            'cloud-native-gis-download-file-data',
+            kwargs={'unique_id': layer_download.unique_id}
         )
+        absolute_url = request.build_absolute_uri(download_path)
 
         # If not cloud native layer, return error
         return JsonResponse(

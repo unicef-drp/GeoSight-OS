@@ -16,15 +16,23 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import uuid
 
+from cloud_native_gis.api.layer_download import DownloadFileAPI
 from cloud_native_gis.api.vector_tile import VectorTileLayer
 from cloud_native_gis.models.layer import Layer, LayerType
 from cloud_native_gis.models.layer_upload import LayerUpload
 from django.core.files.storage import FileSystemStorage
+from knox.auth import TokenAuthentication
+from rest_framework.authentication import (
+    SessionAuthentication, BasicAuthentication
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.permissions import RoleContributorAuthenticationPermission
+from core.auth import BearerAuthentication
+from core.permissions import (
+    RoleContributorAuthenticationPermission
+)
 
 
 class CloudNativeGISLayerVectorTile(VectorTileLayer):
@@ -61,3 +69,12 @@ class CloudNativeGISLayerUploadCreate(APIView):
         FileSystemStorage(location=instance.folder).save(file.name, file)
         instance.save()
         return Response(layer.id)
+
+
+class CloudNativeGISDownloadFileAPI(DownloadFileAPI):
+    """Override DownloadFileAPI to use CloudNativeGISLayerVectorTile."""
+
+    authentication_classes = [
+        SessionAuthentication, BasicAuthentication,
+        TokenAuthentication, BearerAuthentication
+    ]
