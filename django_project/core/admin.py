@@ -78,6 +78,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'georepo_api_key_level_1', 'georepo_api_key_level_1_email',
                 'georepo_api_key_level_4', 'georepo_api_key_level_4_email',
                 'georepo_using_user_api_key',
+                'georepo_default_dataset_uuid',
                 'georepo_default_view'
             ),
         }),

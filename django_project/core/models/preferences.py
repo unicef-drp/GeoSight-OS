@@ -121,6 +121,10 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
         blank=True, null=True
     )
     georepo_using_user_api_key = models.BooleanField(default=True)
+    georepo_default_dataset_uuid = models.UUIDField(
+        max_length=512, null=True, blank=True,
+        help_text=('Default dataset of georepo.')
+    )
     georepo_default_view = models.ForeignKey(
         "geosight_georepo.ReferenceLayerView",
         null=True, blank=True,

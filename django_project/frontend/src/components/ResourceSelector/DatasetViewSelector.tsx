@@ -74,6 +74,9 @@ export default function DatasetViewSelector({
   // Table properties
   multipleSelection,
 }: ModalInputSelectorProps) {
+  // @ts-ignore
+  const { georepo_default_dataset_uuid } = preferences;
+
   const [datasets, setDatasets] = useState([]);
   const [dataset, setDataset] = useState(null);
 
@@ -108,7 +111,8 @@ export default function DatasetViewSelector({
   /** On datasets loaded */
   useEffect(() => {
     if (!dataset && datasets[0]) {
-      setDataset(datasets[0].value);
+      const defaultDataset = datasets.find(dataset=> dataset.value === georepo_default_dataset_uuid) || datasets[0];
+      setDataset(defaultDataset.value);
     }
   }, [datasets]);
 
