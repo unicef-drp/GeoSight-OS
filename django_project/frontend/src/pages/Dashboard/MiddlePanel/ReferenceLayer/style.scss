@@ -50,7 +50,14 @@
     color: var(--black);
   }
 
-  &:hover {
+  @media (min-width: 1001px) {
+    &:hover {
+      .ReferenceLayerLevelOptions {
+        height: fit-content;
+      }
+    }
+  }
+  &.Open {
     .ReferenceLayerLevelOptions {
       height: fit-content;
     }

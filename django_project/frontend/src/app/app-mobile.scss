@@ -343,7 +343,7 @@
     height: 0 !important;
   }
   .Home div.banner .ShowBanner {
-    top : 1rem !important;
+    top: 1rem !important;
     bottom: unset !important;
   }
 
@@ -370,4 +370,8 @@
   footer {
     display: none;
   }
+}
+
+.maplibregl-popup {
+  max-width: 90vw !important;
 }

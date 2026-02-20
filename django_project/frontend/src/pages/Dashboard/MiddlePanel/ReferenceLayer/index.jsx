@@ -17,7 +17,7 @@
    REFERENCE LAYER
    ========================================================================== */
 
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from "../../../../store/dashboard";
@@ -110,6 +110,8 @@ export default function ReferenceLayerSection() {
     }
   };
 
+  const [open, setOpen] = useState(false);
+
   // Current level
   let level = null;
   if (levels) {
@@ -117,10 +119,13 @@ export default function ReferenceLayerSection() {
   }
 
   return (
-    <div className="ReferenceLayerLevelSelector">
+    <div className={"ReferenceLayerLevelSelector" + (open ? " Open" : "")}>
       {levels && level ? (
         <Fragment>
-          <div className="ReferenceLayerLevelSelected">
+          <div
+            className="ReferenceLayerLevelSelected"
+            onClick={() => setOpen(!open)}
+          >
             <div>{level.level_name}</div>
             <ArrowDownwardIcon />
           </div>
@@ -132,6 +137,7 @@ export default function ReferenceLayerSection() {
                   className="ReferenceLayerLevelOption"
                   onClick={() => {
                     onChange(levels[level].level);
+                    setOpen(false);
                   }}
                 >
                   {levels[level].level_name}

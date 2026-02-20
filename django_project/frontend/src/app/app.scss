@@ -269,6 +269,10 @@ header {
   .maplibregl-popup-close-button {
     color: #757575;
     font-size: 19px !important;
+
+    &:focus-visible {
+      outline: none;
+    }
   }
 
   canvas {
