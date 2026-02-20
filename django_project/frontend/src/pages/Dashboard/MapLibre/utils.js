@@ -16,6 +16,13 @@
 import maplibregl from "maplibre-gl";
 import { FILL_LAYER_ID_KEY } from "./Layers/ReferenceLayer";
 
+const MOBILE_BREAKPOINT = 1000;
+const centerMapOnMobile = (map, lngLat) => {
+  if (window.innerWidth <= MOBILE_BREAKPOINT) {
+    map.easeTo({ center: lngLat, offset: [0, 100] });
+  }
+};
+
 /**
  * Return if layer exist or not
  * @param {Object} map Map
@@ -179,11 +186,15 @@ export const addPopup = (map, id, popupRenderFn) => {
         if (popup) {
           popup.remove();
         }
-        popup = new maplibregl.Popup()
+        popup = new maplibregl.Popup({
+          anchor: "bottom",
+          offset: [0, 0],
+        })
           .setLngLat(e.lngLat)
           .setHTML(popupHtml)
           .addTo(map);
         popup.addClassName("ContextPopup");
+        centerMapOnMobile(map, e.lngLat);
       }
     }
   };
@@ -212,7 +223,10 @@ export const addStandalonePopup = (
   if (popup) {
     popup.remove();
   }
-  popup = new maplibregl.Popup()
+  popup = new maplibregl.Popup({
+    anchor: "bottom",
+    offset: [0, 0],
+  })
     .setLngLat(lngLat)
     .setHTML(popupHtml)
     .addTo(map);
@@ -220,6 +234,7 @@ export const addStandalonePopup = (
     popup.addClassName(`${session}`);
   }
   popup.addClassName(`ContextPopup`);
+  centerMapOnMobile(map, lngLat);
 };
 /**
  * Remove click event
@@ -276,10 +291,19 @@ export const addPopupEl = (
       if (popup) {
         popup.remove();
       }
-      popup = new maplibregl.Popup({ offset: offset })
+
+      let conf = offset;
+      if (!offset) {
+        conf = {
+          anchor: "bottom",
+          offset: [0, 0],
+        };
+      }
+      popup = new maplibregl.Popup(conf)
         .setLngLat(latlng)
         .setHTML(popupHtml)
         .addTo(map);
+      centerMapOnMobile(map, latlng);
     }
   };
   el.addEventListener("click", clickFn);

@@ -139,7 +139,8 @@ export const renderChart = (
             });
           },
           {
-            bottom: [0, -1 * size],
+            anchor: "bottom",
+            offset: [0, -1 * (size/2)],
           },
         );
       } catch (err) {}
