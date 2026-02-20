@@ -181,6 +181,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         'number_of_entities', 'country_list', 'tags'
     ]
     list_filter = (InGeorepoFilter,)
+    search_fields = ['name', 'identifier']
     ordering = ['name']
     actions = [
         update_meta, sync_codes, sync_codes_non_saved_level,
