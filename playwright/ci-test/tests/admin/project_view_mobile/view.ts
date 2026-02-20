@@ -218,7 +218,7 @@ test.describe('View project', () => {
     // ------------------------------------------------------------
     // LEVEL 0
     // ------------------------------------------------------------
-    await page.hover('.ReferenceLayerLevelSelected')
+    await page.locator('.ReferenceLayerLevelSelected').click();
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 0').click()
     await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Admin Level 0')
     // Check widgets
@@ -259,7 +259,7 @@ test.describe('View project', () => {
     // ------------------------------------------------------------
     // LEVEL 2
     // ------------------------------------------------------------
-    await page.hover('.ReferenceLayerLevelSelected')
+    await page.locator('.ReferenceLayerLevelSelected').click();
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 2').click()
     await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Admin Level 2')
     // Check widgets
@@ -311,7 +311,7 @@ test.describe('View project', () => {
     // --------------------------------
     // Check multi reference layer
     // --------------------------------
-    await page.hover('.ReferenceLayerLevelSelected')
+    await page.locator('.ReferenceLayerLevelSelected').click();
     await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 1').click()
     await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Admin Level 1 ')
     const kenyaLayer = 'Kenya Indicator A'
