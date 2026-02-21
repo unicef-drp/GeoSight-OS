@@ -16,6 +16,9 @@ __copyright__ = ('Copyright 2026, Unicef')
 
 from locust import events
 
+# Load shapes — import so Locust can discover them via --shape flag.
+from shapes import StepLoadShape, StressTestShape, SpikeTestShape  # noqa: F401
+
 # Re-export all user classes so Locust discovers them automatically.
 from users import (
     FullJourneyUser,
@@ -34,6 +37,7 @@ from users import (
 )
 
 __all__ = [
+    # User classes
     "FullJourneyUser",
     "DashboardDataUser",
     "DashboardBookmarksUser",
@@ -47,6 +51,10 @@ __all__ = [
     "ReferenceDatasetsUser",
     "RelatedTableDetailUser",
     "RelatedTableDataUser",
+    # Load shapes
+    "StepLoadShape",
+    "StressTestShape",
+    "SpikeTestShape",
 ]
 
 
@@ -90,6 +98,21 @@ Usage
     locust -f locustfile.py --host=https://geosight.unicef.org \\
         --headless -u 20 -r 2 --run-time 2m --csv=results \\
         IndicatorValuesUser
+
+    # Step load (ramp-up) — increases users in discrete steps
+    locust -f locustfile.py --host=https://geosight.unicef.org \\
+        --headless --shape StepLoadShape --csv=results \\
+        FullJourneyUser
+
+    # Stress test — ramp up, sustain peak, ramp down
+    locust -f locustfile.py --host=https://geosight.unicef.org \\
+        --headless --shape StressTestShape --csv=results \\
+        FullJourneyUser
+
+    # Spike test — baseline → sudden spike → recovery → baseline
+    locust -f locustfile.py --host=https://geosight.unicef.org \\
+        --headless --shape SpikeTestShape --csv=results \\
+        FullJourneyUser
 """
 
 
