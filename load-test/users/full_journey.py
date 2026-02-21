@@ -50,12 +50,15 @@ Replays the complete browser request waterfall for a dashboard session:
   4.  Indicator layer          (/api/dashboard/{slug}/indicator-layer/{id})
   5.  Reference dataset        (/api/v1/reference-datasets/{uuid}/)
   6.  Related-table dates
+  7.  Indicator data           (/api/v1/indicators/{id}/data/)
+  8.  Indicators bulk data     (/api/v1/indicators/data/)
+  9.  Indicator statistics     (all pool entries, mirrors browser waterfall)
+  10. Indicator values         (2-4 random combos, mimics map clicks)
+
+  Below steps are currently disabled
+  because they don't support token authentication yet:
   7.  Related-table detail     (/api/related-table/{id}/)
   8.  Related-table data       (/api/related-table/{id}/data)
-  9.  Indicator data           (/api/v1/indicators/{id}/data/)
-  10. Indicators bulk data     (/api/v1/indicators/data/)
-  11. Indicator statistics     (all pool entries, mirrors browser waterfall)
-  12. Indicator values         (2–4 random combos, mimics map clicks)
 
 Usage
 -----
@@ -122,7 +125,8 @@ class FullJourneyTaskSet(SequentialTaskSet):
         """Fetch indicator metadata."""
         post(
             self,
-            "/api/indicator/metadata",
+            "/api/indicator/metadata?"
+            f"reference_layer_uuid={self.uuid}",
             json_payload=IV_INDICATOR_IDS,
             name="/api/indicator/metadata",
         )
@@ -168,35 +172,7 @@ class FullJourneyTaskSet(SequentialTaskSet):
         )
 
     @task
-    def step_7_related_table_detail(self):
-        """Fetch related table details if available.
-
-        :return: None
-        """
-        if self.related_table_detail_id is None:
-            return
-        get(
-            self,
-            f"/api/related-table/{self.related_table_detail_id}/",
-            name="/api/related-table/[id]/",
-        )
-
-    @task
-    def step_8_related_table_data(self):
-        """Fetch related table data if detail is available.
-
-        :return: None
-        """
-        if self.related_table_detail_id is None:
-            return
-        get(
-            self,
-            f"/api/related-table/{self.related_table_detail_id}/data",
-            name="/api/related-table/[id]/data",
-        )
-
-    @task
-    def step_9_indicator_data(self):
+    def step_7_indicator_data(self):
         """Fetch indicator data for one indicator."""
         entry = self.data_entry
         get(
@@ -207,7 +183,7 @@ class FullJourneyTaskSet(SequentialTaskSet):
         )
 
     @task
-    def step_10_indicators_bulk_data(self):
+    def step_8_indicators_bulk_data(self):
         """Fetch bulk data for multiple indicators."""
         get(
             self,
@@ -217,7 +193,7 @@ class FullJourneyTaskSet(SequentialTaskSet):
         )
 
     @task
-    def step_11_indicator_statistics(self):
+    def step_9_indicator_statistics(self):
         """Fire statistics requests for all indicators in the pool."""
         for entry in self.stat_entries:
             get(
@@ -229,7 +205,7 @@ class FullJourneyTaskSet(SequentialTaskSet):
             time.sleep(random.uniform(0.2, 0.6))
 
     @task
-    def step_12_indicator_values(self):
+    def step_10_indicator_values(self):
         """Drill into indicator values — mimics a user clicking through map."""
         for ind_id, geom_id, frequency in self.drills:
             get(
@@ -239,6 +215,38 @@ class FullJourneyTaskSet(SequentialTaskSet):
                 name="/api/v1/indicators/[id]/data/values/",
             )
             time.sleep(random.uniform(0.5, 1.5))
+
+
+    # Related table detail and data steps are commented out because
+    # they don't support token authentication yet.
+    # Will re-enable once that's in place.
+    # @task
+    # def step_7_related_table_detail(self):
+    #     """Fetch related table details if available.
+
+    #     :return: None
+    #     """
+    #     if self.related_table_detail_id is None:
+    #         return
+    #     get(
+    #         self,
+    #         f"/api/related-table/{self.related_table_detail_id}/",
+    #         name="/api/related-table/[id]/",
+    #     )
+
+    # @task
+    # def step_8_related_table_data(self):
+    #     """Fetch related table data if detail is available.
+
+    #     :return: None
+    #     """
+    #     if self.related_table_detail_id is None:
+    #         return
+    #     get(
+    #         self,
+    #         f"/api/related-table/{self.related_table_detail_id}/data",
+    #         name="/api/related-table/[id]/data",
+    #     )
 
 
 class FullJourneyUser(FastHttpUser):

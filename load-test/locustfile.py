@@ -32,8 +32,10 @@ from users import (
     IndicatorValuesUser,
     IndicatorLayerUser,
     ReferenceDatasetsUser,
-    RelatedTableDetailUser,
-    RelatedTableDataUser,
+    # Temporarily exclude related table users
+    # because they don't support Token Auth
+    # RelatedTableDetailUser,
+    # RelatedTableDataUser,
 )
 
 __all__ = [
@@ -49,8 +51,8 @@ __all__ = [
     "IndicatorValuesUser",
     "IndicatorLayerUser",
     "ReferenceDatasetsUser",
-    "RelatedTableDetailUser",
-    "RelatedTableDataUser",
+    # "RelatedTableDetailUser",
+    # "RelatedTableDataUser",
     # Load shapes
     "StepLoadShape",
     "StressTestShape",
@@ -81,6 +83,8 @@ Single-endpoint (isolate one API call at a time)
     RelatedTableDataUser    — GET /api/related-table/[id]/data
 
 Parameters are loaded from ``data/params.json`` (override with PARAMS_PATH).
+RelatedTableDetailUser and RelatedTableDataUser are temporarily excluded
+because they don't support token authentication yet.
 
 Usage
 -----

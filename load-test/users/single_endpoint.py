@@ -28,6 +28,7 @@ from .common import (
     INDICATORS_BULK_DATA,
     INDICATOR_STATISTICS,
     IV_INDICATOR_IDS,
+    REFERENCE_LAYER_UUIDS,
     get,
     post,
     indicator_values_params,
@@ -110,9 +111,11 @@ class IndicatorMetadataUser(FastHttpUser):
     @task
     def load_indicator_metadata(self):
         """Fetch indicator metadata."""
+        reference_layer_uuid = random.choice(REFERENCE_LAYER_UUIDS)
         post(
             self,
-            "/api/indicator/metadata",
+            "/api/indicator/metadata?"
+            f"reference_layer_uuid={reference_layer_uuid}",
             json_payload=IV_INDICATOR_IDS,
             name="/api/indicator/metadata",
         )

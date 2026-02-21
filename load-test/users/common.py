@@ -100,6 +100,10 @@ INDICATOR_DATA: list[dict] = _p["indicator_data"]
 INDICATORS_BULK_DATA: list[dict] = _p["indicators_bulk_data"]
 INDICATOR_STATISTICS: list[dict] = _p["indicator_statistics"]
 
+if _is_public:
+    print('[auth] Running in public mode (no authentication)')
+else:
+    print('[auth] Using token authentication with provided API key')
 print(
     f"\n[params] Loaded from {_params_path}\n"
     f"  dashboard_slugs      : {DASHBOARD_SLUGS}\n"
