@@ -35,3 +35,6 @@ django-sslserver==0.22
 flake8
 flake8-docstrings
 pydoclint[flake8]
+
+# load test
+locust

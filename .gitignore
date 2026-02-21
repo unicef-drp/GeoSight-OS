@@ -48,3 +48,6 @@ deployment/.cache/
 .vscode
 .vscode-extensions
 .vscode/settings.json
+
+# load-test data
+load-test/data/*
