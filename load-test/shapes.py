@@ -61,7 +61,7 @@ class StepLoadShape(LoadTestShape):
             or ``None`` to end test.
         :rtype: Optional[Tuple[int, int]]
         """
-        elapsed = self.get_current_time()
+        elapsed = self.get_run_time()
         total_duration = self.step_duration * self.step_count
 
         if elapsed >= total_duration:
@@ -117,7 +117,7 @@ class StressTestShape(LoadTestShape):
             or ``None`` to end test.
         :rtype: Optional[Tuple[int, int]]
         """
-        elapsed = self.get_current_time()
+        elapsed = self.get_run_time()
         ramp_up_end = self.ramp_up_time
         hold_end = ramp_up_end + self.hold_time
         ramp_down_end = hold_end + self.ramp_down_time
@@ -199,7 +199,7 @@ class SpikeTestShape(LoadTestShape):
             or ``None`` to end test.
         :rtype: Optional[Tuple[int, int]]
         """
-        elapsed = self.get_current_time()
+        elapsed = self.get_run_time()
 
         t1 = self.baseline_duration
         t2 = t1 + self.spike_ramp_time

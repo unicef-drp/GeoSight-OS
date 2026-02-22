@@ -37,4 +37,4 @@ flake8-docstrings
 pydoclint[flake8]
 
 # load test
-locust
+locust==2.43.3

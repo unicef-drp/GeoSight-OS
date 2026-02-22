@@ -111,6 +111,25 @@ cat urls.txt | python build_params.py -
 
 All commands are run from the `load-test/` directory.
 
+### Locustfile overview
+
+Test entry points live under `locustfiles/`.  Pick the right file for your
+purpose — each one imports only the shape class(es) it needs, which prevents
+Locust from auto-discovering conflicting shapes.
+
+| File | Shape | Purpose |
+|------|-------|---------|
+| `locustfiles/ui.py` | All shapes | Interactive web UI with `--class-picker` |
+| `locustfiles/headless.py` | None | Flat load driven by `-u` / `-r` / `--run-time` |
+| `locustfiles/step.py` | `StepLoadShape` | Ramp users up in discrete steps |
+| `locustfiles/stress.py` | `StressTestShape` | Ramp up → hold peak → ramp down |
+| `locustfiles/spike.py` | `SpikeTestShape` | Baseline → sudden spike → recovery |
+
+Shared setup (user imports and the slow-request hook) lives in
+`locustfiles/common.py` and is imported by all entry points.
+
+---
+
 ### Environment variables
 
 | Variable | Required | Description |
@@ -132,21 +151,21 @@ export IS_PUBLIC_DASHBOARD=true
 Starts a local web server at `http://localhost:8089` where you can configure and monitor the test interactively.
 
 ```bash
-locust -f locustfile.py --host=https://geosight.unicef.org
+locust -f locustfiles/ui.py --host=https://geosight.unicef.org
 ```
 
 Open `http://localhost:8089` in your browser, enter the number of users and spawn rate, then click **Start**.
 
-**With class picker** (lets you choose a specific scenario in the UI):
+**With class picker** (lets you choose a specific user class and shape in the UI):
 
 ```bash
-locust -f locustfile.py --host=https://geosight.unicef.org --class-picker
+locust -f locustfiles/ui.py --host=https://geosight.unicef.org --class-picker
 ```
 
 **Custom web UI port:**
 
 ```bash
-locust -f locustfile.py --host=https://geosight.unicef.org --web-port 9090
+locust -f locustfiles/ui.py --host=https://geosight.unicef.org --web-port 9090
 ```
 
 ---
@@ -156,7 +175,7 @@ locust -f locustfile.py --host=https://geosight.unicef.org --web-port 9090
 Runs with the terminal UI. Useful for quick manual tests.
 
 ```bash
-locust -f locustfile.py \
+locust -f locustfiles/ui.py \
     --host=https://geosight.unicef.org \
     -u 10 -r 2
 ```
@@ -171,11 +190,13 @@ locust -f locustfile.py \
 ### Option C — Headless (fully automated / CI)
 
 No UI; runs for a fixed duration and exits with a non-zero code on failure.
+Use `locustfiles/headless.py` for flat load — it imports no shape class so
+`-u`, `-r`, and `--run-time` are respected directly.
 
 **Full journey** (sequential waterfall, mirrors a real browser session):
 
 ```bash
-locust -f locustfile.py \
+locust -f locustfiles/headless.py \
     --host=https://geosight.unicef.org \
     --headless -u 10 -r 2 --run-time 5m \
     --csv=results \
@@ -185,7 +206,7 @@ locust -f locustfile.py \
 **Single endpoint** (isolate one API call):
 
 ```bash
-locust -f locustfile.py \
+locust -f locustfiles/headless.py \
     --host=https://geosight.unicef.org \
     --headless -u 20 -r 2 --run-time 2m \
     --csv=results \
@@ -203,6 +224,104 @@ locust -f locustfile.py \
 | `--csv=<prefix>` | Write results to `<prefix>_stats.csv`, `<prefix>_failures.csv`, etc. |
 | `--html=report.html` | Write an HTML report |
 | `--exit-code-on-error 1` | Exit with code 1 if any requests failed (useful in CI) |
+
+---
+
+### Option D — Load shapes (headless)
+
+Shape files manage user count and test duration via their `tick()` method, so
+`-u`, `-r`, and `--run-time` are not needed.
+
+**Step load** (ramp up in discrete steps):
+
+```bash
+locust -f locustfiles/step.py \
+    --host=https://geosight.unicef.org \
+    --headless --csv=results \
+    FullJourneyUser
+```
+
+**Stress test** (ramp up → hold peak → ramp down):
+
+```bash
+locust -f locustfiles/stress.py \
+    --host=https://geosight.unicef.org \
+    --headless --csv=results \
+    FullJourneyUser
+```
+
+**Spike test** (baseline → sudden spike → recovery):
+
+```bash
+locust -f locustfiles/spike.py \
+    --host=https://geosight.unicef.org \
+    --headless --csv=results \
+    FullJourneyUser
+```
+
+To customise a shape's parameters, subclass it and override the class
+attributes (see `shapes.py` for the full list of tuneable values).
+
+---
+
+### Option E — Automated scenario runner (`run_scenarios.py`)
+
+`run_scenarios.py` is a higher-level wrapper that runs one or more predefined
+scenarios by invoking Locust as a subprocess for each user class in sequence.
+It handles output collection, per-class CSV merging, and run logging
+automatically — no manual Locust invocations required.
+
+#### Predefined scenarios
+
+| Scenario | Users | Spawn rate | Run time | Classes |
+|----------|-------|------------|----------|---------|
+| `baseline` | 1 | 1 | 2 min | All single-endpoint classes |
+| `baseline-full-journey` | 1 | 1 | 2 min | `FullJourneyUser` |
+| `normal-load` | 50 | 5 | 10 min | All single-endpoint classes |
+| `normal-load-full-journey` | 50 | 5 | 10 min | `FullJourneyUser` |
+
+#### Usage
+
+```bash
+# Run from the load-test directory
+cd load-test
+
+# Run all scenarios (default)
+python run_scenarios.py --host https://geosight.unicef.org
+
+# Run a single scenario
+python run_scenarios.py --host https://geosight.unicef.org --scenario baseline
+
+# Custom output directory
+python run_scenarios.py --host https://geosight.unicef.org --output-dir my_results
+```
+
+#### All options
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--host` | *(required)* | Target host URL, e.g. `https://geosight.unicef.org` |
+| `--scenario` | `all` | Scenario to run: `baseline`, `baseline-full-journey`, `normal-load`, `normal-load-full-journey`, or `all` |
+| `--output-dir` | `output/` | Directory where CSV and log files are written |
+
+#### Output files
+
+All files are written to the output directory with a shared timestamp prefix
+(`YYYYMMDD_HHMMSS`). After each scenario finishes, per-class files are merged
+into one combined file per type:
+
+| File | Description |
+|------|-------------|
+| `<ts>_<scenario>_stats.csv` | Aggregated request statistics |
+| `<ts>_<scenario>_failures.csv` | Failed requests |
+| `<ts>_<scenario>_exceptions.csv` | Exceptions raised during the run |
+| `<ts>_<scenario>_stats_history.csv` | Per-interval stats history |
+| `<ts>_runner.log` | Timestamped log of the entire runner session |
+
+> **Note:** The environment variables `GEOSIGHT_API_KEY` / `IS_PUBLIC_DASHBOARD`
+> and `PARAMS_PATH` (see [Environment variables](#environment-variables) above)
+> apply to `run_scenarios.py` as well — they are inherited by the Locust
+> subprocesses it spawns.
 
 ---
 
@@ -431,7 +550,7 @@ __all__ = [
 ]
 ```
 
-`locustfile.py` re-exports everything from `users`, so no changes are needed there.
+`locustfiles/common.py` re-exports everything from `users`, so no changes are needed there.
 
 ---
 

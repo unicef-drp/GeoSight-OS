@@ -51,3 +51,4 @@ deployment/.cache/
 
 # load-test data
 load-test/data/*
+load-test/output/*
