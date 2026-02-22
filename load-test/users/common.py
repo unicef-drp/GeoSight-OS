@@ -66,8 +66,6 @@ except json.JSONDecodeError as exc:
 
 _REQUIRED = [
     "dashboard_slugs",
-    "arcgis_proxy_ids",
-    "arcgis_proxy_urls",
     "reference_layer_uuids",
     "indicator_values",
     "related_tables",
@@ -81,8 +79,8 @@ if _missing:
 
 # Flat pools
 DASHBOARD_SLUGS: list[str] = _p["dashboard_slugs"]
-ARCGIS_PROXY_IDS: list[int] = _p["arcgis_proxy_ids"]
-ARCGIS_PROXY_URLS: list[str] = _p["arcgis_proxy_urls"]
+ARCGIS_PROXY_IDS: list[int] = _p.get("arcgis_proxy_ids", [])
+ARCGIS_PROXY_URLS: list[str] = _p.get("arcgis_proxy_urls", [])
 REFERENCE_LAYER_UUIDS: list[str] = _p["reference_layer_uuids"]
 INDICATOR_LAYER_IDS: list[int] = _p.get("indicator_layer_ids", [])
 REFERENCE_DATASET_UUIDS: list[str] = _p.get("reference_dataset_uuids", [])

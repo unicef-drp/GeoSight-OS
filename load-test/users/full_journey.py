@@ -25,8 +25,6 @@ from .common import (
     REFERENCE_DATASET_UUIDS,
     REFERENCE_LAYER_UUIDS,
     RELATED_TABLE_DETAIL_IDS,
-    ARCGIS_PROXY_IDS,
-    ARCGIS_PROXY_URLS,
     RELATED_TABLES,
     INDICATOR_DATA,
     INDICATORS_BULK_DATA,
@@ -75,8 +73,6 @@ class FullJourneyTaskSet(SequentialTaskSet):
         """Randomly pick parameter values for this user from the pools."""
         self.slug = random.choice(DASHBOARD_SLUGS)
         self.uuid = random.choice(REFERENCE_LAYER_UUIDS)
-        self.proxy_id = random.choice(ARCGIS_PROXY_IDS)
-        self.proxy_url = random.choice(ARCGIS_PROXY_URLS)
         self.indicator_layer_id = (
             random.choice(INDICATOR_LAYER_IDS) if INDICATOR_LAYER_IDS else None
         )
