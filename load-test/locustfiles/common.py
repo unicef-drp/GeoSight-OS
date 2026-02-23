@@ -15,6 +15,7 @@ __date__ = '21/02/2026'
 __copyright__ = ('Copyright 2026, Unicef')
 
 import sys
+import logging
 from pathlib import Path
 
 """Shared setup imported by every GeoSight locustfile.
@@ -46,6 +47,10 @@ if _ROOT not in sys.path:
 
 import locust.stats  # noqa: E402
 from locust import events  # noqa: E402 (import after sys.path fix)
+from utils import logging_setup  # noqa: E402
+
+logging_setup()
+
 from users import (  # noqa: E402
     FullJourneyUser,
     DashboardDataUser,
@@ -78,12 +83,15 @@ __all__ = [
 ]
 
 
-# Reduce console log spam by printing stats every 30 seconds.
-locust.stats.CONSOLE_STATS_INTERVAL_SEC = 30
+# Reduce console log spam by printing stats every 60 seconds.
+locust.stats.CONSOLE_STATS_INTERVAL_SEC = 60
 
 # ---------------------------------------------------------------------------
 # Slow-request hook — registered once when this module is imported
 # ---------------------------------------------------------------------------
+
+
+logger = logging.getLogger(__name__)
 
 
 @events.request.add_listener
@@ -106,7 +114,7 @@ def on_request(
     :type **kwargs: dict
     """
     if response_time > 3000:
-        print(
+        logger.warning(
             f"[SLOW] {request_type} {name} — {response_time:.0f} ms "
             f"| {response_length} bytes"
         )

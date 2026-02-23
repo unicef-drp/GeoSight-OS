@@ -79,8 +79,13 @@ class Logger:
         :type message: str
         """
         prefix = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date_str = datetime.now().strftime("[%Y-%m-%d")
         for line in message.splitlines() or [""]:
-            formatted = f"[{prefix}] {line}" if line else ""
+            # if line has date skip the prefix
+            if line and line.startswith(date_str):
+                formatted = line
+            else:
+                formatted = f"[{prefix}] {line}" if line else ""
             print(formatted)
             self._fh.write(formatted + "\n")
         self._fh.flush()
@@ -358,7 +363,16 @@ def run_scenario(
         logger.log(f"  cmd: {' '.join(cmd)}")
 
         class_start = time.monotonic()
-        result = subprocess.run(cmd, cwd=Path(__file__).parent)
+        with subprocess.Popen(
+            cmd,
+            cwd=Path(__file__).parent,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        ) as proc:
+            for line in proc.stdout:
+                logger.log(line.rstrip())
+        result = proc
         class_elapsed = time.monotonic() - class_start
         duration_str = f"{class_elapsed:.1f}s"
 
