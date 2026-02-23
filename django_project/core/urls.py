@@ -66,6 +66,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    path('', include('geosight.health.urls')),
 ]
 
 urlpatterns += i18n_patterns(
