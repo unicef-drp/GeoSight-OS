@@ -13,20 +13,19 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { fetchReferenceLayerList } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 import { DatasetView } from "../../types/DatasetView";
-import { SelectWithList } from "../Input/SelectWithList";
 import { URLS } from "../../utils/urls";
 import { DatasetCountry } from "../../types/DatasetCountry";
+import DatasetSelector from "./DatasetSelectorComponent";
 
 const VALUE_REMOTE = "Remote";
 const VALUE_LOCAL = "Local";
@@ -84,7 +83,6 @@ export default function DatasetCountrySelector({
   // Table properties
   multipleSelection,
 }: ModalInputSelectorProps) {
-  const [datasets, setDatasets] = useState([]);
   const [dataset, setDataset] = useState(null);
 
   // @ts-ignore
@@ -97,25 +95,6 @@ export default function DatasetCountrySelector({
     "" + dataset,
     sourceType === VALUE_LOCAL,
   );
-
-  /** Get the datasets */
-  useEffect(() => {
-    (async () => {
-      const responseData = await fetchReferenceLayerList();
-      const datasets = responseData.map((row: any) => {
-        row.value = row.identifier;
-        return row;
-      });
-      setDatasets(datasets);
-    })();
-  }, []);
-
-  /** On datasets loaded */
-  useEffect(() => {
-    if (!dataset && datasets[0]) {
-      setDataset(datasets[0].value);
-    }
-  }, [datasets]);
 
   /*** Parameters Changed */
   const getParameters = (parameters: any) => {
@@ -188,16 +167,11 @@ export default function DatasetCountrySelector({
               </RadioGroup>
             </FormControl>
           ) : null}
-          {!isLocalEnabled || sourceType === VALUE_REMOTE ? (
-            <SelectWithList
-              placeholder={datasets ? "Select dataset" : "Loading"}
-              list={datasets}
-              value={dataset}
-              onChange={(evt: any) => {
-                setDataset(evt.value);
-              }}
-            />
-          ) : null}
+          <DatasetSelector
+            dataset={dataset}
+            onChanged={setDataset}
+            sourceType={sourceType}
+          />
         </div>
       }
     />

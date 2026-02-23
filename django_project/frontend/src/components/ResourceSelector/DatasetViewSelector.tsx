@@ -13,8 +13,8 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from "react";
-import { fetchReferenceLayerList, GeorepoUrls } from "../../utils/georepo";
+import React, { useState } from "react";
+import { GeorepoUrls } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 import { DatasetView } from "../../types/DatasetView";
@@ -24,7 +24,7 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { SelectWithList } from "../Input/SelectWithList";
+import DatasetSelector from "./DatasetSelectorComponent";
 
 const VALUE_REMOTE = "Remote";
 const VALUE_LOCAL = "Local";
@@ -74,10 +74,6 @@ export default function DatasetViewSelector({
   // Table properties
   multipleSelection,
 }: ModalInputSelectorProps) {
-  // @ts-ignore
-  const { georepo_default_dataset_uuid } = preferences;
-
-  const [datasets, setDatasets] = useState([]);
   const [dataset, setDataset] = useState(null);
 
   // @ts-ignore
@@ -93,28 +89,10 @@ export default function DatasetViewSelector({
 
   const url =
     sourceType === VALUE_REMOTE
-      ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true)
+      ? dataset
+        ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true)
+        : null
       : "/api/v1/reference-datasets/?page=1&page_size=25&fields=uuid,bbox,vector_tiles,possible_id_types,dataset_levels,tags,permission,version_data,created_at,modified_at,identifier,name,description,in_georepo,modified_by";
-
-  /** Get the datasets */
-  useEffect(() => {
-    (async () => {
-      const responseData = await fetchReferenceLayerList();
-      const datasets = responseData.map((row: any) => {
-        row.value = row.identifier;
-        return row;
-      });
-      setDatasets(datasets);
-    })();
-  }, []);
-
-  /** On datasets loaded */
-  useEffect(() => {
-    if (!dataset && datasets[0]) {
-      const defaultDataset = datasets.find(dataset=> dataset.value === georepo_default_dataset_uuid) || datasets[0];
-      setDataset(defaultDataset.value);
-    }
-  }, [datasets]);
 
   /*** Parameters Changed */
   const getParameters = (parameters: any) => {
@@ -192,16 +170,11 @@ export default function DatasetViewSelector({
               </RadioGroup>
             </FormControl>
           ) : null}
-          {!isLocalEnabled || sourceType === VALUE_REMOTE ? (
-            <SelectWithList
-              placeholder={datasets ? "Select dataset" : "Loading"}
-              list={datasets}
-              value={dataset}
-              onChange={(evt: any) => {
-                setDataset(evt.value);
-              }}
-            />
-          ) : null}
+          <DatasetSelector
+            dataset={dataset}
+            onChanged={setDataset}
+            sourceType={sourceType}
+          />
         </div>
       }
     />
