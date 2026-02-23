@@ -7,11 +7,14 @@ from utils import load_env
 
 
 def replace_context_layer_data(
-        domain: str, api_key: str, layer_id: int, file_path: str
+        domain: str, api_key: str, email: str, layer_id: int, file_path: str
 ):
     """Replace data for a context layer via POST."""
     url = f"{domain}/api/v1/context-layers/{layer_id}/data/replace/"
-    headers = {"Authorization": f"Token {api_key}"}
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "GeoSight-User-Key": email
+    }
     with open(file_path) as f:
         payload = json.load(f)
     response = requests.post(url, json=payload, headers=headers)
@@ -28,9 +31,10 @@ def main(context_layer_id: int, file_path: str):
     env = load_env()
     domain = env['DOMAIN']
     api_key = env['API_KEY']
+    email = env['EMAIL']
 
     attributes = replace_context_layer_data(
-        domain, api_key, context_layer_id, file_path
+        domain, api_key, email, context_layer_id, file_path
     )
     print("New data with new attributes inserted successfully.")
     print(f"{attributes}")
