@@ -17,10 +17,15 @@ __copyright__ = ('Copyright 2026, Unicef')
 
 import argparse
 import json
+import logging
 import re
 import sys
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs, unquote
+
+from utils import logging_setup
+
+logger = logging.getLogger(__name__)
 
 
 """
@@ -150,13 +155,12 @@ def read_urls_from_har(
             result["post_data"] = post_data.get("text", "")
         results.append(result)
 
-    print(
+    logger.info(
         f"[har] {len(entries)} entries → "
         f"{len(results)} GET/POST requests kept "
         f"(skipped: {skipped_method} non-GET/POST, "
         f"{skipped_host} host-filtered, "
-        f"{skipped_status} non-2xx)",
-        file=sys.stderr,
+        f"{skipped_status} non-2xx)"
     )
     return results
 
@@ -203,25 +207,21 @@ def load_urls(
     else:
         path = Path(source)
         if not path.exists():
-            print(f"ERROR: file not found: {path}", file=sys.stderr)
+            logger.error(f"file not found: {path}")
             sys.exit(1)
         text = path.read_text(encoding="utf-8")
 
     if _is_har(text):
-        print("[build_params] Detected HAR format", file=sys.stderr)
+        logger.info("Detected HAR format")
         return read_urls_from_har(
             text, host_filter=host_filter, only_success=only_success
         )
     else:
-        print(
-            "[build_params] Detected plain-text URL list format",
-            file=sys.stderr,
-        )
+        logger.info("Detected plain-text URL list format")
         if only_success:
-            print(
-                "WARNING: --only-success has no effect on plain-text input "
-                "(no response data available).",
-                file=sys.stderr,
+            logger.warning(
+                "--only-success has no effect on plain-text input "
+                "(no response data available)."
             )
         return read_urls_from_text(text)
 
@@ -377,10 +377,9 @@ def build_params(url_entries: list[tuple[str, dict, str, str]]) -> dict:
         if hit:
             matched += 1
 
-    print(
-        f"[build_params] {len(url_entries)} URLs parsed → "
-        f"{matched} matched a known GeoSight pattern",
-        file=sys.stderr,
+    logger.info(
+        f"{len(url_entries)} URLs parsed → "
+        f"{matched} matched a known GeoSight pattern"
     )
 
     return {
@@ -469,7 +468,7 @@ def print_summary(params: dict) -> None:
     :type params: dict
     """
     iv = params.get("indicator_values", {})
-    print(
+    logger.info(
         f"\n  dashboard_slugs      : {params.get('dashboard_slugs')}\n"
         f"  arcgis_proxy_ids     : {params.get('arcgis_proxy_ids')}\n"
         f"  arcgis_proxy_urls    : {params.get('arcgis_proxy_urls')}\n"
@@ -494,6 +493,7 @@ def print_summary(params: dict) -> None:
 
 def main() -> None:
     """Entry point for the build_params script."""
+    logging_setup()
     parser = argparse.ArgumentParser(
         description=(
             "Build params.json for locustfile.py from a HAR file or "
@@ -535,7 +535,7 @@ def main() -> None:
         args.input, host_filter=args.host, only_success=args.only_success
     )
     if not urls:
-        print("ERROR: no valid URLs found in input.", file=sys.stderr)
+        logger.error("no valid URLs found in input.")
         sys.exit(1)
 
     url_entries = parse_urls(urls)
@@ -552,18 +552,17 @@ def main() -> None:
         try:
             existing = json.loads(output_path.read_text(encoding="utf-8"))
             final = merge(existing, generated)
-            print(f"[build_params] Merged into existing {output_path}")
+            logger.info(f"Merged into existing {output_path}")
         except json.JSONDecodeError:
-            print(
-                f"WARNING: {output_path} contains invalid JSON — overwriting.",
-                file=sys.stderr,
+            logger.warning(
+                f"{output_path} contains invalid JSON — overwriting."
             )
             final = generated
     else:
         final = generated
 
     output_path.write_text(json.dumps(final, indent=2), encoding="utf-8")
-    print(f"[build_params] Written → {output_path}")
+    logger.info(f"Written → {output_path}")
     print_summary(final)
 
 
