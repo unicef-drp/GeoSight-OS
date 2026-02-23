@@ -16,9 +16,12 @@ __copyright__ = ('Copyright 2026, Unicef')
 
 
 import json
+import logging
 import os
 import random
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 """
@@ -38,15 +41,20 @@ _is_public = (
     os.environ.get("IS_PUBLIC_DASHBOARD", "").strip().lower() == "true"
 )
 _api_key = os.environ.get("GEOSIGHT_API_KEY", "")
+_user_key = os.environ.get("GEOSIGHT_USER_KEY", "")
 
-if not _is_public and not _api_key:
+if not _is_public and not _api_key and not _user_key:
     raise EnvironmentError(
         "GEOSIGHT_API_KEY is not set.\n"
         "Run:  export GEOSIGHT_API_KEY=your_token_here\n"
+        "      export GEOSIGHT_USER_KEY=your_user_key_here\n"
         "Or:   export IS_PUBLIC_DASHBOARD=true  (for public dashboards)"
     )
 
-AUTH_HEADERS = {} if _is_public else {"Authorization": f"Token {_api_key}"}
+AUTH_HEADERS = {} if _is_public else {
+    "Authorization": f"Token {_api_key}",
+    "GeoSight-User-Key": _user_key
+}
 
 # ---------------------------------------------------------------------------
 # Parameter pool
@@ -68,10 +76,7 @@ _REQUIRED = [
     "dashboard_slugs",
     "reference_layer_uuids",
     "indicator_values",
-    "related_tables",
-    "indicator_data",
-    "indicators_bulk_data",
-    "indicator_statistics",
+    "indicator_data"
 ]
 _missing = [k for k in _REQUIRED if not _p.get(k)]
 if _missing:
@@ -93,16 +98,16 @@ IV_GEOM_IDS: list[str] = _iv["geom_ids"]
 IV_FREQUENCIES: list[str] = _iv["frequencies"]
 
 # Structured pools (each entry maps directly to a request)
-RELATED_TABLES: list[dict] = _p["related_tables"]
+RELATED_TABLES: list[dict] = _p.get("related_tables", [])
 INDICATOR_DATA: list[dict] = _p["indicator_data"]
-INDICATORS_BULK_DATA: list[dict] = _p["indicators_bulk_data"]
-INDICATOR_STATISTICS: list[dict] = _p["indicator_statistics"]
+INDICATORS_BULK_DATA: list[dict] = _p.get("indicators_bulk_data", [])
+INDICATOR_STATISTICS: list[dict] = _p.get("indicator_statistics", [])
 
 if _is_public:
-    print('[auth] Running in public mode (no authentication)')
+    logger.info('[auth] Running in public mode (no authentication)')
 else:
-    print('[auth] Using token authentication with provided API key')
-print(
+    logger.info('[auth] Using token authentication with provided API key')
+logger.info(
     f"\n[params] Loaded from {_params_path}\n"
     f"  dashboard_slugs      : {DASHBOARD_SLUGS}\n"
     f"  arcgis_proxy_ids     : {ARCGIS_PROXY_IDS}\n"
@@ -122,6 +127,38 @@ print(
 # ---------------------------------------------------------------------------
 # HTTP helpers
 # ---------------------------------------------------------------------------
+
+
+_is_debug = os.environ.get("LOG_LEVEL", "INFO").strip().lower() == "debug"
+if _is_debug:
+    logger.debug(
+        "[debug] Debug mode is ON: failed requests will log detailed info"
+    )
+
+
+def log_debug(name, method, resp):
+    """Log detailed request/response info for debugging failed requests.
+
+    :param name: the name of the request (for context in logs)
+    :type name: str
+    :param method: the HTTP method of the request
+    :type method: str
+    :param resp: the response object from the request
+    :type resp: requests.Response
+    """
+    logger.debug(f"{method} {resp.request.url}")
+    # strip out token from Authorization header for safer debug
+    safe_headers = {
+        k: (v if k != "Authorization" else "Token [REDACTED]") for
+        k, v in resp.request.headers.items()
+    }
+    logger.debug(f"Request headers: {safe_headers}")
+    logger.debug(
+        f"Request to {name} failed with status "
+        f"{resp.status_code}. "
+        f"Response text: {resp.text}"
+    )
+    logger.debug(resp.headers)
 
 
 def get(user, path, *, name, params=None, ok_statuses=(200,)):
@@ -150,6 +187,8 @@ def get(user, path, *, name, params=None, ok_statuses=(200,)):
         if resp.status_code in ok_statuses:
             resp.success()
         else:
+            if _is_debug:
+                log_debug(name, "GET", resp)
             resp.failure(f"{name} → HTTP {resp.status_code}")
     return resp
 
@@ -180,6 +219,8 @@ def post(user, path, *, name, json_payload=None, ok_statuses=(200,)):
         if resp.status_code in ok_statuses:
             resp.success()
         else:
+            if _is_debug:
+                log_debug(name, "POST", resp)
             resp.failure(f"{name} → HTTP {resp.status_code}")
     return resp
 
@@ -197,8 +238,8 @@ def indicator_values_params():
     """
     return (
         random.choice(IV_INDICATOR_IDS),
-        random.choice(IV_GEOM_IDS),
-        random.choice(IV_FREQUENCIES),
+        random.choice(IV_GEOM_IDS) if IV_GEOM_IDS else None,
+        random.choice(IV_FREQUENCIES) if IV_FREQUENCIES else None,
     )
 
 

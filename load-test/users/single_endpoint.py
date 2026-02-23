@@ -128,7 +128,12 @@ class RelatedTableDatesUser(FastHttpUser):
 
     @task
     def load_related_table_dates(self):
-        """Fetch related table dates for one related table."""
+        """Fetch related table dates for one related table.
+
+        :return: None
+        """
+        if not RELATED_TABLES:
+            return
         entry = random.choice(RELATED_TABLES)
         rt_id = entry["id"]
         get(
@@ -163,7 +168,12 @@ class IndicatorsBulkDataUser(FastHttpUser):
 
     @task
     def load_indicators_bulk_data(self):
-        """Fetch bulk data for multiple indicators."""
+        """Fetch bulk data for multiple indicators.
+
+        :return: None
+        """
+        if not INDICATORS_BULK_DATA:
+            return
         entry = random.choice(INDICATORS_BULK_DATA)
         get(
             self,
@@ -197,8 +207,13 @@ class IndicatorValuesUser(FastHttpUser):
 
     @task
     def load_indicator_values(self):
-        """Fetch indicator values for one indicator."""
+        """Fetch indicator values for one indicator.
+
+        :return: None
+        """
         ind_id, geom_id, frequency = indicator_values_params()
+        if geom_id is None and frequency is None:
+            return  # Skip if no valid combos
         get(
             self,
             f"/api/v1/indicators/{ind_id}/data/values/",

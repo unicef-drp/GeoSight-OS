@@ -86,9 +86,13 @@ class FullJourneyTaskSet(SequentialTaskSet):
             if RELATED_TABLE_DETAIL_IDS
             else None
         )
-        self.rt_entry = random.choice(RELATED_TABLES)
+        self.rt_entry = random.choice(
+            RELATED_TABLES
+        ) if RELATED_TABLES else None
         self.data_entry = random.choice(INDICATOR_DATA)
-        self.bulk_data_entry = random.choice(INDICATORS_BULK_DATA)
+        self.bulk_data_entry = random.choice(
+            INDICATORS_BULK_DATA
+        ) if INDICATORS_BULK_DATA else None
         # Simulate the browser firing statistics requests for every indicator
         # in the pool (as seen in the original waterfall)
         self.stat_entries = INDICATOR_STATISTICS
@@ -158,7 +162,12 @@ class FullJourneyTaskSet(SequentialTaskSet):
 
     @task
     def step_6_related_table_dates(self):
-        """Fetch related table dates for one related table."""
+        """Fetch related table dates for one related table.
+
+        :return: None
+        """
+        if self.rt_entry is None:
+            return
         rt_id = self.rt_entry["id"]
         get(
             self,
@@ -180,7 +189,12 @@ class FullJourneyTaskSet(SequentialTaskSet):
 
     @task
     def step_8_indicators_bulk_data(self):
-        """Fetch bulk data for multiple indicators."""
+        """Fetch bulk data for multiple indicators.
+
+        :return: None
+        """
+        if self.bulk_data_entry is None:
+            return
         get(
             self,
             "/api/v1/indicators/data/",
@@ -204,6 +218,8 @@ class FullJourneyTaskSet(SequentialTaskSet):
     def step_10_indicator_values(self):
         """Drill into indicator values — mimics a user clicking through map."""
         for ind_id, geom_id, frequency in self.drills:
+            if geom_id is None and frequency is None:
+                continue  # Skip if no valid combos
             get(
                 self,
                 f"/api/v1/indicators/{ind_id}/data/values/",
