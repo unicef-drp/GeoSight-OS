@@ -8,14 +8,17 @@ from utils import load_env
 
 
 def download_data(
-        domain: str, api_key: str, layer_id: int, file_format: str
+        domain: str, api_key: str, email: str, layer_id: int, file_format: str
 ):
     """Download data for a context layer."""
     url = (
         f"{domain}/api/v1/context-layers/{layer_id}"
         f"/data/download/?file_format={file_format}"
     )
-    headers = {"Authorization": f"Token {api_key}"}
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "GeoSight-User-Key": email
+    }
     response = requests.post(url, headers=headers)
     response.raise_for_status()
     return response.json()
@@ -26,7 +29,10 @@ def main(context_layer_id: int, file_format: str, output_dir: str = '.'):
     env = load_env()
     domain = env['DOMAIN']
     api_key = env['API_KEY']
-    response = download_data(domain, api_key, context_layer_id, file_format)
+    email = env['EMAIL']
+    response = download_data(
+        domain, api_key, email, context_layer_id, file_format
+    )
     print(
         f"Downloading data for layer {context_layer_id} "
         f"in {file_format} format."
@@ -35,13 +41,17 @@ def main(context_layer_id: int, file_format: str, output_dir: str = '.'):
     download_path = response['path']
     print(f"Using path {download_path}")
 
-    headers = {"Authorization": f"Token {api_key}"}
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "GeoSight-User-Key": email
+    }
     while True:
         r = requests.get(download_path, headers=headers, stream=True)
         if r.status_code == 200:
             content_disposition = r.headers.get('Content-Disposition', '')
             if 'filename=' in content_disposition:
-                filename = content_disposition.split('filename=')[-1].strip('"')
+                filename = content_disposition.split('filename=')[-1].strip(
+                    '"')
             else:
                 filename = f"layer_{context_layer_id}.{file_format}"
 

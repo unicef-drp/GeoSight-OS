@@ -18,7 +18,6 @@ from django.core.exceptions import SuspiciousOperation
 from django.forms.models import model_to_dict
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
-from knox.auth import TokenAuthentication
 from rest_framework import status, viewsets
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
@@ -45,8 +44,7 @@ class BaseApiV1(FilteredAPI):
     """Base API V1."""
 
     authentication_classes = [
-        SessionAuthentication, BasicAuthentication,
-        TokenAuthentication, BearerAuthentication
+        SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
     pagination_class = Pagination
     extra_exclude_fields = []

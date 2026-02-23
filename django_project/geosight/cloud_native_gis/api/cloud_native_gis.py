@@ -21,7 +21,6 @@ from cloud_native_gis.api.vector_tile import VectorTileLayer
 from cloud_native_gis.models.layer import Layer, LayerType
 from cloud_native_gis.models.layer_upload import LayerUpload
 from django.core.files.storage import FileSystemStorage
-from knox.auth import TokenAuthentication
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
@@ -82,6 +81,5 @@ class CloudNativeGISDownloadFileAPI(DownloadFileAPI):
     """Override DownloadFileAPI to use CloudNativeGISLayerVectorTile."""
 
     authentication_classes = [
-        SessionAuthentication, BasicAuthentication,
-        TokenAuthentication, BearerAuthentication
+        SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
