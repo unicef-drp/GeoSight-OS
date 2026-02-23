@@ -139,7 +139,8 @@
         "Group": "Grupos",
         "Groups": "Grupos",
         "permissionRequests": "Solicitudes de Permiso",
-        "newUsers": "Nuevos Usuarios"
+        "newUsers": "Nuevos Usuarios",
+        "Indicator Layers": "Nombre de Indicador"
       }
     },
     "columns": {

@@ -376,6 +376,7 @@ class DashboardIndicatorLayerIndicatorSerializer(
 
     indicator = serializers.SerializerMethodField()
     shortcode = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     style = serializers.SerializerMethodField()
     style_id = serializers.SerializerMethodField()
@@ -403,6 +404,17 @@ class DashboardIndicatorLayerIndicatorSerializer(
         :rtype: str
         """
         return obj.indicator.shortcode
+
+    def get_type(self, obj: DashboardIndicatorLayerIndicator):
+        """
+        Return the indicator type.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Indicator type.
+        :rtype: str
+        """
+        return obj.indicator.type
 
     def get_style(self, obj: DashboardIndicatorLayerIndicator):
         """
@@ -475,7 +487,7 @@ class DashboardIndicatorLayerIndicatorSerializer(
     class Meta:  # noqa: D106
         model = DashboardIndicatorLayerIndicator
         fields = (
-            'id', 'indicator', 'rule', 'order',
+            'id', 'indicator', 'type', 'rule', 'order',
             'name', 'color', 'active', 'shortcode',
             'style', 'style_id', 'style_type', 'style_data', 'style_config',
             'override_style'
