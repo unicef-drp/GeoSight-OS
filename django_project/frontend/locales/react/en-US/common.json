@@ -139,7 +139,8 @@
         "accessRequestPermissionDetail": "Request Permission Detail Name",
         "userProfile": "User Profile Name",
         "referenceLayerView": "Reference Dataset Name",
-        "referenceDatasetImporter": "Reference Dataset Importer Name"
+        "referenceDatasetImporter": "Reference Dataset Importer Name",
+        "Indicator Layers": "Indicator Name"
       }
     },
     "columns": {
