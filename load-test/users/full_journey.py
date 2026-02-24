@@ -93,9 +93,12 @@ class FullJourneyTaskSet(SequentialTaskSet):
         self.bulk_data_entry = random.choice(
             INDICATORS_BULK_DATA
         ) if INDICATORS_BULK_DATA else None
-        # Simulate the browser firing statistics requests for every indicator
-        # in the pool (as seen in the original waterfall)
-        self.stat_entries = INDICATOR_STATISTICS
+        # Simulate the browser firing statistics requests
+        # for multiple indicators in the pool
+        self.stat_entries = random.sample(
+            INDICATOR_STATISTICS,
+            k=random.randint(1, min(4, len(INDICATOR_STATISTICS)))
+        ) if INDICATOR_STATISTICS else []
         # 2–4 random (indicator, geom, frequency) combos for the values drills
         self.drills = [
             indicator_values_params() for _ in range(random.randint(2, 4))
