@@ -42,16 +42,13 @@ Normal load full journey
 
 Usage
 -----
-    # Run all scenarios (default)
-    python run_scenarios.py --host https://geosight.unicef.org
-
-    # Run only the baseline scenario
+    # Run the baseline scenario
     python run_scenarios.py --host https://geosight.unicef.org
         --scenario baseline
 
     # Override output directory
     python run_scenarios.py --host https://geosight.unicef.org
-        --output-dir my_results
+        --scenario normal-load --output-dir my_results
 """
 
 
@@ -165,8 +162,31 @@ SCENARIOS = {
         "run_time": "10m",
         "locustfile": "locustfiles/headless.py",
         "classes": FULL_JOURNEY_CLASSES,
-    },
+    }
 }
+
+_SCENARIOS_FILE = Path(__file__).parent / "data" / "scenarios.json"
+
+
+def load_scenarios() -> dict:
+    """Load scenario definitions from ``data/scenarios.json`` if it exists.
+
+    Falls back to the built-in :data:`SCENARIOS` dict when the file is absent.
+
+    The JSON file must be an object whose keys are scenario names and whose
+    values match the scenario dict structure (``description``, ``users``,
+    ``spawn_rate``, ``run_time``, ``locustfile``, ``classes``).
+
+    :return: Mapping of scenario name → scenario config dict.
+    :rtype: dict
+    """
+    if _SCENARIOS_FILE.exists():
+        with _SCENARIOS_FILE.open(encoding="utf-8") as fh:
+            scenarios = json.load(fh)
+        print(f"Loaded scenarios from {_SCENARIOS_FILE}")
+        return scenarios
+    print(f"No scenarios file found at {_SCENARIOS_FILE}; using built-in scenarios.")
+    return SCENARIOS
 
 
 # ---------------------------------------------------------------------------
@@ -412,6 +432,8 @@ def run_scenario(
 
 def main() -> None:
     """Entry point for the runner script."""
+    scenarios = load_scenarios()
+
     parser = argparse.ArgumentParser(
         description="Run GeoSight Locust scenarios headlessly."
     )
@@ -422,9 +444,9 @@ def main() -> None:
     )
     parser.add_argument(
         "--scenario",
-        choices=list(SCENARIOS.keys()) + ["all"],
-        default="all",
-        help="Scenario to run (default: all).",
+        required=True,
+        choices=list(scenarios.keys()),
+        help="Scenario to run.",
     )
     parser.add_argument(
         "--output-dir",
@@ -442,21 +464,14 @@ def main() -> None:
     logger.log(f"Log file : {log_path}")
     logger.log(f"Host     : {args.host}")
 
-    scenarios_to_run = (
-        SCENARIOS
-        if args.scenario == "all"
-        else {args.scenario: SCENARIOS[args.scenario]}
+    run_scenario(
+        scenario_name=args.scenario,
+        scenario=scenarios[args.scenario],
+        host=args.host,
+        output_dir=output_dir,
+        timestamp=timestamp,
+        logger=logger,
     )
-
-    for name, cfg in scenarios_to_run.items():
-        run_scenario(
-            scenario_name=name,
-            scenario=cfg,
-            host=args.host,
-            output_dir=output_dir,
-            timestamp=timestamp,
-            logger=logger,
-        )
 
     logger.log()
     logger.log(f"All done. CSV files written to: {output_dir}")
