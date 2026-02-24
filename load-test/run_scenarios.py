@@ -185,7 +185,10 @@ def load_scenarios() -> dict:
             scenarios = json.load(fh)
         print(f"Loaded scenarios from {_SCENARIOS_FILE}")
         return scenarios
-    print(f"No scenarios file found at {_SCENARIOS_FILE}; using built-in scenarios.")
+    print(
+        f"No scenarios file found at {_SCENARIOS_FILE}; "
+        "using built-in scenarios."
+    )
     return SCENARIOS
 
 
