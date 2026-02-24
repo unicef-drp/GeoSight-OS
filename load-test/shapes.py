@@ -77,9 +77,9 @@ class StressTestShape(LoadTestShape):
 
     Timeline (default values)
     -------------------------
-    Phase 1 — ramp-up  :   0 s → 120 s  (0 → 100 users)
-    Phase 2 — hold     : 120 s → 420 s  (100 users sustained)
-    Phase 3 — ramp-down: 420 s → 540 s  (100 → 0 users)
+    Phase 1 — ramp-up  :   0 s → 120 s  (0 → 150 users)
+    Phase 2 — hold     : 120 s → 420 s  (150 users sustained)
+    Phase 3 — ramp-down: 420 s → 540 s  (150 → 0 users)
 
     Override class attributes to customise the shape:
 
@@ -99,7 +99,7 @@ class StressTestShape(LoadTestShape):
     """
 
     #: Maximum concurrent users reached during the hold phase.
-    peak_users: int = 100
+    peak_users: int = 150
     #: Seconds to linearly ramp from 0 to ``peak_users``.
     ramp_up_time: int = 120
     #: Seconds to sustain ``peak_users`` load.
