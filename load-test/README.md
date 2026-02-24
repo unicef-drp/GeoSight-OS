@@ -135,11 +135,17 @@ Shared setup (user imports and the slow-request hook) lives in
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `GEOSIGHT_API_KEY` | Yes (unless `IS_PUBLIC_DASHBOARD=true`) | API token sent as `Authorization: Token <key>` |
+| `GEOSIGHT_USER_KEY` | No | User key sent as `GeoSight-User-Key` header |
 | `IS_PUBLIC_DASHBOARD` | No | Set to `true` to skip authentication entirely |
+| `GEOSIGHT_CSRF_TOKEN` | No | CSRF token sent as `X-CSRFToken` header (for session-based auth) |
+| `GEOSIGHT_REFERRER` | No | Value sent as the `Referer` header (required by some endpoints) |
 | `PARAMS_PATH` | No | Path to `params.json` (default: `data/params.json`) |
 
 ```bash
 export GEOSIGHT_API_KEY=your_token_here
+export GEOSIGHT_USER_KEY=your_user_key_here       # optional
+export GEOSIGHT_CSRF_TOKEN=your_csrf_token_here   # optional, for session-based auth
+export GEOSIGHT_REFERRER=https://geosight.unicef.org  # optional
 # or for public dashboards:
 export IS_PUBLIC_DASHBOARD=true
 ```
@@ -318,8 +324,9 @@ into one combined file per type:
 | `<ts>_<scenario>_stats_history.csv` | Per-interval stats history |
 | `<ts>_runner.log` | Timestamped log of the entire runner session |
 
-> **Note:** The environment variables `GEOSIGHT_API_KEY` / `IS_PUBLIC_DASHBOARD`
-> and `PARAMS_PATH` (see [Environment variables](#environment-variables) above)
+> **Note:** The environment variables `GEOSIGHT_API_KEY` / `GEOSIGHT_USER_KEY` / `IS_PUBLIC_DASHBOARD`,
+> `GEOSIGHT_CSRF_TOKEN`, `GEOSIGHT_REFERRER`, and `PARAMS_PATH`
+> (see [Environment variables](#environment-variables) above)
 > apply to `run_scenarios.py` as well — they are inherited by the Locust
 > subprocesses it spawns.
 

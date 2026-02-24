@@ -27,6 +27,9 @@ and shape.
 Usage
 -----
     export GEOSIGHT_API_KEY=your_token_here
+    export GEOSIGHT_USER_KEY=your_user_key_here       # optional
+    export GEOSIGHT_CSRF_TOKEN=your_csrf_token_here   # optional
+    export GEOSIGHT_REFERRER=https://geosight.unicef.org  # optional
 
     locust -f locustfiles/ui.py --host=https://geosight.unicef.org \\
         --class-picker

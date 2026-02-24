@@ -30,7 +30,10 @@ Shared auth, parameter pool, and HTTP helpers for GeoSight load tests.
 Environment variables
 ---------------------
 GEOSIGHT_API_KEY    — required unless IS_PUBLIC_DASHBOARD=true; your API token
+GEOSIGHT_USER_KEY   — optional; user key sent as GeoSight-User-Key header
 IS_PUBLIC_DASHBOARD — set to "true" to skip authentication entirely
+GEOSIGHT_CSRF_TOKEN — optional; CSRF token sent as X-CSRFToken header
+GEOSIGHT_REFERRER   — optional; value sent as the Referer header
 PARAMS_PATH         — optional; path to params.json (default: data/params.json)
 """
 
@@ -42,6 +45,9 @@ _is_public = (
 )
 _api_key = os.environ.get("GEOSIGHT_API_KEY", "")
 _user_key = os.environ.get("GEOSIGHT_USER_KEY", "")
+_session_cookie = os.environ.get("GEOSIGHT_SESSION_COOKIE", "")
+_xcsrftoken = os.environ.get("GEOSIGHT_CSRF_TOKEN", "")
+_referrer = os.environ.get("GEOSIGHT_REFERRER", "")
 
 if not _is_public and not _api_key and not _user_key:
     raise EnvironmentError(
@@ -55,6 +61,10 @@ AUTH_HEADERS = {} if _is_public else {
     "Authorization": f"Token {_api_key}",
     "GeoSight-User-Key": _user_key
 }
+if _session_cookie:
+    AUTH_HEADERS["Cookie"] = f"sessionid={_session_cookie}"
+    AUTH_HEADERS["X-CSRFToken"] = _xcsrftoken
+    AUTH_HEADERS["Referer"] = _referrer
 
 # ---------------------------------------------------------------------------
 # Parameter pool
@@ -139,6 +149,7 @@ if _is_debug:
 def log_debug(name, method, resp):
     """Log detailed request/response info for debugging failed requests.
 
+    Note: logger.debug not working here
     :param name: the name of the request (for context in logs)
     :type name: str
     :param method: the HTTP method of the request
@@ -146,19 +157,19 @@ def log_debug(name, method, resp):
     :param resp: the response object from the request
     :type resp: requests.Response
     """
-    logger.debug(f"{method} {resp.request.url}")
+    print(f"{method} {resp.request.url}")
     # strip out token from Authorization header for safer debug
     safe_headers = {
         k: (v if k != "Authorization" else "Token [REDACTED]") for
         k, v in resp.request.headers.items()
     }
-    logger.debug(f"Request headers: {safe_headers}")
-    logger.debug(
+    print(f"Request headers: {safe_headers}")
+    print(
         f"Request to {name} failed with status "
         f"{resp.status_code}. "
         f"Response text: {resp.text}"
     )
-    logger.debug(resp.headers)
+    print(f"Response headers: {resp.headers}")
 
 
 def get(user, path, *, name, params=None, ok_statuses=(200,)):
