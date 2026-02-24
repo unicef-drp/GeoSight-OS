@@ -272,12 +272,15 @@ attributes (see `shapes.py` for the full list of tuneable values).
 
 ### Option E — Automated scenario runner (`run_scenarios.py`)
 
-`run_scenarios.py` is a higher-level wrapper that runs one or more predefined
-scenarios by invoking Locust as a subprocess for each user class in sequence.
+`run_scenarios.py` is a higher-level wrapper that runs a single predefined
+scenario by invoking Locust as a subprocess for each user class in sequence.
 It handles output collection, per-class CSV merging, and run logging
 automatically — no manual Locust invocations required.
 
-#### Predefined scenarios
+#### Scenarios
+
+Scenarios are loaded from `data/scenarios.json` if the file exists; otherwise
+the built-in defaults below are used.
 
 | Scenario | Users | Spawn rate | Run time | Classes |
 |----------|-------|------------|----------|---------|
@@ -286,20 +289,32 @@ automatically — no manual Locust invocations required.
 | `normal-load` | 50 | 5 | 10 min | All single-endpoint classes |
 | `normal-load-full-journey` | 50 | 5 | 10 min | `FullJourneyUser` |
 
+To define custom scenarios, create `data/scenarios.json`:
+
+```json
+{
+  "my-scenario": {
+    "description": "My custom scenario",
+    "users": 10,
+    "spawn_rate": 2,
+    "run_time": "5m",
+    "locustfile": "locustfiles/headless.py",
+    "classes": ["DashboardDataUser", "IndicatorDataUser"]
+  }
+}
+```
+
 #### Usage
 
 ```bash
 # Run from the load-test directory
 cd load-test
 
-# Run all scenarios (default)
-python run_scenarios.py --host https://geosight.unicef.org
-
-# Run a single scenario
+# Run a scenario
 python run_scenarios.py --host https://geosight.unicef.org --scenario baseline
 
 # Custom output directory
-python run_scenarios.py --host https://geosight.unicef.org --output-dir my_results
+python run_scenarios.py --host https://geosight.unicef.org --scenario normal-load --output-dir my_results
 ```
 
 #### All options
@@ -307,7 +322,7 @@ python run_scenarios.py --host https://geosight.unicef.org --output-dir my_resul
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--host` | *(required)* | Target host URL, e.g. `https://geosight.unicef.org` |
-| `--scenario` | `all` | Scenario to run: `baseline`, `baseline-full-journey`, `normal-load`, `normal-load-full-journey`, or `all` |
+| `--scenario` | *(required)* | Scenario to run (must match a key in `data/scenarios.json` or the built-in defaults) |
 | `--output-dir` | `output/` | Directory where CSV and log files are written |
 
 #### Output files
