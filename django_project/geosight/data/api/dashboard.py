@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import uuid
+
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -28,7 +29,8 @@ from frontend.views.admin.dashboard.create import DashboardCreateViewBase
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.dashboard import (
-    Dashboard, DashboardIndicator, DashboardIndicatorLayer
+    Dashboard, DashboardIndicator, DashboardIndicatorLayer,
+    DashboardCachePermissions
 )
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.related_table import RelatedTable
@@ -338,6 +340,7 @@ class DashboardData(APIView):
                     pass
 
         # Return permissions for the resources
+        cache = DashboardCachePermissions.get_cache(dashboard, request.user)
         for row in [
             {'key': 'indicators', 'model': Indicator},
             {'key': 'context_layers', 'model': ContextLayer},
@@ -345,19 +348,12 @@ class DashboardData(APIView):
         ]:
             for resource in data[row['key']]:
                 try:
-                    obj = row['model'].objects.get(id=resource['id'])
-                    resource['permission'] = obj.permission.all_permission(
-                        request.user
+                    resource['permission'] = (
+                        cache[row['key']][f'{resource["id"]}']
                     )
-                    try:
-                        resource['version'] = obj.version
-                    except AttributeError:
-                        pass
-                except (
-                        RelatedTable.DoesNotExist,
-                        Indicator.DoesNotExist,
-                        ContextLayer.DoesNotExist
-                ):
-                    pass
-
+                except KeyError:
+                    resource['permission'] = {
+                        'list': False, 'read': False, 'edit': False,
+                        'share': False, 'delete': False
+                    }
         return Response(data)
