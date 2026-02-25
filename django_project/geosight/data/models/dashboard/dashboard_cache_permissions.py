@@ -88,7 +88,21 @@ class DashboardCachePermissions(models.Model):
 
     @staticmethod
     def get_cache(dashboard: Dashboard, user: User):
-        """Get cache based on dashboard and user."""
+        """Get permission cache for a dashboard and user.
+
+        Retrieves existing cached permissions from the database.
+        If no cache exists, generates and saves a new one before returning.
+
+        :param dashboard: The dashboard to retrieve permissions for.
+        :type dashboard: Dashboard
+        :param user: The user whose permissions are being cached.
+            Unauthenticated users are stored as ``None``.
+        :type user: User
+        :return: A dict of cached permissions keyed by resource type
+            (``indicators``, ``context_layers``, ``related_tables``),
+            each mapping resource id to its permission dict.
+        :rtype: dict
+        """
         user = user if user.is_authenticated else None
         try:
             return DashboardCachePermissions.objects.get(
