@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from .bookmark import *
 from .dashboard import *
+from .dashboard_cache_permissions import *
 from .dashboard_embed import *
 from .dashboard_indicator_layer import *
 from .dashboard_related_table import *

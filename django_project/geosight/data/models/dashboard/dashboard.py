@@ -19,6 +19,8 @@ import os.path
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import (
@@ -803,3 +805,28 @@ class Dashboard(
                     )
             except KeyError:
                 pass
+
+
+@receiver(post_save, sender=Dashboard)
+def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
+    """Trigger cache invalidation and generation when a dashboard is saved.
+
+    Invalidates all cached permissions for the saved dashboard so they
+    are regenerated on next user access, then dispatches an async task
+    for any additional cache generation work.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The Dashboard instance that was saved.
+    :type instance: Dashboard
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
+    from geosight.data.tasks.cache import dashboard_cache_generation
+    # Regenerate cache permission
+    # We delete all cache permissions for this dashboard
+    # Regenerate when user access the dashboard
+    instance.dashboardcachepermissions_set.all().update(cache=None)
+
+    # Run other cache generation
+    dashboard_cache_generation.delay(instance.id)

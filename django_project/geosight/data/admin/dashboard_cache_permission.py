@@ -11,18 +11,19 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '25/02/2026'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .arcgis import *
-from .basemap_layer import *
-from .code import *
-from .context_layer import *
-from .dashboard import *
-from .dashboard_cache_permission import *
-from .dashboard_embed import *
-from .indicator import *
-from .related_table import *
-from .sdmx import *
-from .sharepoint import *
-from .style import *
+from django.contrib import admin
+
+from geosight.data.models.dashboard import DashboardCachePermissions
+
+
+class DashboardCachePermissionsAdmin(admin.ModelAdmin):
+    """DashboardCachePermissionsAdmin."""
+
+    list_display = ('dashboard', 'user', 'generated_at')
+    list_filter = ('dashboard', 'user')
+
+
+admin.site.register(DashboardCachePermissions, DashboardCachePermissionsAdmin)

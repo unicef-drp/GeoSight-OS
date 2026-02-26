@@ -69,13 +69,62 @@ class IndicatorGroupPermission(GroupPermission):
 
 
 @receiver(post_save, sender=Indicator)
-def create_resource(sender, instance, created, **kwargs):
-    """When resource created."""
+def create_resource(sender, instance, created, **kwargs):  # noqa: C901, DOC103
+    """Create a permission record when a new Indicator is created.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The Indicator instance that was saved.
+    :type instance: Indicator
+    :param created: True if a new record was created, False on update.
+    :type created: bool
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     if created:
         IndicatorPermission.objects.create(obj=instance)
 
 
 @receiver(post_save, sender=Indicator)
-def save_resource(sender, instance, **kwargs):
-    """When resource saved."""
+def save_resource(sender, instance, **kwargs):  # noqa: C901, DOC103
+    """Persist the permission record whenever an Indicator is saved.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The Indicator instance that was saved.
+    :type instance: Indicator
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     instance.permission.save()
+
+
+@receiver(post_save, sender=IndicatorPermission)
+def save_permission_resource(  # noqa: C901, DOC103
+        sender, instance: IndicatorPermission, **kwargs
+):
+    """Invalidate dashboard caches when an IndicatorPermission is saved.
+
+    Finds all dashboards that use the affected indicator and sets their
+    cached permissions to null so they are regenerated on next access.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The IndicatorPermission instance that was saved.
+    :type instance: IndicatorPermission
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
+    from geosight.data.models.dashboard import DashboardCachePermissions
+    try:
+        indicator = Indicator.objects.get(pk=instance.obj.pk)
+        dashboard_ids = list(
+            indicator.dashboardindicator_set.values_list(
+                'dashboard_id', flat=True
+            )
+        )
+        DashboardCachePermissions.objects.filter(
+            dashboard_id__in=dashboard_ids
+        ).update(cache=None)
+    except Indicator.DoesNotExist:
+        pass
