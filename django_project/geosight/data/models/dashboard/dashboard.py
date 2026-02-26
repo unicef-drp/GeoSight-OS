@@ -808,8 +808,20 @@ class Dashboard(
 
 
 @receiver(post_save, sender=Dashboard)
-def dashboard_post_save(sender, instance, **kwargs):
-    """Trigger cache generation when a dashboard is saved."""
+def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
+    """Trigger cache invalidation and generation when a dashboard is saved.
+
+    Invalidates all cached permissions for the saved dashboard so they
+    are regenerated on next user access, then dispatches an async task
+    for any additional cache generation work.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The Dashboard instance that was saved.
+    :type instance: Dashboard
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     from geosight.data.tasks.cache import dashboard_cache_generation
     # Regenerate cache permission
     # We delete all cache permissions for this dashboard

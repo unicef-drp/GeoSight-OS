@@ -68,23 +68,52 @@ class ContextLayerGroupPermission(GroupPermission):
 
 
 @receiver(post_save, sender=ContextLayer)
-def create_resource(sender, instance, created, **kwargs):
-    """When resource created."""
+def create_resource(sender, instance, created, **kwargs):  # noqa: C901, DOC103
+    """Create a permission record when a new ContextLayer is created.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The ContextLayer instance that was saved.
+    :type instance: ContextLayer
+    :param created: True if a new record was created, False on update.
+    :type created: bool
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     if created:
         ContextLayerPermission.objects.create(obj=instance)
 
 
 @receiver(post_save, sender=ContextLayer)
-def save_resource(sender, instance, **kwargs):
-    """When resource saved."""
+def save_resource(sender, instance, **kwargs):  # noqa: C901, DOC103
+    """Persist the permission record whenever a ContextLayer is saved.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The ContextLayer instance that was saved.
+    :type instance: ContextLayer
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     instance.permission.save()
 
 
 @receiver(post_save, sender=ContextLayerPermission)
-def save_permission_resource(
+def save_permission_resource(  # noqa: C901, DOC103
         sender, instance: ContextLayerPermission, **kwargs
 ):
-    """When permission resource saved."""
+    """Invalidate dashboard caches when a ContextLayerPermission is saved.
+
+    Finds all dashboards that use the affected context layer and sets
+    their cached permissions to null so they are regenerated on next access.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The ContextLayerPermission instance that was saved.
+    :type instance: ContextLayerPermission
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     from geosight.data.models.dashboard import DashboardCachePermissions
     try:
         context_layer = ContextLayer.objects.get(pk=instance.obj.pk)

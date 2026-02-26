@@ -32,6 +32,7 @@ class DashboardCachePermissions(models.Model):
 
     Permissions is based on dashboard and user.
     """
+
     PERMISSION_KEY = 'permission'
     VERSION_KEY = 'version'
 

@@ -69,28 +69,59 @@ class RelatedTableGroupPermission(GroupPermission):
 
 
 @receiver(post_save, sender=RelatedTable)
-def create_resource(sender, instance, created, **kwargs):
-    """When resource created."""
+def create_resource(sender, instance, created, **kwargs):  # noqa: C901, DOC103
+    """Create a permission record when a new RelatedTable is created.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The RelatedTable instance that was saved.
+    :type instance: RelatedTable
+    :param created: True if a new record was created, False on update.
+    :type created: bool
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     if created:
         RelatedTablePermission.objects.create(obj=instance)
 
 
 @receiver(post_save, sender=RelatedTable)
-def save_resource(sender, instance, **kwargs):
-    """When resource saved."""
+def save_resource(sender, instance, **kwargs):  # noqa: C901, DOC103
+    """Persist the permission record whenever a RelatedTable is saved.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The RelatedTable instance that was saved.
+    :type instance: RelatedTable
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     instance.permission.save()
 
 
 @receiver(post_save, sender=RelatedTablePermission)
-def save_permission_resource(
+def save_permission_resource(  # noqa: C901, DOC103
         sender, instance: RelatedTablePermission, **kwargs
 ):
-    """When permission resource saved."""
+    """Invalidate dashboard caches when a RelatedTablePermission is saved.
+
+    Finds all dashboards that use the affected related table and sets their
+    cached permissions to null so they are regenerated on next access.
+
+    :param sender: The model class that sent the signal.
+    :type sender: type
+    :param instance: The RelatedTablePermission instance that was saved.
+    :type instance: RelatedTablePermission
+    :param kwargs: Additional keyword arguments passed by the signal.
+    :type kwargs: dict
+    """
     from geosight.data.models.dashboard import DashboardCachePermissions
     try:
         related_table = RelatedTable.objects.get(pk=instance.obj.pk)
         dashboard_ids = list(
-            related_table.dashboardrelatedtable_set.values_list('dashboard_id')
+            related_table.dashboardrelatedtable_set.values_list(
+                'dashboard_id', flat=True
+            )
         )
         DashboardCachePermissions.objects.filter(
             dashboard_id__in=dashboard_ids

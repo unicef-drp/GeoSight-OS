@@ -23,8 +23,15 @@ logger = get_task_logger(__name__)
 
 @app.task
 def dashboard_cache_generation(dashboard_id):
-    """Doing cache for dashboard."""
+    """Run cache generation tasks for a dashboard.
 
+    Placeholder for additional asynchronous cache generation steps
+    triggered after a dashboard is saved. Cache permission invalidation
+    is handled synchronously in the post-save signal.
+
+    :param dashboard_id: The primary key of the Dashboard to process.
+    :type dashboard_id: int
+    """
     # TODO:
     #  Put other dashboard cache generation here
     pass

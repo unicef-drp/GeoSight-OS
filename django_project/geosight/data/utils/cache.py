@@ -15,9 +15,17 @@ import hashlib
 
 
 def generate_cache_key(url, payload):
-    """Generate a unique cache key.
+    """Generate a unique cache key based on a URL and payload.
 
-    The key will be based on the URL and payload.
+    Produces a deterministic cache key by hashing the payload with SHA-256
+    and combining it with the URL.
+
+    :param url: The request URL used as part of the cache key.
+    :type url: str
+    :param payload: The request payload to hash into the key.
+    :type payload: any
+    :return: A cache key string in the format ``cache:<url>:<hash>``.
+    :rtype: str
     """
     payload_hash = hashlib.sha256(str(payload).encode('utf-8')).hexdigest()
     return f"cache:{url}:{payload_hash}"
