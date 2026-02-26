@@ -79,3 +79,21 @@ def create_resource(sender, instance, created, **kwargs):
 def save_resource(sender, instance, **kwargs):
     """When resource saved."""
     instance.permission.save()
+
+
+@receiver(post_save, sender=IndicatorPermission)
+def save_permission_resource(sender, instance: IndicatorPermission, **kwargs):
+    """When permission resource saved."""
+    from geosight.data.models.dashboard import DashboardCachePermissions
+    try:
+        indicator = Indicator.objects.get(pk=instance.obj.pk)
+        dashboard_ids = list(
+            indicator.dashboardindicator_set.values_list(
+                'dashboard_id', flat=True
+            )
+        )
+        DashboardCachePermissions.objects.filter(
+            dashboard_id__in=dashboard_ids
+        ).update(cache=None)
+    except Indicator.DoesNotExist:
+        pass

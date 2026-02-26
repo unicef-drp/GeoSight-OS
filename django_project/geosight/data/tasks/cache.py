@@ -10,14 +10,21 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
+__author__ = 'irwan@kartoza.com'
+__date__ = '26/02/2026'
+__copyright__ = ('Copyright 2026, Unicef')
 
-import hashlib
+from celery.utils.log import get_task_logger
+
+from core.celery import app
+
+logger = get_task_logger(__name__)
 
 
-def generate_cache_key(url, payload):
-    """Generate a unique cache key.
+@app.task
+def dashboard_cache_generation(dashboard_id):
+    """Doing cache for dashboard."""
 
-    The key will be based on the URL and payload.
-    """
-    payload_hash = hashlib.sha256(str(payload).encode('utf-8')).hexdigest()
-    return f"cache:{url}:{payload_hash}"
+    # TODO:
+    #  Put other dashboard cache generation here
+    pass

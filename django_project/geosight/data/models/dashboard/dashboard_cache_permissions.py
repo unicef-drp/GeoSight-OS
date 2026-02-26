@@ -32,6 +32,8 @@ class DashboardCachePermissions(models.Model):
 
     Permissions is based on dashboard and user.
     """
+    PERMISSION_KEY = 'permission'
+    VERSION_KEY = 'version'
 
     dashboard = models.ForeignKey(
         Dashboard,
@@ -41,7 +43,7 @@ class DashboardCachePermissions(models.Model):
         User, on_delete=models.CASCADE, null=True, blank=True
     )
     generated_at = models.DateTimeField(auto_now=True)
-    cache = models.JSONField(default=dict)
+    cache = models.JSONField(null=True, blank=True)
 
     class Meta:  # noqa: D106
         unique_together = ('dashboard', 'user')
@@ -69,11 +71,19 @@ class DashboardCachePermissions(models.Model):
             for _resource in row['dashboard_query'].all().select_related(
                     'object', 'object__permission'
             ):
+                _cache_data_resource = {}
                 try:
                     obj = _resource.object
-                    cache_data_resource[
-                        _resource.object_id] = obj.permission.all_permission(
+                    _cache_data_resource[
+                        self.PERMISSION_KEY] = obj.permission.all_permission(
                         self.user
+                    )
+                    try:
+                        _cache_data_resource[self.VERSION_KEY] = obj.version
+                    except AttributeError:
+                        _cache_data_resource[self.VERSION_KEY] = 0
+                    cache_data_resource[_resource.object_id] = (
+                        _cache_data_resource
                     )
                 except (
                         RelatedTable.DoesNotExist,
@@ -105,9 +115,15 @@ class DashboardCachePermissions(models.Model):
         """
         user = user if user.is_authenticated else None
         try:
-            return DashboardCachePermissions.objects.get(
+            permission = DashboardCachePermissions.objects.get(
                 dashboard=dashboard, user=user
-            ).cache
+            )
+            if not permission.cache:
+                permission.generate_cache()
+                permission.refresh_from_db()
+                return permission.cache
+            else:
+                return permission.cache
         except DashboardCachePermissions.DoesNotExist:
             permission = DashboardCachePermissions(
                 dashboard=dashboard, user=user

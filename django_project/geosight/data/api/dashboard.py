@@ -340,7 +340,11 @@ class DashboardData(APIView):
                     pass
 
         # Return permissions for the resources
-        cache = DashboardCachePermissions.get_cache(dashboard, request.user)
+        cache = {}
+        if dashboard.pk:
+            cache = DashboardCachePermissions.get_cache(
+                dashboard, request.user
+            )
         for row in [
             {'key': 'indicators', 'model': Indicator},
             {'key': 'context_layers', 'model': ContextLayer},
@@ -349,7 +353,14 @@ class DashboardData(APIView):
             for resource in data[row['key']]:
                 try:
                     resource['permission'] = (
-                        cache[row['key']][f'{resource["id"]}']
+                        cache[row['key']][f'{resource["id"]}'][
+                            DashboardCachePermissions.PERMISSION_KEY
+                        ]
+                    )
+                    resource['version'] = (
+                        cache[row['key']][f'{resource["id"]}'][
+                            DashboardCachePermissions.VERSION_KEY
+                        ]
                     )
                 except KeyError:
                     resource['permission'] = {

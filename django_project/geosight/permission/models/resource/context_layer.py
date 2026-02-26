@@ -78,3 +78,23 @@ def create_resource(sender, instance, created, **kwargs):
 def save_resource(sender, instance, **kwargs):
     """When resource saved."""
     instance.permission.save()
+
+
+@receiver(post_save, sender=ContextLayerPermission)
+def save_permission_resource(
+        sender, instance: ContextLayerPermission, **kwargs
+):
+    """When permission resource saved."""
+    from geosight.data.models.dashboard import DashboardCachePermissions
+    try:
+        context_layer = ContextLayer.objects.get(pk=instance.obj.pk)
+        dashboard_ids = list(
+            context_layer.dashboardcontextlayer_set.values_list(
+                'dashboard_id', flat=True
+            )
+        )
+        DashboardCachePermissions.objects.filter(
+            dashboard_id__in=dashboard_ids
+        ).update(cache=None)
+    except ContextLayer.DoesNotExist:
+        pass
