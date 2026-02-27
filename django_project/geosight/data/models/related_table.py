@@ -16,9 +16,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import uuid
+
 from dateutil import parser
 from django.contrib.gis.db import models
 from django.db import connection, transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from core.models.general import (
     AbstractEditData, AbstractTerm, AbstractVersionData, AbstractSource
@@ -675,6 +678,25 @@ class RelatedTable(
                         row.data[key] = ''
                 row.save()
         self.increase_version()
+
+    def update_dashboard_version(self):
+        """Update dashboard version."""
+        from django.utils import timezone
+        from geosight.data.models.dashboard import Dashboard
+        Dashboard.objects.filter(
+            id__in=self.dashboardrelatedtable_set.values_list(
+                'dashboard', flat=True
+            )
+        ).update(
+            version_data=timezone.now(), cache_data=None,
+            cache_data_generated_at=None
+        )
+
+
+@receiver(post_save, sender=RelatedTable)
+def increase_version(sender, instance, **kwargs):
+    """Increase version of dashboard signal."""
+    instance.update_dashboard_version()
 
 
 class RelatedTableRow(models.Model):

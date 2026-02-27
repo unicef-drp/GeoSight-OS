@@ -537,7 +537,10 @@ class Indicator(
             id__in=self.dashboardindicator_set.values_list(
                 'dashboard', flat=True
             )
-        ).update(version_data=timezone.now())
+        ).update(
+            version_data=timezone.now(), cache_data=None,
+            cache_data_generated_at=None
+        )
 
     @staticmethod
     def search(name, description):

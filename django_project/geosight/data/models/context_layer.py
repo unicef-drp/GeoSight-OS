@@ -16,16 +16,17 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import os
-import requests
 import uuid
 from base64 import b64encode
+from urllib.parse import urlparse, parse_qs
+
+import requests
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
-from urllib.parse import urlparse, parse_qs
 
 from core.models import AbstractEditData, AbstractTerm, AbstractSource
 from geosight.data.models.arcgis import ArcgisConfig
@@ -420,7 +421,10 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
             id__in=self.dashboardcontextlayer_set.values_list(
                 'dashboard', flat=True
             )
-        ).update(version_data=timezone.now())
+        ).update(
+            version_data=timezone.now(), cache_data=None,
+            cache_data_generated_at=None
+        )
 
     @property
     def token_val(self):
