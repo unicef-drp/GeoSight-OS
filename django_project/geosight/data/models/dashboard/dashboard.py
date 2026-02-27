@@ -858,7 +858,6 @@ def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
     if update_fields and set(update_fields) <= _CACHE_ONLY_FIELDS:
         return
 
-    from geosight.data.tasks.cache import dashboard_cache_generation
     # Regenerate cache permission
     # We delete all cache permissions for this dashboard
     # Regenerate when user access the dashboard
@@ -867,6 +866,3 @@ def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
     # Reset cache data
     if instance.cache_data:
         instance.update_cache(None)
-
-    # Run other cache generation
-    dashboard_cache_generation.delay(instance.id)

@@ -378,14 +378,14 @@ class DashboardData(APIView):
             cache = DashboardCachePermissions.get_cache(
                 dashboard, request.user
             )
-        try:
-            data['user_permission'] = cache['dashboard'][
-                DashboardCachePermissions.PERMISSION_KEY
-            ]
-        except KeyError:
-            data['user_permission'] = dashboard.permission.all_permission(
-                request.user
-            )
+            try:
+                data['user_permission'] = cache['dashboard'][
+                    DashboardCachePermissions.PERMISSION_KEY
+                ]
+            except KeyError:
+                data['user_permission'] = dashboard.permission.all_permission(
+                    request.user
+                )
 
         for row in [
             {'key': 'indicators'},
