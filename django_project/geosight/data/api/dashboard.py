@@ -219,7 +219,12 @@ class DashboardData(APIView):
         :rtype: rest_framework.response.Response
         """
         if slug != CREATE_SLUG:
-            dashboard = get_object_or_404(Dashboard, slug=slug)
+            # Lightweight fetch: only join permission for the access check
+            # and read version for cache key — avoids prefetch on cache hits
+            dashboard = get_object_or_404(
+                Dashboard.objects.select_related('permission'),
+                slug=slug
+            )
             read_permission_resource(dashboard, request.user)
 
             # Cache version
@@ -232,11 +237,32 @@ class DashboardData(APIView):
             if cache_data:
                 data = cache_data
             else:
-                data = DashboardSerializer(
-                    dashboard, context={'user': request.user}).data
+                # Cache miss: re-fetch with full prefetch for serialization
+                dashboard = Dashboard.objects.select_related(
+                    'group',
+                    'reference_layer',
+                    'permission',
+                ).prefetch_related(
+                    'dashboardwidget_set',
+                    'dashboardindicator_set__object',
+                    'dashboardindicator_set__object__style',
+                    'dashboardindicator_set__object__indicatorrule_set',
+                    'dashboardindicatorlayer_set__dashboardindicatorlayerindicator_set__indicator',
+                    'dashboardindicatorlayer_set__dashboardindicatorlayerrelatedtable_set__related_table',
+                    'dashboardindicatorlayer_set__dashboardindicatorlayerconfig_set',
+                    'dashboardindicatorlayer_set__dashboardindicatorlayerfield_set',
+                    'dashboardbasemap_set__object',
+                    'dashboardcontextlayer_set__object',
+                    'dashboardcontextlayer_set__dashboardcontextlayerfield_set',
+                    'dashboardrelatedtable_set__object',
+                    'dashboardtool_set',
+                ).get(slug=slug)
+
+                data = DashboardSerializer(dashboard).data
                 cache.set(data)
 
         else:
+            # This is for creating a new dashboard with defaults
             preferences = SitePreferences.preferences()
             dashboard = Dashboard()
             dashboard.filters_being_hidden = True
