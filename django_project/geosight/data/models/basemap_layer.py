@@ -81,7 +81,7 @@ class BasemapLayer(AbstractEditData, AbstractTerm, IconTerm):
 
 
 @receiver(post_save, sender=BasemapLayer)
-def increase_version(sender, instance, **kwargs):
+def increase_version(sender, instance, **kwargs):  # noqa: DOC101,DOC103
     """Increase version of dashboard signal."""
     instance.update_dashboard_version()
 
