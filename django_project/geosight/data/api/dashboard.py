@@ -26,13 +26,11 @@ from rest_framework.views import APIView
 from core.models.preferences import SitePreferences
 from frontend.views.admin.dashboard.create import DashboardCreateViewBase
 from geosight.data.models.basemap_layer import BasemapLayer
-from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.dashboard import (
     Dashboard, DashboardIndicator, DashboardIndicatorLayer,
     DashboardCachePermissions
 )
 from geosight.data.models.indicator import Indicator
-from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
@@ -364,10 +362,19 @@ class DashboardData(APIView):
             cache = DashboardCachePermissions.get_cache(
                 dashboard, request.user
             )
+        try:
+            data['user_permission'] = cache['dashboard'][
+                DashboardCachePermissions.PERMISSION_KEY
+            ]
+        except KeyError:
+            data['user_permission'] = dashboard.permission.all_permission(
+                request.user
+            )
+
         for row in [
-            {'key': 'indicators', 'model': Indicator},
-            {'key': 'context_layers', 'model': ContextLayer},
-            {'key': 'related_tables', 'model': RelatedTable},
+            {'key': 'indicators'},
+            {'key': 'context_layers'},
+            {'key': 'related_tables'},
         ]:
             for resource in data[row['key']]:
                 try:
