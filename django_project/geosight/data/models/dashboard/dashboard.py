@@ -812,8 +812,17 @@ class Dashboard(
                 pass
 
     def update_cache(self, cache: dict | None):
-        """Update dashboard cache data."""
+        """Update the cached serialized data for this dashboard.
 
+        Saves ``cache`` into :attr:`cache_data` and records the current
+        timestamp in :attr:`cache_data_generated_at`. Uses
+        ``update_fields`` so the ``post_save`` signal skips full cache
+        invalidation for this write.
+
+        :param cache: Serialized dashboard data to store, or ``None`` to
+            clear the cache.
+        :type cache: dict or None
+        """
         self.cache_data = cache
         self.cache_data_generated_at = timezone.now()
         self.save(
@@ -842,6 +851,8 @@ def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
     :type instance: Dashboard
     :param kwargs: Additional keyword arguments passed by the signal.
     :type kwargs: dict
+
+    :return: None
     """
     update_fields = kwargs.get('update_fields')
     if update_fields and set(update_fields) <= _CACHE_ONLY_FIELDS:

@@ -239,13 +239,29 @@ class DashboardData(APIView):
                     'dashboardindicator_set__object',
                     'dashboardindicator_set__object__style',
                     'dashboardindicator_set__object__indicatorrule_set',
-                    'dashboardindicatorlayer_set__dashboardindicatorlayerindicator_set__indicator',
-                    'dashboardindicatorlayer_set__dashboardindicatorlayerrelatedtable_set__related_table',
-                    'dashboardindicatorlayer_set__dashboardindicatorlayerconfig_set',
-                    'dashboardindicatorlayer_set__dashboardindicatorlayerfield_set',
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerindicator_set__indicator'
+                    ),
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerrelatedtable_set__'
+                        'related_table'
+                    ),
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerconfig_set'
+                    ),
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerfield_set'
+                    ),
                     'dashboardbasemap_set__object',
                     'dashboardcontextlayer_set__object',
-                    'dashboardcontextlayer_set__dashboardcontextlayerfield_set',
+                    (
+                        'dashboardcontextlayer_set__'
+                        'dashboardcontextlayerfield_set'
+                    ),
                     'dashboardrelatedtable_set__object',
                     'dashboardtool_set',
                 ).get(slug=slug)
