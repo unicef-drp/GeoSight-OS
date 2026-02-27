@@ -114,7 +114,9 @@ class DashboardAdmin(BaseAdminResourceMixin):
 
     list_display = (
                        'slug', 'name', 'reference_layer'
-                   ) + BaseAdminResourceMixin.list_display
+                   ) + BaseAdminResourceMixin.list_display + (
+                       'cache_data_generated_at',
+                   )
     inlines = (
         DashboardBasemapInline,
         DashboardContextLayerInline,

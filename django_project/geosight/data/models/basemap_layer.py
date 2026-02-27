@@ -69,7 +69,10 @@ class BasemapLayer(AbstractEditData, AbstractTerm, IconTerm):
             id__in=self.dashboardbasemap_set.values_list(
                 'dashboard', flat=True
             )
-        ).update(version_data=timezone.now())
+        ).update(
+            version_data=timezone.now(), cache_data=None,
+            cache_data_generated_at=None
+        )
 
     @property
     def category(self):
@@ -78,7 +81,7 @@ class BasemapLayer(AbstractEditData, AbstractTerm, IconTerm):
 
 
 @receiver(post_save, sender=BasemapLayer)
-def increase_version(sender, instance, **kwargs):
+def increase_version(sender, instance, **kwargs):  # noqa: DOC101,DOC103
     """Increase version of dashboard signal."""
     instance.update_dashboard_version()
 

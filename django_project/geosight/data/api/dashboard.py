@@ -23,17 +23,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.cache import VersionCache
 from core.models.preferences import SitePreferences
 from frontend.views.admin.dashboard.create import DashboardCreateViewBase
 from geosight.data.models.basemap_layer import BasemapLayer
-from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.dashboard import (
     Dashboard, DashboardIndicator, DashboardIndicatorLayer,
     DashboardCachePermissions
 )
 from geosight.data.models.indicator import Indicator
-from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
@@ -219,24 +216,60 @@ class DashboardData(APIView):
         :rtype: rest_framework.response.Response
         """
         if slug != CREATE_SLUG:
-            dashboard = get_object_or_404(Dashboard, slug=slug)
+            # Lightweight fetch: only join permission for the access check
+            # and read version for cache key — avoids prefetch on cache hits
+            dashboard = get_object_or_404(
+                Dashboard.objects.select_related('permission'),
+                slug=slug
+            )
             read_permission_resource(dashboard, request.user)
 
             # Cache version
-            cache = VersionCache(
-                key=request.get_full_path(),
-                version=dashboard.version,
-                request=request,
-            )
-            cache_data = cache.get()
+            cache_data = dashboard.cache_data
             if cache_data:
                 data = cache_data
             else:
-                data = DashboardSerializer(
-                    dashboard, context={'user': request.user}).data
-                cache.set(data)
+                # Cache miss: re-fetch with full prefetch for serialization
+                dashboard = Dashboard.objects.select_related(
+                    'group',
+                    'reference_layer',
+                    'permission',
+                ).prefetch_related(
+                    'dashboardwidget_set',
+                    'dashboardindicator_set__object',
+                    'dashboardindicator_set__object__style',
+                    'dashboardindicator_set__object__indicatorrule_set',
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerindicator_set__indicator'
+                    ),
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerrelatedtable_set__'
+                        'related_table'
+                    ),
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerconfig_set'
+                    ),
+                    (
+                        'dashboardindicatorlayer_set__'
+                        'dashboardindicatorlayerfield_set'
+                    ),
+                    'dashboardbasemap_set__object',
+                    'dashboardcontextlayer_set__object',
+                    (
+                        'dashboardcontextlayer_set__'
+                        'dashboardcontextlayerfield_set'
+                    ),
+                    'dashboardrelatedtable_set__object',
+                    'dashboardtool_set',
+                ).get(slug=slug)
 
+                data = DashboardSerializer(dashboard).data
+                dashboard.update_cache(data)
         else:
+            # This is for creating a new dashboard with defaults
             preferences = SitePreferences.preferences()
             dashboard = Dashboard()
             dashboard.filters_being_hidden = True
@@ -345,10 +378,19 @@ class DashboardData(APIView):
             cache = DashboardCachePermissions.get_cache(
                 dashboard, request.user
             )
+            try:
+                data['user_permission'] = cache['dashboard'][
+                    DashboardCachePermissions.PERMISSION_KEY
+                ]
+            except KeyError:
+                data['user_permission'] = dashboard.permission.all_permission(
+                    request.user
+                )
+
         for row in [
-            {'key': 'indicators', 'model': Indicator},
-            {'key': 'context_layers', 'model': ContextLayer},
-            {'key': 'related_tables', 'model': RelatedTable},
+            {'key': 'indicators'},
+            {'key': 'context_layers'},
+            {'key': 'related_tables'},
         ]:
             for resource in data[row['key']]:
                 try:

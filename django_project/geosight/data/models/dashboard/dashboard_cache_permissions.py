@@ -52,6 +52,11 @@ class DashboardCachePermissions(models.Model):
     def generate_cache(self):
         """Generate cache based on dashboard."""
         cache_data = {}
+        cache_data['dashboard'] = {
+            self.PERMISSION_KEY: self.dashboard.permission.all_permission(
+                self.user
+            )
+        }
         for row in [
             {
                 'dashboard_query': self.dashboard.dashboardindicator_set,
