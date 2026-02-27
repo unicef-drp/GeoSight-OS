@@ -21,6 +21,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import (
@@ -161,6 +162,10 @@ class Dashboard(
     featured = models.BooleanField(default=False)
 
     content_limitation_description = 'Limit the number of project items'
+
+    # CACHE
+    cache_data = models.JSONField(null=True, blank=True)
+    cache_data_generated_at = models.DateTimeField(null=True, blank=True)
 
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:
@@ -806,6 +811,18 @@ class Dashboard(
             except KeyError:
                 pass
 
+    def update_cache(self, cache: dict | None):
+        """Update dashboard cache data."""
+
+        self.cache_data = cache
+        self.cache_data_generated_at = timezone.now()
+        self.save(
+            update_fields=['cache_data', 'cache_data_generated_at']
+        )
+
+
+_CACHE_ONLY_FIELDS = frozenset({'cache_data', 'cache_data_generated_at'})
+
 
 @receiver(post_save, sender=Dashboard)
 def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
@@ -815,6 +832,10 @@ def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
     are regenerated on next user access, then dispatches an async task
     for any additional cache generation work.
 
+    Skipped when only cache fields (``cache_data``,
+    ``cache_data_generated_at``) are updated, to avoid recursive
+    invalidation loops.
+
     :param sender: The model class that sent the signal.
     :type sender: type
     :param instance: The Dashboard instance that was saved.
@@ -822,11 +843,21 @@ def dashboard_post_save(sender, instance, **kwargs):  # noqa: C901, DOC103
     :param kwargs: Additional keyword arguments passed by the signal.
     :type kwargs: dict
     """
+    update_fields = kwargs.get('update_fields')
+    if update_fields and set(update_fields) <= _CACHE_ONLY_FIELDS:
+        return
+
+    print('UPDATE')
+
     from geosight.data.tasks.cache import dashboard_cache_generation
     # Regenerate cache permission
     # We delete all cache permissions for this dashboard
     # Regenerate when user access the dashboard
     instance.dashboardcachepermissions_set.all().update(cache=None)
+
+    # Reset cache data
+    if instance.cache_data:
+        instance.update_cache(None)
 
     # Run other cache generation
     dashboard_cache_generation.delay(instance.id)

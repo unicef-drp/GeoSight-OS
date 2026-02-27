@@ -23,7 +23,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.cache import VersionCache
 from core.models.preferences import SitePreferences
 from frontend.views.admin.dashboard.create import DashboardCreateViewBase
 from geosight.data.models.basemap_layer import BasemapLayer
@@ -228,12 +227,7 @@ class DashboardData(APIView):
             read_permission_resource(dashboard, request.user)
 
             # Cache version
-            cache = VersionCache(
-                key=request.get_full_path(),
-                version=dashboard.version,
-                request=request,
-            )
-            cache_data = cache.get()
+            cache_data = dashboard.cache_data
             if cache_data:
                 data = cache_data
             else:
@@ -259,8 +253,7 @@ class DashboardData(APIView):
                 ).get(slug=slug)
 
                 data = DashboardSerializer(dashboard).data
-                cache.set(data)
-
+                dashboard.update_cache(data)
         else:
             # This is for creating a new dashboard with defaults
             preferences = SitePreferences.preferences()
