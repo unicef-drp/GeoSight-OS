@@ -269,6 +269,10 @@ export const AdminListContent = forwardRef(
             isRowSelectable={selectableFunction}
             parentGetParameters={parentGetParameters}
             rowIdKey={props.rowIdKey}
+
+            highDeleteSecurity={props.highDeleteSecurity}
+            deletionWarningText={props.deletionWarningText}
+
             ref={tableRef}
           />
         </div>

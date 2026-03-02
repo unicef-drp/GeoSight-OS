@@ -27,6 +27,7 @@ import {
 
 interface ConfirmDialogContextValue {
   openConfirmDialog: (options: ConfirmDialogProps) => void;
+  setConfirmDialogDisabled: (disabled: boolean) => void;
 }
 
 const ConfirmDialogContext = createContext<ConfirmDialogContextValue | undefined>(undefined);
@@ -40,22 +41,25 @@ export const ConfirmDialogProvider: React.FC<{
     onRejected: null,
     children: null
   });
+  const [confirmDisabled, setConfirmDialogDisabled] = useState<boolean>(false);
   const confirmDialogRef = useRef<any>(null);
 
   const openConfirmDialog = useCallback((options: ConfirmDialogProps) => {
     if (confirmDialogRef.current) {
       setDialogOptions(options);
+      setConfirmDialogDisabled(options.disabledConfirm ?? false);
       confirmDialogRef.current.open();
     }
   }, []);
 
   return (
-    <ConfirmDialogContext.Provider value={{ openConfirmDialog }}>
+    <ConfirmDialogContext.Provider value={{ openConfirmDialog, setConfirmDialogDisabled }}>
       {children}
       <ConfirmDialog
         header={dialogOptions.header}
         onConfirmed={dialogOptions.onConfirmed}
         onRejected={dialogOptions.onRejected}
+        disabledConfirm={confirmDisabled}
         ref={confirmDialogRef}
       >
         {dialogOptions.children}
