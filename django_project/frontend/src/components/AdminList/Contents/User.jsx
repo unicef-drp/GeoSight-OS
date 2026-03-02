@@ -25,6 +25,15 @@ export const userUrl = {
   edit: "/admin/user/0/edit",
   create: "/admin/user/create/",
 };
+const deletionWarningText = (
+  <div>
+    Ownership of all resources created or modified by user(s) will be cleared.
+    All permissions granted to this user will be permanently removed.
+    <br />
+    <br />
+    <span style={{ color: "red" }}>This action cannot be undone.</span>
+  </div>
+);
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(
@@ -32,6 +41,9 @@ export function resourceActions(params) {
     urls.admin.userAndGroupList + "#Users",
     userUrl.edit,
     userUrl.detail,
+    null,
+    deletionWarningText,
+    true,
   );
 }
 
@@ -117,16 +129,7 @@ export function UserList({ ...props }) {
       }}
       searchKey={"username__icontains"}
       highDeleteSecurity={true}
-      deletionWarningText={
-        <div>
-          Ownership of all resources created or modified by user(s) will be
-          cleared. All permissions granted to this user will be permanently
-          removed.
-          <br />
-          <br />
-          <span style={{ color: "red" }}>This action cannot be undone.</span>
-        </div>
-      }
+      deletionWarningText={deletionWarningText}
       {...props}
     />
   );
