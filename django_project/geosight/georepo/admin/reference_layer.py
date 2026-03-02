@@ -183,11 +183,11 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
     list_filter = (InGeorepoFilter,)
     search_fields = ['name', 'identifier']
     ordering = ['name']
-    actions = [
+    actions = (
         update_meta, sync_codes, sync_codes_non_saved_level,
         action_fetch_datasets, action_create_data_access, invalidate_cache,
         assign_countries
-    ]
+    )
     filter_horizontal = ['countries']
 
     def get_readonly_fields(self, request, obj=None):

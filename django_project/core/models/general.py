@@ -125,14 +125,13 @@ class AbstractEditData(models.Model):
         """Save any object to DB."""
         if not self.modified_by:
             self.modified_by = self.creator
-        if not self.creator_username:
-            self.creator_username = (
-                self.creator.username if self.creator else None
-            )
-        if not self.modified_by_username:
-            self.modified_by_username = (
-                self.modified_by.username if self.modified_by else None
-            )
+
+        self.creator_username = (
+            self.creator.username if self.creator else None
+        )
+        self.modified_by_username = (
+            self.modified_by.username if self.modified_by else None
+        )
         obj = super().save(*args, **kwargs)
         return obj
 

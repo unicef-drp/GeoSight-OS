@@ -124,7 +124,7 @@ class DashboardAdmin(BaseAdminResourceMixin):
         DashboardToolInline
     )
     prepopulated_fields = {'slug': ('name',)}
-    actions = (invalidate_cache,)
+    actions = (invalidate_cache,) + BaseAdminResourceMixin.actions
 
 
 class DashboardContextLayerFieldInline(admin.TabularInline):
