@@ -123,6 +123,7 @@ export function UserList({ ...props }) {
           cleared. All permissions granted to this user will be permanently
           removed.
           <br />
+          <br />
           <span style={{ color: "red" }}>This action cannot be undone.</span>
         </div>
       }

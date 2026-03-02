@@ -16,8 +16,8 @@
 import React, {
   ForwardRefExoticComponent,
   ReactNode,
-  RefAttributes
-} from 'react';
+  RefAttributes,
+} from "react";
 
 interface ConfirmDialogProps extends React.HTMLAttributes<HTMLDivElement> {
   /** The header content of the dialog. */
@@ -37,6 +37,9 @@ interface ConfirmDialogProps extends React.HTMLAttributes<HTMLDivElement> {
 
   /** Disable the "Confirm" button. */
   disabledConfirm?: boolean;
+
+  /** Theme for the confirm dialog. */
+  theme?: "primary" | "Error";
 }
 
 /**

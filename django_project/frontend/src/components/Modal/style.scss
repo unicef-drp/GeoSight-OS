@@ -151,6 +151,16 @@
   }
 }
 
+.modal--header {
+  & .primary {
+    color: var(--primary-color);
+  }
+
+  & .Error {
+    color: var(--error);
+  }
+}
+
 .modal--header--close {
   padding-top: 3px;
 

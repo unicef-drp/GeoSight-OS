@@ -34,6 +34,7 @@ export const ConfirmDialog = forwardRef(
      onConfirmed,
      onRejected,
      autoClose = true,
+     theme = 'primary',
      children,
      ...props
    }, ref
@@ -74,7 +75,7 @@ export const ConfirmDialog = forwardRef(
               }
               setOpen(false)
             }}>
-              {header}
+              <div className={theme}>{header}</div>
             </ModalHeader> : null
         }
         <ModalContent>
@@ -95,7 +96,7 @@ export const ConfirmDialog = forwardRef(
             </ThemeButton>
             &nbsp;
             <ThemeButton
-              variant="primary Basic"
+              variant={theme + " Basic"}
               disabled={loading || props.disabledConfirm}
               onClick={async () => {
                 setLoading(true)

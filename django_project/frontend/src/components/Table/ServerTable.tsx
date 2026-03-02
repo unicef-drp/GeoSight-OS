@@ -394,6 +394,7 @@ const ServerTable = forwardRef(
                   text={t("admin.delete")}
                   onClick={() => {
                     openConfirmDialog({
+                      theme: "Error",
                       disabledConfirm: disabledConfirm,
                       header: t("admin.deleteConfirmation"),
                       onConfirmed: async () => {
@@ -450,6 +451,7 @@ const ServerTable = forwardRef(
                                 <i style={{ color: "gray" }}>
                                   {t(
                                     "admin.deleteMultipleConfirmationInputText",
+                                    { numberOfItems: selectionModel.length },
                                   )}
                                 </i>
                               </label>
