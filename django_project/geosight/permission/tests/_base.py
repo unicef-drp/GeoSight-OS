@@ -78,6 +78,23 @@ class BasePermissionTest(object):
             self.entity_patcher.start()
             self.addCleanup(self.entity_patcher.stop)
 
+        def test_user_deleted(self):
+            """Test user deleted."""
+            user = create_user(ROLES.CREATOR.name)
+            resource = self.create_resource(user)
+            self.assertEqual(resource.creator, user)
+            self.assertEqual(resource.creator_username, user.username)
+            self.assertEqual(resource.modified_by, user)
+            self.assertEqual(resource.modified_by_username, user.username)
+
+            # Delete user
+            user.delete()
+            resource.refresh_from_db()
+            self.assertEqual(resource.creator, None)
+            self.assertEqual(resource.creator_username, user.username)
+            self.assertEqual(resource.modified_by, None)
+            self.assertEqual(resource.modified_by_username, user.username)
+
         def tearDown(self):
             """Stop the patcher."""
             try:

@@ -79,7 +79,13 @@ class BaseDjangoAdminTest(object):
             new_resource = self.get_resources(self.admin).last()
             self.assertEqual(new_resource.name, new_payload['name'])
             self.assertEqual(new_resource.creator, self.admin)
+            self.assertEqual(
+                new_resource.creator_username, self.admin.username
+            )
             self.assertEqual(new_resource.modified_by, self.admin)
+            self.assertEqual(
+                new_resource.modified_by_username, self.admin.username
+            )
 
         def test_edit_view(self):
             """Test for edit view."""
@@ -96,4 +102,10 @@ class BaseDjangoAdminTest(object):
             self.resource.refresh_from_db()
             self.assertEqual(self.resource.name, new_payload['name'])
             self.assertEqual(self.resource.creator, self.resource_creator)
+            self.assertEqual(
+                self.resource.creator_username, self.resource_creator.username
+            )
             self.assertEqual(self.resource.modified_by, self.admin)
+            self.assertEqual(
+                self.resource.modified_by_username, self.admin.username
+            )

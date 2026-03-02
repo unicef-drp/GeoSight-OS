@@ -86,17 +86,25 @@ class AbstractEditData(models.Model):
     """Abstract model with Time Editor."""
 
     creator = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss",
     )
+    creator_username = models.CharField(
+        max_length=255,
+        null=True, blank=True
+    )
     created_at = models.DateTimeField(default=timezone.now)
     modified_by = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="%(app_label)s_%(class)s_modified_by_related",
         related_query_name="%(app_label)s_%(class)ss",
+    )
+    modified_by_username = models.CharField(
+        max_length=255,
+        null=True, blank=True
     )
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -111,6 +119,14 @@ class AbstractEditData(models.Model):
         """
         if not self.modified_by:
             self.modified_by = self.creator
+        if not self.creator_username:
+            self.creator_username = (
+                self.creator.username if self.creator else None
+            )
+        if not self.modified_by_username:
+            self.modified_by_username = (
+                self.modified_by.username if self.modified_by else None
+            )
         obj = super().save(*args, **kwargs)
         return obj
 
