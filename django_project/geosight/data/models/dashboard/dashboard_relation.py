@@ -43,7 +43,7 @@ class DashboardRelationGroup(AbstractTerm):
         'geosight_data.DashboardRelationGroup',
         null=True,
         blank=True,
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL
     )
     order = models.IntegerField(
         default=0

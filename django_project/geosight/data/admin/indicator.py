@@ -220,7 +220,7 @@ class IndicatorAdmin(BaseAdminResourceMixin):
     list_editable = ('creator', 'group', 'type')
     search_fields = ('name',)
     inlines = (IndicatorRuleInline,)
-    actions = (invalidate_cache,)
+    actions = (invalidate_cache,) + BaseAdminResourceMixin.actions
 
 
 class IndicatorGroupAdmin(admin.ModelAdmin):

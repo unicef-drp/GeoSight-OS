@@ -18,44 +18,51 @@ import React, {
   useCallback,
   useContext,
   useRef,
-  useState
+  useState,
 } from "react";
-import {
-  ConfirmDialog,
-  ConfirmDialogProps
-} from "../components/ConfirmDialog";
+import { ConfirmDialog, ConfirmDialogProps } from "../components/ConfirmDialog";
 
 interface ConfirmDialogContextValue {
   openConfirmDialog: (options: ConfirmDialogProps) => void;
+  setConfirmDialogDisabled: (disabled: boolean) => void;
 }
 
-const ConfirmDialogContext = createContext<ConfirmDialogContextValue | undefined>(undefined);
+const ConfirmDialogContext = createContext<
+  ConfirmDialogContextValue | undefined
+>(undefined);
 
 export const ConfirmDialogProvider: React.FC<{
-  children: ReactNode
+  children: ReactNode;
 }> = ({ children }) => {
   const [dialogOptions, setDialogOptions] = useState<ConfirmDialogProps>({
-    header: '',
+    header: "",
     onConfirmed: null,
     onRejected: null,
-    children: null
+    children: null,
+    theme: "primary",
   });
+  const [confirmDisabled, setConfirmDialogDisabled] = useState<boolean>(false);
   const confirmDialogRef = useRef<any>(null);
 
   const openConfirmDialog = useCallback((options: ConfirmDialogProps) => {
     if (confirmDialogRef.current) {
       setDialogOptions(options);
+      setConfirmDialogDisabled(options.disabledConfirm ?? false);
       confirmDialogRef.current.open();
     }
   }, []);
 
   return (
-    <ConfirmDialogContext.Provider value={{ openConfirmDialog }}>
+    <ConfirmDialogContext.Provider
+      value={{ openConfirmDialog, setConfirmDialogDisabled }}
+    >
       {children}
       <ConfirmDialog
+        theme={dialogOptions.theme}
         header={dialogOptions.header}
         onConfirmed={dialogOptions.onConfirmed}
         onRejected={dialogOptions.onRejected}
+        disabledConfirm={confirmDisabled}
         ref={confirmDialogRef}
       >
         {dialogOptions.children}
@@ -67,7 +74,9 @@ export const ConfirmDialogProvider: React.FC<{
 export const useConfirmDialog = (): ConfirmDialogContextValue => {
   const context = useContext(ConfirmDialogContext);
   if (!context) {
-    throw new Error("useConfirmDialog must be used within a ConfirmDialogProvider");
+    throw new Error(
+      "useConfirmDialog must be used within a ConfirmDialogProvider",
+    );
   }
   return context;
 };

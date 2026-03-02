@@ -52,6 +52,7 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "deleteMultipleConfirmationMessage": "¿Estás seguro de querer eliminar {{numberOfItems}} {{dataName}}?",
+    "deleteMultipleConfirmationInputText": "Por favor, introduce '{{numberOfItems}}' a continuación para habilitar el botón de confirmación.",
     "createNew": "Crear Nuevo {{pageName}}",
     "edit": "Editar",
     "deleteConfirmationMessage": "¿Estás seguro de querer eliminar {{item}}?",

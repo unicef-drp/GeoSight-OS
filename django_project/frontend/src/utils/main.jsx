@@ -535,7 +535,7 @@ export const uniqueByKey = (array, key) => {
  * @param {number} maxLength
  * @returns {string[][]}
  */
-export function splitByJoinedLength(input, maxLength = 1500) {
+export function splitByJoinedLength(input, maxLength = 1000) {
   const result = [];
   let currentChunk = [];
 

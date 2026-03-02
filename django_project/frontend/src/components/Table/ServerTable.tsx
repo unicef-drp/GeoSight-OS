@@ -71,6 +71,11 @@ const ServerTable = forwardRef(
       rowIdKey = "id",
       className = "",
       disableSelectionOnClick = true,
+
+      // For confirming more for deletion
+      highDeleteSecurity = false,
+      deletionWarningText,
+
       ...props
     }: ServerTableProps,
     ref,
@@ -81,7 +86,7 @@ const ServerTable = forwardRef(
     const [showSelected, setShowSelected] = useState<boolean>(false);
 
     // Confirm dialog
-    const { openConfirmDialog } = useConfirmDialog();
+    const { openConfirmDialog, setConfirmDialogDisabled } = useConfirmDialog();
     const { t } = useTranslation();
     if (enable.filter) {
       const [filterModel, setFilterModel] = useState(defaults.filters);
@@ -156,6 +161,8 @@ const ServerTable = forwardRef(
     const [data, setData] = useState<any[]>(null);
     const [dataCount, setDataCount] = useState<number>(0);
     const [error, setError] = useState<string>(null);
+    const [confirmedDeletionText, setConfirmedDeletionText] =
+      useState<string>(null);
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
@@ -328,6 +335,15 @@ const ServerTable = forwardRef(
       setParameters({ ...parameters, sort: getSort(sortModel) });
     }, [sortModel]);
 
+    const disabledConfirm =
+      highDeleteSecurity &&
+      parseInt(confirmedDeletionText) !== selectionModel.length;
+
+    /*** When confirmedDeletionText changed */
+    useEffect(() => {
+      setConfirmDialogDisabled(disabledConfirm);
+    }, [confirmedDeletionText, selectionModel.length]);
+
     return (
       <Fragment>
         {enable.singleSelection || selectionModel === undefined ? null : (
@@ -378,6 +394,8 @@ const ServerTable = forwardRef(
                   text={t("admin.delete")}
                   onClick={() => {
                     openConfirmDialog({
+                      theme: "Error",
+                      disabledConfirm: disabledConfirm,
                       header: t("admin.deleteConfirmation"),
                       onConfirmed: async () => {
                         const deletingIds = selectionModel.map((model) => {
@@ -403,20 +421,58 @@ const ServerTable = forwardRef(
                       },
                       onRejected: () => {},
                       children: (
-                        <div>
-                          {t("admin.deleteMultipleConfirmationMessage", {
-                            numberOfItems: selectionModel.length,
-                            dataName:
-                              selectionModel.length > 1
-                                ? t(
-                                    "admin.pageNameFormats.plural." + dataName,
-                                  ).toLowerCase()
-                                : t(
-                                    "admin.pageNameFormats.singular." +
-                                      dataName,
-                                  ).toLowerCase(),
-                          })}
-                        </div>
+                        <>
+                          <div>
+                            {t("admin.deleteMultipleConfirmationMessage", {
+                              numberOfItems: selectionModel.length,
+                              dataName:
+                                selectionModel.length > 1
+                                  ? t(
+                                      "admin.pageNameFormats.plural." +
+                                        dataName,
+                                    ).toLowerCase()
+                                  : t(
+                                      "admin.pageNameFormats.singular." +
+                                        dataName,
+                                    ).toLowerCase(),
+                            })}
+                          </div>
+
+                          {deletionWarningText && (
+                            <div>
+                              <br />
+                              {deletionWarningText}
+                            </div>
+                          )}
+                          {highDeleteSecurity && (
+                            <div className="BasicForm">
+                              <br />
+                              <label className="form-label" htmlFor="name">
+                                <i style={{ color: "gray" }}>
+                                  {t(
+                                    "admin.deleteMultipleConfirmationInputText",
+                                    { numberOfItems: selectionModel.length },
+                                  )}
+                                </i>
+                              </label>
+                              <div>
+                                <span className="form-input">
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    required={true}
+                                    defaultValue={confirmedDeletionText}
+                                    onChange={(evt) => {
+                                      setConfirmedDeletionText(
+                                        evt.target.value,
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </>
                       ),
                     });
                   }}

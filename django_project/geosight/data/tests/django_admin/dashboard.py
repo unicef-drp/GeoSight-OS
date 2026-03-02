@@ -87,7 +87,7 @@ class DashboardAdminViewTest(BaseDjangoAdminTest.TestCase):
         """Create resource function."""
         return Dashboard.permissions.create(
             user=user,
-            name='name'
+            name=f'{user.username}-dashboard',
         )
 
     def get_resources(self, user):

@@ -78,6 +78,9 @@ test.describe('Users list admin', () => {
     await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
     await page.getByRole('menuitem', { name: 'Delete' }).click();
     await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Generated_A0?');
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled();
+    await page.locator('.modal--content input').fill('Generated_A0');
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeEnabled();
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
 
@@ -85,6 +88,9 @@ test.describe('Users list admin', () => {
     await page.getByLabel('Select all rows').check();
     await page.getByRole('button', { name: 'Delete' }).click();
     await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete 13 users?');
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled();
+    await page.locator('.modal--content input').fill('13');
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeEnabled();
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
 

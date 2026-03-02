@@ -19,22 +19,22 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
-  useState
-} from 'react';
+  useState,
+} from "react";
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-import { AdminTable } from '../Table';
-import { IconTextField } from '../../../../components/Elements/Input'
+import { AdminTable } from "../Table";
+import { IconTextField } from "../../../../components/Elements/Input";
 import { DjangoRequests, fetchingData } from "../../../../Requests";
 import MoreAction from "../../../../components/Elements/MoreAction";
-import { dictDeepCopy, toSingular } from "../../../../utils/main";
+import { dictDeepCopy } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import './style.scss';
+import "./style.scss";
 
 // Delete action
 const DeleteAction = ({
@@ -42,12 +42,23 @@ const DeleteAction = ({
   redirectUrl,
   detailUrl = null,
   moreActions = null,
+  deletionWarningText = null,
+  highDeleteSecurity = false,
 }) => {
   const { t } = useTranslation();
-  const { openConfirmDialog } = useConfirmDialog();
+  const { openConfirmDialog, setConfirmDialogDisabled } = useConfirmDialog();
+  const [confirmedDeletionText, setConfirmedDeletionText] = useState("");
 
   const permission = params.row.permission;
   if (permission && !permission.delete) return null;
+  const item = "" + (params.row.name ?? params.row.id);
+
+  const disabledConfirm = highDeleteSecurity && confirmedDeletionText !== item;
+
+  /*** When confirmedDeletionText changed */
+  useEffect(() => {
+    setConfirmDialogDisabled(disabledConfirm);
+  }, [confirmedDeletionText, item]);
 
   return (
     <GridActionsCellItem
@@ -63,17 +74,20 @@ const DeleteAction = ({
               className="error"
               onClick={() => {
                 openConfirmDialog({
+                  theme: "Error",
                   header: t("admin.deleteConfirmation"),
                   onConfirmed: async () => {
                     const api = detailUrl.replace("/0", `/${params.id}`);
                     await DjangoRequests.delete(api, {}).then(() => {
                       try {
-                        params.columns[params.columns.length - 1]?.tableRef.current.refresh();
+                        params.columns[
+                          params.columns.length - 1
+                        ]?.tableRef.current.refresh();
                       } catch (err) {
                         if (
                           window.location.href.replace(
                             window.location.origin,
-                            ""
+                            "",
                           ) === redirectUrl
                         ) {
                           location.reload();
@@ -85,13 +99,47 @@ const DeleteAction = ({
                   },
                   onRejected: () => {},
                   children: (
-                    <div>
-                      {t("admin.deleteConfirmationMessage", {
-                        item: params.row.name ?? params.row.id,
-                      })}
-                    </div>
+                    <>
+                      <div>
+                        {t("admin.deleteConfirmationMessage", {
+                          item: params.row.name ?? params.row.id,
+                        })}
+                      </div>
+                      {deletionWarningText && (
+                        <div>
+                          <br />
+                          {deletionWarningText}
+                        </div>
+                      )}
+                      {highDeleteSecurity && (
+                        <div className="BasicForm">
+                          <br />
+                          <label className="form-label" htmlFor="name">
+                            <i style={{ color: "gray" }}>
+                              {t("admin.deleteMultipleConfirmationInputText", {
+                                numberOfItems: item,
+                              })}
+                            </i>
+                          </label>
+                          <div>
+                            <span className="form-input">
+                              <input
+                                type="text"
+                                name="name"
+                                required={true}
+                                defaultValue={confirmedDeletionText}
+                                onChange={(evt) => {
+                                  setConfirmedDeletionText(evt.target.value);
+                                }}
+                              />
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   ),
                 });
+                setConfirmDialogDisabled(disabledConfirm);
               }}
             >
               <DeleteIcon /> {t("admin.delete")}
@@ -115,13 +163,19 @@ const DeleteAction = ({
  * @returns {list}
  */
 export function COLUMNS_ACTION(
-  params, redirectUrl, editUrl = null, detailUrl = null, moreActions = null
+  params,
+  redirectUrl,
+  editUrl = null,
+  detailUrl = null,
+  moreActions = null,
+  deletionWarningText = null,
+  highDeleteSecurity = false,
 ) {
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
-  const actions = []
+  const actions = [];
 
   // Delete action
-  const permission = params.row.permission
+  const permission = params.row.permission;
   if (!permission || permission.delete) {
     actions.push(
       <DeleteAction
@@ -129,10 +183,12 @@ export function COLUMNS_ACTION(
         redirectUrl={redirectUrl}
         detailUrl={detailUrl}
         moreActions={moreActions}
+        deletionWarningText={deletionWarningText}
+        highDeleteSecurity={highDeleteSecurity}
       />,
     );
   }
-  return actions
+  return actions;
 }
 
 /**
@@ -144,47 +200,66 @@ export function COLUMNS_ACTION(
  * @param {String} detailUrl Url for detail of row.
  * @returns {list}
  */
-export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null) {
+export function COLUMNS(
+  pageName,
+  redirectUrl,
+  editUrl = null,
+  detailUrl = null,
+) {
   const { t } = useTranslation();
   editUrl = editUrl ? editUrl : urls.api.edit;
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const _columns = [
-    { field: 'id', headerName: 'id', hide: true, width: 30, },
+    { field: "id", headerName: "id", hide: true, width: 30 },
     {
-      field: 'name', headerName: t('admin.pageNameFormats.names.' + pageName), flex: 1,
+      field: "name",
+      headerName: t("admin.pageNameFormats.names." + pageName),
+      flex: 1,
       renderCell: (params) => {
-        const permission = params.row.permission
+        const permission = params.row.permission;
         if (editUrl && (!permission || permission.edit)) {
-          return <a className='MuiButtonLike CellLink'
-                    href={editUrl.replace('/0', `/${params.id}`)}>
-            {params.value}
-          </a>
+          return (
+            <a
+              className="MuiButtonLike CellLink"
+              href={editUrl.replace("/0", `/${params.id}`)}
+            >
+              {params.value}
+            </a>
+          );
         } else {
-          return <div className='MuiDataGrid-cellContent'>{params.value}</div>
+          return <div className="MuiDataGrid-cellContent">{params.value}</div>;
         }
-      }
+      },
     },
-    { field: 'description', headerName: t('admin.columns.description'), flex: 1 },
     {
-      field: 'category',
-      headerName: t('admin.columns.category'),
+      field: "description",
+      headerName: t("admin.columns.description"),
+      flex: 1,
+    },
+    {
+      field: "category",
+      headerName: t("admin.columns.category"),
       flex: 0.5,
-      serverKey: 'group__name'
+      serverKey: "group__name",
     },
     {
-      field: 'actions',
-      type: 'actions',
-      cellClassName: 'MuiDataGrid-ActionsColumn',
+      field: "actions",
+      type: "actions",
+      cellClassName: "MuiDataGrid-ActionsColumn",
       width: 80,
       getActions: (params) => {
-        return COLUMNS_ACTION(params, redirectUrl, editUrl, detailUrl)
+        return COLUMNS_ACTION(params, redirectUrl, editUrl, detailUrl);
       },
-    }
-  ]
-  if (['indicators', 'indicator'].includes(pageName)) {
-    _columns[2] = { field: 'shortcode', headerName: t('admin.columns.shortcode'), flex: 0.5 }
+    },
+  ];
+  if (["indicators", "indicator"].includes(pageName)) {
+    _columns[2] = {
+      field: "shortcode",
+      headerName: t("admin.columns.shortcode"),
+      flex: 0.5,
+    };
   }
-  return _columns
+  return _columns;
 }
 
 /**
@@ -200,14 +275,22 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
  */
 
 export const BaseList = forwardRef(
-  ({
-     columns, pageName, listUrl, initData, setInitData,
-     sortingDefault, searchDefault,
-     selectionModel,
-     setSelectionModel,
-     search, selectable = true,
-     ...props
-   }, ref
+  (
+    {
+      columns,
+      pageName,
+      listUrl,
+      initData,
+      setInitData,
+      sortingDefault,
+      searchDefault,
+      selectionModel,
+      setSelectionModel,
+      search,
+      selectable = true,
+      ...props
+    },
+    ref,
   ) => {
     const [data, setData] = useState(initData);
     const [error, setError] = useState(null);
@@ -215,75 +298,83 @@ export const BaseList = forwardRef(
     /** Refresh data **/
     const refresh = (force) => {
       if (listUrl && (!data || force)) {
-        fetchingData(listUrl, {}, {}, (data, error) => {
-          // Check if not array, return error
-          if (!Array.isArray(data)) {
-            error = 'Data is not an array'
-          } else {
-            setData(data)
-          }
+        fetchingData(
+          listUrl,
+          {},
+          {},
+          (data, error) => {
+            // Check if not array, return error
+            if (!Array.isArray(data)) {
+              error = "Data is not an array";
+            } else {
+              setData(data);
+            }
 
-          // If error
-          if (error) {
-            setError(error.toString())
-          } else {
-            setError(null)
-          }
-        }, false)
+            // If error
+            if (error) {
+              setError(error.toString());
+            } else {
+              setError(null);
+            }
+          },
+          false,
+        );
       }
-    }
+    };
     // Ready check
     useImperativeHandle(ref, () => ({
       refresh() {
-        setData(null)
-        refresh(true)
-      }
+        setData(null);
+        refresh(true);
+      },
     }));
 
     // Fetch data when created if it has url
     useEffect(() => {
-      refresh()
-    }, [])
+      refresh();
+    }, []);
 
     // Change data when init data changed
     useEffect(() => {
-      setData(initData)
-    }, [initData])
+      setData(initData);
+    }, [initData]);
 
     // Change init data when data changed
     useEffect(() => {
       if (setInitData) {
-        setInitData(data)
+        setInitData(data);
       }
-    }, [data])
+    }, [data]);
 
     /** Filter by search input */
     let rows = dictDeepCopy(data);
-    const fields = columns?.map(column => column.field).filter(column => column !== 'id')
+    const fields = columns
+      ?.map((column) => column.field)
+      .filter((column) => column !== "id");
     if (search && columns && data) {
-      rows = rows.filter(row => {
-        let found = false
-        fields.map(field => {
-          if (('' + row[field])?.toLowerCase().includes(search)) {
+      rows = rows.filter((row) => {
+        let found = false;
+        fields.map((field) => {
+          if (("" + row[field])?.toLowerCase().includes(search)) {
             found = true;
           }
-        })
-        return found
-      })
+        });
+        return found;
+      });
     }
     if (rows) {
-      rows.map(row => {
+      rows.map((row) => {
         row.state = {
           data: data,
-          setData: setData
-        }
-      })
+          setData: setData,
+        };
+      });
     }
 
     /** Render **/
     return (
       <Fragment>
-        <div className='AdminList'>
+        <div className="AdminList">
           <AdminTable
             rows={rows}
             columns={columns}
@@ -297,15 +388,23 @@ export const BaseList = forwardRef(
         </div>
       </Fragment>
     );
-  }
-)
+  },
+);
 export const List = forwardRef(
-  ({
-     columns, pageName, listUrl, initData, setInitData,
-     selectionChanged, sortingDefault, searchDefault,
-     selectable = true,
-     ...props
-   }, ref
+  (
+    {
+      columns,
+      pageName,
+      listUrl,
+      initData,
+      setInitData,
+      selectionChanged,
+      sortingDefault,
+      searchDefault,
+      selectable = true,
+      ...props
+    },
+    ref,
   ) => {
     const listRef = useRef(null);
     const [search, setSearch] = useState(searchDefault);
@@ -313,19 +412,19 @@ export const List = forwardRef(
     // Refresh changed
     useImperativeHandle(ref, () => ({
       refresh() {
-        listRef.current.refresh()
-      }
+        listRef.current.refresh();
+      },
     }));
 
     /** Render **/
     return (
       <Fragment>
-        <div className='AdminBaseInput Indicator-Search'>
+        <div className="AdminBaseInput Indicator-Search">
           <IconTextField
             placeholder={"Search " + pageName}
             defaultValue={search ? search : ""}
-            iconEnd={<MagnifyIcon/>}
-            onChange={evt => setSearch(evt.target.value.toLowerCase())}
+            iconEnd={<MagnifyIcon />}
+            onChange={(evt) => setSearch(evt.target.value.toLowerCase())}
           />
         </div>
         <BaseList
@@ -344,5 +443,5 @@ export const List = forwardRef(
         />
       </Fragment>
     );
-  }
-)
+  },
+);

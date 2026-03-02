@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 import { GridColumns } from "@mui/x-data-grid";
 
 export interface MainDataGridProps {
@@ -55,6 +55,9 @@ export interface ServerTableProps extends MainDataGridProps {
     delete: boolean;
     singleSelection: boolean;
     emptyData: boolean;
-    filter: boolean
-  }
+    filter: boolean;
+  };
+
+  deletionWarningText?: string;
+  highDeleteSecurity?: boolean;
 }

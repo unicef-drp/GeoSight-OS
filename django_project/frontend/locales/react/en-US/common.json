@@ -52,6 +52,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "deleteMultipleConfirmationMessage": "Are you sure want to delete {{numberOfItems}} {{dataName}}?",
+    "deleteMultipleConfirmationInputText": "Please enter '{{numberOfItems}}' below to enable confirm button.",
     "createNew": "Create New {{pageName}}",
     "edit": "Edit",
     "deleteConfirmationMessage": "Are you sure want to delete {{item}}?",

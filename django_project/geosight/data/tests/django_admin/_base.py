@@ -18,8 +18,10 @@ import copy
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from rest_framework.reverse import reverse
 
-from core.tests.model_factories import UserF
+from core.models.profile import ROLES
+from core.tests.model_factories import UserF, create_user
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -79,7 +81,13 @@ class BaseDjangoAdminTest(object):
             new_resource = self.get_resources(self.admin).last()
             self.assertEqual(new_resource.name, new_payload['name'])
             self.assertEqual(new_resource.creator, self.admin)
+            self.assertEqual(
+                new_resource.creator_username, self.admin.username
+            )
             self.assertEqual(new_resource.modified_by, self.admin)
+            self.assertEqual(
+                new_resource.modified_by_username, self.admin.username
+            )
 
         def test_edit_view(self):
             """Test for edit view."""
@@ -96,4 +104,27 @@ class BaseDjangoAdminTest(object):
             self.resource.refresh_from_db()
             self.assertEqual(self.resource.name, new_payload['name'])
             self.assertEqual(self.resource.creator, self.resource_creator)
+            self.assertEqual(
+                self.resource.creator_username, self.resource_creator.username
+            )
             self.assertEqual(self.resource.modified_by, self.admin)
+            self.assertEqual(
+                self.resource.modified_by_username, self.admin.username
+            )
+
+        def test_user_deleted(self):
+            """Test user deleted."""
+            user = create_user(ROLES.CREATOR.name)
+            resource = self.create_resource(user)
+            self.assertEqual(resource.creator, user)
+            self.assertEqual(resource.creator_username, user.username)
+            self.assertEqual(resource.modified_by, user)
+            self.assertEqual(resource.modified_by_username, user.username)
+
+            # Delete user
+            user.delete()
+            resource.refresh_from_db()
+            self.assertEqual(resource.creator, None)
+            self.assertEqual(resource.creator_username, user.username)
+            self.assertEqual(resource.modified_by, None)
+            self.assertEqual(resource.modified_by_username, user.username)

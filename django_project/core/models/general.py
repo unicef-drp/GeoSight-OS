@@ -68,17 +68,27 @@ class AbstractVersionData(models.Model):
         abstract = True
 
     def increase_version(self):
-        """Increase version."""
+        """Increase version by setting version_data to the current time."""
         self.version_data = timezone.now()
         self.save()
 
     @property
     def version(self):
-        """Return version data."""
+        """Return version as a POSIX timestamp.
+
+        :returns: POSIX timestamp of version_data.
+        :rtype: float
+        """
         return self.version_data.timestamp()
 
     def version_with_reference_layer_uuid(self, reference_layer_uuid):
-        """Return version data."""
+        """Return version combined with a reference layer UUID.
+
+        :param reference_layer_uuid: UUID of the reference layer.
+        :type reference_layer_uuid: str
+        :returns: Version string in the format ``<version>-<uuid>``.
+        :rtype: str
+        """
         return f'{self.version}-{reference_layer_uuid}'
 
 
@@ -86,31 +96,42 @@ class AbstractEditData(models.Model):
     """Abstract model with Time Editor."""
 
     creator = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss",
     )
+    creator_username = models.CharField(
+        max_length=255,
+        null=True, blank=True
+    )
     created_at = models.DateTimeField(default=timezone.now)
     modified_by = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="%(app_label)s_%(class)s_modified_by_related",
         related_query_name="%(app_label)s_%(class)ss",
+    )
+    modified_by_username = models.CharField(
+        max_length=255,
+        null=True, blank=True
     )
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:  # noqa: D106
         abstract = True
 
-    def save(self, *args, **kwargs):
-        """
-        Save any object to DB.
-
-        This will also add modified_by if it does not have any.
-        """
+    def save(self, *args, **kwargs):  # noqa: DOC109, DOC101, DOC103, DOC201
+        """Save any object to DB."""
         if not self.modified_by:
             self.modified_by = self.creator
+
+        self.creator_username = (
+            self.creator.username if self.creator else None
+        )
+        self.modified_by_username = (
+            self.modified_by.username if self.modified_by else None
+        )
         obj = super().save(*args, **kwargs)
         return obj
 
@@ -122,8 +143,8 @@ class SlugTerm(AbstractTerm):
         max_length=512, unique=True
     )
 
-    def save(self, *args, **kwargs):
-        """Save model."""
+    def save(self, *args, **kwargs):  # noqa: DOC109, DOC101, DOC103, DOC201
+        """Save model, auto-generating ``slug`` from ``name`` if not set."""
         if not self.slug:
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
@@ -132,7 +153,14 @@ class SlugTerm(AbstractTerm):
         abstract = True
 
     def name_is_exist(self, slug: str) -> bool:
-        """Check of name is exist."""
+        """Check whether a record with the given slug already exists.
+
+        :param slug: Slug value to look up.
+        :type slug: str
+        :returns:
+            ``True`` if another record with ``slug`` exists, else ``False``.
+        :rtype: bool
+        """
         return self._meta.model.objects.exclude(pk=self.pk).filter(
             slug=slug
         ).first() is not None
@@ -149,7 +177,15 @@ class AbstractFileCleanup(models.Model):
         abstract = True
 
     def _delete_file(self, file_field):
-        """Delete a file if the field is FieldFile or ImageFieldFile."""
+        """Delete a file from disk if it exists.
+
+        Only acts when ``file_field`` is a
+        :class:`~django.db.models.fields.files.FieldFile`
+        or :class:`~django.db.models.fields.files.ImageFieldFile` instance.
+
+        :param file_field: The file field value to delete.
+        :type file_field: FieldFile or ImageFieldFile
+        """
         if file_field and isinstance(file_field, (FieldFile, ImageFieldFile)):
             file_path = file_field.path
             if os.path.isfile(file_path):
@@ -158,8 +194,13 @@ class AbstractFileCleanup(models.Model):
                 except OSError:
                     pass
 
-    def save(self, *args, **kwargs):
-        """Check for old file before saving."""
+    def save(self, *args, **kwargs):  # noqa: DOC109, DOC101, DOC103, DOC201
+        """Delete replaced files before saving the new state.
+
+        Iterates over all :class:`~django.db.models.FileField` and
+        :class:`~django.db.models.ImageField` fields; if an existing file is
+        replaced by a new one the old file is removed from disk.
+        """
         for field in self._meta.get_fields():
             if isinstance(field, (FileField, ImageField)):
                 old_file = None
@@ -177,8 +218,8 @@ class AbstractFileCleanup(models.Model):
 
         super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        """Delete associated files before deleting the object."""
+    def delete(self, *args, **kwargs):  # noqa: DOC109, DOC101, DOC103, DOC201
+        """Delete all associated files from disk before removing the record."""
         for field in self._meta.get_fields():
             if isinstance(field, (FileField, ImageField)):
                 self._delete_file(getattr(self, field.name, None))
