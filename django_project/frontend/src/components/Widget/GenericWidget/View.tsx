@@ -52,7 +52,7 @@ export default function GenericWidgetView({ data }: Props) {
       case SeriesTypeNone:
         return <SummaryWidget widget={data} />;
       case SeriesType.INDICATORS: {
-        const groupBy = "indicator_name";
+        const groupBy = "indicator_id";
         let sortBy = SortTypes.VALUE;
         const fields = [];
         switch (sort.field) {
@@ -70,8 +70,7 @@ export default function GenericWidgetView({ data }: Props) {
         fields.push("value");
         return (
           <SummaryGroup
-            data={indicatorData?.data}
-            config={config}
+            widget={data}
             groupBy={groupBy}
             sortBy={sortBy}
             fields={fields}
@@ -79,15 +78,17 @@ export default function GenericWidgetView({ data }: Props) {
         );
       }
       case SeriesType.GEOGRAPHICAL_UNITS: {
-        const groupBy = "geometry_code";
+        let groupBy = "geom_id";
         let sortBy = SortTypes.VALUE;
         const fields = [];
         switch (sort.field) {
           case SortTypes.NAME:
+            groupBy = "entity_name";
             sortBy = "entity_name";
             fields.push("entity_name");
             break;
           case SortTypes.CODE:
+            groupBy = "geom_id";
             sortBy = "geometry_code";
             fields.push("geometry_code");
             break;
@@ -97,8 +98,7 @@ export default function GenericWidgetView({ data }: Props) {
         fields.push("value");
         return (
           <SummaryGroup
-            data={indicatorData?.data}
-            config={config}
+            widget={data}
             groupBy={groupBy}
             sortBy={sortBy}
             fields={fields}

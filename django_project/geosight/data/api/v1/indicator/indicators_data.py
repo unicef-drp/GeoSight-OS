@@ -39,7 +39,7 @@ class IndicatorsDataViewSet(
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission',
         'attributes', 'version', 'frequency', 'indicators_id__in',
-        'last_value', 'aggregate_methods', 'latest_value'
+        'last_value', 'aggregate_methods', 'latest_value', 'group_by'
     ]
 
     @property

@@ -255,4 +255,12 @@ class IndicatorValueApiUtilities:
         if not aggregation_dict.keys():
             return HttpResponseBadRequest('No aggregation found')
 
+        group_by = request.GET.get('group_by', None)
+        if group_by:
+            group_fields = group_by.replace(' ', '').split(',')
+            query = query.order_by().values(
+                *group_fields
+            ).annotate(**aggregation_dict)
+            return Response(list(query))
+
         return Response(query.aggregate(**aggregation_dict))
