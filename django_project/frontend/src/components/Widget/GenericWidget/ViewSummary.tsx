@@ -17,41 +17,87 @@
    GENERAL WIDGET FOR SHOWING SUMMARY OF DATA PER GROUP
    ========================================================================== */
 
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import { WidgetConfig } from "../../../types/Widget";
-import { analyzeData } from "../../../utils/analysisData";
+import { Widget } from "../../../types/Widget";
 import { formatNumber } from "../../../utils/Utilities";
+import { IndicatorData, ParameterProps } from "../../../class/IndicatorData";
+import RequestParameter from "./RequestParameter";
+import { Session } from "../../../utils/Sessions";
 
 export interface DataProps {
-  value: string;
+  fetching: boolean;
+  value: number | null;
+  error: string | null;
 }
 
 export interface Props {
-  data: DataProps[];
-  config: WidgetConfig;
+  widget: Widget;
 }
 
-export default function Summary({ data, config }: Props) {
-  const { unit, operation, aggregation } = config;
+export default function Summary({ widget }: Props) {
+  const { unit, operation, aggregation } = widget.config;
+  const [value, setValue] = useState<DataProps>({
+    fetching: true,
+    value: null,
+    error: null,
+  });
+  const [parameters, setParameters] = useState<ParameterProps>({});
+  const method = operation ? operation : aggregation?.method;
 
-  /**
-   * Return value of widget
-   * @returns {JSX.Element}
-   */
-  function getValue() {
-    if (![null, undefined].includes(data)) {
-      const method = operation ? operation : aggregation?.method;
+  // Fetch some default data
+  useEffect(() => {
+    (async () => {
       try {
-        const total = analyzeData(
-          // @ts-ignore
-          method.toUpperCase(),
-          data.map((row) => row.value),
-        );
+        if (parameters["indicator_id__in"] === undefined) {
+          return;
+        }
+        // Don't request if parameter with date
+        if (!parameters["date__gte"]) {
+          return;
+        }
+        if (!parameters["indicator_id__in"]?.length) {
+          setValue({
+            fetching: false,
+            value: null,
+            error: "No indicators found.",
+          });
+          return;
+        }
+        const session = new Session("Widget request " + widget.id);
+        const output = await new IndicatorData().statistic({
+          ...parameters,
+          latest_value: true,
+          aggregate_methods: [method],
+        });
+        if (!session.isValid) {
+          return;
+        }
+        setValue({
+          fetching: false,
+          value: output[method.toLowerCase()],
+          error: null,
+        });
+      } catch (err) {
+        setValue({
+          fetching: false,
+          value: null,
+          error: err.toString(),
+        });
+      }
+    })();
+  }, [parameters]);
+
+  const ViewOutput = () => {
+    if (!value.fetching) {
+      if (value.error) {
+        return <div className="error">{value.error}</div>;
+      }
+      try {
         return (
           <span>
             {formatNumber(
-              total,
+              value.value,
               aggregation?.useDecimalPlace ? aggregation?.decimalPlace : 0,
               aggregation?.useAutoUnits,
             )}{" "}
@@ -67,11 +113,22 @@ export default function Summary({ data, config }: Props) {
         <CircularProgress />
       </div>
     );
-  }
+  };
 
   return (
     <Fragment>
-      <div className="widget__sw">{getValue()}</div>
+      <RequestParameter
+        widget={widget}
+        setParameter={(newParameters: ParameterProps) => {
+          if (JSON.stringify(parameters) !== JSON.stringify(newParameters)) {
+            setParameters(newParameters);
+          }
+        }}
+      />
+
+      <div className="widget__sw">
+        <ViewOutput />
+      </div>
     </Fragment>
   );
 }

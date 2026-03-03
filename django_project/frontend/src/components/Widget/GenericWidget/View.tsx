@@ -50,7 +50,7 @@ export default function GenericWidgetView({ data }: Props) {
     // render widget by the type
     switch (seriesType) {
       case SeriesTypeNone:
-        return <SummaryWidget data={indicatorData?.data} config={config} />;
+        return <SummaryWidget widget={data} />;
       case SeriesType.INDICATORS: {
         const groupBy = "indicator_name";
         let sortBy = SortTypes.VALUE;
