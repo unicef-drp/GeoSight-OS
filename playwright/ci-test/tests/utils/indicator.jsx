@@ -19,7 +19,11 @@ export async function deleteIndicator(page, url) {
 
 export async function deleteIndicatorByName(page, name) {
   await page.goto("/admin/indicators/");
-  await page.getByRole('cell', { name: name }).click();
+  const cell = page.getByRole('cell', { name: name, exact: true });
+  if (!(await cell.count())) {
+    return;
+  }
+  await cell.click();
   await page.getByRole('menuitem', { name: 'More' }).click();
   await page.getByRole('menuitem', { name: 'Delete' }).click();
   await page.getByRole('button', { name: 'Confirm' }).click();
