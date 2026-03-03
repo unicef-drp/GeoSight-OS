@@ -47,7 +47,7 @@
       "created_at": "2022-09-14T10:15:29Z",
       "modified_at": "2023-11-03T07:17:56.612Z",
       "icon": "",
-      "url": "https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg?access_token=pk.eyJ1IjoiYWxla29yIiwiYSI6ImNqdGZwc2FoaDBkNjAzeXJ1b3B6bzR6Z2IifQ.m6OQgD-IfmhaVS3Xh5XNoQ",
+      "url": "https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg",
       "type": "XYZ Tile",
       "group": 1
     }
@@ -32070,14 +32070,15 @@
         ]
       },
       "widgets_structure": {
-        "id": "0cf47b4d-3410-4410-b05e-4e825832350f",
+        "id": "30e41cbb-0bcc-44f7-b102-f05cf3aa14a6",
         "group": "",
         "children": [
-          34,
+          86,
           35,
           33,
           36,
-          37
+          87,
+          88
         ]
       },
       "level_config": {
@@ -33729,6 +33730,7 @@
       "relation_group": null,
       "type": "TimeSeriesChartWidget",
       "config": {
+        "indicators": [],
         "seriesType": "Geographical units",
         "dateTimeType": "Sync with dashboard",
         "dateTimeConfig": {
@@ -33736,9 +33738,8 @@
           "maxDateFilter": null,
           "minDateFilter": "2023-04-06T12:41:54.494Z"
         },
-        "indicatorsList": [],
         "indicatorsType": "Sync with the current map",
-        "geographicalUnitList": [
+        "geographicalUnit": [
           {
             "id": "cefc6ec7-fd28-4151-8435-39144de1cb6d",
             "name": "Mudug (SOM_0013_V1)",
@@ -33758,29 +33759,6 @@
         "geographicalUnitType": "Predefined list",
         "indicatorsPaletteColor": 3,
         "geographicalUnitPaletteColor": 0
-      }
-    }
-  },
-  {
-    "model": "geosight_data.dashboardwidget",
-    "pk": 34,
-    "fields": {
-      "name": "Total of Sample indicator A",
-      "description": "",
-      "dashboard": 53,
-      "order": 2,
-      "visible_by_default": true,
-      "group": null,
-      "relation_group": null,
-      "type": "SummaryWidget",
-      "config": {
-        "unit": "",
-        "layer_id": 318,
-        "property": "value",
-        "operation": "Sum",
-        "layer_used": "Indicator",
-        "date_filter_type": "No filter",
-        "date_filter_value": "2024-12-12T00:00:00.000Z;"
       }
     }
   },
@@ -33820,14 +33798,7 @@
       "relation_group": null,
       "type": "TimeSeriesChartWidget",
       "config": {
-        "seriesType": "Indicators",
-        "dateTimeType": "Sync with dashboard",
-        "dateTimeConfig": {
-          "interval": "Daily",
-          "maxDateFilter": null,
-          "minDateFilter": "2025-03-06T05:27:12.368Z"
-        },
-        "indicatorsList": [
+        "indicators": [
           {
             "id": 318,
             "name": "Sample Indicator A",
@@ -33844,8 +33815,15 @@
             "color": "#95ff14"
           }
         ],
+        "seriesType": "Indicators",
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": "2025-03-06T05:27:12.368Z"
+        },
         "indicatorsType": "Predefined list",
-        "geographicalUnitList": [
+        "geographicalUnit": [
           {
             "id": "7977bca3-3645-4072-bfe9-ad342c2674e8",
             "name": "Awdal (SOM_0001_V1)",
@@ -33870,25 +33848,162 @@
   },
   {
     "model": "geosight_data.dashboardwidget",
-    "pk": 37,
+    "pk": 86,
+    "fields": {
+      "name": "Total of Sample indicator A",
+      "description": "",
+      "dashboard": 53,
+      "order": 6,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "GenericSummaryWidget",
+      "config": {
+        "sort": {
+          "topN": 0,
+          "field": "Name",
+          "method": "Ascending",
+          "useTopN": false
+        },
+        "indicators": [
+          {
+            "id": 318,
+            "name": "Sample Indicator A",
+            "color": "#000000"
+          }
+        ],
+        "seriesType": "None",
+        "aggregation": {
+          "method": "SUM",
+          "decimalPlace": 1,
+          "useAutoUnits": false,
+          "useDecimalPlace": true
+        },
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": "2026-03-03T05:50:29.382Z"
+        },
+        "indicatorsType": "Predefined list",
+        "geographicalUnit": [],
+        "geographicalUnitType": "Sync with the current map",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 87,
+    "fields": {
+      "name": "Value by Indicator",
+      "description": "",
+      "dashboard": 53,
+      "order": 7,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "GenericSummaryWidget",
+      "config": {
+        "sort": {
+          "topN": 0,
+          "field": "Name",
+          "method": "Ascending",
+          "useTopN": false
+        },
+        "indicators": [
+          {
+            "id": 371,
+            "name": "Kenya Indicator A",
+            "color": "#000000"
+          },
+          {
+            "id": 318,
+            "name": "Sample Indicator A",
+            "color": "#000000"
+          },
+          {
+            "id": 319,
+            "name": "Sample Indicator B",
+            "color": "#000000"
+          },
+          {
+            "id": 362,
+            "name": "Sample Indicator C",
+            "color": "#000000"
+          },
+          {
+            "id": 370,
+            "name": "Sample Indicator D",
+            "color": "#000000"
+          }
+        ],
+        "seriesType": "Indicators",
+        "aggregation": {
+          "method": "SUM",
+          "decimalPlace": 0,
+          "useAutoUnits": false,
+          "useDecimalPlace": false
+        },
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": null
+        },
+        "indicatorsType": "Predefined list",
+        "geographicalUnit": [],
+        "geographicalUnitType": "Sync with the current map",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 88,
     "fields": {
       "name": "Value by Geom Code",
       "description": "",
       "dashboard": 53,
-      "order": 5,
+      "order": 8,
       "visible_by_default": true,
       "group": null,
       "relation_group": null,
-      "type": "SummaryGroupWidget",
+      "type": "GenericSummaryWidget",
       "config": {
-        "unit": "",
-        "layer_id": 318,
-        "property": "value",
-        "operation": "Sum",
-        "layer_used": "Indicator",
-        "property_2": "geometry_code",
-        "date_filter_type": "No filter",
-        "date_filter_value": "2025-03-06T05:28:05.164Z;"
+        "sort": {
+          "topN": 0,
+          "field": "Value",
+          "method": "Descending",
+          "useTopN": false
+        },
+        "indicators": [
+          {
+            "id": 318,
+            "name": "Sample Indicator A",
+            "color": "#000000"
+          }
+        ],
+        "seriesType": "Geographical units",
+        "aggregation": {
+          "method": "SUM",
+          "decimalPlace": 0,
+          "useAutoUnits": false,
+          "useDecimalPlace": false
+        },
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": "2026-03-03T07:24:52.435Z"
+        },
+        "indicatorsType": "Predefined list",
+        "geographicalUnit": [],
+        "geographicalUnitType": "Sync with the current map",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
       }
     }
   },

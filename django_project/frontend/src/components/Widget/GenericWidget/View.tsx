@@ -24,7 +24,6 @@ import {
   WidgetType,
 } from "../Definition";
 import { Widget } from "../../../types/Widget";
-import RequestData from "./RequestData";
 import SummaryGroup from "./ViewSummaryGroup";
 
 /**Base widget that handler widget rendering. */
@@ -121,10 +120,5 @@ export default function GenericWidgetView({ data }: Props) {
     }
   };
 
-  return (
-    <>
-      <RequestData widget={data} applyData={setIndicatorData} />
-      {renderWidget()}
-    </>
-  );
+  return <>{renderWidget()}</>;
 }
