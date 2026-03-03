@@ -21,6 +21,21 @@ import {
 import { dictDeepCopy } from "../utils/main";
 import { apiUrl } from "../utils/urls";
 
+export interface ParameterProps {
+  fields?: string;
+  distinct?: string;
+  sort?: string;
+
+  date__gte?: string;
+  date__lte?: string;
+
+  geom_id__in?: number[];
+
+  indicator_id__in?: number[];
+  country_geom_id__in?: string[];
+  country_concept_uuid__in?: string[];
+}
+
 export class IndicatorData {
   url: string;
 
@@ -53,7 +68,7 @@ export class IndicatorData {
 
   /** Return latest values of data **/
   async valueLatest(
-    params: any,
+    params: ParameterProps,
     onProgress: (progress: any) => void | null,
     fields: string[] = [
       "geometry_code",

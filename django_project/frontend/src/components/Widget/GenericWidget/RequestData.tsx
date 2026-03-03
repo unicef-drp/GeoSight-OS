@@ -18,17 +18,14 @@
    ========================================================================== */
 
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 // Widgets
 import { Session } from "../../../utils/Sessions";
-import { UnitConfig, Widget } from "../../../types/Widget";
-import { IndicatorData } from "../../../class/IndicatorData";
-import UnitParameters, { UnitParametersProps } from "./UnitParameters";
-import TimeParameter, { TimeParametersProps } from "./TimeParameter";
-import { CountryDatasetView } from "../../../types/DatasetView";
+import { Widget } from "../../../types/Widget";
+import { IndicatorData, ParameterProps } from "../../../class/IndicatorData";
+import RequestParameter from "./RequestParameter";
 
-const fetchIndicatorData = async (params: any) => {
+const fetchIndicatorData = async (params: ParameterProps) => {
   try {
     const response = await new IndicatorData().valueLatest(params, null, [
       "geometry_code",
@@ -62,61 +59,22 @@ const fetchIndicatorData = async (params: any) => {
 };
 
 export interface Props {
-  data: Widget;
+  widget: Widget;
   applyData: (data: any) => void;
 }
 
 /**Base widget that handler widget rendering. */
-export default function RequestData({ data, applyData }: Props) {
-  const { config } = data;
-
-  const isUsingConceptUUID =
-    // @ts-ignore
-    useSelector((state) => state.dashboard.data?.geoField) === "concept_uuid";
-
-  // @ts-ignore
-  const referenceLayers = useSelector((state) => state.map?.referenceLayers);
-  const referenceLayer = referenceLayers[0];
-  // @ts-ignore
-  const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
-  const referenceLayerData = useSelector(
-    // @ts-ignore
-    (state) => state.referenceLayerData[referenceLayer?.identifier],
-  );
-  // @ts-ignore
-  const filteredGeometries = useSelector((state) => state.filteredGeometries);
-
-  const [countries, setCountries] = useState({});
-  const [layerData, setLayerData] = useState({});
-  const [unitParameter, setUnitParameter] = useState<UnitParametersProps[]>([]);
-  const [timeParameter, setTimeParameter] =
-    useState<TimeParametersProps | null>(null);
-
-  // Fetch the data if it is using global filter
-  useEffect(() => {
-    const newCountries = referenceLayerData?.data?.countries?.map(
-      (country: any) => country.ucode,
-    );
-    if (JSON.stringify(newCountries) !== JSON.stringify(countries)) {
-      setCountries(newCountries);
-    }
-  }, [referenceLayerData?.data]);
+export default function RequestData({ widget, applyData }: Props) {
+  const [parameters, setParameters] = useState<ParameterProps>({});
 
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
     (async () => {
-      const unitParameterUsed = unitParameter[0];
-      if (!unitParameterUsed) {
+      if (parameters["indicator_id__in"] === undefined) {
         return;
       }
-      if (!countries || [null, undefined].includes(selectedAdminLevel?.level)) {
-        return;
-      }
-      const indicators = unitParameterUsed.indicators.map(
-        (indicator: any) => indicator.id,
-      );
-      if (!indicators.length) {
-        setLayerData({
+      if (!parameters["indicator_id__in"]?.length) {
+        applyData({
           fetching: false,
           fetched: true,
           data: null,
@@ -124,91 +82,33 @@ export default function RequestData({ data, applyData }: Props) {
         });
         return;
       }
-      let params: any = {
-        admin_level: selectedAdminLevel?.level,
-        indicator_id__in: indicators,
-      };
-
-      // --------------------------------
-      // Features:
-      //  Switch parameter by concept_uuid
-      if (!isUsingConceptUUID) {
-        // @ts-ignore
-        params["country_geom_id__in"] =
-          referenceLayerData?.data?.countries?.map(
-            (country: CountryDatasetView) => country.ucode,
-          );
-      } else {
-        // @ts-ignore
-        params["country_concept_uuid__in"] =
-          referenceLayerData?.data?.countries?.map(
-            (country: CountryDatasetView) => country.concept_uuid,
-          );
-      }
-      // --------------------------------
-
-      if (unitParameterUsed.geographic_units.length > 0) {
-        params["geom_id__in"] = unitParameterUsed.geographic_units.map(
-          (unit: UnitConfig) => unit.id,
-        );
-      }
-      const dateTimeConfig = timeParameter.dateTimeConfig;
-      if (dateTimeConfig && dateTimeConfig.minDateFilter) {
-        params["date__gte"] = dateTimeConfig.minDateFilter.split("T")[0];
-        if (dateTimeConfig.maxDateFilter) {
-          // @ts-ignore
-          params["date__lte"] = dateTimeConfig.maxDateFilter.split("T")[0];
-        }
-      }
       // Don't request if parameter with date
-      if (!params["date__gte"]) {
+      if (!parameters["date__gte"]) {
         return;
       }
-      const session = new Session("Widget request " + data.name);
-      setLayerData({
+      const session = new Session("Widget request " + widget.name);
+      applyData({
         fetching: true,
         fetched: false,
         data: null,
         error: null,
       });
-      const output = await fetchIndicatorData(params);
+      const output = await fetchIndicatorData(parameters);
       if (!session.isValid) {
         return;
       }
-      setLayerData(output);
+      applyData(output);
     })();
-  }, [selectedAdminLevel, countries, unitParameter, timeParameter]);
-
-  // Fetch the data if it is using no filter or custom
-  useEffect(() => {
-    let indicatorData: any = null;
-    if (layerData) {
-      indicatorData = Object.assign({}, layerData);
-      if (indicatorData?.fetched && indicatorData?.data) {
-        indicatorData.data = indicatorData.data.filter((row: any) => {
-          return (
-            !filteredGeometries ||
-            filteredGeometries?.includes(row.concept_uuid) ||
-            filteredGeometries?.includes(row.geom_id)
-          );
-        });
-      }
-    }
-    applyData(indicatorData);
-  }, [filteredGeometries, layerData]);
+  }, [parameters]);
 
   return (
-    <>
-      <UnitParameters
-        config={config}
-        parameter={unitParameter}
-        setParameter={setUnitParameter}
-      />
-      <TimeParameter
-        config={config}
-        parameter={timeParameter}
-        setParameter={setTimeParameter}
-      />
-    </>
+    <RequestParameter
+      widget={widget}
+      setParameter={(newParameters: ParameterProps) => {
+        if (JSON.stringify(parameters) !== JSON.stringify(newParameters)) {
+          setParameters(newParameters);
+        }
+      }}
+    />
   );
 }

@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import { cleanLayerData } from "../../../../utils/indicators";
 
 // Widgets
-import SummaryWidget from "../../View/Summary";
+import SummaryWidget from "../View/Summary";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
@@ -37,7 +37,7 @@ import {
   SortTypes,
   WidgetType,
 } from "../../Definition";
-import SummaryGroup from "../../View/SummaryGroup";
+import SummaryGroup from "../View/SummaryGroup";
 
 /**
  * Base widget that handler widget rendering.

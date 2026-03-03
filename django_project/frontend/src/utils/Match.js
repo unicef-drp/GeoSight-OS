@@ -21,68 +21,86 @@ const Match = {
      * @param {String} value Value that will be checked
      */
     match: (list, value) => {
-      return list.find(
-        member => {
-          try {
-            return ('' + member).toLowerCase() === ('' + value).toLowerCase()
-          } catch (err) {
-            return member === value
-          }
+      return list.find((member) => {
+        try {
+          return ("" + member).toLowerCase() === ("" + value).toLowerCase();
+        } catch (err) {
+          return member === value;
         }
-      )
+      });
     },
     /***
      * Return value in list if it is geocode. If not found, return first member.
      * @param {Array} list List of data that will be checked
      */
     geocode: (list = []) => {
-      const found = list.find(
-        member => ['geocode', 'ucode', 'geographycode', 'geography_code', 'pcode'].includes(('' + member).toLowerCase())
-      )
+      const found = list.find((member) =>
+        [
+          "geocode",
+          "ucode",
+          "geographycode",
+          "geography_code",
+          "pcode",
+        ].includes(("" + member).toLowerCase()),
+      );
       if (!found) {
-        return list[0]
+        return list[0];
       }
-      return found
+      return found;
     },
     /***
      * Return value in list if it is date. If not found, return first member.
      * @param {Array} list List of data that will be checked
      */
     date: (list = []) => {
-      const found = list.find(
-        member => ['date', 'datetime', 'date_time', 'time'].includes(('' + member).toLowerCase())
-      )
+      const found = list.find((member) =>
+        ["date", "datetime", "date_time", "time"].includes(
+          ("" + member).toLowerCase(),
+        ),
+      );
       if (!found) {
-        return list[0]
+        return list[0];
       }
-      return found
+      return found;
     },
     /***
      * Return value in list if it is indicatorIdentifier. If not found, return first member.
      * @param {Array} list List of data that will be checked
      */
     indicatorIdentifier: (list = []) => {
-      const found = list.find(
-        member => ['shortcode', 'indicatorcode', 'indicator'].includes(('' + member).toLowerCase())
-      )
+      const found = list.find((member) =>
+        ["shortcode", "indicatorcode", "indicator"].includes(
+          ("" + member).toLowerCase(),
+        ),
+      );
       if (!found) {
-        return list[0]
+        return list[0];
       }
-      return found
+      return found;
     },
     /***
      * Return value in list if it is indicatorIdentifier. If not found, return first member.
      * @param {Array} list List of data that will be checked
      */
     adminLevel: (list = []) => {
-      const found = list.find(
-        member => ['admin_level', 'adminlevel', 'level'].includes(('' + member).toLowerCase())
-      )
+      const found = list.find((member) =>
+        ["admin_level", "adminlevel", "level"].includes(
+          ("" + member).toLowerCase(),
+        ),
+      );
       if (!found) {
-        return list[0]
+        return list[0];
       }
-      return found
-    }
-  }
-}
+      return found;
+    },
+  },
+  String: {
+    /**Return true if string is UUID */
+    isUUID: (str) => {
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        str,
+      );
+    },
+  },
+};
 export default Match;

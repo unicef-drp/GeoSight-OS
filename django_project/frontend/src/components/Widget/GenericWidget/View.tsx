@@ -16,7 +16,7 @@
 import React, { useState } from "react";
 
 // Widgets
-import SummaryWidget from "../View/Summary";
+import SummaryWidget from "./ViewSummary";
 import {
   SeriesType,
   SeriesTypeNone,
@@ -25,7 +25,7 @@ import {
 } from "../Definition";
 import { Widget } from "../../../types/Widget";
 import RequestData from "./RequestData";
-import SummaryGroup from "../View/SummaryGroup";
+import SummaryGroup from "./ViewSummaryGroup";
 
 /**Base widget that handler widget rendering. */
 
@@ -123,7 +123,7 @@ export default function GenericWidgetView({ data }: Props) {
 
   return (
     <>
-      <RequestData data={data} applyData={setIndicatorData} />
+      <RequestData widget={data} applyData={setIndicatorData} />
       {renderWidget()}
     </>
   );
