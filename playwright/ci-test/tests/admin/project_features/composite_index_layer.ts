@@ -27,6 +27,14 @@ const createIndicator = async (page) => {
 
 test.describe('Composite index layer', () => {
   test('Config tool', async ({ page }) => {
+    const name = 'Demo GeoSight Project Composite Index Layer'
+
+    // --------------------------------------------------------------------
+    // Delete project if exists
+    // --------------------------------------------------------------------
+    await deleteProject(page, name)
+    await deleteIndicatorByName(page, indicatorName)
+
     let onRun = null
     let onFinish = null
     page.on('console', msg => {
@@ -50,7 +58,6 @@ test.describe('Composite index layer', () => {
     // --------------------------------------------------------------------
     // Create project
     // --------------------------------------------------------------------
-    const name = 'Demo GeoSight Project Composite Index Layer'
     await saveAsProject(page, 'Demo GeoSight Project', name)
 
     // Add indicators category
@@ -116,16 +123,46 @@ test.describe('Composite index layer', () => {
     await expect(page.getByTitle('Deactivate composite index')).toBeVisible();
     await expect(page.getByTitle('Turn on compare Layers')).toBeVisible();
     // Check eligible layers
-    await expect(page.getByRole('checkbox', { name: 'Sample Indicator A', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Sample Indicator B', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Pie Chart layer', exact: true })).toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Pin layer', exact: true })).toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Pins Indicator Layer', exact: true })).toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Dynamic Layer based on a list of interventions', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Dynamic Layer', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Test Indicator C', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Test Indicator D', exact: true })).not.toBeDisabled();
-    await expect(page.getByRole('checkbox', { name: 'Kenya Indicator A', exact: true })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Sample Indicator A',
+      exact: true
+    })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Sample Indicator B',
+      exact: true
+    })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Pie Chart layer',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Pin layer',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Pins Indicator Layer',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Dynamic Layer based on a list of interventions',
+      exact: true
+    })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Dynamic Layer',
+      exact: true
+    })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Test Indicator C',
+      exact: true
+    })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Test Indicator D',
+      exact: true
+    })).not.toBeDisabled();
+    await expect(page.getByRole('checkbox', {
+      name: 'Kenya Indicator A',
+      exact: true
+    })).not.toBeDisabled();
     // await expect(page.getByRole('checkbox', { name: indicatorName, exact: true })).toBeDisabled();
 
 

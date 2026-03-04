@@ -53,7 +53,7 @@ export function returnValueByGeometry(
     const id = indicatorLayerId(layer)
     // This is for non indicators
     if (indicatorsData[id]?.fetched) {
-      indicatorsData[id]?.data.forEach(function (data) {
+      indicatorsData[id]?.data?.forEach(function (data) {
         data.indicatorLayer = layer
         allData.push(data);
       })

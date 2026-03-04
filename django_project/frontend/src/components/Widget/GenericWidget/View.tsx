@@ -16,7 +16,7 @@
 import React, { useState } from "react";
 
 // Widgets
-import SummaryWidget from "../View/Summary";
+import SummaryWidget from "./ViewSummary";
 import {
   SeriesType,
   SeriesTypeNone,
@@ -24,8 +24,7 @@ import {
   WidgetType,
 } from "../Definition";
 import { Widget } from "../../../types/Widget";
-import RequestData from "./RequestData";
-import SummaryGroup from "../View/SummaryGroup";
+import SummaryGroup from "./ViewSummaryGroup";
 
 /**Base widget that handler widget rendering. */
 
@@ -50,9 +49,9 @@ export default function GenericWidgetView({ data }: Props) {
     // render widget by the type
     switch (seriesType) {
       case SeriesTypeNone:
-        return <SummaryWidget data={indicatorData?.data} config={config} />;
+        return <SummaryWidget widget={data} />;
       case SeriesType.INDICATORS: {
-        const groupBy = "indicator_name";
+        const groupBy = "indicator_id";
         let sortBy = SortTypes.VALUE;
         const fields = [];
         switch (sort.field) {
@@ -70,8 +69,7 @@ export default function GenericWidgetView({ data }: Props) {
         fields.push("value");
         return (
           <SummaryGroup
-            data={indicatorData?.data}
-            config={config}
+            widget={data}
             groupBy={groupBy}
             sortBy={sortBy}
             fields={fields}
@@ -79,15 +77,17 @@ export default function GenericWidgetView({ data }: Props) {
         );
       }
       case SeriesType.GEOGRAPHICAL_UNITS: {
-        const groupBy = "geometry_code";
+        let groupBy = "geom_id";
         let sortBy = SortTypes.VALUE;
         const fields = [];
         switch (sort.field) {
           case SortTypes.NAME:
+            groupBy = "entity_name";
             sortBy = "entity_name";
             fields.push("entity_name");
             break;
           case SortTypes.CODE:
+            groupBy = "geom_id";
             sortBy = "geometry_code";
             fields.push("geometry_code");
             break;
@@ -97,8 +97,7 @@ export default function GenericWidgetView({ data }: Props) {
         fields.push("value");
         return (
           <SummaryGroup
-            data={indicatorData?.data}
-            config={config}
+            widget={data}
             groupBy={groupBy}
             sortBy={sortBy}
             fields={fields}
@@ -121,10 +120,5 @@ export default function GenericWidgetView({ data }: Props) {
     }
   };
 
-  return (
-    <>
-      <RequestData data={data} applyData={setIndicatorData} />
-      {renderWidget()}
-    </>
-  );
+  return <>{renderWidget()}</>;
 }

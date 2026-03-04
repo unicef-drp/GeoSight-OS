@@ -18,7 +18,7 @@
    ========================================================================== */
 
 /** Used for grouping data **/
-export const SeriesTypeNone = "None"
+export const SeriesTypeNone = "None";
 export const SeriesType = {
   GEOGRAPHICAL_UNITS: "Geographical units",
   INDICATORS: "Indicators",
@@ -50,17 +50,24 @@ export const SortMethodTypes = {
 };
 
 export const WidgetType = {
+  GENERIC_SUMMARY_WIDGET: "GenericSummaryWidget",
+  GENERIC_TIME_SERIES_WIDGET: "GenericTimeSeriesWidget",
+
+  // This is legacy widget
   SUMMARY_WIDGET: "SummaryWidget",
   SUMMARY_GROUP_WIDGET: "SummaryGroupWidget",
   TIME_SERIES_CHART_WIDGET: "TimeSeriesChartWidget",
-  GENERIC_SUMMARY_WIDGET: "GenericSummaryWidget",
-  GENERIC_TIME_SERIES_WIDGET: "GenericTimeSeriesWidget",
 };
 export const WidgetText = {
-  SummaryWidget: "Summary Widget",
-  SummaryGroupWidget: "Summary Group Widget",
-  TimeSeriesChartWidget: "Time Series Chart Widget",
+  GENERIC_SUMMARY_WIDGET: "Summary Widget",
+  GENERIC_TIME_SERIES_WIDGET: "Time Series Widget",
+
+  // This is legacy widget
+  SUMMARY_WIDGET: "Summary Widget (Legacy)",
+  SUMMARY_GROUP_WIDGET: "Summary Group Widget (Legacy)",
+  TIME_SERIES_CHART_WIDGET: "Time Series Widget",
 };
+
 export const WidgetOperation = {
   SUM: "Sum",
 };

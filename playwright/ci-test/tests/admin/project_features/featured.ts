@@ -18,6 +18,11 @@ test.describe('Project feature', () => {
     const featuredLabel = 'Remove from featured'
     const nonFeaturedLabel = 'Feature it'
 
+    // ------------------------------------
+    // DELETE PROJECT by default
+    // ------------------------------------
+    await deleteProject(page, name)
+
     // --------------------------------------------------------------
     // CREATE PROJECT FOR FEATURED
     // --------------------------------------------------------------

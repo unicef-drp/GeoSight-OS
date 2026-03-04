@@ -19,9 +19,9 @@
 
 import React, { Fragment } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import { WidgetConfig } from "../../../types/Widget";
-import { analyzeData } from "../../../utils/analysisData";
-import { formatNumber } from "../../../utils/Utilities";
+import { WidgetConfig } from "../../../../types/Widget";
+import { analyzeData } from "../../../../utils/analysisData";
+import { formatNumber } from "../../../../utils/Utilities";
 
 export interface DataProps {
   value: string;

@@ -14,12 +14,12 @@
  */
 import React, { Fragment, memo } from "react";
 
-import { capitalize } from "../../../utils/main";
-import { WidgetConfig } from "../../../types/Widget";
-import { analyzeData } from "../../../utils/analysisData";
-import { SortMethodTypes } from "../Definition";
 import CircularProgress from "@mui/material/CircularProgress";
-import { formatNumber } from "../../../utils/Utilities";
+import { capitalize } from "../../../../utils/main";
+import { WidgetConfig } from "../../../../types/Widget";
+import { analyzeData } from "../../../../utils/analysisData";
+import { SortMethodTypes } from "../../Definition";
+import { formatNumber } from "../../../../utils/Utilities";
 
 export interface Props {
   data: any[];

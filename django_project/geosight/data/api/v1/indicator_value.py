@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '05/03/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from django.db.models import Min, Max, Avg
+from django.db.models import OuterRef, Subquery, Sum, Min, Max, Avg, Count
 from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
@@ -206,33 +206,61 @@ class IndicatorValueApiUtilities:
         :status 200: Successfully returns the requested aggregations.
         :status 400: If ``keys`` is missing, empty, or contains invalid values.
         """
-        statistic_keys = ['min', 'max', 'avg']
+        default_methods = ['min', 'max', 'avg']
         keys = request.GET.get(
-            'keys', ','.join(statistic_keys)
+            'aggregate_methods', ','.join(default_methods)
         ).replace(' ', '').split(',')
+
+        methods = ['sum', 'count', 'min', 'max', 'avg', 'count_unique']
         if not keys:
             return HttpResponseBadRequest(
-                f'keys is required. keys:{statistic_keys}'
+                f'keys is required. keys:{methods}'
             )
 
         query = self.get_queryset()
+
+        # Use latest value if latest_value is true
+        latest_value = request.GET.get('latest_value', False)
+        if latest_value:
+            latest_pk = query.filter(
+                geom_id=OuterRef('geom_id'),
+                indicator_id=OuterRef('indicator_id')
+            ).order_by('-date').values('pk')[:1]
+            query = query.filter(pk=Subquery(latest_pk))
+
         aggregation_dict = {}
         for key in keys:
             key = key.lower()
-            if key not in statistic_keys:
+            if key not in methods:
                 return HttpResponseBadRequest(
-                    f'{key} is not recognized. keys:{statistic_keys}'
+                    f'{key} is not recognized. keys:{methods}'
                 )
 
             # Update query
-            if key == 'min':
+            if key == 'sum':
+                aggregation_dict['sum'] = Sum('value')
+            if key == 'count':
+                aggregation_dict['count'] = Count('value')
+            elif key == 'min':
                 aggregation_dict['min'] = Min('value')
             elif key == 'max':
                 aggregation_dict['max'] = Max('value')
             elif key == 'avg':
                 aggregation_dict['avg'] = Avg('value')
+            elif key == 'count_unique':
+                aggregation_dict['count_unique'] = Count(
+                    'value', distinct=True
+                )
 
         if not aggregation_dict.keys():
             return HttpResponseBadRequest('No aggregation found')
+
+        group_by = request.GET.get('group_by', None)
+        if group_by:
+            group_fields = group_by.replace(' ', '').split(',')
+            query = query.order_by().values(
+                *group_fields
+            ).annotate(**aggregation_dict)
+            return Response(list(query))
 
         return Response(query.aggregate(**aggregation_dict))

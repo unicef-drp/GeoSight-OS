@@ -253,8 +253,13 @@ class IndicatorDataViewSet(
         Retrieve statistics of the data.
 
         This endpoint supports both GET and POST methods.
-        It returns a dictionary containing the keys `min`, `max`, and `avg`
+        It returns a dictionary containing the keys
+        'sum', 'min', 'max', 'avg', 'count', 'count_unique'
         representing respective statistical values computed from the dataset.
+
+        default is just returning: 'min', 'max', 'avg'.
+        Add aggregate_methods=sum,min,max,avg,count,count_unique
+        to return everything.
 
         :param request: The HTTP request object.
         :type request: rest_framework.request.Request
@@ -262,7 +267,8 @@ class IndicatorDataViewSet(
         :param kwargs: Additional keyword arguments.
         :return:
             Response containing statistical
-            summary with keys 'min', 'max', and 'avg'.
+            summary with keys
+            'sum', 'min', 'max', 'avg', 'count', 'count_unique'.
         :rtype: rest_framework.response.Response
         """
         self._set_request()

@@ -35,7 +35,7 @@ test.describe('Project widget feature', () => {
     const name = 'Demo GeoSight Project Widget Feature'
     await saveAsProject(page, 'Demo GeoSight Project', name)
 
-    await page.getByText('Widgets (5)').click();
+    await page.getByText('Widgets (6)').click();
     await page.getByRole('button', { name: 'Add Widget' }).click();
     await expect(onRun).toEqual(`{"name":"","description":"","type":"GenericSummaryWidget","config":{"seriesType":"None","indicators":[],"indicatorsType":"Predefined list","indicatorsPaletteColor":0,"geographicalUnit":[],"geographicalUnitType":"Predefined list","geographicalUnitPaletteColor":0,"dateTimeType":"Sync with dashboard","dateTimeConfig":{"minDateFilter":null,"maxDateFilter":null,"interval":"Daily"},"aggregation":{"method":"SUM","decimalPlace":0,"useDecimalPlace":false,"useAutoUnits":false},"sort":{"field":"Value","method":"Ascending","topN":0,"useTopN":false}}}`)
     await page.getByRole('textbox', { name: 'Widget name' }).fill('This is widget');

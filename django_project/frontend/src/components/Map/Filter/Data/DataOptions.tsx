@@ -132,6 +132,11 @@ export const FetchIndicatorOptions = memo(
       ) {
         return;
       }
+      if (maxDate && maxDate === minDate) {
+        return;
+      }
+
+      // @ts-ignore
       const currentKey = key;
       if (currentKey !== prev.current) {
         // @ts-ignore

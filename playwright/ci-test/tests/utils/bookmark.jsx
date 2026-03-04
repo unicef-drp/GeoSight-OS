@@ -50,7 +50,8 @@ export const defaultCheck = async (page) => {
   await expect(page.locator('.widget__title').nth(1)).toContainText('Total of Dynamic Layer');
   await expect(page.locator('.widget__title').nth(2)).toContainText('Time Chart by Entity');
   await expect(page.locator('.widget__title').nth(3)).toContainText('Time Chart by Indicator');
-  await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
+  await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Indicator');
+  await expect(page.locator('.widget__title').nth(5)).toContainText('Value by Geom Code');
 
   // Widget 1
   await expect(page.locator('.widget__content').nth(0)).toContainText('895');
@@ -70,10 +71,18 @@ export const defaultCheck = async (page) => {
   await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
 
   // Widget 5
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Sample Indicator A');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('895');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Sample Indicator B');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('1,062');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(0)).toContainText('Sample Indicator C');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('1,638');
+
+  // Widget 6
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
 
   // Check context layers
   await page.getByRole('tab', { name: 'Context Layers' }).click();
@@ -97,7 +106,8 @@ export const defaultBookmark = async (page) => {
   await expect(page.locator('.widget__title').nth(1)).toContainText('Total of Dynamic Layer');
   await expect(page.locator('.widget__title').nth(2)).toContainText('Time Chart by Entity');
   await expect(page.locator('.widget__title').nth(3)).toContainText('Time Chart by Indicator');
-  await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
+  await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Indicator');
+  await expect(page.locator('.widget__title').nth(5)).toContainText('Value by Geom Code');
 
   // Widget 1
   await expect(page.locator('.widget__content').nth(0)).toContainText('623');
@@ -118,10 +128,18 @@ export const defaultBookmark = async (page) => {
   await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
 
   // Widget 5
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Sample Indicator A');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('623');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Sample Indicator B');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('501');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(0)).toContainText('Sample Indicator C');
+  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('728');
+
+  // Widget 6
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
 
   // Check context layers
   await page.getByRole('tab', { name: 'Context Layers' }).click();

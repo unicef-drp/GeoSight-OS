@@ -18,7 +18,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
 import WidgetSelection from "../../../../../components/Widget/Selection";
-import { WidgetType } from "../../../../../components/Widget/Definition";
+import {
+  WidgetText,
+  WidgetType,
+} from "../../../../../components/Widget/Definition";
 
 /**
  * Widget dashboard
@@ -117,22 +120,33 @@ export default function WidgetForm() {
             case WidgetType.SUMMARY_WIDGET:
               return (
                 <div className="OtherActionIndicator">
-                  Summary Widget (Legacy)
+                  {WidgetText.SUMMARY_WIDGET}
                 </div>
               );
             case WidgetType.SUMMARY_GROUP_WIDGET:
               return (
                 <div className="OtherActionIndicator">
-                  Summary Group Widget (Legacy)
+                  {WidgetText.SUMMARY_GROUP_WIDGET}
+                </div>
+              );
+            case WidgetType.TIME_SERIES_CHART_WIDGET:
+              return (
+                <div className="OtherActionIndicator">
+                  {WidgetText.TIME_SERIES_CHART_WIDGET}
                 </div>
               );
             case WidgetType.GENERIC_TIME_SERIES_WIDGET:
-            case WidgetType.TIME_SERIES_CHART_WIDGET:
               return (
-                <div className="OtherActionIndicator">Time Series Widget</div>
+                <div className="OtherActionIndicator">
+                  {WidgetText.GENERIC_TIME_SERIES_WIDGET}
+                </div>
               );
             case WidgetType.GENERIC_SUMMARY_WIDGET:
-              return <div className="OtherActionIndicator">Summary Widget</div>;
+              return (
+                <div className="OtherActionIndicator">
+                  {WidgetText.GENERIC_SUMMARY_WIDGET}
+                </div>
+              );
             default:
               throw null;
           }

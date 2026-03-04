@@ -32,7 +32,10 @@ export async function fillProjectName(page, name) {
 }
 
 export async function deleteProject(page, name) {
-  await page.goto(`/admin/project/${nameToSlug(name)}/edit`);
+  const response = await page.goto(`/admin/project/${nameToSlug(name)}/edit`);
+  if (response?.status() === 404) {
+    return;
+  }
   await page.locator('.MoreActionIcon').click();
   await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
   await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete ${name}?`);
