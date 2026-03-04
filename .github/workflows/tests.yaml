@@ -79,7 +79,7 @@ jobs:
           file: deployment/docker/Dockerfile
           push: false
           load: true
-          target: dev
+          target: test
           tags: ${{ env.APP_IMAGE }}
           cache-from: |
             type=gha,scope=test
@@ -163,22 +163,17 @@ jobs:
           cd ../
           make dev-ci-test
           make wait-db
-          docker volume ls
-          docker exec geosight_dev rm -rf /home/web/django_project/frontend
-          docker cp ./django_project geosight_dev:/home/web
-          docker restart geosight_dev
-          docker restart geosight_worker
 
       - name: Backend (Prepare container and test)
         if: ${{ matrix.test_suite.mode == 'backend' }}
         run: |
-          make dev-entrypoint
+          make dev-initialize
           make dev-test
 
       - name: E2E (Prepare container)
         if: ${{ matrix.test_suite.mode == 'e2e' }}
         run: |
-          make dev-entrypoint
+          make dev-initialize
           make dev-runserver
           ${{ matrix.test_suite.script }}
           make sleep
