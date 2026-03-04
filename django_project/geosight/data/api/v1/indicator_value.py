@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '05/03/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+from django.core.exceptions import PermissionDenied
 from django.db.models import OuterRef, Subquery, Sum, Min, Max, Avg, Count
 from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
@@ -21,9 +22,38 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from geosight.data.models import Indicator
+
 
 class IndicatorValueApiUtilities:
     """Indicator value api utilities."""
+
+    def check_indicators_permissions(self):
+        """Return indicators by parameters.
+
+        :return: A queryset of ``IndicatorValue`` objects filtered by user
+                 permissions and optional request parameters.
+        :rtype: django.db.models.QuerySet
+        """
+        indicators_id = []
+        indicators_id__in = self.request.GET.get('indicator_id__in', None)
+        if indicators_id__in:
+            indicators_id = indicators_id__in.split(',')
+        indicator_id = self.request.GET.get('indicator_id', None)
+        if indicator_id:
+            try:
+                indicators_id.append(int(indicator_id))
+            except ValueError:
+                pass
+        indicators = Indicator.permissions.read_data(self.request.user).filter(
+            id__in=indicators_id
+        )
+        if not indicators:
+            raise PermissionDenied(
+                "You do not have permission "
+                "to access any of the requested indicators."
+            )
+        return indicators
 
     def _set_request(self):  # noqa DOC110, DOC103
         """
@@ -133,10 +163,21 @@ class IndicatorValueApiUtilities:
         """
         query = self.get_queryset()
 
+        allowed_fields = {
+            'id', 'date', 'value', 'value_str', 'entity_id', 'indicator_id',
+            'geom_id'
+        }
+
         fields = request.GET.get(
             'fields',
             'date, value, value_str, entity_id, indicator_id'
         ).replace(' ', '').split(',')
+        invalid_fields = [f for f in fields if f not in allowed_fields]
+        if invalid_fields:
+            return HttpResponseBadRequest(
+                f'Invalid fields: {", ".join(invalid_fields)}. '
+                f'Allowed: {", ".join(sorted(allowed_fields))}'
+            )
 
         # If it has frequency
         frequency = request.GET.get('frequency', None)
@@ -179,6 +220,14 @@ class IndicatorValueApiUtilities:
             sort = ['-date']
             if request.GET.get('sort'):
                 sort = request.GET.get('sort').split(',')
+                invalid_sort = [
+                    s for s in sort if s.lstrip('-') not in allowed_fields
+                ]
+                if invalid_sort:
+                    return HttpResponseBadRequest(
+                        f'Invalid sort fields: {", ".join(invalid_sort)}. '
+                        f'Allowed: {", ".join(sorted(allowed_fields))}'
+                    )
             query = query.order_by(*sort).values(*fields)
         return Response(query)
 

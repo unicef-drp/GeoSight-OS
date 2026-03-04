@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
@@ -306,6 +306,22 @@ class DataBrowserApiList(
         """
         return super().retrieve(request, pk=pk)
 
+    def parameter_check(self):
+        """
+        Build and return the base queryset for this view.
+
+        The queryset is restricted to ``IndicatorValue`` objects that belong to
+        indicators the current user has permission to read. Optionally, the
+        results can be filtered further by passing a comma-separated list of
+        indicator IDs via the ``indicator_id__in`` query parameter.
+
+        :raises PermissionDenied:
+            If the user does not have permission to access any of the requested
+            indicators.
+        """
+        self.check_indicators_permissions()
+
+
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def ids(self, request):
@@ -317,6 +333,7 @@ class DataBrowserApiList(
         :return: A response containing the IDs of the data.
         :rtype: HttpResponse
         """
+        self.parameter_check()
         return super().ids(request)
 
     @swagger_auto_schema(auto_schema=None)
@@ -330,6 +347,7 @@ class DataBrowserApiList(
         :return: A list of string values.
         :rtype: list
         """
+        self.parameter_check()
         return super().values_string(request)
 
     @swagger_auto_schema(auto_schema=None)
@@ -343,6 +361,7 @@ class DataBrowserApiList(
         :return: The values of the data.
         :rtype: Any
         """
+        self.parameter_check()
         return super().values(request)
 
     @swagger_auto_schema(auto_schema=None)
@@ -360,4 +379,5 @@ class DataBrowserApiList(
             with keys 'min', 'max', and 'avg'.
         :rtype: dict
         """
+        self.parameter_check()
         return super().statistic(request)
