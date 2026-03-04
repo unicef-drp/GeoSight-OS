@@ -122,3 +122,8 @@ EXPOSE 8080
 EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
+
+FROM dev AS test
+
+WORKDIR /home/web/django_project/frontend
+RUN npm install --verbose && npm run build
