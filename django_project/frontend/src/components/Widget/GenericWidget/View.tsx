@@ -77,7 +77,7 @@ export default function GenericWidgetView({ data }: Props) {
         );
       }
       case SeriesType.GEOGRAPHICAL_UNITS: {
-        let groupBy = "geom_id";
+        let groupBy = "entity_name";
         let sortBy = SortTypes.VALUE;
         const fields = [];
         switch (sort.field) {

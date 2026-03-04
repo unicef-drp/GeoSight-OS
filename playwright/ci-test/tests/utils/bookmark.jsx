@@ -79,9 +79,9 @@ export const defaultCheck = async (page) => {
   await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('1,638');
 
   // Widget 6
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Lower Juba');
   await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Middle Shabelle');
   await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
 
   // Check context layers
@@ -136,9 +136,9 @@ export const defaultBookmark = async (page) => {
   await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('728');
 
   // Widget 6
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Lower Juba');
   await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
+  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Middle Shabelle');
   await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
 
   // Check context layers
