@@ -13,7 +13,6 @@ __author__ = 'Víctor González'
 __date__ = '20/08/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.core.exceptions import PermissionDenied
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
@@ -24,7 +23,6 @@ from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1
 from geosight.data.api.v1.indicator_value import IndicatorValueApiUtilities
 from geosight.data.models import IndicatorValue
-from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator_value import IndicatorValueSerializer
 
 
@@ -52,27 +50,12 @@ class IndicatorsDataViewSet(
         results can be filtered further by passing a comma-separated list of
         indicator IDs via the ``indicator_id__in`` query parameter.
 
-        :raises PermissionDenied:
-            If the user does not have permission to access any of the requested
-            indicators.
-
         :return: A queryset of ``IndicatorValue`` objects filtered by user
                  permissions and optional request parameters.
         :rtype: django.db.models.QuerySet
         """
-        indicators_id = []
-        indicators_id__in = self.request.GET.get('indicator_id__in', None)
-        if indicators_id__in:
-            indicators_id = indicators_id__in.split(',')
-        indicators = Indicator.permissions.read_data(self.request.user).filter(
-            id__in=indicators_id
-        )
-        if not indicators:
-            raise PermissionDenied("You do not have permission.")
-
-        return IndicatorValue.objects.filter(
-            indicator__in=indicators
-        )
+        indicators = self.check_indicators_permissions()
+        return IndicatorValue.objects.filter(indicator__in=indicators)
 
     @property
     def extra_exclude_fields(self):
