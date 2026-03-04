@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
@@ -314,13 +314,8 @@ class DataBrowserApiList(
         indicators the current user has permission to read. Optionally, the
         results can be filtered further by passing a comma-separated list of
         indicator IDs via the ``indicator_id__in`` query parameter.
-
-        :raises PermissionDenied:
-            If the user does not have permission to access any of the requested
-            indicators.
         """
         self.check_indicators_permissions()
-
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])

@@ -31,6 +31,10 @@ class IndicatorValueApiUtilities:
     def check_indicators_permissions(self):
         """Return indicators by parameters.
 
+        :raises PermissionDenied:
+            If the user does not have permission to access any of the requested
+            indicators.
+
         :return: A queryset of ``IndicatorValue`` objects filtered by user
                  permissions and optional request parameters.
         :rtype: django.db.models.QuerySet

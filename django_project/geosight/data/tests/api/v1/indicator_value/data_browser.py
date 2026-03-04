@@ -146,9 +146,24 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
             result['id'] for result in list_response.json()['results']
         ]
 
-        response = self.assertRequestGetView(
+        self.assertRequestGetView(
             f'{ids_url}',
-            200, user=user
+            403, user=user
+        )
+        if '?' in ids_url:
+            url = (
+                f'{ids_url}&'
+                f'indicator_id__in='
+                f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
+            )
+        else:
+            url = (
+                f'{ids_url}?'
+                f'indicator_id__in='
+                f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
+            )
+        response = self.assertRequestGetView(
+            url, 200, user=user
         )
         response_ids = response.json()
         response_ids.sort()
@@ -163,7 +178,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         list_url = reverse('data-browser-list')
         url = reverse('data-browser-ids')
 
-        self.assert_ids(f'{list_url}?page_size=1000', f'{url}')
+        self.assert_ids(f'{list_url}', f'{url}')
         self.assert_ids(
             f'{list_url}?admin_level__in=1',
             f'{url}?admin_level__in=1'
@@ -174,13 +189,24 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         url = reverse('data-browser-values-string')
         user = self.admin
 
-        response = self.assertRequestGetView(url, 200, user=user)
+        indicators_parameter = (
+            f'indicator_id__in='
+            f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
+        )
+        self.assertRequestGetView(url, 403, user=user)
+        response = self.assertRequestGetView(
+            url + f'?{indicators_parameter}', 200, user=user
+        )
         self.assertEqual(
             response.json(),
             ['A', 'AA', 'B', 'BA', 'C', 'E', 'EA', 'F', 'FA', 'G']
         )
+        self.assertRequestGetView(
+            f'{url}?admin_level__in=1', 403, user=user
+        )
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}?admin_level__in=1&{indicators_parameter}',
+            200, user=user
         )
         self.assertEqual(
             response.json(),
@@ -192,8 +218,17 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         url = reverse('data-browser-values')
         user = self.admin
 
-        response = self.assertRequestGetView(
+        indicators_parameter = (
+            f'indicator_id__in='
+            f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
+        )
+        self.assertRequestGetView(
             url + '?fields=date, value, value_str&sort=-date,id',
+            403, user=user
+        )
+        response = self.assertRequestGetView(
+            url + f'?fields=date, value, '
+                  f'value_str&sort=-date,id&{indicators_parameter}',
             200, user=user
         )
         self.assertEqual(
@@ -237,9 +272,15 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
                 {'date': '2020-01-01', 'value': 1.0, 'value_str': 'BA'}
             ]
         )
-        response = self.assertRequestGetView(
+        self.assertRequestGetView(
             f'{url}?fields=date, value, value_str&'
             'admin_level__in=1&sort=-date,id',
+            403,
+            user=user
+        )
+        response = self.assertRequestGetView(
+            f'{url}?fields=date, value, value_str&'
+            f'admin_level__in=1&sort=-date,id&{indicators_parameter}',
             200,
             user=user
         )
@@ -274,13 +315,24 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         url = reverse('data-browser-statistic')
         user = self.admin
 
-        response = self.assertRequestGetView(url, 200, user=user)
+        indicators_parameter = (
+            f'indicator_id__in='
+            f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
+        )
+        self.assertRequestGetView(url, 403, user=user)
+        response = self.assertRequestGetView(
+            url + f'?{indicators_parameter}', 200, user=user
+        )
         self.assertEqual(
             response.json(),
             {'min': 1.0, 'max': 4.0, 'avg': 2.3333333333333335}
         )
+        self.assertRequestGetView(
+            f'{url}?admin_level__in=1', 403, user=user
+        )
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}?admin_level__in=1&{indicators_parameter}',
+            200, user=user
         )
         self.assertEqual(
             response.json(),

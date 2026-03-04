@@ -50,10 +50,6 @@ class IndicatorsDataViewSet(
         results can be filtered further by passing a comma-separated list of
         indicator IDs via the ``indicator_id__in`` query parameter.
 
-        :raises PermissionDenied:
-            If the user does not have permission to access any of the requested
-            indicators.
-
         :return: A queryset of ``IndicatorValue`` objects filtered by user
                  permissions and optional request parameters.
         :rtype: django.db.models.QuerySet
