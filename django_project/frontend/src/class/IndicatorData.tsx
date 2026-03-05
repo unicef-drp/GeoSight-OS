@@ -55,12 +55,18 @@ export class IndicatorData {
           params[key] = dataValue;
         }
         // @ts-ignore
-        if (dataValue.length > 1500) {
+        if (dataValue.length > 1000) {
           // @ts-ignore
           data[key] = dataValue;
           // @ts-ignore
           delete params[key];
         }
+      } else if (Array.isArray(value)) {
+        // @ts-ignore
+        params[key] = value.join(",");
+      } else if (typeof value === "number") {
+        // @ts-ignore
+        params[key] = "" + value;
       }
     }
     return [params, data];
@@ -118,13 +124,10 @@ export class IndicatorData {
   async statistic(params: any) {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
-    const response = await DjangoRequests.post(
-      this.url + "statistic/",
-      data,
-      {},
-      params,
-      true,
-    );
+    const response = await DjangoRequests.post(this.url + "statistic/", {
+      ...params,
+      ...data,
+    });
     return response.data;
   }
 
@@ -134,10 +137,8 @@ export class IndicatorData {
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
       this.url + "values/",
-      data,
+      { ...params, ...data },
       {},
-      params,
-      true,
     );
     return response.data;
   }

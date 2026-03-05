@@ -21,41 +21,20 @@ import {
 } from "../Requests";
 import { dictDeepCopy } from "../utils/main";
 import { apiUrl } from "../utils/urls";
+import { IndicatorData } from "./IndicatorData";
 
-export class Indicator {
+export class Indicator extends IndicatorData {
   id: number;
   indicator: IndicatorType;
   metadataKey: string;
   url: string;
 
   constructor(indicator: IndicatorType) {
+    super();
     this.indicator = indicator;
     this.id = indicator.id;
     this.metadataKey = "indicator-" + indicator.id;
     this.url = `${apiUrl()}indicators/${indicator.id}/data/`;
-  }
-
-  getParamAndData(params: any) {
-    params = dictDeepCopy(params);
-    const data = {};
-    for (const [key, value] of Object.entries(params)) {
-      if (key.includes("country_geom")) {
-        let dataValue = "" + value;
-        if (Array.isArray(value)) {
-          // @ts-ignore
-          dataValue = value.join(",");
-          params[key] = dataValue;
-        }
-        // @ts-ignore
-        if (dataValue.length > 1500) {
-          // @ts-ignore
-          data[key] = dataValue;
-          // @ts-ignore
-          delete params[key];
-        }
-      }
-    }
-    return [params, data];
   }
 
   /** Return latest values of data **/
@@ -104,33 +83,5 @@ export class Indicator {
         true,
       );
     }
-  }
-
-  /** Return statistic of data **/
-  async statistic(params: any) {
-    let data: any = {};
-    [params, data] = this.getParamAndData(params);
-    const response = await DjangoRequests.post(
-      this.url + "statistic/",
-      data,
-      {},
-      params,
-      true,
-    );
-    return response.data;
-  }
-
-  /** Return values of data **/
-  async values(params: any): Promise<any> {
-    let data: any = {};
-    [params, data] = this.getParamAndData(params);
-    const response = await DjangoRequests.post(
-      this.url + "values/",
-      data,
-      {},
-      params,
-      true,
-    );
-    return response.data;
   }
 }
