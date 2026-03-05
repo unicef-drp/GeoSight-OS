@@ -26,7 +26,7 @@ from geosight.georepo.models.reference_layer import (
     ReferenceLayerView
 )
 from geosight.permission.access import (
-    read_permission_resource, ResourcePermissionDenied
+    read_permission_resource
 )
 
 
@@ -106,14 +106,11 @@ class IndicatorBatchMetadataAPI(_BaseAPI):
 
         data = request.data
         responses = {}
+        indicators_has_permission = Indicator.permissions.list(
+            self.request.user
+        ).filter(id__in=data).values_list('id', flat=True)
         for indicator in Indicator.objects.filter(id__in=data):
-            try:
-                read_permission_resource(indicator, self.request.user)
-                responses[indicator.id] = indicator.metadata_with_cache(
-                    reference_layer,
-                    self.request.GET.get('is_using_uuid', False)
-                )
-            except ResourcePermissionDenied:
+            if indicator.id not in indicators_has_permission:
                 responses[indicator.id] = {
                     'dates': [],
                     'error': (
@@ -124,4 +121,9 @@ class IndicatorBatchMetadataAPI(_BaseAPI):
                         reference_layer.version_with_uuid
                     )
                 }
+                continue
+            responses[indicator.id] = indicator.metadata_with_cache(
+                reference_layer,
+                self.request.GET.get('is_using_uuid', False)
+            )
         return Response(responses)

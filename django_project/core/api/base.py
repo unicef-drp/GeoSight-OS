@@ -131,17 +131,17 @@ class FilteredAPI(object):
         ignores.append('q')
 
         for param, value in request.GET.items():
-            is_equal = True
-            if value and value[0] == '!':
-                value = value[1:]
-                is_equal = False
-
             field = param.split('__')[0]
             if field in ignores:
                 continue
 
             if fields and field not in fields:
                 continue
+
+            is_equal = True
+            if value and value[0] == '!':
+                value = value[1:]
+                is_equal = False
 
             if '_in' in param:
                 value = value.split(',')

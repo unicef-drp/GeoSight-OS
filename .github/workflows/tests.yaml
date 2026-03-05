@@ -93,7 +93,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/my-image.tar
-          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          key: ${{ runner.os }}-docker-image-${{ github.sha }}
 
       - name: ✅ Check GDAL version inside geosight_dev
         run: |
@@ -149,7 +149,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/my-image.tar
-          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          key: ${{ runner.os }}-docker-image-${{ github.sha }}
 
       - name: Load Docker Image
         run: docker load -i /tmp/my-image.tar

@@ -189,7 +189,10 @@ class PermissionManager(models.Manager):
         if user:
             groups = user.groups.all()
 
-        permission_query = self
+        permission_query = self.select_related(
+            'obj', 'user_permissions', 'user_permissions__user',
+            'group_permissions', 'group_permissions__group'
+        )
         try:
             _ = self.model.minimum_delete_role_level  # noqa: F841
         except AttributeError:

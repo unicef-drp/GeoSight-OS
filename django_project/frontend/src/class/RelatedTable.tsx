@@ -42,7 +42,7 @@ export class RelatedTable {
           params[key] = dataValue
         }
         // @ts-ignore
-        if (dataValue.length > 1500) {
+        if (dataValue.length > 1000) {
           // @ts-ignore
           data[key] = dataValue
           // @ts-ignore
