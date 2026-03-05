@@ -51,7 +51,7 @@ def metadata_indicator_by_view(
     """
     if is_using_uuid:
         query = IndicatorValue.objects.filter(
-            country__concept_uuid__in=reference_layer.countries.values_list(
+            country_concept_uuid__in=reference_layer.countries.values_list(
                 'concept_uuid', flat=True
             ),
             indicator=indicator,

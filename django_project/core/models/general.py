@@ -79,7 +79,7 @@ class AbstractVersionData(models.Model):
         :returns: POSIX timestamp of version_data.
         :rtype: float
         """
-        return self.version_data.timestamp()
+        return int(self.version_data.timestamp())
 
     def version_with_reference_layer_uuid(self, reference_layer_uuid):
         """Return version combined with a reference layer UUID.
