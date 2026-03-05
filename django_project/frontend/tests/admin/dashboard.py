@@ -257,7 +257,7 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         # ------------------------------------------
         self.resource.refresh_from_db()
         url = reverse(self.edit_url_tag, kwargs={'slug': self.resource.slug})
-        last_version = self.resource.version
+        last_version = self.resource.version_data.timestamp()
         new_payload = copy.deepcopy(self.payload)
         new_payload['name'] = 'name 1'
         new_payload['featured'] = True
@@ -274,7 +274,7 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.assertEqual(self.resource.name, new_payload['name'])
         self.assertEqual(self.resource.creator, self.resource_creator)
         self.assertEqual(self.resource.modified_by, self.admin)
-        self.assertNotEqual(self.resource.version, last_version)
+        self.assertNotEqual(self.resource.version_data.timestamp(), last_version)
         self.assertEqual(
             self.resource.transparency_config,
             {'contextLayer': 20, 'indicatorLayer': 30}
@@ -347,7 +347,7 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         from geosight.data.models.dashboard.dashboard_relation import (
             DashboardBasemap, DashboardContextLayer, DashboardIndicator
         )
-        last_version = self.resource.version
+        last_version = self.resource.version_data
         basemap = BasemapLayerF()
         basemap.name = 'test'
         basemap.save()
@@ -359,7 +359,7 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         indicator = IndicatorF()
         indicator.name = 'test'
         indicator.save()
-        self.assertEqual(self.resource.version, last_version)
+        self.assertEqual(self.resource.version_data, last_version)
 
         DashboardBasemap.objects.create(
             object=basemap,
@@ -373,29 +373,29 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
             object=indicator,
             dashboard=self.resource
         )
-        self.assertEqual(self.resource.version, last_version)
+        self.assertEqual(self.resource.version_data, last_version)
 
         # Update the basemap
         basemap.name = 'test'
         basemap.save()
         self.resource.refresh_from_db()
-        self.assertNotEqual(self.resource.version, last_version)
-        last_version = self.resource.version
-        self.assertEqual(self.resource.version, last_version)
+        self.assertNotEqual(self.resource.version_data, last_version)
+        last_version = self.resource.version_data
+        self.assertEqual(self.resource.version_data, last_version)
 
         # Update the context layer
         context_layer.name = 'test'
         context_layer.save()
         self.resource.refresh_from_db()
-        self.assertNotEqual(self.resource.version, last_version)
-        last_version = self.resource.version
-        self.assertEqual(self.resource.version, last_version)
+        self.assertNotEqual(self.resource.version_data, last_version)
+        last_version = self.resource.version_data
+        self.assertEqual(self.resource.version_data, last_version)
 
         # Update indicator
         indicator.name = 'test'
         indicator.save()
         self.resource.refresh_from_db()
-        self.assertNotEqual(self.resource.version, last_version)
+        self.assertNotEqual(self.resource.version_data, last_version)
         self.assertEqual(self.resource.modified_by, self.resource.creator)
-        last_version = self.resource.version
-        self.assertEqual(self.resource.version, last_version)
+        last_version = self.resource.version_data
+        self.assertEqual(self.resource.version_data, last_version)
