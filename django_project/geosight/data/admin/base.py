@@ -15,8 +15,6 @@ __date__ = '14/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-from django.contrib.auth import get_user_model
-from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 
 from core.models.general import BASE_RESOURCE_FIELDS
@@ -36,14 +34,7 @@ def fill_creator_username(
     :param queryset: The queryset of selected objects to update.
     :type queryset: django.db.models.QuerySet
     """
-    User = get_user_model()
-    modeladmin.model.objects.update(
-        creator_username=Subquery(
-            User.objects.filter(
-                id=OuterRef('creator_id')
-            ).values('username')[:1]
-        )
-    )
+    modeladmin.model.batch_creator_username_assign()
 
 
 @admin.action(description='Fill modified_by_username from modified_by')
@@ -60,14 +51,7 @@ def fill_modified_by_username(
     :param queryset: The queryset of selected objects to update.
     :type queryset: django.db.models.QuerySet
     """
-    User = get_user_model()
-    modeladmin.model.objects.update(
-        modified_by_username=Subquery(
-            User.objects.filter(
-                id=OuterRef('modified_by_id')
-            ).values('username')[:1]
-        )
-    )
+    modeladmin.model.batch_modified_by_username_assign()
 
 
 class BaseAdminResourceMixin(admin.ModelAdmin):
