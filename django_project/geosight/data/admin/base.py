@@ -15,12 +15,11 @@ __date__ = '14/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 
-BASE_RESOURCE_FIELD = (
-    'creator', 'created_at', 'modified_by', 'modified_at',
-    'creator_username', 'modified_by_username'
-)
+from core.models.general import BASE_RESOURCE_FIELDS
 
 
 @admin.action(description='Fill creator_username from creator')
@@ -37,9 +36,14 @@ def fill_creator_username(
     :param queryset: The queryset of selected objects to update.
     :type queryset: django.db.models.QuerySet
     """
-    for obj in queryset.select_related('creator'):
-        obj.creator_username = obj.creator.username if obj.creator else None
-        obj.save(update_fields=['creator_username'])
+    User = get_user_model()
+    modeladmin.model.objects.update(
+        creator_username=Subquery(
+            User.objects.filter(
+                id=OuterRef('creator_id')
+            ).values('username')[:1]
+        )
+    )
 
 
 @admin.action(description='Fill modified_by_username from modified_by')
@@ -56,11 +60,14 @@ def fill_modified_by_username(
     :param queryset: The queryset of selected objects to update.
     :type queryset: django.db.models.QuerySet
     """
-    for obj in queryset.select_related('modified_by'):
-        obj.modified_by_username = (
-            obj.modified_by.username if obj.modified_by else None
+    User = get_user_model()
+    modeladmin.model.objects.update(
+        modified_by_username=Subquery(
+            User.objects.filter(
+                id=OuterRef('modified_by_id')
+            ).values('username')[:1]
         )
-        obj.save(update_fields=['modified_by_username'])
+    )
 
 
 class BaseAdminResourceMixin(admin.ModelAdmin):
@@ -72,8 +79,8 @@ class BaseAdminResourceMixin(admin.ModelAdmin):
     these fields when saving models through the Django admin interface.
     """
 
-    list_display = BASE_RESOURCE_FIELD
-    readonly_fields = BASE_RESOURCE_FIELD
+    list_display = BASE_RESOURCE_FIELDS
+    readonly_fields = BASE_RESOURCE_FIELDS
     actions = (fill_creator_username, fill_modified_by_username)
 
     def save_model(self, request, obj, form, change):

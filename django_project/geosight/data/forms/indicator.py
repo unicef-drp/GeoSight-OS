@@ -18,6 +18,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 
+from core.models.general import BASE_VERSIONED_RESOURCE_FIELDS
 from geosight.data.forms.style import BaseStyleForm
 from geosight.data.models.indicator import Indicator, IndicatorGroup
 from geosight.data.models.style.base import Style
@@ -59,8 +60,7 @@ class IndicatorForm(BaseStyleForm):
 
     class Meta:  # noqa: D106
         model = Indicator
-        exclude = (
-            'created_at', 'creator', 'modified_at', 'modified_by',
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS + (
             'order', 'geometry_reporting_units',
             'instance', 'show_in_context_analysis', 'version_data'
         )

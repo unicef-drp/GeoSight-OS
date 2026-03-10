@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django import forms
 from django.forms.models import model_to_dict
 
+from core.models.general import BASE_VERSIONED_RESOURCE_FIELDS
 from geosight.data.models.basemap_layer import BasemapLayer, BasemapGroup
 
 
@@ -55,7 +56,7 @@ class BasemapForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = BasemapLayer
-        exclude = ('created_at', 'creator', 'modified_at', 'modified_by')
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS
 
     @staticmethod
     def model_to_initial(model: BasemapLayer):
@@ -117,6 +118,4 @@ class BasemapFormAPI(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = BasemapLayer
-        exclude = (
-            'created_at', 'creator', 'modified_at', 'modified_by', 'group'
-        )
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS + ('group',)

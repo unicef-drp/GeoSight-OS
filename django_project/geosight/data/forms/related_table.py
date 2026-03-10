@@ -15,9 +15,11 @@ __date__ = '31/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+
 from django import forms
 from django.forms.models import model_to_dict
 
+from core.models.general import BASE_VERSIONED_RESOURCE_FIELDS
 from geosight.data.models.related_table import RelatedTable, RelatedTableGroup
 
 
@@ -59,9 +61,8 @@ class RelatedTableForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = RelatedTable
-        exclude = (
-            'created_at', 'creator', 'modified_at', 'modified_by',
-            'version_data'
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS + (
+            'version_data',
         )
 
     def clean_group(self):

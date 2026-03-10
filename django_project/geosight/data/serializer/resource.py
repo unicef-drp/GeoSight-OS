@@ -33,7 +33,7 @@ class ResourceSerializer(DynamicModelSerializer):
 
     def get_modified_by(self, obj):
         """Return object modified by."""
-        return obj.modified_by.username if obj.modified_by else ''
+        return obj.modified_by_username
 
     def get_created_at(self, obj):
         """Return object created time."""
@@ -41,7 +41,7 @@ class ResourceSerializer(DynamicModelSerializer):
 
     def get_created_by(self, obj):
         """Return object created by."""
-        return obj.creator.username if obj.creator else ''
+        return obj.creator_username
 
     class Meta:  # noqa: D106
         fields = (

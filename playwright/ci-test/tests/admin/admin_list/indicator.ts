@@ -15,6 +15,16 @@ test.describe('Indicator list admin', () => {
     await page.locator('#Form #id_name').fill(`Created Indicator A${index}`);
     await page.locator('#Form #id_description').fill(`Created_Indicator_A${index}`);
     await page.locator('#Form #id_shortcode').fill(`SOM_TEST_IND_A_A${index}`);
+
+    // Other input should not be hidden
+    await expect(page.locator('#Form div[data-wrapper-name="created_at"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_at"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="creator"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="creator_username"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_by"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_by_username"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="version_data"]')).toBeHidden();
+
     await page.getByRole('button', { name: 'Save As' }).click();
   }
 

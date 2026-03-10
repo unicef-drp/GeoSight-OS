@@ -16,6 +16,16 @@ test.describe('Context layer list admin', () => {
     await page.locator('#Form #id_name').fill(`Context Layer A${index}`);
     await page.locator('#Form #id_description').fill(`Context_Layer_A${index}`);
     await page.locator('.ReactSelect__input-container').first().click();
+
+    // Other input should not be hidden
+    await expect(page.locator('#Form div[data-wrapper-name="created_at"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_at"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="creator"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="creator_username"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_by"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_by_username"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="version_data"]')).toBeHidden();
+
     await page.getByRole('option', { name: 'Test' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
   }
