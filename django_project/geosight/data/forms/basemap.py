@@ -22,7 +22,12 @@ from geosight.data.models.basemap_layer import BasemapLayer, BasemapGroup
 
 
 class BasemapForm(forms.ModelForm):
-    """Basemap form."""
+    """Form for creating and editing a basemap layer.
+
+    Provides a category (group) field populated from existing
+    :class:`BasemapGroup` objects, with support for auto-creating
+    new groups on save.
+    """
 
     group = forms.ChoiceField(
         label='Category',
@@ -31,8 +36,12 @@ class BasemapForm(forms.ModelForm):
         )
     )
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
+    def __init__(self, *args, **kwargs):  # noqa: DOC101, DOC103
+        """Initialise the form and populate group choices.
+
+        :param args: Positional arguments passed to the parent form.
+        :param kwargs: Keyword arguments passed to the parent form.
+        """
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
             (group.name, group.name)
@@ -48,7 +57,13 @@ class BasemapForm(forms.ModelForm):
             pass
 
     def clean_group(self):
-        """Return group."""
+        """Resolve the group name to a :class:`BasemapGroup` instance.
+
+        Creates the group if it does not already exist.
+
+        :return: The resolved or newly created group.
+        :rtype: BasemapGroup
+        """
         group, created = BasemapGroup.objects.get_or_create(
             name=self.cleaned_data['group']
         )
@@ -60,7 +75,15 @@ class BasemapForm(forms.ModelForm):
 
     @staticmethod
     def model_to_initial(model: BasemapLayer):
-        """Return model data as json."""
+        """Return model data as a dictionary suitable for form initialisation.
+
+        Resolves the group foreign key to its name string.
+
+        :param model: The basemap layer instance to convert.
+        :type model: BasemapLayer
+        :return: A dictionary of field values for the form.
+        :rtype: dict
+        """
         initial = model_to_dict(model)
         try:
             initial['group'] = BasemapGroup.objects.get(
@@ -76,7 +99,11 @@ class BasemapForm(forms.ModelForm):
 #  Need to rename group to category.
 #  Change all "group" to category.
 class BasemapFormAPI(forms.ModelForm):
-    """Basemap form."""
+    """API form for creating and editing a basemap layer.
+
+    Uses a ``category`` field (mapped internally to ``group``) populated
+    from existing :class:`BasemapGroup` objects.
+    """
 
     category = forms.CharField(
         label='Category',
@@ -85,8 +112,12 @@ class BasemapFormAPI(forms.ModelForm):
         )
     )
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
+    def __init__(self, *args, **kwargs):  # noqa: DOC101, DOC103
+        """Initialise the form and populate category choices.
+
+        :param args: Positional arguments passed to the parent form.
+        :param kwargs: Keyword arguments passed to the parent form.
+        """
         super().__init__(*args, **kwargs)
         self.fields['category'].choices = [
             (group.name, group.name)
@@ -102,14 +133,26 @@ class BasemapFormAPI(forms.ModelForm):
             pass
 
     def clean_category(self):
-        """Return group."""
+        """Resolve the category name to a :class:`BasemapGroup` instance.
+
+        Creates the group if it does not already exist.
+
+        :return: The resolved or newly created group.
+        :rtype: BasemapGroup
+        """
         group, created = BasemapGroup.objects.get_or_create(
             name=self.cleaned_data['category']
         )
         return group
 
     def save(self, commit=True):
-        """Save the form."""
+        """Save the form, mapping category back to the group field.
+
+        :param commit: Whether to persist the instance to the database.
+        :type commit: bool
+        :return: The saved or unsaved basemap layer instance.
+        :rtype: BasemapLayer
+        """
         instance = super(BasemapFormAPI, self).save(commit=False)
         instance.group = self.cleaned_data['category']
         if commit:

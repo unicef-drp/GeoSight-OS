@@ -27,7 +27,12 @@ from geosight.data.serializer.style import StyleSerializer
 
 
 class IndicatorForm(BaseStyleForm):
-    """Indicator form."""
+    """Form for creating and editing an indicator.
+
+    Provides a category (group) field populated from existing
+    :class:`IndicatorGroup` objects, with validation for name uniqueness
+    within a category and shortcode uniqueness across all indicators.
+    """
 
     label_suffix = ""
 
@@ -42,8 +47,12 @@ class IndicatorForm(BaseStyleForm):
         )
     )
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
+    def __init__(self, *args, **kwargs):  # noqa: DOC101, DOC103
+        """Initialise the form and populate group choices.
+
+        :param args: Positional arguments passed to the parent form.
+        :param kwargs: Keyword arguments passed to the parent form.
+        """
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
             (group.name, group.name)
@@ -66,7 +75,13 @@ class IndicatorForm(BaseStyleForm):
         )
 
     def clean_name(self):
-        """Return group."""
+        """Validate that the name is unique within its category.
+
+        :raises ValidationError: If an indicator with the same name already
+            exists in the same category.
+        :return: The validated name.
+        :rtype: str
+        """
         name = self.cleaned_data['name']
         group = self.data['group']
         indicators = Indicator.objects.exclude(
@@ -79,7 +94,13 @@ class IndicatorForm(BaseStyleForm):
         return name
 
     def clean_group(self):
-        """Return group."""
+        """Resolve the group name to an :class:`IndicatorGroup` instance.
+
+        Creates the group if it does not already exist.
+
+        :return: The resolved or newly created indicator group.
+        :rtype: IndicatorGroup
+        """
         group = self.cleaned_data['group']
         indicator_group, created = IndicatorGroup.objects.get_or_create(
             name=group
@@ -87,7 +108,13 @@ class IndicatorForm(BaseStyleForm):
         return indicator_group
 
     def clean_shortcode(self):
-        """Return shortcode."""
+        """Validate that the shortcode is unique across all indicators.
+
+        :raises ValidationError: If the shortcode is already used by another
+            indicator.
+        :return: The validated shortcode.
+        :rtype: str
+        """
         shortcode = self.cleaned_data['shortcode']
         try:
             indicator = Indicator.objects.exclude(
@@ -100,12 +127,21 @@ class IndicatorForm(BaseStyleForm):
             return shortcode
 
     def clean_min_value(self):
-        """Return max_value."""
+        """Return the validated minimum value.
+
+        :return: The cleaned minimum value.
+        :rtype: float or None
+        """
         min_value = self.cleaned_data['min_value']
         return min_value
 
     def clean_max_value(self):
-        """Return max_value."""
+        """Validate that max value is not less than min value.
+
+        :raises ValidationError: If max value is less than min value.
+        :return: The validated maximum value.
+        :rtype: float or None
+        """
         min_value = self.cleaned_data['min_value']
         max_value = self.cleaned_data['max_value']
         if min_value is not None and max_value is not None:
@@ -115,7 +151,16 @@ class IndicatorForm(BaseStyleForm):
 
     @staticmethod
     def model_to_initial(indicator: Indicator):
-        """Return model data as json."""
+        """Return model data as a dictionary suitable for form initialisation.
+
+        Resolves the group foreign key to its name string and populates
+        style data based on the indicator's style type.
+
+        :param indicator: The indicator instance to convert.
+        :type indicator: Indicator
+        :return: A dictionary of field values for the form.
+        :rtype: dict
+        """
         initial = model_to_dict(indicator)
         del initial['created_at']
         del initial['version_data']
