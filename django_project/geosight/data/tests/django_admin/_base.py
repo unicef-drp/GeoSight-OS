@@ -121,8 +121,34 @@ class BaseDjangoAdminTest(object):
             self.assertEqual(resource.modified_by, user)
             self.assertEqual(resource.modified_by_username, user.username)
 
+            resource.__class__.objects.filter(pk=resource.pk).update(
+                creator_username=None,
+                modified_by_username=None
+            )
+            resource.refresh_from_db()
+            self.assertEqual(resource.creator_username, None)
+            self.assertEqual(resource.modified_by_username, None)
+
+            # Update using batch creator username assign
+            resource.__class__.batch_creator_username_assign()
+            resource.__class__.batch_modified_by_username_assign()
+            resource.refresh_from_db()
+            self.assertEqual(resource.creator, user)
+            self.assertEqual(resource.creator_username, user.username)
+            self.assertEqual(resource.modified_by, user)
+            self.assertEqual(resource.modified_by_username, user.username)
+
             # Delete user
             user.delete()
+            resource.refresh_from_db()
+            self.assertEqual(resource.creator, None)
+            self.assertEqual(resource.creator_username, user.username)
+            self.assertEqual(resource.modified_by, None)
+            self.assertEqual(resource.modified_by_username, user.username)
+
+            # Update using batch creator username assign
+            resource.__class__.batch_creator_username_assign()
+            resource.__class__.batch_modified_by_username_assign()
             resource.refresh_from_db()
             self.assertEqual(resource.creator, None)
             self.assertEqual(resource.creator_username, user.username)

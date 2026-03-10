@@ -18,6 +18,7 @@ import os
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import OuterRef, Subquery
 from django.db.models.fields.files import (
     FileField,
     ImageField,
@@ -132,14 +133,39 @@ class AbstractEditData(models.Model):
         if not self.modified_by:
             self.modified_by = self.creator
 
-        self.creator_username = (
-            self.creator.username if self.creator else None
-        )
-        self.modified_by_username = (
-            self.modified_by.username if self.modified_by else None
-        )
+        if self.creator:
+            self.creator_username = self.creator.username
+        if self.modified_by:
+            self.modified_by_username = self.modified_by.username
+
         obj = super().save(*args, **kwargs)
         return obj
+
+    @classmethod
+    def batch_creator_username_assign(cls):
+        """Batch assign creator to all objects."""
+        cls.objects.filter(
+            creator__isnull=False
+        ).update(
+            creator_username=Subquery(
+                User.objects.filter(
+                    id=OuterRef('creator_id')
+                ).values('username')[:1]
+            )
+        )
+
+    @classmethod
+    def batch_modified_by_username_assign(cls):
+        """Batch assign modified_by to all objects."""
+        cls.objects.filter(
+            modified_by__isnull=False
+        ).update(
+            modified_by_username=Subquery(
+                User.objects.filter(
+                    id=OuterRef('modified_by_id')
+                ).values('username')[:1]
+            )
+        )
 
 
 class SlugTerm(AbstractTerm):
