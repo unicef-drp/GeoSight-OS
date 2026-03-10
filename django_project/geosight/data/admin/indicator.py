@@ -217,7 +217,6 @@ class IndicatorAdmin(BaseAdminResourceMixin):
                        'name', 'group', 'type'
                    ) + BaseAdminResourceMixin.list_display
     list_filter = ('group',)
-    list_editable = ('creator', 'group', 'type')
     search_fields = ('name',)
     inlines = (IndicatorRuleInline,)
     actions = (invalidate_cache,) + BaseAdminResourceMixin.actions

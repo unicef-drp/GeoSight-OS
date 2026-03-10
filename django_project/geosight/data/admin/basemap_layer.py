@@ -34,7 +34,6 @@ class BasemapLayerAdmin(BaseAdminResourceMixin):
 
     list_display = ('name', 'url', 'group') + BaseAdminResourceMixin.list_display  # noqa
     inlines = (BasemapLayerParameterInline,)
-    list_editable = ('group', 'creator')
     readonly_fields = BaseAdminResourceMixin.readonly_fields
 
 

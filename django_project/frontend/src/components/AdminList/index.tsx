@@ -33,7 +33,7 @@ export const useResourceMeta = () => {
       field: "created_by",
       headerName: t("admin.columns.createdBy"),
       flex: 0.5,
-      serverKey: "creator__username",
+      serverKey: "creator_username",
     },
     {
       field: "modified_at",
@@ -45,7 +45,7 @@ export const useResourceMeta = () => {
       field: "modified_by",
       headerName: t("admin.columns.modifiedBy"),
       flex: 0.5,
-      serverKey: "modified_by__username",
+      serverKey: "modified_by_username",
     },
   ];
 };

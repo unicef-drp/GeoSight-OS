@@ -40,7 +40,6 @@ class ContextLayerAdmin(BaseAdminResourceMixin):
     ) + BaseAdminResourceMixin.list_display
     inlines = (ContextLayerFieldInline,)
     list_filter = ('group',)
-    list_editable = ('group', 'creator')
 
 
 class ContextLayerGroupAdmin(admin.ModelAdmin):

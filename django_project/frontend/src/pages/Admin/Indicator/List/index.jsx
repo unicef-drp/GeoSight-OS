@@ -130,7 +130,6 @@ export default function IndicatorList() {
   // pop action
   columns.pop();
   columns = columns.concat(useResourceMeta())
-  columns[1].headerName = 'Name'
 
   columns.push({
     field: 'actions',

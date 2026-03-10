@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// @ts-ignore
+import { useTranslation } from "react-i18next";
 import { FormControl, TextField } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -30,6 +30,7 @@ export const DataGridFilter = (
     fields = [], filterModel = {}, setFilterModel
   }: DataGridFilterProps
 ) => {
+  const { t } = useTranslation();
   const [newFilterModel, setNewFilterModel] = useState<any>(filterModel)
   const [isFiltered, setIsFiltered] = useState<boolean>(false)
   fields.forEach(item => {
@@ -137,37 +138,39 @@ export const DataGridFilter = (
                     </div> :
                     field.type == 'date' ?
                       <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DesktopDatePicker
-                          className={'Filter-DateStart'}
-                          value={newFilterModel[`${field.serverKey}__gte`] ? new Date(newFilterModel[`${field.serverKey}__gte`]) : null}
-                          label={`${field.headerName} (from)`}
-                          inputFormat="YYYY-MM-DD"
-                          onChange={(date: any) => {
-                            const key = `${field.serverKey}__gte`;
-                            const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                            const value = selectedDate ? `${selectedDate}T00:00:00` : null;
-                            setNewFilterModel({
-                              ...newFilterModel,
-                              [key]: value
-                            })
-                          }}
-                          renderInput={(params) => <TextField {...params} />}
-                        />
-                        <DesktopDatePicker
-                          value={newFilterModel[`${field.serverKey}__lte`] ? new Date(newFilterModel[`${field.serverKey}__lte`]) : null}
-                          label={`${field.headerName} (to)`}
-                          inputFormat="YYYY-MM-DD"
-                          onChange={(date: any) => {
-                            const key = `${field.serverKey}__lte`;
-                            const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                            const value = selectedDate ? `${selectedDate}T23:59:59` : null;
-                            setNewFilterModel({
-                              ...newFilterModel,
-                              [key]: value
-                            })
-                          }}
-                          renderInput={(params) => <TextField {...params} />}
-                        />
+                        <Grid container direction='row' className='FilterDate'>
+                          <DesktopDatePicker
+                            className={'Filter-DateStart'}
+                            value={newFilterModel[`${field.serverKey}__gte`] ? new Date(newFilterModel[`${field.serverKey}__gte`]) : null}
+                            label={`${field.headerName} `+ t('(from)')}
+                            inputFormat="YYYY-MM-DD"
+                            onChange={(date: any) => {
+                              const key = `${field.serverKey}__gte`;
+                              const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
+                              const value = selectedDate ? `${selectedDate}T00:00:00` : null;
+                              setNewFilterModel({
+                                ...newFilterModel,
+                                [key]: value
+                              })
+                            }}
+                            renderInput={(params) => <TextField {...params} onKeyDown={(e) => { if (e.key === 'Enter') handleApplyFilters(); }} />}
+                          />
+                          <DesktopDatePicker
+                            value={newFilterModel[`${field.serverKey}__lte`] ? new Date(newFilterModel[`${field.serverKey}__lte`]) : null}
+                            label={`${field.headerName} `+ t('(to)')}
+                            inputFormat="YYYY-MM-DD"
+                            onChange={(date: any) => {
+                              const key = `${field.serverKey}__lte`;
+                              const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
+                              const value = selectedDate ? `${selectedDate}T23:59:59` : null;
+                              setNewFilterModel({
+                                ...newFilterModel,
+                                [key]: value
+                              })
+                            }}
+                            renderInput={(params) => <TextField {...params} onKeyDown={(e) => { if (e.key === 'Enter') handleApplyFilters(); }} />}
+                          />
+                        </Grid>
                       </LocalizationProvider>
                       :
                       <TextField
@@ -182,6 +185,7 @@ export const DataGridFilter = (
                             [key]: value
                           })
                         }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleApplyFilters(); }}
                       />
                 }
               </Grid>
@@ -189,10 +193,9 @@ export const DataGridFilter = (
           }
         </Grid>
         <div className='Footer'>
-          <Button variant='contained' id={'ListFilter-Btn'}
-                  onClick={handleApplyFilters}>Apply Filters</Button>
-          {/*/!*<div style={{flexGrow: 0.1}}></div>*!/*/}
-          {/*<Button variant='contained' onClick={handleClear} color="success">Reset</Button>*/}
+          <Button
+            variant='contained' id={'ListFilter-Btn'}
+            onClick={handleApplyFilters}>Apply Filters</Button>
         </div>
       </div>
     </CustomPopover>
