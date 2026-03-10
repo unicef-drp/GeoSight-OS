@@ -21,6 +21,7 @@ from django.conf import settings
 from django.forms.models import model_to_dict
 from rest_framework.exceptions import ValidationError
 
+from core.models.general import BASE_VERSIONED_RESOURCE_FIELDS
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
 )
@@ -39,12 +40,11 @@ class ContextLayerBatchForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = ContextLayer
-        exclude = [
-            'created_at', 'creator', 'modified_at', 'modified_by',
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS + (
             'layer_type', 'arcgis_config', 'related_table', 'url_legend',
             'token', 'username', 'password', 'styles', 'label_styles',
             'configuration', 'cloud_native_gis_layer_id'
-        ]
+        )
 
     def __init__(self, *args, **kwargs):  # noqa
         """
@@ -250,9 +250,7 @@ class ContextLayerForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = ContextLayer
-        exclude = (
-            'created_at', 'creator', 'modified_at', 'modified_by'
-        )
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS
 
     @staticmethod
     def model_to_initial(model: ContextLayer):

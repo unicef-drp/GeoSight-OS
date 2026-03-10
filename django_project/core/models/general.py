@@ -29,6 +29,12 @@ from django.utils import timezone
 
 User = get_user_model()
 
+BASE_RESOURCE_FIELDS = (
+    'creator', 'created_at', 'modified_by', 'modified_at',
+    'creator_username', 'modified_by_username'
+)
+BASE_VERSIONED_RESOURCE_FIELDS = BASE_RESOURCE_FIELDS + ('version_data',)
+
 
 class AbstractTerm(models.Model):
     """Abstract model for Term."""

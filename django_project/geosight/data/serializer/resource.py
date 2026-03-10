@@ -20,7 +20,11 @@ from core.serializer.dynamic_serializer import DynamicModelSerializer
 
 
 class ResourceSerializer(DynamicModelSerializer):
-    """Resource serializer."""
+    """Serializer for resource objects exposing audit fields.
+
+    Provides formatted ``created_at``, ``created_by``, ``modified_at``,
+    and ``modified_by`` fields derived from the model's audit attributes.
+    """
 
     modified_at = serializers.SerializerMethodField()
     modified_by = serializers.SerializerMethodField()
@@ -28,20 +32,44 @@ class ResourceSerializer(DynamicModelSerializer):
     created_by = serializers.SerializerMethodField()
 
     def get_modified_at(self, obj):
-        """Return object last modified."""
+        """Return the last modified timestamp formatted as a string.
+
+        :param obj: The resource instance being serialized.
+        :type obj: django.db.models.Model
+        :return: Formatted datetime string (``YYYY-MM-DD HH:MM:SS``).
+        :rtype: str
+        """
         return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_modified_by(self, obj):
-        """Return object modified by."""
-        return obj.modified_by.username if obj.modified_by else ''
+        """Return the username of the user who last modified the object.
+
+        :param obj: The resource instance being serialized.
+        :type obj: django.db.models.Model
+        :return: Username of the last modifier, or ``None``.
+        :rtype: str or None
+        """
+        return obj.modified_by_username
 
     def get_created_at(self, obj):
-        """Return object created time."""
+        """Return the creation timestamp formatted as a string.
+
+        :param obj: The resource instance being serialized.
+        :type obj: django.db.models.Model
+        :return: Formatted datetime string (``YYYY-MM-DD HH:MM:SS``).
+        :rtype: str
+        """
         return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_created_by(self, obj):
-        """Return object created by."""
-        return obj.creator.username if obj.creator else ''
+        """Return the username of the user who created the object.
+
+        :param obj: The resource instance being serialized.
+        :type obj: django.db.models.Model
+        :return: Username of the creator, or ``None``.
+        :rtype: str or None
+        """
+        return obj.creator_username
 
     class Meta:  # noqa: D106
         fields = (

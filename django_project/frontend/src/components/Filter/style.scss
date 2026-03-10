@@ -21,24 +21,20 @@
   .MuiPaper-root {
     position: sticky !important;
     width: 20% !important;
-    max-height: 400px;
+    max-height: 70vw;
     overflow-y: scroll;
 
     .DataGridFilter-Container {
       padding: 10px;
+      gap: 10px;
 
       .Body {
         .FilterRow {
-          margin-bottom: 10px;
           min-height: 35px;
           height: fit-content;
 
           .MuiTextField-root {
             width: 100%;
-          }
-
-          .Filter-DateStart {
-            margin-bottom: 10px;
           }
 
           .date-text {
@@ -62,9 +58,21 @@
       }
 
       .Footer {
-        display: flex;
-        flex-direction: row-reverse;
+        margin-top: 10px;
+
+        button {
+          width: 100%;
+        }
       }
+    }
+  }
+
+  .MuiGrid-direction-xs-column, .FilterDate {
+    gap: 10px;
+
+    .MuiFormControl-root {
+      width: 50% !important;
+      flex: 1
     }
   }
 }

@@ -124,20 +124,43 @@ test.describe('Related table list admin', () => {
     // ------------------------------------------------------
     // DELETE THE CREATED
     // ------------------------------------------------------
-    // Delete per row
+    // Delete per on detail
     await page.goto(_url);
     await page.getByPlaceholder('Search related table').fill('Generated A');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
-    await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
+    await page.getByText('Generated A0').click();
+
+    // Other input should not be hidden
+    await expect(page.locator('#Form div[data-wrapper-name="name"]')).toBeVisible();
+    await expect(page.locator('#Form div[data-wrapper-name="created_at"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_at"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="creator"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="creator_username"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_by"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="modified_by_username"]')).toBeHidden();
+    await expect(page.locator('#Form div[data-wrapper-name="version_data"]')).toBeHidden();
+    await page.locator('.AdminContentHeader-Right').nth(0).getByTestId('MoreVertIcon').click();
+
     await page.getByRole('menuitem', { name: 'Delete' }).click();
     await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Generated A0?');
     await page.getByRole('button', { name: 'Confirm' }).click();
+
+    await page.getByPlaceholder('Search related table').fill('Generated A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–9 of 9');
+
+    // Delete per row
+    await page.goto(_url);
+    await page.getByPlaceholder('Search related table').fill('Generated A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–9 of 9');
+    await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
+    await page.getByRole('menuitem', { name: 'Delete' }).click();
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Generated A1?');
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–8 of 8');
 
     // Delete all
     await page.getByLabel('Select all rows').check();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete 9 related tables?');
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete 8 related tables?');
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
 

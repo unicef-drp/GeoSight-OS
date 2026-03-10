@@ -18,6 +18,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 
+from core.models.general import BASE_VERSIONED_RESOURCE_FIELDS
 from geosight.reference_dataset.models.reference_dataset import (
     ReferenceDataset
 )
@@ -73,8 +74,7 @@ class ReferenceDatasetForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = ReferenceDataset
-        exclude = (
-            'created_at', 'creator', 'modified_at', 'modified_by',
+        exclude = BASE_VERSIONED_RESOURCE_FIELDS + (
             'version_data', 'identifier', 'in_georepo', 'countries',
             'tags'
         )
