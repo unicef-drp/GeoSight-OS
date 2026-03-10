@@ -24,6 +24,7 @@ import EsriData from "../../../../../utils/esri/esri-data";
 import { dictDeepCopy, toJson } from "../../../../../utils/main";
 import { fetchingData } from "../../../../../Requests";
 import { vectorTileLegend } from "../../../../../utils/Legend/VectorTile";
+import { onTouchEvent } from "../../utils";
 
 import "mapboxgl-legend/dist/style.css";
 import "./style.scss";
@@ -231,7 +232,7 @@ export const getLayer = function (
         dispatch(Actions.Map.updateCenter(event.latlng));
       };
       layer.on("click", handleTap, this);
-      layer.on("touchend", handleTap, this);
+      onTouchEvent(layer, "ctx-popup", "ctx-popup", handleTap);
     }
   };
   switch (layerType) {

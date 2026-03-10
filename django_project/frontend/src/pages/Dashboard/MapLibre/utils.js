@@ -22,6 +22,38 @@ const centerMapOnMobile = (map, lngLat) => {
     map.easeTo({ center: lngLat, offset: [0, 100] });
   }
 };
+let startPoint = null;
+let popup = null;
+let functionPopup = {};
+
+/**
+ * Touch event for mobile
+ * Overide and trigger the fn
+ */
+export const onTouchEvent = (map, eventId, fnId, fn) => {
+  if (!map._touchStartRegistered) {
+    map._touchStartRegistered = true;
+    map.on("touchstart", (e) => {
+      startPoint = e.point;
+    });
+  }
+  map.off("touchend", eventId, functionPopup[fnId].touch);
+  functionPopup[fnId].touch = function (e) {
+    if (!startPoint) return;
+    const dx = Math.abs(e.point.x - startPoint.x);
+    const dy = Math.abs(e.point.y - startPoint.y);
+
+    if (dx < 5 && dy < 5) {
+      if (fn) fn(e);
+    }
+    startPoint = null;
+  };
+
+  map.on("touchend", eventId, functionPopup[fnId].touch);
+};
+export const offTouchEvent = (map, eventId, fnId) => {
+  map.off("touchend", eventId, functionPopup[fnId].touch);
+};
 
 /**
  * Return if layer exist or not
@@ -123,8 +155,6 @@ export const selectableLayers = (map) => {
 /***
  * Add popup when click
  */
-let popup = null;
-let functionPopup = {};
 export const addPopup = (map, id, popupRenderFn) => {
   if (!functionPopup[id]) {
     functionPopup[id] = {};
@@ -142,7 +172,8 @@ export const addPopup = (map, id, popupRenderFn) => {
   map.on("mouseleave", id, functionPopup[id].mouseleave);
 
   map.off("click", id, functionPopup[id].click);
-  map.off("touchend", id, functionPopup[id].click);
+  offTouchEvent(map, id, id);
+
   functionPopup[id].click = function (e) {
     if (!map.drawingMode) {
       // Check the id that is the most top
@@ -199,7 +230,7 @@ export const addPopup = (map, id, popupRenderFn) => {
     }
   };
   map.on("click", id, functionPopup[id].click);
-  map.on("touchend", id, functionPopup[id].click);
+  onTouchEvent(map, id, id, functionPopup[id].click);
 };
 /**
  * Add popup by properties
@@ -243,10 +274,10 @@ export const removeClickEvent = (map, layerId, functionId) => {
   if (functionPopup[functionId]?.click) {
     if (layerId) {
       map.off("click", layerId, functionPopup[functionId].click);
-      map.off("touchend", layerId, functionPopup[functionId].click);
+      offTouchEvent(map, layerId, functionId);
     } else {
       map.off("click", functionPopup[functionId].click);
-      map.off("touchend", functionPopup[functionId].click);
+      offTouchEvent(map, functionId, functionId);
     }
   }
 };
@@ -261,10 +292,10 @@ export const addClickEvent = (map, layerId, functionId, listenerFn) => {
   functionPopup[functionId].click = listenerFn;
   if (layerId) {
     map.on("click", layerId, functionPopup[functionId].click);
-    map.on("touchend", layerId, functionPopup[functionId].click);
+    onTouchEvent(map, layerId, functionId, functionPopup[functionId].click);
   } else {
     map.on("click", functionPopup[functionId].click);
-    map.on("touchend", functionPopup[functionId].click);
+    onTouchEvent(map, functionId, functionId, functionPopup[functionId].click);
   }
 };
 /**
@@ -307,7 +338,7 @@ export const addPopupEl = (
     }
   };
   el.addEventListener("click", clickFn);
-  el.addEventListener("touchend", clickFn);
+  onTouchEvent(el, "addPopupEl", "addPopupEl", clickFn);
 };
 /*** Create element ***/
 export const createElement = (tag, options) => {
