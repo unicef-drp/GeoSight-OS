@@ -73,6 +73,12 @@ function ContextLayerStyle({ contextLayer }) {
 
   /** Apply the data **/
   const apply = () => {
+    if (!data.name) {
+      data.name = data.contextLayerName;
+    }
+    if (!data.description) {
+      data.description = data.contextLayerDescription;
+    }
     dispatch(Actions.ContextLayers.updateStyle(data));
     setOpen(false);
   };
@@ -155,15 +161,17 @@ function ContextLayerStyle({ contextLayer }) {
                       </div>
                       <input
                         disabled
+                        className="ContextLayerNameInput"
                         type="text"
                         spellCheck="false"
-                        value={data.context_layer_name}
+                        value={data.contextLayerName}
                         style={{ marginBottom: "15px" }}
                       />
                       <textarea
                         disabled
+                        className="ContextLayerDescriptionInput"
                         spellCheck="false"
-                        value={data.context_layer_description}
+                        value={data.contextLayerDescription}
                       />
                     </div>
                     <div className="BasicFormSection">
@@ -171,6 +179,7 @@ function ContextLayerStyle({ contextLayer }) {
                         <label className="form-label">Name</label>
                       </div>
                       <input
+                        className="LayerNameInput"
                         type="text"
                         spellCheck="false"
                         value={data.name}
@@ -187,6 +196,7 @@ function ContextLayerStyle({ contextLayer }) {
                         <label className="form-label">Description</label>
                       </div>
                       <textarea
+                        className="LayerDescriptionInput"
                         value={data.description}
                         onChange={(evt) => {
                           updateData({
@@ -240,8 +250,8 @@ function ContextLayerStyle({ contextLayer }) {
                             <span className="form-helptext">
                               Applied as the default data filter.
                               <br />
-                              Also creates a slicer on the dashboard that
-                              allows users to adjust the filter.
+                              Also creates a slicer on the dashboard that allows
+                              users to adjust the filter.
                             </span>
                           </div>
                         </div>

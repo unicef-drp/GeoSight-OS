@@ -105,12 +105,12 @@ function receive(data, error = null) {
 
     if (!data.contextLayers) {
       data.contextLayers = data.context_layers.map((layer) => {
-        layer.context_layer_name = layer.name;
-        layer.name = layer.layer_name || layer.context_layer_name;
+        layer.contextLayerName = layer.name;
+        layer.name = layer.layer_name || layer.contextLayerName;
 
-        layer.context_layer_description = layer.description;
+        layer.contextLayerDescription = layer.description;
         layer.description =
-          layer.layer_description || layer.context_layer_description;
+          layer.layer_description || layer.contextLayerDescription;
         return layer;
       });
       delete data.context_layers;
