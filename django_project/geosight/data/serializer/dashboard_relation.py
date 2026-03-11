@@ -133,10 +133,17 @@ class DashboardBasemapSerializer(DashboardSerializer):
 class DashboardContextLayerSerializer(DashboardSerializer):
     """Serializer for DashboardContextLayer."""
 
+    context_layer_id = serializers.SerializerMethodField()
     data_fields = serializers.SerializerMethodField()
     styles = serializers.SerializerMethodField()
     label_styles = serializers.SerializerMethodField()
     default_styles = serializers.SerializerMethodField()
+
+    def get_context_layer_id(self, obj: DashboardContextLayer):
+        """Return dashboard group name."""
+        if obj.object:
+            return obj.object.id
+        return None
 
     def get_data_fields(self, obj: DashboardContextLayer):
         """Return dashboard group name."""
@@ -174,7 +181,8 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         fields = (
             'data_fields', 'styles', 'label_styles',
             'override_style', 'override_label', 'override_field',
-            'default_styles', 'configuration'
+            'default_styles', 'configuration', 'context_layer_id',
+            'layer_name', 'layer_description'
         )
         fields += DashboardSerializer.Meta.fields
 
