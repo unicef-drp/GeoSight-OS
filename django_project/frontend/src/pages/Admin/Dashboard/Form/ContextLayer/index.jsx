@@ -73,6 +73,12 @@ function ContextLayerStyle({ contextLayer }) {
 
   /** Apply the data **/
   const apply = () => {
+    if (!data.name) {
+      data.name = data.contextLayerName;
+    }
+    if (!data.description) {
+      data.description = data.contextLayerDescription;
+    }
     dispatch(Actions.ContextLayers.updateStyle(data));
     setOpen(false);
   };
@@ -147,116 +153,172 @@ function ContextLayerStyle({ contextLayer }) {
           <div className="AdminForm Section">
             {open ? (
               <StyleConfig data={data} setData={updateData} useOverride={true}>
-                {data.layer_type === "Related Table" ? (
-                  <div className="ArcgisConfig General_Override">
-                    {/* OVERRIDE QUERY */}
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={override_query ? override_query : false}
-                            onChange={(evt) =>
-                              updateData({
-                                ...data,
-                                configuration: {
-                                  ...configuration,
-                                  query: original_query,
-                                  override_query: evt.target.checked,
-                                },
-                              })
-                            }
-                          />
-                        }
-                        label="Override the query"
-                      />
-                    </FormGroup>
-                    {override_query ? (
-                      <div className="BasicFormSection WhereInput">
-                        <WhereInputModal
-                          value={query ? query : ""}
-                          fields={relatedFields}
-                          setValue={(evt) => {
-                            updateData({
-                              ...data,
-                              configuration: {
-                                ...configuration,
-                                query: evt,
-                              },
-                            });
-                          }}
-                          title={"Filter"}
-                        />
-                        <div>
-                          <span className="form-helptext">
-                            This will be used to filter the data by default.
-                            <br />
-                            It will also create slicer on the website that will
-                            be used for user to change the filter.
-                          </span>
-                        </div>
+                <div className="ArcgisConfig General_Override BasicForm">
+                  <div>
+                    <div className="BasicFormSection">
+                      <div>
+                        <label className="form-label">Context layer</label>
                       </div>
-                    ) : null}
-
-                    {/* OVERRIDE AGGREGATION */}
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={
-                              override_field_aggregation
-                                ? override_field_aggregation
-                                : false
-                            }
-                            onChange={(evt) =>
+                      <input
+                        disabled
+                        className="ContextLayerNameInput"
+                        type="text"
+                        spellCheck="false"
+                        value={data.contextLayerName}
+                        style={{ marginBottom: "15px" }}
+                      />
+                      <textarea
+                        disabled
+                        className="ContextLayerDescriptionInput"
+                        spellCheck="false"
+                        value={data.contextLayerDescription}
+                      />
+                    </div>
+                    <div className="BasicFormSection">
+                      <div>
+                        <label className="form-label">Name</label>
+                      </div>
+                      <input
+                        className="LayerNameInput"
+                        type="text"
+                        spellCheck="false"
+                        value={data.name}
+                        onChange={(evt) => {
+                          updateData({
+                            ...data,
+                            name: evt.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="BasicFormSection">
+                      <div>
+                        <label className="form-label">Description</label>
+                      </div>
+                      <textarea
+                        className="LayerDescriptionInput"
+                        value={data.description}
+                        onChange={(evt) => {
+                          updateData({
+                            ...data,
+                            description: evt.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {data.layer_type === "Related Table" && (
+                    <>
+                      {/* OVERRIDE QUERY */}
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={override_query ? override_query : false}
+                              onChange={(evt) =>
+                                updateData({
+                                  ...data,
+                                  configuration: {
+                                    ...configuration,
+                                    query: original_query,
+                                    override_query: evt.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                          }
+                          label="Override the query"
+                        />
+                      </FormGroup>
+                      {override_query ? (
+                        <div className="BasicFormSection WhereInput">
+                          <WhereInputModal
+                            value={query ? query : ""}
+                            fields={relatedFields}
+                            setValue={(evt) => {
                               updateData({
                                 ...data,
                                 configuration: {
                                   ...configuration,
-                                  query: original_query,
-                                  override_field_aggregation:
-                                    evt.target.checked,
+                                  query: evt,
                                 },
-                              })
-                            }
+                              });
+                            }}
+                            title={"Filter"}
                           />
-                        }
-                        label="Override aggregate data by field name"
-                      />
-                    </FormGroup>
-                    {override_field_aggregation ? (
-                      <>
-                        <SelectWithList
-                          list={[
-                            {
-                              name: "------------------------",
-                              value: null,
-                            },
-                            ...fieldOptions,
-                          ]}
-                          placeholder={!relatedFields ? "Loading" : "Select.."}
-                          value={field_aggregation ? field_aggregation : null}
-                          isDisabled={!data.data_fields}
-                          onChange={(evt) => {
-                            updateData({
-                              ...data,
-                              configuration: {
-                                ...configuration,
-                                field_aggregation: evt.value,
-                              },
-                            });
-                          }}
-                        />
-                        <div>
-                          <span className="form-helptext">
-                            Field name that will be used to aggregate data.
-                            Aggregation will be use to make clustering of the
-                            points on the map.
-                          </span>
+                          <div>
+                            <span className="form-helptext">
+                              Applied as the default data filter.
+                              <br />
+                              Also creates a slicer on the dashboard that allows
+                              users to adjust the filter.
+                            </span>
+                          </div>
                         </div>
-                      </>
-                    ) : null}
-                  </div>
-                ) : null}
+                      ) : null}
+
+                      {/* OVERRIDE AGGREGATION */}
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={
+                                override_field_aggregation
+                                  ? override_field_aggregation
+                                  : false
+                              }
+                              onChange={(evt) =>
+                                updateData({
+                                  ...data,
+                                  configuration: {
+                                    ...configuration,
+                                    query: original_query,
+                                    override_field_aggregation:
+                                      evt.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                          }
+                          label="Override aggregate data by field name"
+                        />
+                      </FormGroup>
+                      {override_field_aggregation ? (
+                        <>
+                          <SelectWithList
+                            list={[
+                              {
+                                name: "------------------------",
+                                value: null,
+                              },
+                              ...fieldOptions,
+                            ]}
+                            placeholder={
+                              !relatedFields ? "Loading" : "Select.."
+                            }
+                            value={field_aggregation ? field_aggregation : null}
+                            isDisabled={!data.data_fields}
+                            onChange={(evt) => {
+                              updateData({
+                                ...data,
+                                configuration: {
+                                  ...configuration,
+                                  field_aggregation: evt.value,
+                                },
+                              });
+                            }}
+                          />
+                          <div>
+                            <span className="form-helptext">
+                              The field used to aggregate data and cluster
+                              points on the map.
+                            </span>
+                          </div>
+                        </>
+                      ) : null}
+                    </>
+                  )}
+                </div>
               </StyleConfig>
             ) : (
               ""

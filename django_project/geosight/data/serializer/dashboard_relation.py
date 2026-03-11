@@ -38,21 +38,48 @@ class DashboardIndicatorSerializer(serializers.ModelSerializer):
     label_config = serializers.SerializerMethodField()
 
     def get_style(self, obj: DashboardIndicator):
-        """Return rules."""
+        """Return the style object for the indicator.
+
+        Returns the dashboard-level override style if set,
+        otherwise falls back to the indicator's own style.
+
+        :param obj: The DashboardIndicator instance.
+        :type obj: DashboardIndicator
+        :returns: Style object for the indicator.
+        :rtype: dict
+        """
         if obj.override_style:
             return obj.style_obj(self.context.get('user', None))
         else:
             return obj.object.style_obj(self.context.get('user', None))
 
     def get_label_config(self, obj: DashboardIndicator):
-        """Return rules."""
+        """Return the label configuration for the indicator.
+
+        Returns the dashboard-level override label config if set,
+        otherwise falls back to the indicator's own label config.
+
+        :param obj: The DashboardIndicator instance.
+        :type obj: DashboardIndicator
+        :returns: Label configuration dict.
+        :rtype: dict
+        """
         if obj.override_label:
             return obj.label_config
         else:
             return obj.object.label_config
 
     def get_style_id(self, obj: DashboardIndicator):
-        """Return rules."""
+        """Return the style library ID for the indicator.
+
+        Returns the style ID if the dashboard overrides the style
+        and the style type is LIBRARY, otherwise returns None.
+
+        :param obj: The DashboardIndicator instance.
+        :type obj: DashboardIndicator
+        :returns: Style ID or None.
+        :rtype: int or None
+        """
         if obj.override_style:
             if obj.style_type == IndicatorStyleType.LIBRARY:
                 if obj.style:
@@ -60,14 +87,32 @@ class DashboardIndicatorSerializer(serializers.ModelSerializer):
         return None
 
     def get_style_type(self, obj: DashboardIndicator):
-        """Return rules."""
+        """Return the style type for the indicator.
+
+        Returns the dashboard-level override style type if set,
+        otherwise falls back to the indicator's own style type.
+
+        :param obj: The DashboardIndicator instance.
+        :type obj: DashboardIndicator
+        :returns: Style type value.
+        :rtype: str
+        """
         if obj.override_style:
             return obj.style_type
         else:
             return obj.object.style_type
 
     def get_style_data(self, obj: DashboardIndicator):
-        """Return rules."""
+        """Return serialized style data for the indicator.
+
+        Returns full style data if the dashboard overrides the style,
+        otherwise returns basic style data from the indicator's own style.
+
+        :param obj: The DashboardIndicator instance.
+        :type obj: DashboardIndicator
+        :returns: Serialized style data or None.
+        :rtype: dict or None
+        """
         if obj.override_style:
             if obj.style:
                 data = StyleSerializer(
@@ -114,7 +159,13 @@ class DashboardIndicatorRuleSerializer(serializers.ModelSerializer):
     indicator = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: DashboardIndicatorRule):
-        """Return dashboard group name."""
+        """Return the indicator ID for this rule.
+
+        :param obj: The DashboardIndicatorRule instance.
+        :type obj: DashboardIndicatorRule
+        :returns: ID of the related indicator.
+        :rtype: int
+        """
         return obj.object.object.id
 
     class Meta:  # noqa: D106
@@ -133,32 +184,81 @@ class DashboardBasemapSerializer(DashboardSerializer):
 class DashboardContextLayerSerializer(DashboardSerializer):
     """Serializer for DashboardContextLayer."""
 
+    context_layer_id = serializers.SerializerMethodField()
     data_fields = serializers.SerializerMethodField()
     styles = serializers.SerializerMethodField()
     label_styles = serializers.SerializerMethodField()
     default_styles = serializers.SerializerMethodField()
 
+    def get_context_layer_id(self, obj: DashboardContextLayer):
+        """Return the ID of the associated context layer.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Context layer ID or None if not set.
+        :rtype: int or None
+        """
+        if obj.object:
+            return obj.object.id
+        return None
+
     def get_data_fields(self, obj: DashboardContextLayer):
-        """Return dashboard group name."""
+        """Return the overridden data fields for the context layer.
+
+        Returns serialized field data if the dashboard overrides fields,
+        otherwise returns None.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Serialized field data or None.
+        :rtype: list or None
+        """
         if obj.override_field:
             return DashboardContextLayerFieldSerializer(
                 obj.dashboardcontextlayerfield_set, many=True).data
         return None
 
     def get_styles(self, obj: DashboardContextLayer):
-        """Return dashboard group name."""
+        """Return the overridden styles for the context layer.
+
+        Returns parsed JSON styles if the dashboard overrides the style,
+        otherwise returns None.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Styles dict or None.
+        :rtype: dict or None
+        """
         if obj.override_style:
             return json.loads(obj.styles) if obj.styles else None
         return None
 
     def get_label_styles(self, obj: DashboardContextLayer):
-        """Return dashboard group name."""
+        """Return the overridden label styles for the context layer.
+
+        Returns parsed JSON label styles if the dashboard overrides the label,
+        otherwise returns None.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Label styles dict or None.
+        :rtype: dict or None
+        """
         if obj.override_label:
             return json.loads(obj.label_styles) if obj.label_styles else None
         return None
 
     def get_default_styles(self, obj: DashboardContextLayer):
-        """Return dashboard group name."""
+        """Return the default styles from the original context layer.
+
+        Fetches data fields, styles, and label styles directly from
+        the context layer's own serialized data.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Dict with data_fields, styles, and label_styles.
+        :rtype: dict
+        """
         from geosight.data.serializer.context_layer import (
             ContextLayerSerializer
         )
@@ -174,7 +274,8 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         fields = (
             'data_fields', 'styles', 'label_styles',
             'override_style', 'override_label', 'override_field',
-            'default_styles', 'configuration'
+            'default_styles', 'configuration', 'context_layer_id',
+            'layer_name', 'layer_description'
         )
         fields += DashboardSerializer.Meta.fields
 
@@ -185,7 +286,16 @@ class DashboardRelatedTableSerializer(DashboardSerializer):
     selected_related_fields = serializers.SerializerMethodField()
 
     def get_selected_related_fields(self, obj: DashboardRelatedTable):
-        """Return selected related table."""
+        """Return the selected related table fields.
+
+        Falls back to the related table's own fields if no dashboard-level
+        selection has been made.
+
+        :param obj: The DashboardRelatedTable instance.
+        :type obj: DashboardRelatedTable
+        :returns: List of selected field names.
+        :rtype: list
+        """
         if not obj.selected_related_fields:
             return obj.object.related_fields
         return obj.selected_related_fields

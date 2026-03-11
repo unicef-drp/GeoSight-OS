@@ -287,6 +287,8 @@ export function DashboardSaveForm() {
           return {
             id: model.id,
             order: model.order,
+            layer_name: model.name,
+            layer_description: model.description,
             visible_by_default: model.visible_by_default,
             data_fields: model.data_fields,
             styles: JSON.stringify(model.styles),

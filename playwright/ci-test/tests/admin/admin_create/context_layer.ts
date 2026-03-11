@@ -94,7 +94,7 @@ test.describe('Context layer create admin', () => {
     await expect(page.locator("#Form [name='group']")).toHaveValue("Test");
 
     // Change the cloud native
-    await page.getByText('General').click();
+    await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('General').click();
 
     // File chooser
     {

@@ -102,6 +102,8 @@ export default function contextLayersReducer(state = initialState, action, dashb
         const contextLayers = []
         state.forEach(function (contextLayer) {
           if (contextLayer.id === action.payload.id) {
+            contextLayer.name = action.payload.name
+            contextLayer.description = action.payload.description
             if (action.payload.data_fields) {
               contextLayer.data_fields = action.payload.data_fields
             }

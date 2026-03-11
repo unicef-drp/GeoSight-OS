@@ -194,7 +194,7 @@ jobs:
         run: |
           npm install
           npm ci
-          npx playwright install --with-deps
+          npx playwright install --with-deps chromium
           npx playwright test ${{ matrix.test_suite.path }} --workers ${{ matrix.test_suite.workers }}
 
       - name: Upload Playwright Screenshots

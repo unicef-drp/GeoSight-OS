@@ -104,7 +104,15 @@ function receive(data, error = null) {
     delete data.indicator_layers_structure;
 
     if (!data.contextLayers) {
-      data.contextLayers = data.context_layers;
+      data.contextLayers = data.context_layers.map((layer) => {
+        layer.contextLayerName = layer.name;
+        layer.name = layer.layer_name || layer.contextLayerName;
+
+        layer.contextLayerDescription = layer.description;
+        layer.description =
+          layer.layer_description || layer.contextLayerDescription;
+        return layer;
+      });
       delete data.context_layers;
     }
     data.contextLayersStructure = dictDeepCopy(groupDefault);

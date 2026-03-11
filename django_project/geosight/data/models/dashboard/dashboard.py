@@ -692,6 +692,8 @@ class Dashboard(
             model.label_styles = data.get('label_styles', None)
 
             # Context layer
+            model.layer_name = data.get('layer_name', None)
+            model.layer_description = data.get('layer_description', None)
             model.override_style = data.get('override_style', False)
             model.override_label = data.get('override_label', False)
             model.override_field = data.get('override_field', False)

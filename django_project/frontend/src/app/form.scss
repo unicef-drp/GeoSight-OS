@@ -80,12 +80,17 @@
   }
 
   input,
-  select {
+  select,
+  textarea {
     background: white;
     box-sizing: border-box;
     padding: var(--base-input-padding);
-    min-height: var(--base-input-height);
     width: 100%;
+  }
+
+  input,
+  select {
+    min-height: var(--base-input-height);
   }
 
   input[type='file'] {
@@ -115,10 +120,6 @@
         border: 1px solid rgba(0, 0, 0, 0.87) !important;
       }
     }
-  }
-
-  textarea {
-    padding: 0.5rem;
   }
 
   textarea,

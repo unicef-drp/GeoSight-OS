@@ -160,6 +160,15 @@ class DashboardContextLayer(DashboardRelationWithLimit):
         ContextLayer,
         on_delete=models.CASCADE
     )
+    layer_name = models.CharField(
+        max_length=512,
+        blank=True, null=True,
+        help_text='Overridden of name of the context layer'
+    )
+    layer_description = models.TextField(
+        blank=True, null=True,
+        help_text='Overridden of description of the context layer'
+    )
     styles = models.TextField(
         null=True, blank=True
     )

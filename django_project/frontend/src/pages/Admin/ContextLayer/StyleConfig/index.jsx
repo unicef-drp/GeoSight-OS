@@ -39,6 +39,7 @@ const SelectedClass = "Selected";
 
 // TAB value
 const GENERAL = "General";
+const GENERAL_OVERRIDE = "General_Override";
 const FIELDS = "Fields";
 const PREVIEW = "Preview";
 const LABEL = "Label";
@@ -64,9 +65,7 @@ export default function StyleConfig({
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
   const [isMapLoading, setIsMapLoading] = useState(false);
-  const [tab, setTab] = useState(
-    data.layer_type === Variables.LAYER.TYPE.ARCGIS ? FIELDS : PREVIEW,
-  );
+  const [tab, setTab] = useState(GENERAL_OVERRIDE);
 
   useEffect(() => {
     if (defaultTab) {
@@ -121,14 +120,12 @@ export default function StyleConfig({
       <div className="AdminForm">
         {/* FOR CONFIG */}
         <div className="TabPrimary ContextLayerConfigTab">
-          {data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ? (
-            <div
-              onClick={() => setTab("General_Override")}
-              className={tab === GENERAL ? SelectedClass : ""}
-            >
-              General
-            </div>
-          ) : null}
+          <div
+            onClick={() => setTab(GENERAL_OVERRIDE)}
+            className={tab === GENERAL_OVERRIDE ? SelectedClass : ""}
+          >
+            General
+          </div>
           <div
             onClick={() => setTab(PREVIEW)}
             className={tab === PREVIEW ? SelectedClass : ""}
