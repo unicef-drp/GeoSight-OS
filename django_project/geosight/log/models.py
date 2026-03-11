@@ -29,7 +29,11 @@ class LogFile(models.Model):
     )
 
     def filename(self):
-        """Get the filename from the path."""
+        """Get the filename from the path.
+
+        :return: filename
+        :rtype: str
+        """
         return self.path.split('/')[-1]
 
     def __str__(self):
