@@ -166,6 +166,9 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
     label_styles = models.TextField(
         null=True, blank=True
     )
+    label_config = models.JSONField(
+        null=True, blank=True
+    )
     configuration = models.JSONField(
         null=True, blank=True
     )
@@ -178,6 +181,11 @@ class ContextLayer(AbstractEditData, AbstractTerm, AbstractSource):
         help_text=_(
             'Using layer from cloud native gis.'
         )
+    )
+
+    # TODO: Deprecated, we need to migrate this
+    label_styles = models.TextField(
+        null=True, blank=True
     )
 
     def save(self, *args, **kwargs):  # noqa: DOC202, DOC103
