@@ -43,7 +43,7 @@ class ContextLayerBatchForm(forms.ModelForm):
         exclude = BASE_VERSIONED_RESOURCE_FIELDS + (
             'layer_type', 'arcgis_config', 'related_table', 'url_legend',
             'token', 'username', 'password', 'styles', 'label_styles',
-            'configuration', 'cloud_native_gis_layer_id'
+            'label_config', 'configuration', 'cloud_native_gis_layer_id'
         )
 
     def __init__(self, *args, **kwargs):  # noqa
@@ -100,6 +100,11 @@ class ContextLayerForm(forms.ModelForm):
     )
 
     label_styles = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    label_config = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )
@@ -247,6 +252,16 @@ class ContextLayerForm(forms.ModelForm):
         if self.instance and not self.cleaned_data['label_styles']:
             return self.instance.label_styles
         return self.cleaned_data['label_styles']
+
+    def clean_label_config(self):
+        """Validate and return label styles.
+
+        :return: Label style JSON string.
+        :rtype: str
+        """
+        if self.instance and not self.cleaned_data['label_config']:
+            return self.instance.label_config
+        return self.cleaned_data['label_config']
 
     class Meta:  # noqa: D106
         model = ContextLayer

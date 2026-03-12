@@ -77,6 +77,9 @@ export default function ContextLayerForm() {
     if (formData["label_styles"]) {
       formData["label_styles"] = JSON.parse(formData["label_styles"]);
     }
+    if (formData["label_config"]) {
+      formData["label_config"] = JSON.parse(formData["label_config"]);
+    }
     formData["parameters"] = formData["parameters"]
       ? formData["parameters"]
       : {};
@@ -98,6 +101,7 @@ export default function ContextLayerForm() {
   const updateData = (newData) => {
     if (JSON.stringify(newData) !== JSON.stringify(data)) {
       setData(newData);
+      $('*[name="label_config"]').val(JSON.stringify(newData["label_config"]));
       $('*[name="label_styles"]').val(JSON.stringify(newData["label_styles"]));
       $('*[name="data_fields"]').val(JSON.stringify(newData["data_fields"]));
       $('*[name="styles"]').val(JSON.stringify(newData["styles"]));
