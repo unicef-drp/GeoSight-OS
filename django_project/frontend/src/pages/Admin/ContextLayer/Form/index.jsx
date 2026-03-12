@@ -23,12 +23,10 @@ import { SaveButton } from "../../../../components/Elements/Button";
 import Admin, { pageNames } from "../../index";
 import { AdminForm } from "../../Components/AdminForm";
 import StyleConfig from "../StyleConfig";
-import RelatedTableFields from "./RelatedTableFields";
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
 import { dictDeepCopy } from "../../../../utils/main";
 import { Variables } from "../../../../utils/Variables";
-import CloudNativeGISFields from "./CloudNativeGIS";
 
 import "./style.scss";
 
@@ -240,6 +238,7 @@ export default function ContextLayerForm() {
                   }
                 }}
               >
+                {/* For form payload */}
                 <Checkbox
                   name={"override_field"}
                   style={{ display: "none" }}
@@ -252,12 +251,6 @@ export default function ContextLayerForm() {
                   checked={data?.override_style ? data?.override_style : false}
                   onChange={(evt) => {}}
                 />
-                {data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ? (
-                  <RelatedTableFields data={data} onSetData={updateData} />
-                ) : undefined}
-                {data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ? (
-                  <CloudNativeGISFields data={data} onSetData={updateData} />
-                ) : null}
               </DjangoTemplateForm>
             ),
             Preview: (

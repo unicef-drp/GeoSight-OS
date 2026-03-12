@@ -31,9 +31,9 @@ import { defaultPointStyle } from "./layerStyles";
 import VectorStyleConfig from "./VectorStyleConfig";
 import RasterCogLayer from "./RasterCogLayer";
 import { Variables } from "../../../../utils/Variables";
+import VectorFieldConfig from "./VectorFieldConfig";
 
 import "./style.scss";
-import VectorFieldConfig from "./VectorFieldConfig";
 
 const SelectedClass = "Selected";
 
@@ -128,7 +128,8 @@ export default function StyleConfig({
           >
             Preview
           </div>
-          {data.layer_type === Variables.LAYER.TYPE.ARCGIS ? (
+          {data.layer_type === Variables.LAYER.TYPE.ARCGIS ||
+          Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? (
             <Fragment>
               <div
                 onClick={() => setTab(FIELDS)}
