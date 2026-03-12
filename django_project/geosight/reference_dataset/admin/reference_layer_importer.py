@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
+from geosight.data.admin.base import BaseAdminResourceMixin
 from geosight.reference_dataset.models import (
     ReferenceDatasetImporter, ReferenceDatasetImporterLevel
 )
@@ -23,7 +24,15 @@ from geosight.reference_dataset.models import (
 
 @admin.action(description='Run')
 def run_importer(modeladmin, request, queryset):
-    """Run an importer."""
+    """Run the selected importers from the Django admin action.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HTTP request.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected ReferenceDatasetImporter objects.
+    :type queryset: django.db.models.QuerySet
+    """
     for importer in queryset:
         importer.run()
 
@@ -38,11 +47,11 @@ class ReferenceDatasetImporterLevelInline(admin.TabularInline):
 class ReferenceDatasetImporterAdmin(admin.ModelAdmin):
     """ReferenceDatasetImporter admin."""
 
-    list_display = [
-        'created_at', 'creator', 'status', 'progress'
-    ]
+    list_display = (
+                       'created_at', 'creator', 'status', 'progress'
+                   ) + BaseAdminResourceMixin.list_display
     inlines = (ReferenceDatasetImporterLevelInline,)
-    actions = (run_importer,)
+    actions = BaseAdminResourceMixin.actions + (run_importer,)
 
 
 admin.site.register(

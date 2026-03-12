@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
+from geosight.data.admin.base import BaseAdminResourceMixin
 from geosight.importer.models import (
     Importer, ImporterAttribute, ImporterMapping,
     ImporterLog, ImporterAlert, ImporterLogDataSaveProgress
@@ -108,17 +109,17 @@ class ImporterMappingInline(admin.TabularInline):
 
 
 @admin.register(Importer)
-class ImporterAdmin(admin.ModelAdmin):
+class ImporterAdmin(BaseAdminResourceMixin):
     """Importer Admin."""
 
-    actions = (import_data,)
+    actions = (import_data,) + BaseAdminResourceMixin.actions
     inlines = [
         ImporterAlertInline, ImporterAttributeInline, ImporterMappingInline
     ]
     list_display = (
-        'id', 'unique_id', 'creator', 'import_type',
-        'input_format', 'schedule_type', 'job_active'
-    )
+                       'id', 'unique_id', 'creator', 'import_type',
+                       'input_format', 'schedule_type', 'job_active'
+                   ) + BaseAdminResourceMixin.list_display
     list_filter = ('import_type', 'input_format',)
     readonly_fields = ('unique_id',)
     search_fields = ('unique_id',)
