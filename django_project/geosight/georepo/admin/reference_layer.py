@@ -176,10 +176,10 @@ def assign_countries(modeladmin, request, queryset):
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
     """ReferenceLayerView admin."""
 
-    list_display = [
+    list_display = (
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
         'number_of_entities', 'country_list', 'tags'
-    ]
+    )
     list_filter = (InGeorepoFilter,)
     search_fields = ['name', 'identifier']
     ordering = ['name']
