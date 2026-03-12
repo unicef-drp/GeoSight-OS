@@ -112,10 +112,6 @@ export default function StyleConfig({
 
   return (
     <div className={"ContextLayerConfig-Wrapper " + tab}>
-      <div className="form-helptext">
-        Below is for checking the configuration, overriding style and updating
-        popup.
-      </div>
       {error && <div className="error">{error.toString()}</div>}
       <div className="AdminForm">
         {/* FOR CONFIG */}
