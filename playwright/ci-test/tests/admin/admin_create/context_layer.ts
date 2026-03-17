@@ -110,7 +110,7 @@ test.describe('Context layer create admin', () => {
     }
 
     // Check field
-    await page.getByText('Fields').click();
+    await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Fields').click();
     await page.locator('label').filter({ hasText: 'Override field config from' }).click();
     await expect(page.locator('.DragDropItem ')).toHaveCount(3);
     await expect(page.locator('.DragDropItem').nth(0).locator('td').nth(1)).toHaveText('CITY_TYPE');
@@ -139,7 +139,7 @@ test.describe('Context layer create admin', () => {
     }
 
     // Check field
-    await page.getByText('Fields').click();
+    await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Fields').click();
     await page.locator('label').filter({ hasText: 'Override field config from' }).click();
     await delay(1000);
     if (!await page.locator('.DragDropItem').first().isVisible()) {

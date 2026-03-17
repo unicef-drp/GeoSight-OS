@@ -4,7 +4,7 @@ import { delay } from "../../utils";
 test.describe('Cloud native layer', () => {
   test('Cloud native layer', async ({ page }) => {
     await page.goto(`/en-us/admin/context-layer/2/edit`);
-    await page.getByText('Fields').click();
+    await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Fields').click();
     await page.getByText('Override field config from').click();
     await page.getByRole('row', { name: 'osm_id Osm id Number' }).getByRole('checkbox').uncheck();
     await page.getByRole('row', { name: 'osm_type Osm type String' }).getByRole('checkbox').uncheck();
