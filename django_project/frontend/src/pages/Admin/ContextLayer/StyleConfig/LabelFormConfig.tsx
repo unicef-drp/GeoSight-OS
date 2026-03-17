@@ -41,6 +41,13 @@ export default function LabelFormConfig({
   }
 
   const setData = (data: ContextLayer) => {
+    if (data.label_config) {
+      data.label_config = Object.fromEntries(
+        Object.entries(data.label_config).filter(
+          ([_]) => !Number.isInteger(Number(_)),
+        ),
+      );
+    }
     setOriginalData({ ...data });
   };
 
@@ -76,11 +83,13 @@ export default function LabelFormConfig({
                   text: "",
                 };
               }
-              data.label_config = {
-                ...data.label_config,
-                style: label_styles,
-              };
-              setData({ ...data });
+              setData({
+                ...data,
+                label_config: {
+                  ...data.label_config,
+                  style: label_styles,
+                },
+              });
             }}
           />
           <div className="BasicFormSection"></div>
@@ -93,18 +102,17 @@ export default function LabelFormConfig({
                 if (!data.label_config) {
                   data.label_config = {};
                 }
-                data.label_config = {
-                  ...data.label_config,
-                  text: evt.target.value,
-                };
-                console.log(data);
-                setData({ ...data });
+                setData({
+                  ...data,
+                  label_config: {
+                    ...data.label_config,
+                    text: evt.target.value,
+                  },
+                });
               }}
             />
             <span className="form-helptext">
-              {
-                "To put the value of a field, you can put markup {'<Field Name>'}."
-              }
+              To put the value of a field, you can put markup: <b>Field Name</b>
               <br />
               The field name that can be used are:&nbsp;
               {data.data_fields

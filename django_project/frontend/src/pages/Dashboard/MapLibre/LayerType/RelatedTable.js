@@ -26,6 +26,7 @@ import {
 import { toJson } from "../../../../utils/main";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
+import { renderContextLayerLabel } from "../Layers/ContextLayers/Label.tsx";
 
 /***
  * Render vector tile layer
@@ -109,6 +110,9 @@ export default function relatedTableLayer(
       } catch (e) {
         console.log(e);
       }
+
+      // RENDER LABELS
+      renderContextLayerLabel(id, map, contextLayerData?.label_config);
     },
   );
 }
