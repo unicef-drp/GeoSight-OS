@@ -172,7 +172,7 @@ class DashboardContextLayer(DashboardRelationWithLimit):
     styles = models.TextField(
         null=True, blank=True
     )
-    label_styles = models.TextField(
+    label_config = models.JSONField(
         null=True, blank=True
     )
     override_style = models.BooleanField(default=False)
@@ -184,6 +184,11 @@ class DashboardContextLayer(DashboardRelationWithLimit):
 
     content_limitation_description = (
         'Limit the number of context layer per project'
+    )
+
+    # TODO: Deprecated, we need to migrate this
+    label_styles = models.TextField(
+        null=True, blank=True
     )
 
     class Meta:  # noqa: D106

@@ -46,6 +46,7 @@ export default function VectorFieldConfig({
   const update = () => {
     setData({ ...data });
   };
+
   return (
     <Fragment>
       <div className="ContextLayerConfig Fields">
@@ -87,12 +88,12 @@ export default function VectorFieldConfig({
         ) : null}
       </div>
 
-      {data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ? (
+      {data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE && (
         <RelatedTableFields data={data} onSetData={setData} />
-      ) : undefined}
-      {data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ? (
+      )}
+      {data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS && (
         <CloudNativeGISFields data={data} onSetData={setData} />
-      ) : null}
+      )}
     </Fragment>
   );
 }

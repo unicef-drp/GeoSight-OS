@@ -127,6 +127,12 @@
       display: block !important;
     }
   }
+
+  &.General {
+    .General {
+      display: block !important;
+    }
+  }
 }
 
 

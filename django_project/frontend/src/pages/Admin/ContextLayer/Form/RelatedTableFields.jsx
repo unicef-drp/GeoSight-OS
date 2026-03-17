@@ -96,8 +96,11 @@ export default function RelatedTableFields({ data, onSetData }) {
     : [];
 
   return (
-    <>
-      <div className="BasicFormSection" data-wrapper-name="related_table_selector">
+    <div className="General">
+      <div
+        className="BasicFormSection"
+        data-wrapper-name="related_table_selector"
+      >
         <label className="form-label required">Related Table</label>
         <RelatedTableSelector
           initData={relatedTableInfo ? [relatedTableInfo] : []}
@@ -214,6 +217,6 @@ export default function RelatedTableFields({ data, onSetData }) {
           </span>
         </div>
       </div>
-    </>
+    </div>
   );
 }

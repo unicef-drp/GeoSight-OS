@@ -75,7 +75,7 @@ export default function CloudNativeGISFields({ data, onSetData }) {
 
   // Getting data fields
   useEffect(() => {
-    if (!data.data_fields && dataFields) {
+    if (!data.data_fields?.length && dataFields) {
       onSetData({
         ...data,
         data_fields: dataFields,
@@ -84,7 +84,7 @@ export default function CloudNativeGISFields({ data, onSetData }) {
   }, [data.data_fields, dataFields]);
 
   return (
-    <div className="BasicFormSection" data-wrapper-name="cloud_native_gis">
+    <div className="General BasicFormSection" data-wrapper-name="cloud_native_gis">
       <label className="form-label required">Cloud Native GIS detail</label>
 
       {fieldErrors?.cloud_native_gis_layer_id && (

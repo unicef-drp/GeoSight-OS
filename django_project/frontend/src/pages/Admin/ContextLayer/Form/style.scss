@@ -23,23 +23,14 @@
 }
 
 form {
-  &.Preview,
-  &.Fields,
-  &.Label,
-  &.Style {
-    .Preview {
-      display: block !important;
-    }
+  .Preview {
+    display: block !important;
   }
 
   .ContextLayerConfig-Wrapper {
     .AdminForm {
       width: 100%;
       overflow: visible;
-    }
-
-    .form-helptext {
-      display: none;
     }
   }
 

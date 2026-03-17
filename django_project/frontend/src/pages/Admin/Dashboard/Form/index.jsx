@@ -292,11 +292,14 @@ export function DashboardSaveForm() {
             visible_by_default: model.visible_by_default,
             data_fields: model.data_fields,
             styles: JSON.stringify(model.styles),
-            label_styles: JSON.stringify(model.label_styles),
+            label_config: model.label_config,
             override_style: model.override_style,
             override_label: model.override_label,
             override_field: model.override_field,
             configuration: model.configuration,
+
+            // TODO: Deprecated, we need to migrate this
+            label_styles: JSON.stringify(model.label_styles),
           };
         }),
         context_layers_structure: contextLayersStructure,

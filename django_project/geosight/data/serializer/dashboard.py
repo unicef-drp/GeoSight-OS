@@ -308,6 +308,10 @@ class DashboardSerializer(serializers.ModelSerializer):
                 del data['label_styles']
             else:
                 del dashboard_data['label_styles']
+            if dashboard_data['label_config']:
+                del data['label_config']
+            else:
+                del dashboard_data['label_config']
 
             configuration = {}
             if data['configuration']:
