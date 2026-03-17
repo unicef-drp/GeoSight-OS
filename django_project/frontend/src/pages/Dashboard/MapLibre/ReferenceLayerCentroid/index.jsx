@@ -415,7 +415,7 @@ export default function ReferenceLayerCentroid({ map }) {
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel(map, [], labelConfig, showIndicatorMapLabel, transparency);
+        renderLabel(map, [], labelConfig);
         return;
       }
       const config = {
@@ -446,9 +446,7 @@ export default function ReferenceLayerCentroid({ map }) {
             renderLabel(
               map,
               features,
-              labelConfig,
-              showIndicatorMapLabel,
-              transparency,
+              labelConfig
             );
             filterRef.current?.call();
           }

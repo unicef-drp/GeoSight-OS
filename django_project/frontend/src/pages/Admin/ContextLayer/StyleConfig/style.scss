@@ -68,7 +68,7 @@
         height: 100%;
         padding: 1rem;
         overflow-y: auto;
-        width: 40rem;
+        width: 40%;
         box-sizing: border-box;
       }
     }
@@ -124,6 +124,12 @@
 
   &.General_Override {
     .General_Override {
+      display: block !important;
+    }
+  }
+
+  &.General {
+    .General {
       display: block !important;
     }
   }

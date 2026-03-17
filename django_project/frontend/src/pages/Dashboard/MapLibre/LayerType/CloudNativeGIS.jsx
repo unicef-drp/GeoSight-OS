@@ -23,6 +23,7 @@ import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
 import { dictDeepCopy } from "../../../../utils/main";
+import { renderContextLayerLabel } from "../Layers/ContextLayers/Label.tsx";
 
 /***
  * Render CloudNativeGIS
@@ -81,6 +82,7 @@ export default function cloudNativeGISLayer(
         layers = await (await fetch(info.default_style?.style_url)).json();
         layers = layers.layers;
       }
+      const sourceLayer = "default";
       (async () => {
         for (const layer of layers) {
           if (
@@ -93,7 +95,7 @@ export default function cloudNativeGISLayer(
 
           layer.id = id + "-" + layer.id;
           layer.source = id;
-          layer["source-layer"] = "default";
+          layer["source-layer"] = sourceLayer;
 
           addLayerWithOrder(
             map,
@@ -105,6 +107,14 @@ export default function cloudNativeGISLayer(
           before = layer.id;
           addPopup(map, layer.id, popupFeature);
         }
+
+        // RENDER LABELS
+        renderContextLayerLabel(
+          id,
+          map,
+          contextLayerData?.label_config,
+          sourceLayer,
+        );
       })();
     } catch (e) {
       console.log(e);

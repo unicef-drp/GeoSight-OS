@@ -689,6 +689,9 @@ class Dashboard(
 
             model.visible_by_default = data.get('visible_by_default', False)
             model.styles = data.get('styles', None)
+            model.label_config = data.get('label_config', None)
+
+            # TODO: Deprecated, we need to migrate this
             model.label_styles = data.get('label_styles', None)
 
             # Context layer

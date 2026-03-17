@@ -366,6 +366,9 @@ export default function ContextLayerForm() {
         layer.default_styles = {
           data_fields: layer.data_fields,
           styles: layer.styles,
+          label_config: layer.label_config,
+
+          // TODO: Deprecated, we need to migrate this
           label_styles: layer.label_styles,
         };
         dispatch(Actions.ContextLayers.add(layer));

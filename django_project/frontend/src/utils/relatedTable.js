@@ -174,10 +174,10 @@ export const getRelatedTableData = (
       if (!date_field) {
         const sql =
           `SELECT ${geography_code_field_name} as _geometry_code,
-                            ${aggregation_full}          as _value,
-                            MAX(data.concept_uuid)       as _concept_uuid,
-                            MAX(data.admin_level)        as _admin_level
-                     FROM ? as data` +
+                  ${aggregation_full}          as _value,
+                  MAX(data.concept_uuid)       as _concept_uuid,
+                  MAX(data.admin_level)        as _admin_level
+           FROM ? as data` +
           (where ? ` WHERE ${where}` : "") +
           ` GROUP BY ${geography_code_field_name}  ORDER BY ${geography_code_field_name} DESC`;
         const results = alasql(sql, [data]).map((result, idx) => {
