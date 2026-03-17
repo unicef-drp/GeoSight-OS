@@ -27,11 +27,45 @@ test.describe('Context layer create admin', () => {
     // Correct
     await page.getByRole('textbox', { name: 'Select Related Table' }).click();
     await page.getByRole('cell', { name: 'RRR' }).click();
+    await page.getByRole('combobox', { name: 'Select 1 option' }).first().click();
+    await page.getByRole('option', { name: 'Latitude' }).click();
+    await page.getByRole('combobox', { name: 'Select 1 option' }).nth(1).click();
+    await page.getByRole('option', { name: 'Longitude' }).click();
+
+    // Fields
+    await page.getByText('Fields').first().click();
+    await page.getByText('Override field config from').click();
+    await page.getByRole('row', { name: 'Date Date Date' }).getByRole('checkbox').uncheck();
+    await page.getByRole('row', { name: 'Latitude Latitude Number' }).getByRole('checkbox').uncheck();
+    await page.getByRole('row', { name: 'Longitude Longitude Number' }).getByRole('checkbox').uncheck();
+    await page.getByRole('row', { name: 'NoBeneficiaries' }).getByRole('checkbox').uncheck();
+    await page.getByRole('row', { name: 'Name Name String' }).getByRole('checkbox').uncheck();
+    await page.getByRole('row', { name: 'Ucode Ucode String' }).getByRole('checkbox').uncheck();
+
+    // Labels
+    await page.getByText('Label').first().click();
+    await page.getByRole('textbox').nth(4).fill('{Partner}');
+
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('[data-wrapper-name="related_table_selector"]')).not.toContainText('This field is required.');
 
-    // Wait 2 second
+    // Wait 1 second
+    await delay(1000);
+    await page.getByText('Preview').first().click();
     await delay(2000);
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 531,
+        y: 347
+      }
+    });
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr')).toHaveCount(3);
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toHaveText("Partner");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(1)).toHaveText("Partner B");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(0)).toHaveText("Pcode");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(1)).toHaveText("SO1904");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(0)).toHaveText("Sector");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(1)).toHaveText("WASH");
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
