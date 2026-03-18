@@ -17,6 +17,7 @@ import React, { useState } from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { useTranslation } from "react-i18next";
 
 import { render } from "../../../../app";
 import { store } from "../../../../store/admin";
@@ -27,9 +28,10 @@ import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 import { Variables } from "../../../../utils/Variables";
 import { DownloadIcon } from "../../../../components/Icons";
 import { useDisclosure } from "../../../../hooks";
+import { CloudNativeDownloadComponent } from "../../../../components/ContextLayerDownload";
+import { permissionFilter } from "../../../../components/Filter/resources";
 
 import "./style.scss";
-import { CloudNativeDownloadComponent } from "../../../../components/ContextLayerDownload";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.contextLayerList);
@@ -68,6 +70,7 @@ export function CloudNativeDownload({ id }) {
  * Indicator List App
  */
 export default function ContextLayerList() {
+  const { t } = useTranslation();
   const pageName = pageNames.ContextLayer;
   let columns = COLUMNS(pageName, urls.admin.contextLayerList);
   columns.pop();
@@ -133,8 +136,10 @@ export default function ContextLayerList() {
       pageName={pageName}
       multipleDelete={true}
       enableFilter={true}
+      additionalFilters={[permissionFilter(t)()]}
       defaults={{
         sort: [{ field: "name", sort: "asc" }],
+        filters: { permission: "list" },
       }}
     />
   );

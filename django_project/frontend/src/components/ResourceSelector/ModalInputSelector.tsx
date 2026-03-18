@@ -231,7 +231,8 @@ export function ModalInputSelector(
                 delete: false,
                 select: true,
                 singleSelection: !multipleSelection,
-                emptyData: ableToReceiveEmptyData
+                emptyData: ableToReceiveEmptyData,
+                filter: true,
               }
             }
             rowIdKey={rowIdKey}

@@ -54,6 +54,7 @@ export const DataGridFilter = (
     setNewFilterModel({})
   }
 
+  const fieldsFilter = fields.filter(field => !field.disabledFilter).filter(field => !['actions', 'id'].includes(field.field))
   return (
     <CustomPopover
       className={'DataGridFilter-Popover'}
@@ -81,7 +82,7 @@ export const DataGridFilter = (
       <div className='DataGridFilter-Container'>
         <Grid container direction='column' className='Body'>
           {
-            fields.filter(field => !field.disabledFilter).filter(field => !['actions', 'id'].includes(field.field)).map((field: any, idx: number) => (
+            fieldsFilter.map((field: any, idx: number) => (
               <Grid container direction='row' className={'FilterRow'}>
                 {
                   field.type == 'boolean' ?
@@ -96,6 +97,7 @@ export const DataGridFilter = (
                       <div><b>{field.headerName}</b></div>
                       <Select
                         className="form-control"
+                        menuPlacement={[fieldsFilter.length-1, fieldsFilter.length-2].includes(idx) ?  "top" : "auto"}
                         options={[
                           { label: "Both", value: "" },
                           { label: "True", value: "True" },
@@ -119,6 +121,39 @@ export const DataGridFilter = (
                                   value: "True",
                                 }
                               : { label: "False", value: "False" }
+                        }
+                        onChange={(event: any) => {
+                          const key = `${field.serverKey ? field.serverKey : field.field}`;
+                          if (event.value) {
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: event.value,
+                            });
+                          } else {
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: null,
+                            });
+                          }
+                        }}
+                      />
+                    </div>:
+                  field.type == 'select' ?
+                    <div style={{
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "center",
+                      width: "100%",
+                      flexGrow: 1,
+                      paddingLeft: "1rem"
+                    }}>
+                      <div><b>{field.headerName}</b></div>
+                      <Select
+                        className="form-control"
+                        menuPlacement={idx == fieldsFilter.length-1 ?  "top" : "auto"}
+                        options={field.options}
+                        value={
+                          field.options.find((option : {value: string}) => option.value === newFilterModel[`${field.serverKey ? field.serverKey : field.field}`])
                         }
                         onChange={(event: any) => {
                           const key = `${field.serverKey ? field.serverKey : field.field}`;

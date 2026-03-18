@@ -22,7 +22,22 @@ const columns = [
   { field: "name", headerName: "Name", flex: 1 },
   { field: "shortcode", headerName: "Code", flex: 1 },
   { field: "description", headerName: "Description", flex: 1 },
-  { field: "category", headerName: "Category", flex: 1 },
+  {
+    field: "category",
+    headerName: "Category",
+    flex: 0.5,
+    serverKey: "group__name",
+  },
+  {
+    field: "actions",
+    type: "actions",
+    cellClassName: "MuiDataGrid-ActionsColumn",
+    width: 10,
+    // @ts-ignore
+    getActions: () => {
+      return [];
+    },
+  },
 ];
 
 /** For Georepo View selection. */

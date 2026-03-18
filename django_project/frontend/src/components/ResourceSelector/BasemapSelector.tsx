@@ -15,13 +15,18 @@
 
 import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
-import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
+import { ModalInputSelectorProps } from "./types";
 
 const columns = [
   { field: "id", headerName: "id", hide: true },
   { field: "name", headerName: "Name", flex: 1 },
   { field: "description", headerName: "Description", flex: 1 },
-  { field: "category", headerName: "Category", flex: 1 },
+  {
+    field: "category",
+    headerName: "Category",
+    flex: 0.5,
+    serverKey: "group__name",
+  },
 ];
 
 /** For Georepo View selection. */
