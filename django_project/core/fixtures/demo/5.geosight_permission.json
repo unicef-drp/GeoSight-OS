@@ -99,6 +99,15 @@
     }
   },
   {
+    "model": "geosight_permission.dashboarduserpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 1,
+      "user": 3,
+      "permission": "Write"
+    }
+  },
+  {
     "model": "geosight_permission.referencelayerindicatorpermission",
     "pk": 1,
     "fields": {

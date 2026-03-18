@@ -25,7 +25,7 @@ test.describe('Project list admin', () => {
     await filterRead(page);
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
     await filterWrite(page);
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
     await filterShare(page);
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
     await filterDelete(page);

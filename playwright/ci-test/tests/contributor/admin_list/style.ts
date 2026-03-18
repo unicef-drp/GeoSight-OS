@@ -30,5 +30,24 @@ test.describe('Style list admin', () => {
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
     await filterDelete(page);
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
+
+    // Check list on the prject
+    await page.goto('/en-us/admin/indicators/318/edit');
+    await page.getByText('Style', { exact: true }).first().click();
+    await page.getByRole('textbox', { name: 'Select Style' }).click();
+
+    // Default
+    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
+
+    await filterList(page);
+    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
+    await filterRead(page);
+    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
+    await filterWrite(page);
+    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
+    await filterShare(page);
+    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
+    await filterDelete(page);
+    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
   });
 })

@@ -16,6 +16,8 @@
 import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
+import { permissionFilter } from "../Filter/resources";
+import { useTranslation } from "react-i18next";
 
 const columns = [
   { field: "id", headerName: "id", hide: true },
@@ -61,6 +63,7 @@ export default function IndicatorSelector({
   multipleSelection,
   defaults,
 }: ModalInputSelectorProps) {
+  const { t } = useTranslation();
   return (
     <ModalInputSelector
       // Input properties
@@ -82,7 +85,8 @@ export default function IndicatorSelector({
       }}
       // Table properties
       multipleSelection={multipleSelection}
-      defaults={defaults}
+      defaults={{ ...defaults, filters: { permission: "read_data" } }}
+      additionalFilters={[permissionFilter(t, true)()]}
     />
   );
 }

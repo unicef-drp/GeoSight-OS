@@ -3,7 +3,7 @@ export async function filterPermission(page, input) {
   await page.locator('.PermissionFilter').click();
   await page.getByRole('option', { name: input, exact: true }).click();
   await page.getByRole('button', { name: 'Apply Filters' }).click();
-  await page.locator('.MuiBackdrop-root').click();
+  await page.locator('#simple-popover .MuiBackdrop-root').click();
 }
 
 export async function filterList(page) {
