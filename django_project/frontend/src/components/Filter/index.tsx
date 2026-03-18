@@ -69,7 +69,7 @@ export const DataGridFilter = (
       Button={
         <div className='Popover-Btn'>
           <PluginChild
-            title={'DataGrid-Filter'} disabled={false}
+            title={'Filter'} disabled={false}
             active={true}>
             <a>
               <FilterAltIcon
@@ -96,7 +96,7 @@ export const DataGridFilter = (
                     }}>
                       <div><b>{field.headerName}</b></div>
                       <Select
-                        className="form-control"
+                        className={"form-control " + field.headerName + "Filter"}
                         menuPlacement={[fieldsFilter.length-1, fieldsFilter.length-2].includes(idx) ?  "top" : "auto"}
                         options={[
                           { label: "Both", value: "" },
@@ -139,7 +139,9 @@ export const DataGridFilter = (
                       />
                     </div>:
                   field.type == 'select' ?
-                    <div style={{
+                    <div
+                      className={field.headerName + "Filter"}
+                      style={{
                       display: "flex",
                       gap: 8,
                       alignItems: "center",

@@ -1,5 +1,86 @@
 [
   {
+    "model": "geosight_permission.basemaplayerpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayerpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayerpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 3,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayeruserpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 3,
+      "user": 3,
+      "permission": "List"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayeruserpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 3,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayeruserpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 2,
+      "user": 3,
+      "permission": "Write"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayeruserpermission",
+    "pk": 4,
+    "fields": {
+      "obj": 2,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayeruserpermission",
+    "pk": 5,
+    "fields": {
+      "obj": 1,
+      "user": 3,
+      "permission": "Share"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayeruserpermission",
+    "pk": 6,
+    "fields": {
+      "obj": 1,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
     "model": "geosight_permission.dashboardpermission",
     "pk": 1,
     "fields": {
@@ -15,6 +96,42 @@
       "obj": 1,
       "user": 1,
       "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerindicatorpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "organization_permission": "None",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerindicatorpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "organization_permission": "None",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerindicatorpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 3,
+      "organization_permission": "None",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerindicatorpermission",
+    "pk": 4,
+    "fields": {
+      "obj": 4,
+      "organization_permission": "None",
+      "public_permission": "None"
     }
   },
   {
@@ -123,6 +240,87 @@
       "obj": 2,
       "user": 3,
       "permission": "Write Data"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerviewpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "organization_permission": "Read Data",
+      "public_permission": "Read Data"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerviewpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "organization_permission": "Read Data",
+      "public_permission": "Read Data"
+    }
+  },
+  {
+    "model": "geosight_permission.referencelayerviewpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 3,
+      "organization_permission": "Read Data",
+      "public_permission": "Read Data"
+    }
+  },
+  {
+    "model": "geosight_permission.relatedtablepermission",
+    "pk": 1,
+    "fields": {
+      "obj": 30,
+      "organization_permission": "None",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.relatedtableuserpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "user": 3,
+      "permission": "Write"
+    }
+  },
+  {
+    "model": "geosight_permission.relatedtableuserpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 1,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.stylepermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.styleuserpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "user": 3,
+      "permission": "Write"
+    }
+  },
+  {
+    "model": "geosight_permission.styleuserpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 1,
+      "user": 1,
+      "permission": "Owner"
     }
   }
 ]
