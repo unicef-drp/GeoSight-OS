@@ -8,7 +8,7 @@ test.describe('Test filter in indicator admin', () => {
   });
 
   test('Test multiple filters', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Name' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('ample');
     await page.getByRole('textbox', { name: 'Shortcode' }).click();
@@ -30,7 +30,7 @@ test.describe('Test filter in indicator admin', () => {
   });
 
   test('Test created date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').fill('2025-01-01');
     await page.getByLabel('Created At (to)').click();
     await page.getByLabel('Created At (to)').fill('2025-01-20');
@@ -41,7 +41,7 @@ test.describe('Test filter in indicator admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-19');
     await page.getByLabel('Created At (to)').click();
@@ -53,7 +53,7 @@ test.describe('Test filter in indicator admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2023-07-27');
     await page.getByLabel('Created At (to)').click();
@@ -66,7 +66,7 @@ test.describe('Test filter in indicator admin', () => {
   });
 
   test('Test modified date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-11');
     await page.getByLabel('Modified At (to)').click();
     await page.getByLabel('Modified At (to)').fill('2025-01-15');
@@ -76,7 +76,7 @@ test.describe('Test filter in indicator admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(1);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-14');
     await page.getByLabel('Modified At (to)').click();
