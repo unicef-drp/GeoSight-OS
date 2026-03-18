@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IconTextField } from "../Elements/Input";
 import { ArrowDownwardIcon, FilterIcon, MagnifyIcon } from "../Icons";
 import { ServerTable } from "../Table";
@@ -27,43 +27,41 @@ import { SaveButton } from "../Elements/Button";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { dictDeepCopy } from "../../utils/main";
 
-import './style.scss';
+import "./style.scss";
 
-interface Props extends MainDataGridProps, ModalInputSelectorProps {
-}
+interface Props extends MainDataGridProps, ModalInputSelectorProps {}
 
 /** Input modal selector component */
-export function ModalInputSelector(
-  {
-    // Input properties
-    mode = 'input',
-    placeholder,
-    dataName,
-    disabled,
-    showSelected,
+export function ModalInputSelector({
+  // Input properties
+  mode = "input",
+  placeholder,
+  dataName,
+  disabled,
+  showSelected,
 
-    // Data properties
-    url,
-    columns,
-    getParameters: getParametersParent,
-    initData = [],
+  // Data properties
+  url,
+  columns,
+  getParameters: getParametersParent,
+  initData = [],
 
-    // Listeners
-    dataSelected,
+  // Listeners
+  dataSelected,
 
-    // Table properties
-    multipleSelection,
-    defaults = {},
-    rowIdKey = 'id',
-    rowIdKeyParameter = 'id',
-    topChildren,
-    opener,
-    searchKey = 'q',
-    ableToReceiveEmptyData = false
-  }: Props
-) {
+  // Table properties
+  multipleSelection,
+  defaults = {},
+  additionalFilters = [],
+  rowIdKey = "id",
+  rowIdKeyParameter = "id",
+  topChildren,
+  opener,
+  searchKey = "q",
+  ableToReceiveEmptyData = false,
+}: Props) {
   const tableRef = useRef(null);
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const [selectionModel, setSelectionModel] = useState([]);
   const [selectionModelData, setSelectionModelData] = useState([]);
@@ -72,207 +70,222 @@ export function ModalInputSelector(
   /** Search value changed, debouce **/
   const searchValueUpdate = useMemo(
     () =>
-      debounce(
-        (newValue) => {
-          tableRef?.current?.refresh(false)
-        },
-        400
-      ),
-    []
-  )
+      debounce((newValue) => {
+        tableRef?.current?.refresh(false);
+      }, 400),
+    [],
+  );
 
   /** Search name value changed **/
   useEffect(() => {
-    tableRef?.current?.loading(null)
-    searchValueUpdate(search)
+    tableRef?.current?.loading(null);
+    searchValueUpdate(search);
   }, [search]);
 
   /** When open **/
   useEffect(() => {
     if (open) {
-      const newSelectionModel = initData ? initData.map(row => row[rowIdKey]) : []
-      if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
-        setSelectionModel(initData ? initData.map(row => row[rowIdKey]) : [])
-        setSelectionModelData(initData)
+      const newSelectionModel = initData
+        ? initData.map((row) => row[rowIdKey])
+        : [];
+      if (
+        JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)
+      ) {
+        setSelectionModel(initData ? initData.map((row) => row[rowIdKey]) : []);
+        setSelectionModelData(initData);
       }
     }
   }, [open]);
 
   /** When url changed **/
   useEffect(() => {
-    tableRef?.current?.refresh(false)
+    tableRef?.current?.refresh(false);
   }, [url]);
 
   /*** Parameters Changed */
   const getParameters = (parameters: any) => {
     if (search) {
-      parameters[searchKey] = search
+      parameters[searchKey] = search;
     } else {
-      delete parameters[searchKey]
+      delete parameters[searchKey];
     }
     if (getParametersParent) {
-      parameters = getParametersParent(parameters)
+      parameters = getParametersParent(parameters);
     }
-    return parameters
-  }
+    return parameters;
+  };
 
-  let inputValue = initData.length ? initData.length + ' selected' : ''
+  let inputValue = initData.length ? initData.length + " selected" : "";
   if (!multipleSelection && initData.length) {
-    inputValue = initData[0]?.name
+    inputValue = initData[0]?.name;
   }
-  return <>
-    {
-      opener ? <>
-          {
-            React.cloneElement(opener, {
-              onClick: () => setOpen(true)
-            })
-          }
-        </> :
+  return (
+    <>
+      {opener ? (
+        <>
+          {React.cloneElement(opener, {
+            onClick: () => setOpen(true),
+          })}
+        </>
+      ) : (
         <FormControl
-          className={(mode === 'input' ? 'InputControl' : 'FilterControl') + ' ResourceSelector'}
+          className={
+            (mode === "input" ? "InputControl" : "FilterControl") +
+            " ResourceSelector"
+          }
         >
-          {
-            mode === 'input' ?
-              <IconTextField
-                placeholder={`Select ${dataName}` + (multipleSelection ? '(s)' : '')}
-                iconEnd={<ArrowDownwardIcon/>}
-                onClick={() => setOpen(true)}
-                value={inputValue}
-                disabled={disabled}
-              /> : <IconTextField
-                iconEnd={
-                  <FilterIcon
-                    className={selectionModel.length ? 'HasValue' : ''}
-                    onClick={(e: any) => {
-                      if (selectionModel.length) {
-                        setSelectionModel([])
-                        setSelectionModelData([])
-                        e.stopPropagation();
-                      }
+          {mode === "input" ? (
+            <IconTextField
+              placeholder={
+                `Select ${dataName}` + (multipleSelection ? "(s)" : "")
+              }
+              iconEnd={<ArrowDownwardIcon />}
+              onClick={() => setOpen(true)}
+              value={inputValue}
+              disabled={disabled}
+            />
+          ) : (
+            <IconTextField
+              iconEnd={
+                <FilterIcon
+                  className={selectionModel.length ? "HasValue" : ""}
+                  onClick={(e: any) => {
+                    if (selectionModel.length) {
+                      setSelectionModel([]);
+                      setSelectionModelData([]);
+                      e.stopPropagation();
+                    }
+                  }}
+                />
+              }
+              onClick={() => setOpen(true)}
+              value={
+                selectionModel.length
+                  ? selectionModel.length + " selected"
+                  : placeholder
+              }
+              inputProps={{ readOnly: true }}
+            />
+          )}
+
+          {showSelected && multipleSelection ? (
+            <div className="ModalDataSelectorSelected">
+              {selectionModelData.map((_row) => (
+                <div
+                  key={_row[rowIdKey]}
+                  className="ModalDataSelectorSelectedObject"
+                  title={_row.name}
+                >
+                  <div>{_row.name}&nbsp;</div>
+                  <RemoveCircleIcon
+                    style={{ color: "red" }}
+                    onClick={() => {
+                      const selectedData = [
+                        ...selectionModel.filter((id) => id !== _row.id),
+                      ];
+                      setSelectionModel(dictDeepCopy(selectedData));
                     }}
                   />
-                }
-                onClick={() => setOpen(true)}
-                value={selectionModel.length ? selectionModel.length + ' selected' : placeholder}
-                inputProps={
-                  { readOnly: true, }
-                }
-              />
-          }
-
-          {
-            showSelected && multipleSelection ?
-              <div className='ModalDataSelectorSelected'>
-                {
-                  selectionModelData.map(
-                    _row => <div
-                      key={_row[rowIdKey]}
-                      className='ModalDataSelectorSelectedObject'
-                      title={_row.name}
-                    >
-                      <div>{_row.name}&nbsp;</div>
-                      <RemoveCircleIcon
-                        style={{ color: 'red' }} onClick={() => {
-                        const selectedData = [...selectionModel.filter(id => id !== _row.id)]
-                        setSelectionModel(dictDeepCopy(selectedData))
-                      }}/>
-                    </div>
-                  )
-                }
-              </div> : null
-          }
+                </div>
+              ))}
+            </div>
+          ) : null}
         </FormControl>
-    }
-    <Modal
-      className='ModalDataSelector'
-      open={open}
-      onClosed={() => {
-        setOpen(false)
-      }}
-    >
-      <ModalHeader onClosed={() => {
-        setOpen(false)
-      }}>
-        Select {dataName}{multipleSelection ? '(s)' : null}
-      </ModalHeader>
-      <div className='AdminContent'>
-        {topChildren}
-        <div className='AdminBaseInput Indicator-Search'>
-          <IconTextField
-            placeholder={"Search " + dataName}
-            iconStart={<MagnifyIcon/>}
-            onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-              setSearch(evt.target.value.toLowerCase())
-            }}
-            value={search ? search : ""}
-          />
-        </div>
+      )}
+      <Modal
+        className="ModalDataSelector"
+        open={open}
+        onClosed={() => {
+          setOpen(false);
+        }}
+      >
+        <ModalHeader
+          onClosed={() => {
+            setOpen(false);
+          }}
+        >
+          Select {dataName}
+          {multipleSelection ? "(s)" : null}
+        </ModalHeader>
+        <div className="AdminContent">
+          {topChildren}
+          <div className="AdminBaseInput Indicator-Search">
+            <IconTextField
+              placeholder={"Search " + dataName}
+              iconStart={<MagnifyIcon />}
+              onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                setSearch(evt.target.value.toLowerCase());
+              }}
+              value={search ? search : ""}
+            />
+          </div>
 
-        <div className='AdminList'>
-          <ServerTable
-            className='ModalSelector'
-            url={url}
-            urlHeader={headers.headers}
-            columns={columns}
-            selectionModel={selectionModel}
-            setSelectionModel={setSelectionModel}
-            getParameters={getParameters}
-            checkboxSelection={true}
-            defaults={{
-              sort: defaults.sort ? defaults.sort : [
-                { field: 'name', sort: 'asc' }
-              ],
-              search: defaults.search,
-              filters: defaults.filters
-            }}
-            enable={
-              {
+          <div className="AdminList">
+            <ServerTable
+              className="ModalSelector"
+              url={url}
+              urlHeader={headers.headers}
+              columns={columns}
+              selectionModel={selectionModel}
+              setSelectionModel={setSelectionModel}
+              getParameters={getParameters}
+              checkboxSelection={true}
+              defaults={{
+                sort: defaults.sort
+                  ? defaults.sort
+                  : [{ field: "name", sort: "asc" }],
+                search: defaults.search,
+                filters: defaults.filters,
+              }}
+              additionalFilters={additionalFilters}
+              enable={{
                 delete: false,
                 select: true,
                 singleSelection: !multipleSelection,
-                emptyData: ableToReceiveEmptyData
-              }
-            }
-            rowIdKey={rowIdKey}
-            rowIdKeyParameter={rowIdKeyParameter}
-            selectionModelData={selectionModelData}
-            setSelectionModelData={(data: any[]) => {
-              setSelectionModelData(data)
-              // For single selection close and trigger data selected
-              if (!multipleSelection) {
-                if (dataSelected) {
-                  const selected = data.find(
-                    _row => _row[rowIdKey] == selectionModel[selectionModel.length - 1]
-                  )
-                  if (selected) {
-                    dataSelected([selected])
-                    setOpen(false)
-                  } else if (data.length === 0){
-                    dataSelected([])
-                    setOpen(false)
+                emptyData: ableToReceiveEmptyData,
+                filter: true,
+              }}
+              rowIdKey={rowIdKey}
+              rowIdKeyParameter={rowIdKeyParameter}
+              selectionModelData={selectionModelData}
+              setSelectionModelData={(data: any[]) => {
+                setSelectionModelData(data);
+                // For single selection close and trigger data selected
+                if (!multipleSelection) {
+                  if (dataSelected) {
+                    const selected = data.find(
+                      (_row) =>
+                        _row[rowIdKey] ==
+                        selectionModel[selectionModel.length - 1],
+                    );
+                    if (selected) {
+                      dataSelected([selected]);
+                      setOpen(false);
+                    } else if (data.length === 0) {
+                      dataSelected([]);
+                      setOpen(false);
+                    }
                   }
                 }
-              }
-            }}
-            disableSelectionOnClick={false}
-            ref={tableRef}
-          />
-          {
-            multipleSelection ?
-              <div className='Save-Button'>
+              }}
+              disableSelectionOnClick={false}
+              ref={tableRef}
+            />
+            {multipleSelection ? (
+              <div className="Save-Button">
                 <SaveButton
                   variant="primary"
                   text={"Update Selection"}
                   onClick={() => {
-                    dataSelected(selectionModelData)
-                    setOpen(false)
+                    dataSelected(selectionModelData);
+                    setOpen(false);
                   }}
                 />
-              </div> : null
-          }
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </Modal>
-  </>
+      </Modal>
+    </>
+  );
 }

@@ -17,6 +17,8 @@ import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalInputSelectorProps } from "./types";
 import { formatDateTime } from "../../utils/main";
+import { permissionFilter } from "../Filter/resources";
+import { useTranslation } from "react-i18next";
 
 const columns = [
   { field: "id", headerName: "id", hide: true },
@@ -34,6 +36,16 @@ const columns = [
     field: "creator",
     headerName: "Created by",
     flex: 0.5,
+  },
+  {
+    field: "actions",
+    type: "actions",
+    cellClassName: "MuiDataGrid-ActionsColumn",
+    width: 10,
+    // @ts-ignore
+    getActions: () => {
+      return [];
+    },
   },
 ];
 
@@ -57,6 +69,7 @@ export default function RelatedTableSelector({
   defaults,
 }: ModalInputSelectorProps) {
   const url = "/api/v1/related-tables/?fields=__all__";
+  const { t } = useTranslation();
 
   return (
     <ModalInputSelector
@@ -79,7 +92,8 @@ export default function RelatedTableSelector({
       }}
       // Table properties
       multipleSelection={multipleSelection}
-      defaults={defaults}
+      defaults={{ ...defaults, filters: { permission: "read_data" } }}
+      additionalFilters={[permissionFilter(t, true)()]}
     />
   );
 }

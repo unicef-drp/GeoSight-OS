@@ -17,10 +17,10 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import StyleRules from "./StyleRules";
 import DynamicStyleConfig from "./DynamicStyleConfig";
-import { StyleInputSelector } from "../../../../components/ResourceList/WithModal/WithInput";
 import { dictDeepCopy } from "../../../../utils/main";
 import { dynamicStyleTypes, STYLE_FORM_LIBRARY } from "../../../../utils/Style";
 import { Select } from "../../../../components/Input";
+import StyleSelector from "../../../../components/ResourceSelector/StyleSelector";
 
 export const styleTypesChoices = styleTypes.map((type) => {
   return {
@@ -140,13 +140,13 @@ export default function StyleConfig({
             hidden={data.style_type !== "Style from library."}
           >
             <label className="form-label required">Style</label>
-            <StyleInputSelector
-              selectedData={style ? [style] : []}
-              selectedDataChanged={(styles) => {
+            <StyleSelector
+              initData={style ? [style] : []}
+              dataSelected={(styles) => {
                 setStyle(styles[0]);
               }}
               placeholder="Select style"
-              isMultiple={false}
+              multipleSelection={false}
             />
             <input
               type="text"

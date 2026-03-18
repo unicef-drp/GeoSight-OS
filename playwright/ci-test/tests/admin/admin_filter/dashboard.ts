@@ -8,7 +8,7 @@ test.describe('Test filter in project admin', () => {
   });
 
   test('Test multiple filters', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Project Name' }).click();
     await page.getByRole('textbox', { name: 'Project Name' }).fill('shbo');
     await page.getByRole('textbox', { name: 'Description' }).click();
@@ -35,7 +35,7 @@ test.describe('Test filter in project admin', () => {
   });
 
   test('Test created date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').fill('2025-01-01');
     await page.getByLabel('Created At (to)').click();
     await page.getByLabel('Created At (to)').fill('2025-01-10');
@@ -47,7 +47,7 @@ test.describe('Test filter in project admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(3);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-05');
     await page.getByLabel('Created At (to)').click();
@@ -59,7 +59,7 @@ test.describe('Test filter in project admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('');
     await page.getByLabel('Created At (to)').click();
@@ -71,7 +71,7 @@ test.describe('Test filter in project admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-02');
     await page.getByLabel('Created At (to)').click();
@@ -84,7 +84,7 @@ test.describe('Test filter in project admin', () => {
   });
 
   test('Test modified date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-01');
     await page.getByLabel('Modified At (to)').click();
@@ -97,7 +97,7 @@ test.describe('Test filter in project admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(3);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-05');
     await page.getByLabel('Modified At (to)').click();
@@ -109,7 +109,7 @@ test.describe('Test filter in project admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').click();
     await page.getByLabel('Modified At (from)').fill('');
     await page.getByLabel('Modified At (to)').click();
@@ -120,7 +120,7 @@ test.describe('Test filter in project admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(1);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-03');
     await page.getByLabel('Modified At (to)').click();

@@ -9,7 +9,7 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '17/06/2025'
+ * __date__ = '14/01/2025'
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
@@ -33,7 +33,7 @@ const columns = [
     field: "actions",
     type: "actions",
     cellClassName: "MuiDataGrid-ActionsColumn",
-    width: 1,
+    width: 10,
     // @ts-ignore
     getActions: () => {
       return [];
@@ -42,8 +42,8 @@ const columns = [
 ];
 
 /** For Georepo View selection. */
-export default function BasemapSelector({
-  url = "/api/v1/basemaps/?fields=__all__",
+export default function StyleSelector({
+  url = "/api/v1/styles/?fields=__all__",
 
   // Input properties
   placeholder,
@@ -70,7 +70,7 @@ export default function BasemapSelector({
       showSelected={showSelected}
       disabled={disabled}
       mode={mode}
-      dataName={"Basemap"}
+      dataName={"Style"}
       opener={opener}
       // Data properties
       initData={initData}

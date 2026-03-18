@@ -17,7 +17,6 @@ import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
 
 import { IconTextField } from "../../../Elements/Input";
-import { StyleSelector } from "../index";
 
 import './style.scss';
 
@@ -70,24 +69,4 @@ export function ModalInputSelector(
         : ""
     }
   </FormControl>
-}
-
-/**
- * Style with input selector
- * @param {str} placeholder Placeholder of input.
- * @param {Array} selectedData Selected data.
- * @param {Function} selectedDataChanged Function of Selected data changed.
- * @param {boolean} isMultiple Is multiple selection.
- */
-export function StyleInputSelector(
-  { placeholder, selectedData, selectedDataChanged, isMultiple }
-) {
-  return <ModalInputSelector
-    placeholder={placeholder}
-    selectedData={selectedData}
-    selectedDataChanged={selectedDataChanged}
-    isMultiple={isMultiple}
-  >
-    <StyleSelector/>
-  </ModalInputSelector>
 }

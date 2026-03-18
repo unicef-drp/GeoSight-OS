@@ -8,7 +8,7 @@ test.describe('Test filter in related table admin', () => {
   });
 
   test('Test multiple filters', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Related Table Name' }).click();
     await page.getByRole('textbox', { name: 'Related Table Name' }).fill('rela');
     await page.getByRole('textbox', { name: 'Created At (from)' }).click();
@@ -32,7 +32,7 @@ test.describe('Test filter in related table admin', () => {
   });
 
   test('Test created date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Created At (from)' }).click();
     await page.getByRole('textbox', { name: 'Created At (from)' }).fill('2025-01-01');
     await page.getByRole('textbox', { name: 'Created At (to)' }).click();
@@ -44,7 +44,7 @@ test.describe('Test filter in related table admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Created At (from)' }).click();
     await page.getByRole('textbox', { name: 'Created At (from)' }).fill('2025-01-02');
     await page.getByRole('button', { name: 'Apply Filters' }).click();
@@ -54,7 +54,7 @@ test.describe('Test filter in related table admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Created At (to)' }).click();
     await page.getByRole('textbox', { name: 'Created At (to)' }).fill('2025-01-02');
     await page.getByRole('button', { name: 'Apply Filters' }).click();
@@ -64,7 +64,7 @@ test.describe('Test filter in related table admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Created At (from)' }).click();
     await page.getByRole('textbox', { name: 'Created At (from)' }).fill('2025-01-04');
     await page.getByRole('textbox', { name: 'Created At (to)' }).click();
@@ -77,7 +77,7 @@ test.describe('Test filter in related table admin', () => {
   });
 
   test('Test modified date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Modified At (from)' }).fill('2025-01-19');
     await page.getByRole('textbox', { name: 'Modified At (to)' }).click();
     await page.getByRole('textbox', { name: 'Modified At (to)' }).fill('2025-01-19');
@@ -89,7 +89,7 @@ test.describe('Test filter in related table admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(3);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Modified At (from)' }).click();
     await page.getByRole('textbox', { name: 'Modified At (from)' }).fill('2025-01-01');
     await page.getByRole('textbox', { name: 'Modified At (to)' }).click();
@@ -99,7 +99,7 @@ test.describe('Test filter in related table admin', () => {
     dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(0);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Modified At (to)' }).click();
     await page.getByRole('textbox', { name: 'Modified At (to)' }).fill('');
     await page.getByRole('button', { name: 'Apply Filters' }).click();

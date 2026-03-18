@@ -50,29 +50,29 @@ test.describe('Project feature', () => {
     await expect(page.getByRole('row', { name: `Select row ${name}` }).getByLabel(featuredLabel)).toBeVisible();
     await expect(page.getByRole('cell', { name: name })).toBeVisible();
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
-    await page.locator('.ReactSelect__input-container').click();
+    await page.locator('a[title="Filter"]').click();
+    await page.locator('.FeaturedFilter').click();
     await page.getByRole('option', { name: 'False' }).click();
     await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.locator('.MuiBackdrop-root').click();
     await expect(page.getByRole('cell', { name: name })).not.toBeVisible();
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
-    await page.locator('.ReactSelect__input-container').click();
+    await page.locator('a[title="Filter"]').click();
+    await page.locator('.FeaturedFilter').click();
     await page.getByRole('option', { name: 'True' }).click();
     await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.locator('.MuiBackdrop-root').click();
     await expect(page.getByRole('cell', { name: name })).toBeVisible();
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
-    await page.locator('.ReactSelect__input-container').click();
+    await page.locator('a[title="Filter"]').click();
+    await page.locator('.FeaturedFilter').click();
     await page.getByRole('option', { name: 'False' }).click();
     await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.locator('.MuiBackdrop-root').click();
     await expect(page.getByRole('cell', { name: name })).not.toBeVisible();
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
-    await page.locator('.ReactSelect__input-container').click();
+    await page.locator('a[title="Filter"]').click();
+    await page.locator('.FeaturedFilter').click();
     await page.getByRole('option', { name: 'Both' }).click();
     await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.locator('.MuiBackdrop-root').click();
