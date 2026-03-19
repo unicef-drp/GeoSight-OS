@@ -29,7 +29,7 @@ test.describe('Cloud native layer', () => {
     });
     await expect(page.locator('.maplibregl-popup-content-wrapper tr').first().locator('td').nth(0)).toContainText('Amenity');
     await expect(page.locator('.maplibregl-popup-content-wrapper tr').first().locator('td').nth(1)).toContainText('hospital');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(3).locator('td').nth(0)).toContainText('Date time');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(3).locator('td').nth(1)).toContainText('1970-01-01T20:27:29.859Z');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(0)).toContainText('Addr stree');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(1)).toContainText('Wadada xiindheere');
   })
 });
