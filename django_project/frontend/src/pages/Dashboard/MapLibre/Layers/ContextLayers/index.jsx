@@ -22,7 +22,7 @@ import { centroid as turfCentroid } from "@turf/turf";
 import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
 import { arcGisLayer, geojsonLayer, rasterTileLayer } from "../../LayerType";
-import { dictDeepCopy } from "../../../../../utils/main";
+import { dictDeepCopy, parseDateTime } from "../../../../../utils/main";
 import { popupTemplate } from "../../Popup";
 import {
   dataStructureToListData
@@ -91,9 +91,9 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
           properties[field.alias] = featureProperties[field.name];
           if (field?.type.toLowerCase().includes("date")) {
             try {
-              properties[field.alias] = new Date(
+              properties[field.alias] = parseDateTime(
                 featureProperties[field.name],
-              ).toISOString();
+              );
             } catch (err) {}
           }
           if (field.name !== field.alias) {
