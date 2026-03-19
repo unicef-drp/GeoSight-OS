@@ -27,9 +27,11 @@ test.describe('Cloud native layer', () => {
         y: 273
       }
     });
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').first().locator('td').nth(0)).toContainText('Amenity');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').first().locator('td').nth(1)).toContainText('hospital');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(0)).toContainText('Addr stree');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(1)).toContainText('Wadada xiindheere');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toContainText('Amenity');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(1)).toContainText('hospital');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(0)).toContainText('Healthcare');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(1)).toContainText('–');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(23).locator('td').nth(0)).toContainText('Addr stree');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(23).locator('td').nth(1)).toContainText('Wadada xiindheere');
   })
 });
