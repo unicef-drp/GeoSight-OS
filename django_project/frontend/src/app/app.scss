@@ -254,6 +254,18 @@ header {
       padding: 0;
       border-spacing: 0;
 
+      tr {
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          background-color: rgba(100, 100, 100, 0.08);
+          box-shadow: inset 3px 0 0 var(--primary-color);
+        }
+      }
+
+      td {
+        max-width: 250px;
+      }
 
       td:first-child {
         padding: 5px 5px 5px 10px;
@@ -285,7 +297,6 @@ header {
 
     table {
       display: none;
-      margin-right: 1rem;
 
       &.selected {
         display: table;

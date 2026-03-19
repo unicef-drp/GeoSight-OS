@@ -484,6 +484,7 @@ export function popup(
     );
 
     let rawData = null;
+    let header = "";
     let rawDataContent = "";
     if (
       currentIndicatorLayer.raw_data_popup_enable &&
@@ -515,7 +516,7 @@ export function popup(
                 data,
                 where,
                 fields
-                  .map((field) => `[${field.name}] AS [${field.alias}]`)
+                  .map((field) => `[${field.name}] AS [${field.alias ? field.alias : field.name}]`)
                   .join(`,`),
               );
             } catch (err) {
@@ -526,6 +527,7 @@ export function popup(
       }
     }
     if (rawData?.length) {
+      console.log(rawData)
       const content = [];
       rawData.map((data, idx) => {
         const rows = [];
@@ -536,54 +538,58 @@ export function popup(
           `<table id="row-data-${idx + 1}" class="maplibregl-popup-content-raw-data-row-data ${idx === 0 ? "selected" : ""}">${rows.join("")}</table>`,
         );
       });
-      rawDataContent += `
+      header = `
         <div class="maplibregl-popup-content-tabs">
-            <div class="maplibregl-popup-content-tab selected" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main').style.display = 'block'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'none';">Main</div>
-            <div class="maplibregl-popup-content-tab" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main').style.display = 'none'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'block';">Related Records</div>
+            <div class="maplibregl-popup-content-tab selected" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'block'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'none';">Main</div>
+            <div class="maplibregl-popup-content-tab" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'none'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'block';">Related Records</div>
         </div>
-        <div class="maplibregl-popup-content-raw-data content">
-            ${content.join("")}
-            <div 
-                class="pagination" data-count="${content.length}" data-idx="1">
-                <div class="maplibregl-popup-content-raw-data-prev disabled" onclick="
-                    const pagination = document.querySelector('.pagination');
-                    const count = Number(pagination.dataset.count);
-                    const idx = Number(pagination.dataset.idx);
-                    if (idx === 1) return;
-                    const next = idx - 1;
-                    document.querySelector('.maplibregl-popup-content-raw-data-prev').classList.remove('disabled');
-                    document.querySelector('.maplibregl-popup-content-raw-data-next').classList.remove('disabled');
-                    if (next === 1 ) document.querySelector('.maplibregl-popup-content-raw-data-prev').classList.add('disabled');
-                    document.querySelector('.maplibregl-popup-content-raw-data-indicator').textContent = next;
-                    pagination.dataset.idx = next;
-                    document.querySelectorAll('.maplibregl-popup-content-raw-data-row-data').forEach(el => {
-                      el.classList.remove('selected');
-                    })
-                    document.querySelector('#row-data-'+next).classList.add('selected');
-                ">
-                    <svg version="1.1" id="icons_1_" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128" xml:space="preserve"><style>.st0{display:none}.st1{display:inline}.st2{fill:#0a0a0a}</style><g id="row2_1_"><g id="_x32__4_"><path class="st2" d="M64 .3C28.7.3 0 28.8 0 64s28.7 63.7 64 63.7 64-28.5 64-63.7S99.3.3 64 .3zm0 121C32.2 121.3 6.4 95.7 6.4 64 6.4 32.3 32.2 6.7 64 6.7s57.6 25.7 57.6 57.3c0 31.7-25.8 57.3-57.6 57.3zm22.4-63.7H57.6l12.3-15.2c0-2.2-1.8-3.9-3.9-3.9h-7.1L32 64l26.8 25.5H66c2.2 0 3.9-1.8 3.9-3.9L57.1 69.9h28.6c2.2 0 3.9-1.8 3.9-3.9v-4c0-2.1-1-4.4-3.2-4.4z" id="left_1_"/></g></g></svg>
-                </div>
-                <div><span class="maplibregl-popup-content-raw-data-indicator">1</span> / ${content.length}</div>
-                <div class="maplibregl-popup-content-raw-data-next" onclick="
-                    const pagination = document.querySelector('.pagination');
-                    const count = Number(pagination.dataset.count);
-                    const idx = Number(pagination.dataset.idx);
-                    if (idx === count) return;
-                    const next = idx + 1;
-                    document.querySelector('.maplibregl-popup-content-raw-data-prev').classList.remove('disabled');
-                    document.querySelector('.maplibregl-popup-content-raw-data-next').classList.remove('disabled');
-                    if (next === count ) document.querySelector('.maplibregl-popup-content-raw-data-next').classList.add('disabled');
-                    document.querySelector('.maplibregl-popup-content-raw-data-indicator').textContent = next;
-                    pagination.dataset.idx = next;
-                    document.querySelectorAll('.maplibregl-popup-content-raw-data-row-data').forEach(el => {
-                      el.classList.remove('selected');
-                    });
-                    document.querySelector('#row-data-'+next).classList.add('selected');
-                ">
-                    <svg version="1.1" id="icons_1_" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128" xml:space="preserve"><style>.st0{display:none}.st1{display:inline}.st2{fill:#0a0a0a}</style><g id="row2_1_"><g id="_x33__3_"><path class="st2" d="M64 .3C28.8.3.3 28.8.3 64s28.5 63.7 63.7 63.7 63.7-28.5 63.7-63.7S99.2.3 64 .3zm0 121C32.3 121.3 6.7 95.7 6.7 64 6.7 32.3 32.3 6.7 64 6.7c31.7 0 57.3 25.7 57.3 57.3 0 31.7-25.6 57.3-57.3 57.3zm-2-82.8c-2.2 0-3.9 1.8-3.9 3.9l12.2 15.2H41.7c-2.2 0-3.2 2.2-3.2 4.4v4c0 2.2 1.8 3.9 3.9 3.9h28.4L58.1 85.6c0 2.2 1.8 3.9 3.9 3.9h7.1L95.8 64 69.1 38.5H62z" id="right_1_"/></g></g></svg>
-                </div>
+      `
+      rawDataContent += `        
+        <div class="maplibregl-popup-content-raw-data">
+          <div class="content">
+              ${content.join("")}            
+          </div>
+          <div 
+            class="pagination" data-count="${content.length}" data-idx="1">
+            <div class="maplibregl-popup-content-raw-data-prev disabled" onclick="
+                const pagination = document.querySelector('.pagination');
+                const count = Number(pagination.dataset.count);
+                const idx = Number(pagination.dataset.idx);
+                if (idx === 1) return;
+                const next = idx - 1;
+                document.querySelector('.maplibregl-popup-content-raw-data-prev').classList.remove('disabled');
+                document.querySelector('.maplibregl-popup-content-raw-data-next').classList.remove('disabled');
+                if (next === 1 ) document.querySelector('.maplibregl-popup-content-raw-data-prev').classList.add('disabled');
+                document.querySelector('.maplibregl-popup-content-raw-data-indicator').textContent = next;
+                pagination.dataset.idx = next;
+                document.querySelectorAll('.maplibregl-popup-content-raw-data-row-data').forEach(el => {
+                  el.classList.remove('selected');
+                })
+                document.querySelector('#row-data-'+next).classList.add('selected');
+            ">
+                <svg version="1.1" id="icons_1_" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128" xml:space="preserve"><style>.st0{display:none}.st1{display:inline}.st2{fill:#0a0a0a}</style><g id="row2_1_"><g id="_x32__4_"><path class="st2" d="M64 .3C28.7.3 0 28.8 0 64s28.7 63.7 64 63.7 64-28.5 64-63.7S99.3.3 64 .3zm0 121C32.2 121.3 6.4 95.7 6.4 64 6.4 32.3 32.2 6.7 64 6.7s57.6 25.7 57.6 57.3c0 31.7-25.8 57.3-57.6 57.3zm22.4-63.7H57.6l12.3-15.2c0-2.2-1.8-3.9-3.9-3.9h-7.1L32 64l26.8 25.5H66c2.2 0 3.9-1.8 3.9-3.9L57.1 69.9h28.6c2.2 0 3.9-1.8 3.9-3.9v-4c0-2.1-1-4.4-3.2-4.4z" id="left_1_"/></g></g></svg>
             </div>
-        </div>
+            <div><span class="maplibregl-popup-content-raw-data-indicator">1</span> / ${content.length}</div>
+            <div class="maplibregl-popup-content-raw-data-next" onclick="
+                const pagination = document.querySelector('.pagination');
+                const count = Number(pagination.dataset.count);
+                const idx = Number(pagination.dataset.idx);
+                if (idx === count) return;
+                const next = idx + 1;
+                document.querySelector('.maplibregl-popup-content-raw-data-prev').classList.remove('disabled');
+                document.querySelector('.maplibregl-popup-content-raw-data-next').classList.remove('disabled');
+                if (next === count ) document.querySelector('.maplibregl-popup-content-raw-data-next').classList.add('disabled');
+                document.querySelector('.maplibregl-popup-content-raw-data-indicator').textContent = next;
+                pagination.dataset.idx = next;
+                document.querySelectorAll('.maplibregl-popup-content-raw-data-row-data').forEach(el => {
+                  el.classList.remove('selected');
+                });
+                document.querySelector('#row-data-'+next).classList.add('selected');
+            ">
+                <svg version="1.1" id="icons_1_" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128" xml:space="preserve"><style>.st0{display:none}.st1{display:inline}.st2{fill:#0a0a0a}</style><g id="row2_1_"><g id="_x33__3_"><path class="st2" d="M64 .3C28.8.3.3 28.8.3 64s28.5 63.7 63.7 63.7 63.7-28.5 63.7-63.7S99.2.3 64 .3zm0 121C32.3 121.3 6.7 95.7 6.7 64 6.7 32.3 32.3 6.7 64 6.7c31.7 0 57.3 25.7 57.3 57.3 0 31.7-25.6 57.3-57.3 57.3zm-2-82.8c-2.2 0-3.9 1.8-3.9 3.9l12.2 15.2H41.7c-2.2 0-3.2 2.2-3.2 4.4v4c0 2.2 1.8 3.9 3.9 3.9h28.4L58.1 85.6c0 2.2 1.8 3.9 3.9 3.9h7.1L95.8 64 69.1 38.5H62z" id="right_1_"/></g></g></svg>
+            </div>
+          </div>
+      </div>
     `;
     }
 
@@ -666,7 +672,7 @@ export function popup(
     }
     return renderPopup(
       `
-        ${rawDataContent}
+        ${header}
         <div id="${geomCode}" class="maplibregl-popup-content-main">
           ${renderTemplateContent(
             currentIndicatorLayer.popup_template &&
@@ -676,7 +682,9 @@ export function popup(
             context,
           )}
           <div class="copy-context"><div class="loading">Loading</div></div>
-      </div>`,
+      </div>
+      ${rawDataContent}
+      `,
     );
   });
 }

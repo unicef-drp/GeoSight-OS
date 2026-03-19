@@ -106,6 +106,7 @@ test.describe('View edit project', () => {
     });
     await expect(page.getByText('Related Records')).toBeVisible();
     await page.getByText('Related Records').click();
+    await expect(page.locator('.maplibregl-popup .header').getByText('Afmadow')).toBeVisible();
     await expect(page.getByText('/ 2')).toBeVisible();
 
     // Check extent
