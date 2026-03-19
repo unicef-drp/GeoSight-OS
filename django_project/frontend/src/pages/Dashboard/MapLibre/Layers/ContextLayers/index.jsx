@@ -100,25 +100,26 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
             delete properties[field.name];
           }
         }
-      } else {
-        if (properties[field.name] !== undefined) {
-          delete properties[field.name];
-        }
       }
     });
 
     newProperties = {};
     fields.forEach((field, idx) => {
-      let value = properties[field.alias];
+      if (field.visible === false) return;
+      let value = "–";
       try {
+        value = properties[field.alias];
         if (value.includes("http")) {
           value = `<a href="${value}" target="_blank">${value}</a>`;
         }
       } catch (err) {}
+      if (value === undefined) {
+        value = "–";
+      }
       newProperties[field.alias] = value;
     });
   }
-
+  console.log(newProperties);
   return popupTemplate(null, newProperties, {
     name: name,
     color: "#eee",
