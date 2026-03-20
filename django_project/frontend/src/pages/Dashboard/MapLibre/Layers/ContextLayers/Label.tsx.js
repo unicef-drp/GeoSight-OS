@@ -29,6 +29,4 @@ export const renderContextLayerLabel = (sourceId, map, config, sourceLayer) => {
   }
   addLayerWithOrder(map, layerConfig, Variables.LAYER_CATEGORY.CONTEXT_LAYER);
   Logger.layers(map);
-  console.log("--------------------------------");
-  console.log(map.getStyle().layers);
 };
