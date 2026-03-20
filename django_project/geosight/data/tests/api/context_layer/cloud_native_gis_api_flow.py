@@ -42,20 +42,7 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
         super().setUp()
         self.client.force_login(self.admin)
 
-    def create_resource(self, user):
-        """Create resource function."""
-        payload = copy.deepcopy(self.payload)
-        return ContextLayer.permissions.create(
-            name='name',
-            user=user,
-            **payload
-        )
 
-    def test_api_flow(self):
-        """Test attributes."""
-        self.cloud_native_layer = Layer.objects.create(
-            created_by=self.creator
-        )
         # ----------------------------------------
         # CREATE LAYER
         # ----------------------------------------
@@ -109,6 +96,9 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
             },
             content_type=self.JSON_CONTENT
         )
+        self.cloud_native_layer = Layer.objects.create(
+            created_by=self.creator
+        )
         response = self.assertRequestPostView(
             url, 201,
             user=self.creator,
@@ -153,9 +143,124 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
         self.assertEqual(response.json()['created_by'], self.creator.username)
 
         # Update geojson
-        context_layer = obj
+        self.context_layer = obj
 
+    def create_resource(self, user):
+        """Create resource function."""
+        payload = copy.deepcopy(self.payload)
+        return ContextLayer.permissions.create(
+            name='name',
+            user=user,
+            **payload
+        )
+
+    def test_api_flow(self):
+        """Test attributes."""
+        context_layer = self.context_layer
+
+        # -------------------------------------------------------
+        # Add features
+        # -------------------------------------------------------
+        self.assertRequestPostView(
+            url=reverse(
+                "context_layers_data-features",
+                kwargs={'context_layer_id': context_layer.id}
+            ),
+            code=204,
+            user=self.admin,
+            data={
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "New clinic 1",
+                            "country": "Country 1"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [0, 0]
+                        }
+                    }
+                ]
+            },
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestGetView(
+            url=reverse(
+                "context_layers_data-features",
+                kwargs={'context_layer_id': context_layer.id}
+            ),
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 1)
+        self.assertEqual(
+            response.json()["results"][0]["name"], "New clinic 1"
+        )
+
+        # Add it
+        self.assertRequestPostView(
+            url=reverse(
+                "context_layers_data-features",
+                kwargs={'context_layer_id': context_layer.id}
+            ),
+            code=204,
+            user=self.admin,
+            data={
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "New clinic 2",
+                            "country": "Country 2"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [0, 0]
+                        }
+                    }
+                ]
+            },
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestGetView(
+            url=reverse(
+                "context_layers_data-features",
+                kwargs={'context_layer_id': context_layer.id}
+            ),
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(
+            response.json()["results"][0]["name"], "New clinic 1"
+        )
+        self.assertEqual(
+            response.json()["results"][1]["name"], "New clinic 2"
+        )
+        response = self.assertRequestGetView(
+            url=reverse(
+                "context_layers_attributes-list",
+                kwargs={'context_layer_id': context_layer.id}
+            ),
+            code=200,
+            user=self.admin
+        )
+        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(
+            response.json()["results"][0]["attribute_name"], "name"
+        )
+        self.assertEqual(
+            response.json()["results"][1]["attribute_name"], "country"
+        )
+
+    def test_replace(self):
+        context_layer = self.context_layer
+        # -------------------------------------------------------
         # Just able to replace
+        # -------------------------------------------------------
         self.assertRequestPostView(
             url=reverse(
                 "context_layers_data-replace",
@@ -169,7 +274,7 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
                     {
                         "type": "Feature",
                         "properties": {
-                            "name": "New clinic",
+                            "name": "New clinic 3",
                             "amenity": "clinic"
                         },
                         "geometry": {
@@ -180,7 +285,7 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
                     {
                         "type": "Feature",
                         "properties": {
-                            "name": "New clinic 2",
+                            "name": "New clinic 4",
                             "amenity": "clinic"
                         },
                         "geometry": {
@@ -201,6 +306,12 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
             user=self.admin
         )
         self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(
+            response.json()["results"][0]["name"], "New clinic 3"
+        )
+        self.assertEqual(
+            response.json()["results"][1]["name"], "New clinic 4"
+        )
         response = self.assertRequestGetView(
             url=reverse(
                 "context_layers_attributes-list",

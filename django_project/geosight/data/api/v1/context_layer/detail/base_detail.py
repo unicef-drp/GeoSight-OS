@@ -46,7 +46,7 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
         )
         return obj
 
-    def get_context_layer_object(self, autocreate=False):
+    def get_context_layer_object(self):
         """Retrieve the linked cloud-native GIS for the current context layer.
 
         :param autocreate:
@@ -64,10 +64,6 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
             if obj.cloud_native_gis_layer_id:
                 return Layer.objects.get(id=obj.cloud_native_gis_layer_id)
             else:
-                if not autocreate:
-                    raise ValueError(
-                        "The context layer does not have a cloud native layer."
-                    )
                 layer = Layer.objects.create(
                     name=obj.name,
                     layer_type=CloudNativeGISLayerType.VECTOR_TILE,

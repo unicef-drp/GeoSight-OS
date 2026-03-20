@@ -119,7 +119,6 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
       newProperties[field.alias] = value;
     });
   }
-  console.log(newProperties);
   return popupTemplate(null, newProperties, {
     name: name,
     color: "#eee",

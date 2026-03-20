@@ -527,7 +527,6 @@ export function popup(
       }
     }
     if (rawData?.length) {
-      console.log(rawData)
       const content = [];
       rawData.map((data, idx) => {
         const rows = [];
