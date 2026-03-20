@@ -49,10 +49,6 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
     def get_context_layer_object(self):
         """Retrieve the linked cloud-native GIS for the current context layer.
 
-        :param autocreate:
-            If True, create a cloud-native GIS layer if none exists.
-        :type autocreate: bool
-
         :return: The associated cloud-native GIS layer object.
         :rtype: cloud_native_gis.models.layer.Layer
         :raises ValueError:
