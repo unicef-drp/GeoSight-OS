@@ -20,7 +20,7 @@ export const renderContextLayerLabel = (sourceId, map, config, sourceLayer) => {
     source: sourceId,
     filter: ["==", "$type", "Point"],
     layout: layout,
-    paint: { ...paint, "text-opacity": 0.4 },
+    paint: { ...paint },
     maxzoom: maxZoom,
     minzoom: minZoom,
   };
@@ -29,4 +29,6 @@ export const renderContextLayerLabel = (sourceId, map, config, sourceLayer) => {
   }
   addLayerWithOrder(map, layerConfig, Variables.LAYER_CATEGORY.CONTEXT_LAYER);
   Logger.layers(map);
+  console.log("--------------------------------");
+  console.log(map.getStyle().layers);
 };
