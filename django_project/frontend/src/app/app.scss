@@ -253,13 +253,15 @@ header {
       margin: 0;
       padding: 0;
       border-spacing: 0;
+      width: 100%;
 
       tr {
         transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        border-left: 3px solid rgba(0, 0, 0, 0);
 
         &:hover {
           background-color: rgba(100, 100, 100, 0.08);
-          box-shadow: inset 3px 0 0 var(--primary-color);
+          border-left: 3px solid var(--primary-color);
         }
       }
 
