@@ -22,11 +22,18 @@ export default class GeorepoRequest {
   };
 
   /** Get bbox **/
-  getBbox = (uuid: string, id_type: string, geometries: string[]): Promise<number[]> => {
+  getBbox = (
+    uuid: string,
+    id_type: string,
+    geometries: string[],
+  ): Promise<number[]> => {
     const that = this;
     return new Promise((resolve, reject) => {
+      const url = that.isRemoteGeorepo
+        ? `/operation/view/${uuid}/bbox/${id_type}/`
+        : `/api/v1/reference-datasets/${uuid}/bbox/${id_type}/`;
       that
-        ._post(`/operation/view/${uuid}/bbox/${id_type}/`, geometries)
+        ._post(url, geometries)
         .then((response) => {
           resolve(response);
         })
