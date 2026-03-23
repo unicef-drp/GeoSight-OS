@@ -79,7 +79,6 @@ export default function FiltersForm() {
         checked={auto_zoom_to_filter}
         control={<Checkbox />}
         onChange={(evt) => {
-          console.log(evt.target.checked)
           dispatch(Actions.Dashboard.updateAutoZoomToFilter());
         }}
         label={"Zoom in automatically to filtered area"}

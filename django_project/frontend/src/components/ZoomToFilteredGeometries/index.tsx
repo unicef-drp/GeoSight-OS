@@ -23,12 +23,12 @@ import React, { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
+import LinearProgress from "@mui/material/LinearProgress";
 import { Session } from "../../utils/Sessions";
 import GeorepoRequest from "../../utils/GeorepoRequest";
+import { Logger } from "../../utils/logger";
 
 import "./style.scss";
-import LinearProgress from "@mui/material/LinearProgress";
-import { Logger } from "../../utils/logger";
 
 export interface Props {
   map: maplibregl.Map;
@@ -43,6 +43,11 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
     (state) => state.dashboard.data?.referenceLayer,
   );
   // @ts-ignore
+  const autoZoomToFilter = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.auto_zoom_to_filter,
+  );
+  // @ts-ignore
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   // @ts-ignore
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
@@ -52,7 +57,7 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
 
   useEffect(() => {
     (async () => {
-      if (!map || !filteredGeometries?.length) {
+      if (!autoZoomToFilter || !map || !filteredGeometries?.length) {
         return;
       }
       const usedConceptUUIDs: string[] = [];
