@@ -41,7 +41,16 @@ class ReferenceDatasetBboxByConcept(APIView):
         operation_description='Return bbox of reference dataset entities.'
     )
     def post(self, request, identifier):
-        """Return combined bbox for the given concept_uuids."""
+        """Return combined bbox for the given concept_uuids.
+
+        :param request: The HTTP request containing a JSON list of
+            concept_uuids in the body.
+        :type request: Request
+        :param identifier: The reference dataset identifier.
+        :type identifier: str
+        :return: Bounding box as [minx, miny, maxx, maxy], or [] if none.
+        :rtype: Response
+        """
         view = get_object_or_404(ReferenceDataset, identifier=identifier)
         read_data_permission_resource(view, request.user)
 
