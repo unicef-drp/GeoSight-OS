@@ -15,19 +15,20 @@
 
 /** Utils specifically for data context **/
 
-export function updateContextData(
-  context, referenceLayerData
-) {
-  const datasetlevelDict = {}
-  referenceLayerData?.data?.dataset_levels?.map(level => {
-    datasetlevelDict[level.level] = level.level_name
-  })
+export function updateContextData(context, referenceLayerData) {
+  const datasetlevelDict = {};
+  referenceLayerData?.data?.dataset_levels?.map((level) => {
+    datasetlevelDict[level.level] = level.level_name;
+  });
   // Add level name
-  context.admin_boundary.admin_level_name = datasetlevelDict[context.admin_boundary.admin_level]
-  context.admin_boundary.children.map(child => {
-    child.admin_level_name = datasetlevelDict[child.admin_level]
-  })
-  context.admin_boundary.siblings.map(child => {
-    child.admin_level_name = datasetlevelDict[child.admin_level]
-  })
+  context.admin_boundary.admin_level_name =
+    datasetlevelDict[context.admin_boundary.admin_level];
+  try {
+    context.admin_boundary.children.map((child) => {
+      child.admin_level_name = datasetlevelDict[child.admin_level];
+    });
+    context.admin_boundary.siblings.map((child) => {
+      child.admin_level_name = datasetlevelDict[child.admin_level];
+    });
+  } catch (e) {}
 }

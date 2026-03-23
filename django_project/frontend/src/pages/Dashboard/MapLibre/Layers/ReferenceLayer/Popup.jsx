@@ -204,13 +204,15 @@ export function updateCurrent(
             context.context.admin_boundary.indicators[data.indicator.shortcode];
           if (drilldownIndicatorData) {
             let fullDate = data.date;
+            let fullDate_2 = data.date;
             if (!data.date.includes("T")) {
               const dates = data.date.split("-");
-              dates.reverse();
               fullDate = dates.join("-") + "T00:00:00+00:00";
+              dates.reverse();
+              fullDate_2 = dates.join("-") + "T00:00:00+00:00";
             }
             const drilldownIndicatorCurrentData = drilldownIndicatorData.find(
-              (data) => data.time === fullDate,
+              (data) => [fullDate, fullDate_2].includes(data.time),
             );
             if (drilldownIndicatorCurrentData?.attributes) {
               _data.attributes = drilldownIndicatorCurrentData?.attributes;
@@ -316,6 +318,7 @@ export function getContext(
 ) {
   let current = {};
   current["indicator_layers"] = [];
+  const indicatorIds = [];
   [currentIndicatorLayer, currentIndicatorSecondLayer].map((indicatorLayer) => {
     if (indicatorLayer.id) {
       current["indicator_layers"].push({
@@ -324,6 +327,7 @@ export function getContext(
         description: indicatorLayer.description,
         indicators: indicatorLayer.indicators?.map((obj) => {
           const objFound = indicators.find((ind) => ind.id === obj.id);
+          indicatorIds.push(objFound.id);
           return {
             id: objFound.id,
             name: objFound.name,
@@ -372,19 +376,62 @@ export function getContext(
       : referenceLayerData?.data?.identifier,
   };
   const session = new Session("FetchingPopupContext");
-  fetchingData(url, params, {}, function (admin_boundary, error) {
-    if (!session.isValid) {
-      return;
+  const isCustom =
+    currentIndicatorLayer.popup_type.toLowerCase() === "custom" ||
+    currentIndicatorSecondLayer.popup_type === "custom";
+
+  const needAttributes = currentIndicatorLayer.data_fields.find(
+    (field) =>
+      field.name === "context.current.indicator.attributes" && field.visible,
+  );
+  if (needAttributes) {
+    params["ids"] = indicatorIds;
+    if (!isCustom) {
+      params["no-geom"] = true;
     }
-    if (error) {
-      if (contextOnError) {
-        contextOnError(error);
+  }
+  if (needAttributes || isCustom) {
+    fetchingData(url, params, {}, function (admin_boundary, error) {
+      if (!session.isValid) {
+        return;
       }
-    } else {
+      if (error) {
+        if (contextOnError) {
+          contextOnError(error);
+        }
+      } else {
+        let context = {
+          current,
+          timeslice,
+          admin_boundary,
+        };
+        updateContextData(
+          context,
+          referenceLayerData,
+          currentIndicatorLayer,
+          currentIndicatorSecondLayer,
+        );
+        if (contextOnLoad) {
+          contextOnLoad(
+            updateCurrent(
+              { context: context },
+              indicators,
+              relatedTables,
+              currentIndicatorLayer,
+              currentIndicatorSecondLayer,
+              indicatorValueByGeometry,
+              indicatorSecondValueByGeometry,
+              geom_id,
+            ),
+          );
+        }
+      }
+    });
+  } else {
+    if (contextOnLoad) {
       let context = {
         current,
-        timeslice,
-        admin_boundary,
+        admin_boundary: geometryProperties,
       };
       updateContextData(
         context,
@@ -392,22 +439,22 @@ export function getContext(
         currentIndicatorLayer,
         currentIndicatorSecondLayer,
       );
-      if (contextOnLoad) {
-        contextOnLoad(
-          updateCurrent(
-            { context: context },
-            indicators,
-            relatedTables,
-            currentIndicatorLayer,
-            currentIndicatorSecondLayer,
-            indicatorValueByGeometry,
-            indicatorSecondValueByGeometry,
-            geom_id,
-          ),
-        );
-      }
+      contextOnLoad(
+        updateCurrent(
+          {
+            context: context,
+          },
+          indicators,
+          relatedTables,
+          currentIndicatorLayer,
+          currentIndicatorSecondLayer,
+          indicatorValueByGeometry,
+          indicatorSecondValueByGeometry,
+          geom_id,
+        ),
+      );
     }
-  });
+  }
   return {
     context: {
       current,
@@ -516,7 +563,10 @@ export function popup(
                 data,
                 where,
                 fields
-                  .map((field) => `[${field.name}] AS [${field.alias ? field.alias : field.name}]`)
+                  .map(
+                    (field) =>
+                      `[${field.name}] AS [${field.alias ? field.alias : field.name}]`,
+                  )
                   .join(`,`),
               );
             } catch (err) {
@@ -542,7 +592,7 @@ export function popup(
             <div class="maplibregl-popup-content-tab selected" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'block'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'none';">Main</div>
             <div class="maplibregl-popup-content-tab" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'none'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'block';">Related Records</div>
         </div>
-      `
+      `;
       rawDataContent += `        
         <div class="maplibregl-popup-content-raw-data">
           <div class="content">
