@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.gis.geos import Polygon
@@ -189,6 +190,9 @@ class DashboardForm(forms.ModelForm):
         )
         data['filters_being_hidden'] = other_data.get(
             'filters_being_hidden', False
+        )
+        data['auto_zoom_to_filter'] = other_data.get(
+            'auto_zoom_to_filter', False
         )
         try:
             data['permission'] = other_data['permission']

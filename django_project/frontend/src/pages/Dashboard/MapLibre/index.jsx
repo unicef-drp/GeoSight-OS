@@ -59,6 +59,8 @@ import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
 import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 import ReferenceLayerLevelSelection
   from "../Toolbars/ReferenceLayerLevelSelection";
+import ZoomToFilteredGeometries
+  from "../../../components/ZoomToFilteredGeometries";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
@@ -80,6 +82,9 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
   const extent = useSelector((state) => state.dashboard.data.extent);
+  const auto_zoom_to_filter = useSelector(
+    (state) => state.dashboard.data.auto_zoom_to_filter,
+  );
   const minZoomConfig = useSelector((state) => state.dashboard.data.minZoom);
   const maxZoomConfig = useSelector((state) => state.dashboard.data.maxZoom);
   const { basemapLayer, is3dMode, position, force } = useSelector(
@@ -302,6 +307,7 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
     >
       {/* TOOLBARS */}
       <div className="Toolbar">
+        {auto_zoom_to_filter && <ZoomToFilteredGeometries map={map} />}
         <TiltControl map={map} is3DView={is3dMode} force={force} />
         <div className="Toolbar-Left">
           {leftPanelProps ? (

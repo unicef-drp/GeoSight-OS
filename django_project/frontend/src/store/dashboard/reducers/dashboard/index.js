@@ -13,49 +13,56 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { APIReducer } from '../../../reducers_api';
-import indicatorReducer, { INDICATOR_ACTION_NAME } from '../indicators'
+import { APIReducer } from "../../../reducers_api";
+import indicatorReducer, { INDICATOR_ACTION_NAME } from "../indicators";
 import indicatorLayersReducer, {
-  INDICATOR_LAYERS_ACTION_NAME
-} from '../indicatorLayers'
-import basemapsReducer, { BASEMAP_ACTION_NAME } from '../basemap'
+  INDICATOR_LAYERS_ACTION_NAME,
+} from "../indicatorLayers";
+import basemapsReducer, { BASEMAP_ACTION_NAME } from "../basemap";
 import widgetsReducer, { WIDGET_ACTION_NAME } from "../widgets";
 import extentReducer, { EXTENT_DEFAULT_ACTION_NAME } from "../extent";
 import filtersReducer, { FILTERS_ACTION_NAME } from "../filters";
 import relatedTableReducer, {
-  RELATED_TABLE_ACTION_NAME
+  RELATED_TABLE_ACTION_NAME,
 } from "../relatedTable";
 import referenceLayerReducer, {
-  REFERENCE_LAYER_ACTION_NAME
-} from '../referenceLayer'
+  REFERENCE_LAYER_ACTION_NAME,
+} from "../referenceLayer";
 import contextLayersReducer, {
-  CONTEXT_LAYER_ACTION_NAME
-} from '../contextLayers'
+  CONTEXT_LAYER_ACTION_NAME,
+} from "../contextLayers";
 import dashboardToolReducer, {
-  DASHBOARD_TOOL_ACTION_NAME
+  DASHBOARD_TOOL_ACTION_NAME,
 } from "../dashboardTool";
 
 /**
  * DASHBOARD REQUEST reducer
  */
-export const DASHBOARD_ACTION_NAME = 'DASHBOARD';
-export const DASHBOARD_ACTION_TYPE_UPDATE = 'DASHBOARD/UPDATE';
-export const DASHBOARD_ACTION_TYPE_UPDATE_PROPS = 'DASHBOARD/UPDATE_PROPS';
-export const DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY = 'DASHBOARD/FILTERS_ALLOW_MODIFY';
-export const DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN = 'DASHBOARD/FILTERS_BEING_HIDDEN';
-export const DASHBOARD_ACTION_TYPE_UPDATE_SHARE = 'DASHBOARD/UPDATE_SHARE';
-export const DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD = 'DASHBOARD/UPDATE_GEOFIELD';
-export const DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE = 'DASHBOARD/UPDATE_STRUCTURE';
+export const DASHBOARD_ACTION_NAME = "DASHBOARD";
+export const DASHBOARD_ACTION_TYPE_UPDATE = "DASHBOARD/UPDATE";
+export const DASHBOARD_ACTION_TYPE_UPDATE_PROPS = "DASHBOARD/UPDATE_PROPS";
+export const DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY =
+  "DASHBOARD/FILTERS_ALLOW_MODIFY";
+export const DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN =
+  "DASHBOARD/FILTERS_BEING_HIDDEN";
+export const DASHBOARD_ACTION_TYPE_UPDATE_SHARE = "DASHBOARD/UPDATE_SHARE";
+export const DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD =
+  "DASHBOARD/UPDATE_GEOFIELD";
+export const DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE =
+  "DASHBOARD/UPDATE_STRUCTURE";
+export const DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER =
+  "DASHBOARD/AUTO_ZOOM_TO_FILTER";
 
 const dashboardInitialState = {
   fetching: false,
   fetched: false,
   error: null,
-  data: {}
+  data: {},
 };
 
 export default function dashboardReducer(
-  state = dashboardInitialState, action
+  state = dashboardInitialState,
+  action,
 ) {
   switch (action.name) {
     case DASHBOARD_ACTION_NAME: {
@@ -63,68 +70,77 @@ export default function dashboardReducer(
         case DASHBOARD_ACTION_TYPE_UPDATE: {
           return {
             ...state,
-            data: action.payload
-          }
+            data: action.payload,
+          };
         }
         case DASHBOARD_ACTION_TYPE_UPDATE_PROPS: {
-          console.log(action.payload)
+          console.log(action.payload);
           return {
             ...state,
             data: {
               ...state.data,
-              ...action.payload
-            }
-          }
+              ...action.payload,
+            },
+          };
         }
         case DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY: {
           return {
             ...state,
             data: {
               ...state.data,
-              filtersAllowModify: !state.data.filtersAllowModify
-            }
-          }
+              filtersAllowModify: !state.data.filtersAllowModify,
+            },
+          };
         }
         case DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN: {
           return {
             ...state,
             data: {
               ...state.data,
-              filtersBeingHidden: !state.data.filtersBeingHidden
-            }
-          }
+              filtersBeingHidden: !state.data.filtersBeingHidden,
+            },
+          };
         }
         case DASHBOARD_ACTION_TYPE_UPDATE_SHARE: {
           return {
             ...state,
             data: {
               ...state.data,
-              permission: action.payload
-            }
-          }
+              permission: action.payload,
+            },
+          };
         }
         case DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD: {
-          const { geoField } = action.payload
+          const { geoField } = action.payload;
           return {
             ...state,
             data: {
               ...state.data,
-              geoField: geoField
-            }
-          }
+              geoField: geoField,
+            },
+          };
         }
         case DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE: {
-          const { key, structure } = action.payload
-          state.data[key] = structure
+          const { key, structure } = action.payload;
+          state.data[key] = structure;
           return {
             ...state,
             data: {
-              ...state.data
-            }
-          }
+              ...state.data,
+            },
+          };
+        }
+        case DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER: {
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              auto_zoom_to_filter: !state.data.auto_zoom_to_filter,
+            },
+          };
         }
         default: {
-          return APIReducer(state, action, DASHBOARD_ACTION_NAME)
+          return APIReducer(state, action, DASHBOARD_ACTION_NAME);
         }
       }
     }
@@ -133,150 +149,154 @@ export default function dashboardReducer(
     case INDICATOR_ACTION_NAME: {
       const newIndicator = indicatorReducer(state.data.indicators, action);
       if (newIndicator !== state.data.indicators) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          indicators: newIndicator
-        }
+          indicators: newIndicator,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** INDICATOR LAYERS REDUCER **/
     case INDICATOR_LAYERS_ACTION_NAME: {
       const indicatorLayers = indicatorLayersReducer(
-        state.data.indicatorLayers, action, state.data
+        state.data.indicatorLayers,
+        action,
+        state.data,
       );
       if (indicatorLayers !== state.data.indicatorLayers) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          indicatorLayers: indicatorLayers
-        }
+          indicatorLayers: indicatorLayers,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** EXTENT REDUCER **/
     case EXTENT_DEFAULT_ACTION_NAME: {
       const data = extentReducer(state.data.extent, action);
       if (data !== state.data.extent) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          extent: data
-        }
+          extent: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** FILTERS REDUCER **/
     case FILTERS_ACTION_NAME: {
       const data = filtersReducer(state.data.filters, action);
       if (data !== state.data.filters) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          filters: data
-        }
+          filters: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** BASEMAP REDUCER **/
     case BASEMAP_ACTION_NAME: {
       const data = basemapsReducer(
-        state.data.basemapsLayers, action, state.data
+        state.data.basemapsLayers,
+        action,
+        state.data,
       );
       if (data !== state.data.basemapsLayers) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          basemapsLayers: data
-        }
+          basemapsLayers: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** CONTEXT LAYER REDUCER **/
     case CONTEXT_LAYER_ACTION_NAME: {
       const data = contextLayersReducer(
-        state.data.contextLayers, action, state.data
+        state.data.contextLayers,
+        action,
+        state.data,
       );
       if (data !== state.data.contextLayers) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          contextLayers: data
-        }
+          contextLayers: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** RELATED TABLE REDUCER **/
     case RELATED_TABLE_ACTION_NAME: {
       const data = relatedTableReducer(state.data.relatedTables, action);
       if (data !== state.data.relatedTables) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          relatedTables: data
-        }
+          relatedTables: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** REFERENCE LAYER REDUCER **/
     case REFERENCE_LAYER_ACTION_NAME: {
       const data = referenceLayerReducer(state.data.referenceLayer, action);
       if (data !== state.data.referenceLayer) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          referenceLayer: data
-        }
+          referenceLayer: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     // WIDGET REDUCER
     case WIDGET_ACTION_NAME: {
-      const newWidgets = widgetsReducer(
-        state.data.widgets, action, state.data
-      );
+      const newWidgets = widgetsReducer(state.data.widgets, action, state.data);
       if (newWidgets !== state.data.widgets) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          widgets: newWidgets
-        }
+          widgets: newWidgets,
+        };
         return newState;
       }
-      return state
+      return state;
     }
 
     /** TOOLS REDUCER **/
     case DASHBOARD_TOOL_ACTION_NAME: {
       const data = dashboardToolReducer(state.data.tools, action);
       if (data !== state.data.tools) {
-        const newState = { ...state }
+        const newState = { ...state };
         newState.data = {
           ...newState.data,
-          tools: data
-        }
+          tools: data,
+        };
         return newState;
       }
-      return state
+      return state;
     }
     default:
-      return state
+      return state;
   }
 }

@@ -17,6 +17,7 @@ import { fetchingData } from "../../../../Requests";
 
 import {
   DASHBOARD_ACTION_NAME,
+  DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER,
   DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY,
   DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN,
   DASHBOARD_ACTION_TYPE_UPDATE,
@@ -314,6 +315,17 @@ export function updateStructure(key, structure) {
   };
 }
 
+/**
+ * Update auto zoom to filter.
+ */
+export function updateAutoZoomToFilter() {
+  console.log("updateAutoZoomToFilter");
+  return {
+    name: DASHBOARD_ACTION_NAME,
+    type: DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER,
+  };
+}
+
 export default {
   fetch,
   update,
@@ -323,4 +335,5 @@ export default {
   updatePermission,
   changeGeoField,
   updateStructure,
+  updateAutoZoomToFilter,
 };

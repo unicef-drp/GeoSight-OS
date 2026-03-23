@@ -206,9 +206,6 @@ export function DashboardSaveForm() {
     extent,
     minZoom,
     maxZoom,
-    filters,
-    filtersAllowModify,
-    filtersBeingHidden,
     permission,
     geoField,
     levelConfig,
@@ -221,6 +218,12 @@ export function DashboardSaveForm() {
     truncate_indicator_layer_name,
     layer_tabs_visibility,
     show_map_toolbar,
+
+    // Filter configurations
+    filters,
+    filtersAllowModify,
+    filtersBeingHidden,
+    auto_zoom_to_filter,
   } = useSelector((state) => state.dashboard.data);
   const { data } = useSelector((state) => state.dashboard);
   const [submitted, setSubmitted] = useState(false);
@@ -343,11 +346,14 @@ export function DashboardSaveForm() {
         max_zoom: maxZoom,
         widgets: widgets,
         widgets_structure: widgetsStructure,
+        permission: permission,
+        tools: tools,
+
+        // Filter configurations
         filters: filters,
         filters_allow_modify: filtersAllowModify,
         filters_being_hidden: filtersBeingHidden,
-        permission: permission,
-        tools: tools,
+        auto_zoom_to_filter: auto_zoom_to_filter,
       };
 
       // onOpen();

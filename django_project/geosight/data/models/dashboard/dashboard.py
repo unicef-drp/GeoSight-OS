@@ -124,6 +124,9 @@ class Dashboard(
     filters_being_hidden = models.BooleanField(
         default=False
     )
+    auto_zoom_to_filter = models.BooleanField(
+        default=False
+    )
 
     # ------------------------------
     # Configuration for dashboard
