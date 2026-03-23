@@ -187,8 +187,11 @@ class DashboardContextLayerSerializer(DashboardSerializer):
     context_layer_id = serializers.SerializerMethodField()
     data_fields = serializers.SerializerMethodField()
     styles = serializers.SerializerMethodField()
-    label_styles = serializers.SerializerMethodField()
+    label_config = serializers.SerializerMethodField()
     default_styles = serializers.SerializerMethodField()
+
+    # TODO: TODO: Deprecated, we need to migrate this
+    label_styles = serializers.SerializerMethodField()
 
     def get_context_layer_id(self, obj: DashboardContextLayer):
         """Return the ID of the associated context layer.
@@ -233,10 +236,10 @@ class DashboardContextLayerSerializer(DashboardSerializer):
             return json.loads(obj.styles) if obj.styles else None
         return None
 
-    def get_label_styles(self, obj: DashboardContextLayer):
-        """Return the overridden label styles for the context layer.
+    def get_label_config(self, obj: DashboardContextLayer):
+        """Return the overridden label config for the context layer.
 
-        Returns parsed JSON label styles if the dashboard overrides the label,
+        Returns parsed JSON label config if the dashboard overrides the label,
         otherwise returns None.
 
         :param obj: The DashboardContextLayer instance.
@@ -245,7 +248,7 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         :rtype: dict or None
         """
         if obj.override_label:
-            return json.loads(obj.label_styles) if obj.label_styles else None
+            return obj.label_config
         return None
 
     def get_default_styles(self, obj: DashboardContextLayer):
@@ -269,10 +272,26 @@ class DashboardContextLayerSerializer(DashboardSerializer):
             'label_styles': context_layer['label_styles'],
         }
 
+    # TODO: TODO: Deprecated, we need to migrate this
+    def get_label_styles(self, obj: DashboardContextLayer):
+        """Return the overridden label styles for the context layer.
+
+        Returns parsed JSON label styles if the dashboard overrides the label,
+        otherwise returns None.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Label styles dict or None.
+        :rtype: dict or None
+        """
+        if obj.override_label:
+            return json.loads(obj.label_styles) if obj.label_styles else None
+        return None
+
     class Meta:  # noqa: D106
         model = DashboardContextLayer
         fields = (
-            'data_fields', 'styles', 'label_styles',
+            'data_fields', 'styles', 'label_styles', 'label_config',
             'override_style', 'override_label', 'override_field',
             'default_styles', 'configuration', 'context_layer_id',
             'layer_name', 'layer_description'

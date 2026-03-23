@@ -206,9 +206,6 @@ export function DashboardSaveForm() {
     extent,
     minZoom,
     maxZoom,
-    filters,
-    filtersAllowModify,
-    filtersBeingHidden,
     permission,
     geoField,
     levelConfig,
@@ -221,6 +218,12 @@ export function DashboardSaveForm() {
     truncate_indicator_layer_name,
     layer_tabs_visibility,
     show_map_toolbar,
+
+    // Filter configurations
+    filters,
+    filtersAllowModify,
+    filtersBeingHidden,
+    auto_zoom_to_filter,
   } = useSelector((state) => state.dashboard.data);
   const { data } = useSelector((state) => state.dashboard);
   const [submitted, setSubmitted] = useState(false);
@@ -292,11 +295,14 @@ export function DashboardSaveForm() {
             visible_by_default: model.visible_by_default,
             data_fields: model.data_fields,
             styles: JSON.stringify(model.styles),
-            label_styles: JSON.stringify(model.label_styles),
+            label_config: model.label_config,
             override_style: model.override_style,
             override_label: model.override_label,
             override_field: model.override_field,
             configuration: model.configuration,
+
+            // TODO: Deprecated, we need to migrate this
+            label_styles: JSON.stringify(model.label_styles),
           };
         }),
         context_layers_structure: contextLayersStructure,
@@ -340,11 +346,14 @@ export function DashboardSaveForm() {
         max_zoom: maxZoom,
         widgets: widgets,
         widgets_structure: widgetsStructure,
+        permission: permission,
+        tools: tools,
+
+        // Filter configurations
         filters: filters,
         filters_allow_modify: filtersAllowModify,
         filters_being_hidden: filtersBeingHidden,
-        permission: permission,
-        tools: tools,
+        auto_zoom_to_filter: auto_zoom_to_filter,
       };
 
       // onOpen();

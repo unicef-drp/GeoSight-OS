@@ -17,12 +17,12 @@
    CONTEXT LAYER
    ========================================================================== */
 
-import React, { Fragment, useEffect } from 'react';
-import { centroid as turfCentroid } from '@turf/turf';
+import React, { Fragment, useEffect } from "react";
+import { centroid as turfCentroid } from "@turf/turf";
 import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
-import { arcGisLayer, geojsonLayer, rasterTileLayer } from "../../LayerType"
-import { dictDeepCopy } from "../../../../../utils/main";
+import { arcGisLayer, geojsonLayer, rasterTileLayer } from "../../LayerType";
+import { dictDeepCopy, parseDateTime } from "../../../../../utils/main";
 import { popupTemplate } from "../../Popup";
 import {
   dataStructureToListData
@@ -33,190 +33,194 @@ import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 import rasterCogLayer from "../../LayerType/RasterCog";
 import { Variables } from "../../../../../utils/Variables";
 import { addLayerWithOrder } from "../../Render";
+import { renderContextLayerLabel } from "./Label.tsx";
 
-const ID = `context-layer`
-const markersContextLayers = {}
-const onLoadFunctions = {}
+const ID = `context-layer`;
+const markersContextLayers = {};
+const onLoadFunctions = {};
 
 /**
  * Remove source and layer
  */
 function removeLayers(map, id) {
   if (!map) {
-    return
+    return;
   }
-  const layers = map.getStyle().layers.filter(layer => layer.id.includes(id + '-') || layer.id === id)
-  layers.map(layer => {
-    removeLayer(map, layer.id)
-  })
+  const layers = map
+    .getStyle()
+    .layers.filter((layer) => layer.id.includes(id + "-") || layer.id === id);
+  layers.map((layer) => {
+    removeLayer(map, layer.id);
+  });
   // Remove marker
-  markersContextLayers[id]?.map(marker => {
+  markersContextLayers[id]?.map((marker) => {
     marker.remove();
-  })
-  markersContextLayers[id] = []
+  });
+  markersContextLayers[id] = [];
 }
 
 /**
  * Remove source and layer
  */
 function removeSourceAndLayers(map, id) {
-  removeLayers(map, id)
-  const sources = Object.keys(map.getStyle().sources).filter(source => source.includes(id))
-  sources.map(source => {
-    removeSource(map, source)
-  })
+  removeLayers(map, id);
+  const sources = Object.keys(map.getStyle().sources).filter((source) =>
+    source.includes(id),
+  );
+  sources.map((source) => {
+    removeSource(map, source);
+  });
 }
-
 
 /*** For popup **/
 const popupFeature = (featureProperties, name, fields, defaultField) => {
-  let properties = dictDeepCopy(featureProperties)
+  let properties = dictDeepCopy(featureProperties);
   if (defaultField?.length) {
-    fields = defaultField
+    fields = defaultField;
   }
   if (properties.cluster) {
-    fields = null
-    delete properties['cluster']
-    delete properties['cluster_id']
+    fields = null;
+    delete properties["cluster"];
+    delete properties["cluster_id"];
   }
-  let newProperties = properties
+  let newProperties = properties;
   if (fields) {
-    fields.map(field => {
+    fields.map((field) => {
       if (field.visible !== false) {
         if (field.name) {
-          properties[field.alias] = featureProperties[field.name]
+          properties[field.alias] = featureProperties[field.name];
           if (field?.type.toLowerCase().includes("date")) {
             try {
-              properties[field.alias] = new Date(featureProperties[field.name]).toISOString()
-            } catch (err) {
-
-            }
+              properties[field.alias] = parseDateTime(
+                featureProperties[field.name],
+              );
+            } catch (err) {}
           }
           if (field.name !== field.alias) {
-            delete properties[field.name]
+            delete properties[field.name];
           }
         }
-      } else {
-        if (properties[field.name] !== undefined) {
-          delete properties[field.name]
-        }
       }
-    })
+    });
 
     newProperties = {};
     fields.forEach((field, idx) => {
-      let value = properties[field.alias];
+      if (field.visible === false) return;
+      let value = "–";
       try {
+        value = properties[field.alias];
         if (value.includes("http")) {
           value = `<a href="${value}" target="_blank">${value}</a>`;
         }
       } catch (err) {}
+      if (value === undefined) {
+        value = "–";
+      }
       newProperties[field.alias] = value;
     });
   }
-
   return popupTemplate(null, newProperties, {
     name: name,
-    color: '#eee'
-  })
-}
+    color: "#eee",
+  });
+};
 
 /**
  * Render label of data
  */
 export function renderLabel(id, contextLayerData, contextLayer, map) {
   if (!contextLayerData?.data_fields) {
-    return
+    return;
   }
-  const labels = contextLayerData.data_fields.filter(field => field.as_label)
+  const labels = contextLayerData.data_fields.filter((field) => field.as_label);
   if (labels && labels.length && contextLayerData?.label_styles) {
     // Add label source
-    const idLabel = id + '-label'
+    const idLabel = id + "-label";
     if (!hasSource(map, idLabel)) {
       map.addSource(idLabel, {
-        'type': 'geojson',
-        'data': {
-          type: 'FeatureCollection',
-          features: []
-        }
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
       });
     }
 
     // Add layer
     if (!hasLayer(map, idLabel)) {
-      let minZoom = 0
-      let maxZoom = 34
+      let minZoom = 0;
+      let maxZoom = 34;
       const layout = {
-        'text-anchor': 'bottom',
-        'text-size': 14,
-        'text-offset': [0, -1]
-      }
+        "text-anchor": "bottom",
+        "text-size": 14,
+        "text-offset": [0, -1],
+      };
       const paint = {
-        'text-halo-blur': 2
-      }
-      const style = contextLayerData.label_styles
-      minZoom = style.minZoom ? style.minZoom : minZoom
-      maxZoom = style.maxZoom ? style.maxZoom : maxZoom
-      paint['text-color'] = style.fontColor
+        "text-halo-blur": 2,
+      };
+      const style = contextLayerData.label_styles;
+      minZoom = style.minZoom ? style.minZoom : minZoom;
+      maxZoom = style.maxZoom ? style.maxZoom : maxZoom;
+      paint["text-color"] = style.fontColor;
       if (style.fontFamily) {
-        const font = style.fontFamily.split(',')[0].replaceAll('"', '')
-        layout['text-font'] = [font, font]
+        const font = style.fontFamily.split(",")[0].replaceAll('"', "");
+        layout["text-font"] = [font, font];
       } else {
-        layout['text-font'] = ['Arial', 'Arial']
+        layout["text-font"] = ["Arial", "Arial"];
       }
-      layout['text-size'] = style.fontSize
-      paint['text-halo-color'] = style.haloColor
-      paint['text-halo-width'] = style.haloWeight ? 1 : 0
+      layout["text-size"] = style.fontSize;
+      paint["text-halo-color"] = style.haloColor;
+      paint["text-halo-width"] = style.haloWeight ? 1 : 0;
 
-      const textField = ['format']
+      const textField = ["format"];
       labels.map((label, idx) => {
-        textField.push(['get', label.name])
-        textField.push({})
+        textField.push(["get", label.name]);
+        textField.push({});
         if (idx < labels.length - 1) {
-          textField.push('\n')
-          textField.push({})
+          textField.push("\n");
+          textField.push({});
         }
-      })
-      layout['text-field'] = textField
+      });
+      layout["text-field"] = textField;
       addLayerWithOrder(
         map,
         {
           id: idLabel,
-          type: 'symbol',
+          type: "symbol",
           source: idLabel,
-          filter: ['==', '$type', 'Point'],
+          filter: ["==", "$type", "Point"],
           layout: layout,
           paint: paint,
           maxzoom: maxZoom,
-          minzoom: minZoom
+          minzoom: minZoom,
         },
-        Variables.LAYER_CATEGORY.LABEL
-      )
+        Variables.LAYER_CATEGORY.LABEL,
+      );
     }
 
     // For onload layer
     if (!onLoadFunctions[id]) {
       onLoadFunctions[id] = (e) => {
         if (e.sourceId === id && e?.source?.data?.features?.length) {
-          const features = dictDeepCopy(e?.source?.data?.features)
-          features.map(feature => {
+          const features = dictDeepCopy(e?.source?.data?.features);
+          features.map((feature) => {
             const centroid = turfCentroid({
-              type: 'FeatureCollection',
-              features: [feature]
+              type: "FeatureCollection",
+              features: [feature],
             });
-            feature.geometry = centroid.geometry
-          })
+            feature.geometry = centroid.geometry;
+          });
 
           // Update the source
           map.getSource(idLabel).setData({
-            type: 'FeatureCollection',
-            features: features
+            type: "FeatureCollection",
+            features: features,
           });
         }
-      }
+      };
     }
-    map.off('sourcedata', onLoadFunctions[id]);
-    map.on('sourcedata', onLoadFunctions[id]);
+    map.off("sourcedata", onLoadFunctions[id]);
+    map.on("sourcedata", onLoadFunctions[id]);
   }
 }
 
@@ -234,92 +238,133 @@ export function contextLayerRendering(
   isInit,
   setIsInit,
   prevData,
-  setLoading
+  setLoading,
 ) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
-      const { layer, layer_type } = contextLayer
+      const { layer, layer_type } = contextLayer;
       switch (layer_type) {
         case Variables.LAYER.TYPE.GEOJSON: {
-          const markers = geojsonLayer(map, id, layer, featureProperties => {
+          const markers = geojsonLayer(map, id, layer, (featureProperties) => {
             return popupFeature(
-              featureProperties, contextLayerData.name, null, null
-            )
-          })
-          markersContextLayers[id] = markers
+              featureProperties,
+              contextLayerData.name,
+              null,
+              null,
+            );
+          });
+          markersContextLayers[id] = markers;
           break;
         }
         case Variables.LAYER.TYPE.RASTER_TILE: {
-          rasterTileLayer(map, id, layer)
+          rasterTileLayer(map, id, layer);
           break;
         }
         case Variables.LAYER.TYPE.ARCGIS: {
-          arcGisLayer(map, id, layer, contextLayerData, (featureProperties, arcgisField) => {
-            return popupFeature(
-              featureProperties, contextLayerData.name, arcgisField, contextLayerData.data_fields
-            )
-          }, contextLayerOrder)
-          renderLabel(id, contextLayerData, contextLayer, map)
+          arcGisLayer(
+            map,
+            id,
+            layer,
+            contextLayerData,
+            (featureProperties, arcgisField) => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                arcgisField,
+                contextLayerData.data_fields,
+              );
+            },
+            contextLayerOrder,
+          );
+          renderLabel(id, contextLayerData, contextLayer, map);
           break;
         }
         case Variables.LAYER.TYPE.VECTOR_TILE: {
-          removeLayers(map, id)
+          removeLayers(map, id);
           vectorTileLayer(
-            map, id, layer, contextLayerData, (featureProperties) => {
+            map,
+            id,
+            layer,
+            contextLayerData,
+            (featureProperties) => {
               return popupFeature(
-                featureProperties, contextLayerData.name, null, Object.keys(featureProperties).map(property => {
+                featureProperties,
+                contextLayerData.name,
+                null,
+                Object.keys(featureProperties).map((property) => {
                   return {
                     name: property,
                     alias: property,
-                  }
-                })
-              )
-
-            }, contextLayerOrder
-          )
+                  };
+                }),
+              );
+            },
+            contextLayerOrder,
+          );
+          renderContextLayerLabel(id, map, contextLayerData);
           break;
         }
         case Variables.LAYER.TYPE.RELATED_TABLE: {
-          removeLayers(map, id)
+          removeLayers(map, id);
           relatedTableLayer(
-            map, id, layer, contextLayerData, featureProperties => {
+            map,
+            id,
+            layer,
+            contextLayerData,
+            (featureProperties) => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
                 null,
-                contextLayerData.data_fields
-              )
-            }, contextLayerOrder
-          )
-          break
+                contextLayerData.data_fields,
+              );
+            },
+            contextLayerOrder,
+          );
+          break;
         }
         case Variables.LAYER.TYPE.CLOUD_NATIVE_GIS: {
-          removeLayers(map, id)
+          removeLayers(map, id);
           cloudNativeGISLayer(
-            map, id, layer, contextLayerData, featureProperties => {
+            map,
+            id,
+            layer,
+            contextLayerData,
+            (featureProperties) => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
                 null,
-                contextLayerData.data_fields
-              )
-            }, contextLayerOrder
-          )
-          break
+                contextLayerData.data_fields,
+              );
+            },
+            contextLayerOrder,
+          );
+          break;
         }
         case Variables.LAYER.TYPE.RASTER_COG: {
-          removeLayers(map, id)
+          removeLayers(map, id);
           rasterCogLayer(
-            map, id, layer.styles ? layer : contextLayerData, setData, contextLayerData, featureProperties => {
+            map,
+            id,
+            layer.styles ? layer : contextLayerData,
+            setData,
+            contextLayerData,
+            (featureProperties) => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
                 null,
-                contextLayerData.data_fields
-              )
-            }, contextLayerOrder, isInit, setIsInit, prevData, setLoading
-          )
-          break
+                contextLayerData.data_fields,
+              );
+            },
+            contextLayerOrder,
+            isInit,
+            setIsInit,
+            prevData,
+            setLoading,
+          );
+          break;
         }
       }
     }
@@ -330,59 +375,73 @@ export function contextLayerRendering(
  * ReferenceLayer selector.
  */
 export function ContextLayer({ contextLayerData, map, contextLayerOrder }) {
-  const { contextLayersShow } = useSelector(state => state.map);
-  const contextLayer = useSelector(state => state.map?.contextLayers[contextLayerData.id]);
-  const id = ID + '-' + contextLayerData.id
+  const { contextLayersShow } = useSelector((state) => state.map);
+  const contextLayer = useSelector(
+    (state) => state.map?.contextLayers[contextLayerData.id],
+  );
+  const id = ID + "-" + contextLayerData.id;
 
   /** CONTEXT LAYER CHANGED */
   useEffect(() => {
     if (map && contextLayersShow) {
       // Update configuration
       if (contextLayer?.layer && contextLayerData?.configuration) {
-        contextLayer.layer.configuration = contextLayerData?.configuration
+        contextLayer.layer.configuration = contextLayerData?.configuration;
       }
-      contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder)
+      contextLayerRendering(
+        id,
+        contextLayerData,
+        contextLayer,
+        map,
+        contextLayerOrder,
+      );
     } else {
-      removeLayers(map, id)
+      removeLayers(map, id);
     }
   }, [map, contextLayer, contextLayersShow]);
-  return ""
+  return "";
 }
 
 /**
  * ReferenceLayer selector.
  */
 export default function ContextLayers({ map }) {
-  const {
-    contextLayers,
-    contextLayersStructure
-  } = useSelector(state => state.dashboard.data);
-  const contextLayersData = useSelector(state => state.map?.contextLayers);
+  const { contextLayers, contextLayersStructure } = useSelector(
+    (state) => state.dashboard.data,
+  );
+  const contextLayersData = useSelector((state) => state.map?.contextLayers);
   const contextLayerOrder = dataStructureToListData(
     contextLayers,
-    contextLayersStructure
-  ).filter(row => row?.id).map(row => ID + '-' + row?.id)
-  contextLayerOrder.reverse()
+    contextLayersStructure,
+  )
+    .filter((row) => row?.id)
+    .map((row) => ID + "-" + row?.id);
+  contextLayerOrder.reverse();
 
   /** Remove context layers when not in selected data */
   useEffect(() => {
-    contextLayers.map(contextLayerData => {
-      const id = ID + '-' + contextLayerData.id
+    contextLayers.map((contextLayerData) => {
+      const id = ID + "-" + contextLayerData.id;
       if (!contextLayersData[contextLayerData.id]) {
-        removeLayers(map, id)
+        removeLayers(map, id);
       }
-    })
+    });
   }, [contextLayers, contextLayersData]);
 
-  return <Fragment>{
-    contextLayers ?
-      contextLayers.map(contextLayer => {
-        return <ContextLayer
-          key={contextLayer.id}
-          contextLayerData={contextLayer}
-          map={map}
-          contextLayerOrder={contextLayerOrder}
-        />
-      }) : ""
-  }</Fragment>
+  return (
+    <Fragment>
+      {contextLayers
+        ? contextLayers.map((contextLayer) => {
+            return (
+              <ContextLayer
+                key={contextLayer.id}
+                contextLayerData={contextLayer}
+                map={map}
+                contextLayerOrder={contextLayerOrder}
+              />
+            );
+          })
+        : ""}
+    </Fragment>
+  );
 }

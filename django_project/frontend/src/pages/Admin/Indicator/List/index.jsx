@@ -13,29 +13,30 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React from "react";
 import Tooltip from "@mui/material/Tooltip";
-import DynamicFormIcon from '@mui/icons-material/DynamicForm';
+import DynamicFormIcon from "@mui/icons-material/DynamicForm";
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
+import { useTranslation } from "react-i18next";
+import { render } from "../../../../app";
+import { store } from "../../../../store/admin";
+import { pageNames } from "../../index";
 
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import {
   DataBrowserActiveIcon,
   DataManagementActiveIcon,
-  MapActiveIcon
+  MapActiveIcon,
 } from "../../../../components/Icons";
 import AdminList, { useResourceMeta } from "../../../../components/AdminList";
+import { permissionFilter } from "../../../../components/Filter/resources";
 
-import './style.scss';
-
+import "./style.scss";
 
 export function resourceActions(params, noShare = false) {
-  const permission = params.row.permission
-  const actions = COLUMNS_ACTION(params, urls.admin.indicatorList)
+  const permission = params.row.permission;
+  const actions = COLUMNS_ACTION(params, urls.admin.indicatorList);
 
   // Unshift before more & edit action
   if (permission.share && !noShare) {
@@ -45,12 +46,13 @@ export function resourceActions(params, noShare = false) {
           <a>
             <PermissionModal
               name={params.row.name}
-              urlData={urls.api.permission.replace('/0', `/${params.id}`)}
+              urlData={urls.api.permission.replace("/0", `/${params.id}`)}
             />
           </a>
         }
         label="Change Share Configuration."
-      />)
+      />,
+    );
   }
 
   if (permission.edit_data) {
@@ -58,32 +60,32 @@ export function resourceActions(params, noShare = false) {
       <GridActionsCellItem
         icon={
           <Tooltip title={`Management Map`}>
-            <a
-              href={urls.api.map.replace('/0', `/${params.id}`)}>
-              <div className='ButtonIcon'>
-                <MapActiveIcon/>
+            <a href={urls.api.map.replace("/0", `/${params.id}`)}>
+              <div className="ButtonIcon">
+                <MapActiveIcon />
               </div>
             </a>
           </Tooltip>
         }
         label="Edit"
-      />)
+      />,
+    );
   }
   if (permission.edit_data) {
     actions.unshift(
       <GridActionsCellItem
         icon={
           <Tooltip title={`Management Form`}>
-            <a
-              href={urls.api.form.replace('/0', `/${params.id}`)}>
-              <div className='ButtonIcon'>
-                <DynamicFormIcon/>
+            <a href={urls.api.form.replace("/0", `/${params.id}`)}>
+              <div className="ButtonIcon">
+                <DynamicFormIcon />
               </div>
             </a>
           </Tooltip>
         }
         label="Management Form"
-      />)
+      />,
+    );
   }
   if (permission.edit_data) {
     actions.unshift(
@@ -91,76 +93,81 @@ export function resourceActions(params, noShare = false) {
         icon={
           <Tooltip title={`Import data`}>
             <a
-              href={`${urls.admin.importer}?indicator_data_value=${params.id}`}>
-              <div className='ButtonIcon'>
-                <DataManagementActiveIcon/>
+              href={`${urls.admin.importer}?indicator_data_value=${params.id}`}
+            >
+              <div className="ButtonIcon">
+                <DataManagementActiveIcon />
               </div>
             </a>
           </Tooltip>
         }
         label="Import data"
-      />
-    )
+      />,
+    );
   }
   if (permission.read_data) {
     actions.unshift(
       <GridActionsCellItem
         icon={
           <Tooltip title={`Browse data`}>
-            <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
-              <div className='ButtonIcon'>
-                <DataBrowserActiveIcon/>
+            <a href={urls.api.dataBrowser + "?indicators=" + params.id}>
+              <div className="ButtonIcon">
+                <DataBrowserActiveIcon />
               </div>
             </a>
           </Tooltip>
         }
         label="Value List"
-      />)
+      />,
+    );
   }
-  return actions
+  return actions;
 }
 
 /**
  * Indicator List App
  */
 export default function IndicatorList() {
+  const { t } = useTranslation();
   // Notification
-  const pageName = pageNames.Indicators
+  const pageName = pageNames.Indicators;
   let columns = COLUMNS(pageName, urls.admin.indicatorList);
   // pop action
   columns.pop();
-  columns = columns.concat(useResourceMeta())
+  columns = columns.concat(useResourceMeta());
 
   columns.push({
-    field: 'actions',
-    type: 'actions',
-    cellClassName: 'MuiDataGrid-ActionsColumn',
+    field: "actions",
+    type: "actions",
+    cellClassName: "MuiDataGrid-ActionsColumn",
     width: 320,
     getActions: (params) => {
       // Create actions
-      const actions = resourceActions(params)
-      return actions
+      const actions = resourceActions(params);
+      return actions;
     },
-  })
-  return <AdminList
-    url={{
-      list: urls.api.list,
-      batch: urls.api.batch,
-      detail: urls.api.detail,
-      edit: urls.api.edit,
-      create: urls.api.create,
-    }}
-    title={contentTitle}
-    columns={columns}
-    pageName={pageName}
-    multipleDelete={true}
-    enableFilter={true}
-    defaults={{
-      sort: [
-        { field: 'name', sort: 'asc' }
-      ]
-    }}
-  />
+  });
+  return (
+    <AdminList
+      url={{
+        list: urls.api.list,
+        batch: urls.api.batch,
+        detail: urls.api.detail,
+        edit: urls.api.edit,
+        create: urls.api.create,
+      }}
+      title={contentTitle}
+      columns={columns}
+      pageName={pageName}
+      multipleDelete={true}
+      enableFilter={true}
+      additionalFilters={[permissionFilter(t, true)()]}
+      defaults={{
+        sort: [{ field: "name", sort: "asc" }],
+        filters: { permission: "list" },
+      }}
+    />
+  );
 }
 
-render(IndicatorList, store)
+render(IndicatorList, store);

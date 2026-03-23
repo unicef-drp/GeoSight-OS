@@ -58,6 +58,9 @@ export default function FiltersForm() {
   const filtersAllowModify = useSelector(
     (state) => state.dashboard.data?.filtersAllowModify,
   );
+  const auto_zoom_to_filter = useSelector(
+    (state) => state.dashboard.data?.auto_zoom_to_filter,
+  );
 
   return (
     <div className={"Filters"}>
@@ -72,6 +75,14 @@ export default function FiltersForm() {
           label={"Allow users to modify filters in dashboard"}
         />
       </div>
+      <FormControlLabel
+        checked={auto_zoom_to_filter}
+        control={<Checkbox />}
+        onChange={(evt) => {
+          dispatch(Actions.Dashboard.updateAutoZoomToFilter());
+        }}
+        label={"Zoom in automatically to filtered area"}
+      />
       <FiltersAccordion isAdmin={true} />
     </div>
   );

@@ -31,9 +31,10 @@ import { defaultPointStyle } from "./layerStyles";
 import VectorStyleConfig from "./VectorStyleConfig";
 import RasterCogLayer from "./RasterCogLayer";
 import { Variables } from "../../../../utils/Variables";
+import VectorFieldConfig from "./VectorFieldConfig";
+import LabelFormConfig from "./LabelFormConfig";
 
 import "./style.scss";
-import VectorFieldConfig from "./VectorFieldConfig";
 
 const SelectedClass = "Selected";
 
@@ -112,10 +113,6 @@ export default function StyleConfig({
 
   return (
     <div className={"ContextLayerConfig-Wrapper " + tab}>
-      <div className="form-helptext">
-        Below is for checking the configuration, overriding style and updating
-        popup.
-      </div>
       {error && <div className="error">{error.toString()}</div>}
       <div className="AdminForm">
         {/* FOR CONFIG */}
@@ -132,7 +129,8 @@ export default function StyleConfig({
           >
             Preview
           </div>
-          {data.layer_type === Variables.LAYER.TYPE.ARCGIS ? (
+          {data.layer_type === Variables.LAYER.TYPE.ARCGIS ||
+          Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? (
             <Fragment>
               <div
                 onClick={() => setTab(FIELDS)}
@@ -251,13 +249,20 @@ export default function StyleConfig({
             </>
           ) : null}
 
+          {/* ------------------------ */}
           {/* For LABEL */}
-          {(Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ||
-            data.layer_type === Variables.LAYER.TYPE.RASTER_COG) && (
-            <div className="ContextLayerConfig Label form-helptext">
-              {data.layer_type} does not have label configurations
-            </div>
-          )}
+          {/* ------------------------ */}
+          {!Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) &&
+            data.layer_type !== Variables.LAYER.TYPE.ARCGIS && (
+              <div className="ContextLayerConfig Label form-helptext">
+                {data.layer_type} does not have label configurations
+              </div>
+            )}
+          <LabelFormConfig
+            originalData={data}
+            setOriginalData={setData}
+            useOverride={useOverrideLabel}
+          />
 
           {/* ------------------------ */}
           {/* For FIELDS */}

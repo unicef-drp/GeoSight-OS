@@ -15,7 +15,7 @@ test.describe('View project', () => {
     await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(2)).toBeEnabled();
     await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(3)).toBeEnabled();
     await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(4)).toBeDisabled();
-    await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(5)).toBeDisabled();
+    await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(5)).toBeEnabled();
     await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(6)).toBeEnabled();
     await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(7)).toBeDisabled();
     await expect(page.locator('#simple-tabpanel-1').locator('.PanelInput').nth(8)).toBeDisabled();
@@ -27,7 +27,7 @@ test.describe('View project', () => {
     await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(2)).not.toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
     await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(3)).not.toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
     await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(4)).toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
-    await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(5)).toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
+    await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(5)).not.toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
     await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(6)).not.toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
     await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(7)).toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');
     await expect(page.locator('#simple-tabpanel-1').locator('.LayerInfoIcon').nth(8)).toHaveClass('LayerInfoIcon InfoIcon LayerIcon Error');

@@ -4,7 +4,7 @@ import { delay } from "../../utils";
 test.describe('Cloud native layer', () => {
   test('Cloud native layer', async ({ page }) => {
     await page.goto(`/en-us/admin/context-layer/2/edit`);
-    await page.getByText('Fields').click();
+    await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Fields').click();
     await page.getByText('Override field config from').click();
     await page.getByRole('row', { name: 'osm_id Osm id Number' }).getByRole('checkbox').uncheck();
     await page.getByRole('row', { name: 'osm_type Osm type String' }).getByRole('checkbox').uncheck();
@@ -27,9 +27,11 @@ test.describe('Cloud native layer', () => {
         y: 273
       }
     });
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').first().locator('td').nth(0)).toContainText('Amenity');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').first().locator('td').nth(1)).toContainText('hospital');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(3).locator('td').nth(0)).toContainText('Date time');
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(3).locator('td').nth(1)).toContainText('1970-01-01T20:27:29.859Z');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toContainText('Amenity');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(1)).toContainText('hospital');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(0)).toContainText('Healthcare');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(1)).toContainText('–');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(23).locator('td').nth(0)).toContainText('Addr stree');
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(23).locator('td').nth(1)).toContainText('Wadada xiindheere');
   })
 });

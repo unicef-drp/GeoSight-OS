@@ -28,6 +28,7 @@ import {
   DataBrowserActiveIcon,
   DataManagementActiveIcon,
 } from "../../../../components/Icons";
+import { permissionFilter } from "../../../../components/Filter/resources";
 
 import "./style.scss";
 
@@ -154,6 +155,7 @@ export function resourceActions(params, isForm) {
  * Related Table List App
  */
 export default function RelatedTableList() {
+  const { t } = useTranslation();
   const pageName = pageNames.RelatedTables;
   let columns = COLUMNS(pageName, urls.admin.relatedTableList);
   columns = columns.concat(useResourceMeta());
@@ -181,8 +183,10 @@ export default function RelatedTableList() {
       pageName={pageName}
       multipleDelete={true}
       enableFilter={true}
+      additionalFilters={[permissionFilter(t, true)()]}
       defaults={{
         sort: [{ field: "name", sort: "asc" }],
+        filters: { permission: "list" },
       }}
     />
   );

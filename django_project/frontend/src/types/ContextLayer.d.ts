@@ -13,6 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+export interface ContextLayerDataField {
+  name: string;
+}
+
 export interface ContextLayer {
   id: number;
   name: string;
@@ -20,7 +24,13 @@ export interface ContextLayer {
   layer_type: string;
   arcgis_config?: number;
   related_table?: number;
-  visible_by_default: boolean,
+  visible_by_default: boolean;
   cloud_native_gis_layer_id?: number;
   configuration?: object;
+
+  // For label configurations
+  data_fields?: ContextLayerDataField[];
+  label_config?: any;
+  label_styles?: any;
+  override_label?: boolean;
 }

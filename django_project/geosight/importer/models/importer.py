@@ -132,32 +132,57 @@ class Importer(AbstractEditData):
         return self.unique_name
 
     def able_to_edit(self, user):
-        """If able to edit."""
+        """Check if the user is able to edit this importer.
+
+        :param user: The user to check permissions for.
+        :type user: django.contrib.auth.models.User
+        :returns: True if the user can edit, False otherwise.
+        :rtype: bool
+        """
         return user.profile.role == ROLES.SUPER_ADMIN.name or \
             user == self.creator
 
     @property
     def unique_name(self):
-        """Return unique name."""
+        """Return a unique name combining creator username and unique id.
+
+        :returns: Unique name string.
+        :rtype: str
+        """
         return (
-            f'{self.creator.username} ({self.unique_id})'
+            f'{self.creator_username} ({self.unique_id})'
         )
 
-    def save(self, *args, **kwargs):
-        """Override importer saved."""
+    def save(self, *args, **kwargs):  # noqa: DOC109, DOC110, DOC103
+        """Override save to validate the importer before persisting.
+
+        :param args: Positional arguments passed to super().save().
+        :param kwargs: Keyword arguments passed to super().save().
+        """
         # Keep this to check the importer
         self.importer  # noqa: D106
         super(Importer, self).save(*args, **kwargs)
 
     @property
     def importer(self):
-        """Return the importer."""
+        """Return the importer class from import_type and input_format.
+
+        :returns: The importer class instance.
+        """
         return ImporterClass(
             import_type=self.import_type, input_format=self.input_format
         ).get()
 
     def save_attribute(self, name, value=None, file=None):
-        """Save single attribute."""
+        """Save a single attribute for this importer.
+
+        :param name: The attribute name.
+        :type name: str
+        :param value: Value of attribute. If None, file must be provided.
+        :type value: str
+        :param file: File of attribute. If None, file must be provided.
+        :type file: file
+        """
         from geosight.importer.models.attribute import ImporterAttribute
         if not value and not file:
             attr, _ = ImporterAttribute.objects.get_or_create(
@@ -167,8 +192,18 @@ class Importer(AbstractEditData):
             attr.file = file
             attr.save()
 
-    def save_attributes(self, data, files, **kwargs):
-        """Save attributes for the importers."""
+    def save_attributes(self, data, files, **kwargs):  # noqa: DOC110, DOC103
+        """Save all attributes, mappings and alerts for this importer.
+
+        :param data: Dictionary of attribute names to values.
+        :type data: dict
+        :param files: Dictionary of attribute names to uploaded files.
+        :type files: dict
+        :param kwargs:
+            Additional keyword arguments passed to attributes_definition.
+        :raises ImporterError:
+            If a required attribute is missing from data or files.
+        """
         from geosight.importer.models.attribute import (
             ImporterAttribute, ImporterMapping
         )
@@ -239,7 +274,11 @@ class Importer(AbstractEditData):
 
     @property
     def attributes(self):
-        """Return attributes of data."""
+        """Return all attributes of this importer as a dictionary.
+
+        :returns: Dictionary mapping attribute names to their values or files.
+        :rtype: dict
+        """
         reference_layer_id = None
         if self.reference_layer:
             reference_layer_id = self.reference_layer.id
@@ -253,16 +292,26 @@ class Importer(AbstractEditData):
 
     @property
     def mapping(self):
-        """Return mapping of data."""
+        """Return the field mapping for this importer as a dictionary.
+
+        :returns: Dictionary mapping source field names to target field names.
+        :rtype: dict
+        """
         attrs = {}
         for attr in self.importermapping_set.all():
             attrs[attr.name] = attr.value
         return attrs
 
     def post_saved(self, force=False) -> str:
-        """Post save importer data.
+        """Perform post-save actions and return a redirect URL.
 
-        Return redirect url.
+        Triggers an immediate import run for single imports, or returns
+        the scheduled jobs page URL for scheduled imports.
+
+        :param force: Force run even if run_on_create is False.
+        :type force: bool
+        :returns: URL to redirect to after saving.
+        :rtype: str
         """
         from geosight.importer.models import ImporterLog
         from geosight.importer.tasks import run_importer
@@ -285,7 +334,11 @@ class Importer(AbstractEditData):
     # For run importer
     @property
     def running_log(self):
-        """Return importer class of indicator."""
+        """Return the currently running log for this importer, if any.
+
+        :returns: The active ImporterLog instance, or None if not running.
+        :rtype: ImporterLog or None
+        """
         from geosight.importer.models.log import LogStatus
         return self.importerlog_set.filter(
             Q(status=LogStatus.START) |
@@ -293,9 +346,11 @@ class Importer(AbstractEditData):
         ).first()
 
     def run(self, log=None):
-        """Run the importer.
+        """Run the importer if it is not already running.
 
-        Check if it can run.
+        :param log: An existing ImporterLog to run against. If None and no
+            log is currently running, a new log will be created.
+        :type log: ImporterLog or None
         """
         from geosight.importer.models import ImporterLog
         if not log and not self.running_log:
@@ -309,27 +364,46 @@ class Importer(AbstractEditData):
     # --------------------------------------------------
     @property
     def schedule(self):
-        """Return schedule of job."""
+        """Return the crontab schedule string for this importer's job.
+
+        :returns: Crontab schedule string, or None if no job is set.
+        :rtype: str or None
+        """
         return self.job.crontab.__str__().replace('(m/h/dM/MY/d) ', '') \
             if self.job else None
 
     @property
     def job_active(self):
-        """Return the importer."""
+        """Return whether the scheduled job is enabled.
+
+        :returns:
+            True if the job is enabled, False if disabled, None if no job.
+        :rtype: bool or None
+        """
         return None if not self.job else self.job.enabled
 
     def enable_job(self):
-        """Enable job."""
+        """Enable the scheduled job for this importer."""
         self.job.enabled = True
         self.job.save()
 
     def disable_job(self):
-        """Disabled job."""
+        """Disable the scheduled job for this importer."""
         self.job.enabled = False
         self.job.save()
 
     def change_job(self, schedule: str):
-        """Change the job."""
+        """Create, update, or delete the scheduled job for this importer.
+
+        If schedule is provided, creates or updates the crontab job.
+        If schedule is empty or None, removes the existing job.
+
+        :param schedule: Crontab string in ``<m h dM MY d tz>`` format,
+            or empty/None to remove the job.
+        :type schedule: str
+        :raises ImporterError:
+            If job_name is missing or schedule format is invalid.
+        """
         from geosight.importer.exception import ImporterError
         if schedule:
             if not self.job_name:
@@ -393,13 +467,21 @@ class Importer(AbstractEditData):
 
     @property
     def schedule_type(self):
-        """Return the importer."""
+        """Return the schedule type of this importer.
+
+        :returns: SINGLE_IMPORT if no job is set, SCHEDULED_IMPORT otherwise.
+        :rtype: ScheduleType
+        """
         return ScheduleType.SINGLE_IMPORT \
             if not self.job else ScheduleType.SCHEDULED_IMPORT
 
     @property
     def need_review(self):
-        """Return if the data is still in review."""
+        """Return whether the imported data requires manual review.
+
+        :returns: True if the data needs review, False otherwise.
+        :rtype: bool
+        """
         if self.import_type == ImportType.INDICATOR_VALUE:
             if not self.job:
                 return True
@@ -407,12 +489,24 @@ class Importer(AbstractEditData):
 
     @property
     def data_table_name(self):
-        """Return table name of data."""
+        """Return the temporary database table name for this importer's data.
+
+        :returns: Fully qualified table name in the temp schema.
+        :rtype: str
+        """
         fb_identifier = str(self.unique_id).replace('-', '_')
         return f'{settings.TEMP_SCHEMA_NAME}.temp_data_{fb_identifier}'
 
     def permissions(self, user: User):
-        """Return permission."""
+        """Return the permission map for the given user on this importer.
+
+        :param user: The user to check permissions for.
+        :type user: django.contrib.auth.models.User
+        :returns:
+            Dictionary with keys list,
+             read, edit, share, delete mapped to bools.
+        :rtype: dict
+        """
         perm = False
         if user:
             perm = user == self.creator or user.profile.is_admin

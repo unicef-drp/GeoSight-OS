@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
+from geosight.data.admin.base import BaseAdminResourceMixin
 from geosight.georepo.admin.reference_layer import ReferenceLayerViewAdmin
 from geosight.reference_dataset.models import (
     ReferenceDataset, ReferenceDatasetLevel
@@ -36,6 +37,11 @@ class ReferenceDatasetAdmin(ReferenceLayerViewAdmin):
     inlines = (ReferenceDatasetLevelInline,)
     search_fields = ('name',)
     list_filter = ()
+    list_display = (
+            ReferenceLayerViewAdmin.list_display +
+            BaseAdminResourceMixin.list_display
+    )
+    actions = ReferenceLayerViewAdmin.actions + BaseAdminResourceMixin.actions
 
     def get_queryset(self, request):
         """

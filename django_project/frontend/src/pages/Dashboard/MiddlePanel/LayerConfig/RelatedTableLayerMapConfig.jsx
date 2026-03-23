@@ -118,7 +118,27 @@ export default function RelatedTableLayerMapConfig() {
       const layerMetadata = metadata[relatedTableLayer.id];
       if (!layerMetadata?.sequenceFieldSelected?.length) return;
 
-      const rows = queryData(relatedTableData, updateWhereQuery(where));
+      const rawSegments = where ? where.split(/\bAND\b/i) : [];
+      // Reassemble BETWEEN ... AND ... which gets split into two parts
+      const segments = [];
+      for (const seg of rawSegments) {
+        if (segments.length > 0 && !/^\s*"/.test(seg)) {
+          segments[segments.length - 1] += " AND " + seg;
+        } else {
+          segments.push(seg);
+        }
+      }
+      const filteredWhere = segments
+        .filter((segment) => {
+          const match = segment.match(/"([^"]+)"/);
+          return match && sequenceFieldSelected.includes(match[1]);
+        })
+        .join(" AND ")
+        .trim();
+      const rows = queryData(
+        relatedTableData,
+        filteredWhere ? updateWhereQuery(filteredWhere) : null,
+      );
       relatedFields.map((field) => {
         if (sequenceFieldSelected.includes(field.name)) return;
         const options = Array.from(

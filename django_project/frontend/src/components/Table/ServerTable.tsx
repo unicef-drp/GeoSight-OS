@@ -109,8 +109,8 @@ const ServerTable = forwardRef(
         // @ts-ignore
         let newParameters: any = {
           ...parameters,
-          ...filterModel,
           ...defaults.filters,
+          ...filterModel,
         };
         newParameters = Object.fromEntries(
           Object.entries(newParameters).filter(([_, value]) => value != null),

@@ -108,13 +108,15 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         obj = self._get_object()
         edit_data_permission_resource(obj, self.request.user)
         try:
-            layer = self.get_context_layer_object(autocreate=replace)
+            layer = self.get_context_layer_object()
             if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
                 try:
                     geojson_to_geopanda(
                         self.request.data, layer.schema_name, layer.table_name,
                         mode=Mode.REPLACE if replace else Mode.APPEND,
                     )
+                    if not layer.layerattributes_set.count():
+                        layer.reset_attributes()
                 except KeyError:
                     return HttpResponseBadRequest(
                         "Invalid payload format. "

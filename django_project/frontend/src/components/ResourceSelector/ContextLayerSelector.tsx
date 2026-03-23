@@ -16,12 +16,29 @@
 import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalInputSelectorProps } from "./types";
+import { permissionFilter } from "../Filter/resources";
+import { useTranslation } from "react-i18next";
 
 const columns = [
   { field: "id", headerName: "id", hide: true },
   { field: "name", headerName: "Name", flex: 1 },
   { field: "description", headerName: "Description", flex: 1 },
-  { field: "category", headerName: "Category", flex: 1 },
+  {
+    field: "category",
+    headerName: "Category",
+    flex: 0.5,
+    serverKey: "group__name",
+  },
+  {
+    field: "actions",
+    type: "actions",
+    cellClassName: "MuiDataGrid-ActionsColumn",
+    width: 1,
+    // @ts-ignore
+    getActions: () => {
+      return [];
+    },
+  },
 ];
 
 /** For Georepo View selection. */
@@ -44,6 +61,7 @@ export default function ContextLayerSelector({
   defaults,
 }: ModalInputSelectorProps) {
   const url = "/api/v1/context-layers/?fields=__all__";
+  const { t } = useTranslation();
 
   return (
     <ModalInputSelector
@@ -66,7 +84,8 @@ export default function ContextLayerSelector({
       }}
       // Table properties
       multipleSelection={multipleSelection}
-      defaults={defaults}
+      defaults={{ ...defaults, filters: { permission: "read" } }}
+      additionalFilters={[permissionFilter(t)()]}
     />
   );
 }

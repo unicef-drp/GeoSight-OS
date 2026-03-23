@@ -172,6 +172,11 @@ export const axiosGet = function (url, params = null, signal = null) {
   }
 };
 
+/*** Axios georepo request */
+export const axiosPost = function (url, data = {}, signal = null) {
+  return axios.post(url, data, { ...headers, signal: signal });
+};
+
 /***
  * Change code to ucode
  */

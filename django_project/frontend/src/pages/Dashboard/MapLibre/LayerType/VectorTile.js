@@ -35,7 +35,6 @@ export default function vectorTileLayer(map, id, data, contextLayerData, popupFe
       before = beforeOrder
     }
   }
-
   if (!hasSource(map, id)) {
     let url = data.url
     const params = Object.assign({}, data.params, {

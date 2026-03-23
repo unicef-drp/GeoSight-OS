@@ -8,7 +8,7 @@ test.describe('Test filter in context layer admin', () => {
   });
 
   test('Test multiple filters', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Context Layer Name' }).click();
     await page.getByRole('textbox', { name: 'Context Layer Name' }).fill('lay');
     await page.getByRole('textbox', { name: 'Description' }).click();
@@ -27,7 +27,7 @@ test.describe('Test filter in context layer admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(1);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Layer type' }).click();
     await page.getByRole('textbox', { name: 'Layer type' }).press('ControlOrMeta+a');
     await page.getByRole('textbox', { name: 'Layer type' }).fill('');
@@ -42,7 +42,7 @@ test.describe('Test filter in context layer admin', () => {
   });
 
   test('Test created date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-01');
     await page.getByLabel('Created At (to)').click();
@@ -56,7 +56,7 @@ test.describe('Test filter in context layer admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(4);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (to)').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-02');
@@ -68,7 +68,7 @@ test.describe('Test filter in context layer admin', () => {
   });
 
   test('Test modified date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-03');
     await page.getByLabel('Modified At (to)').click();
@@ -80,7 +80,7 @@ test.describe('Test filter in context layer admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(2);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (to)').click();
     await page.getByLabel('Modified At (to)').fill('2025-01-03');
     await page.getByRole('button', { name: 'Apply Filters' }).click();

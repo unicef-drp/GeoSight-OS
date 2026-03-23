@@ -22,6 +22,9 @@ import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { FieldAttribute } from "../../../../types/Field";
 import FieldConfig from "../../../../components/FieldConfig";
 import { DataField } from "../../../../types/IndicatorLayer";
+import { Variables } from "../../../../utils/Variables";
+import RelatedTableFields from "../Form/RelatedTableFields";
+import CloudNativeGISFields from "../Form/CloudNativeGIS";
 
 /** Vector field config component. */
 
@@ -43,6 +46,7 @@ export default function VectorFieldConfig({
   const update = () => {
     setData({ ...data });
   };
+
   return (
     <Fragment>
       <div className="ContextLayerConfig Fields">
@@ -83,6 +87,13 @@ export default function VectorFieldConfig({
           )
         ) : null}
       </div>
+
+      {data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE && (
+        <RelatedTableFields data={data} onSetData={setData} />
+      )}
+      {data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS && (
+        <CloudNativeGISFields data={data} onSetData={setData} />
+      )}
     </Fragment>
   );
 }

@@ -35,6 +35,7 @@ import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 import { DjangoRequests } from "../../../../Requests";
 
 import "./style.scss";
+import { permissionFilter } from "../../../../components/Filter/resources";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.dashboardList);
@@ -229,12 +230,14 @@ export default function DashboardList() {
           serverKey: "featured",
           type: "boolean",
         },
+        permissionFilter(t)()
       ]}
       pageName={pageName}
       multipleDelete={true}
       enableFilter={true}
       defaults={{
         sort: [{ field: "name", sort: "asc" }],
+        filters: { permission: "list" },
       }}
       rowIdKey={"slug"}
     />

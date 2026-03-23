@@ -8,7 +8,7 @@ test.describe('Test filter in style admin', () => {
   });
 
   test('Test multiple filters', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByRole('textbox', { name: 'Style Name' }).click();
     await page.getByRole('textbox', { name: 'Style Name' }).fill('sty');
     await page.getByRole('textbox', { name: 'Style Name' }).press('Tab');
@@ -30,7 +30,7 @@ test.describe('Test filter in style admin', () => {
   });
 
   test('Test created date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').fill('2025-01-01');
     await page.getByLabel('Created At (to)').click();
     await page.getByLabel('Created At (to)').fill('2025-01-31');
@@ -42,7 +42,7 @@ test.describe('Test filter in style admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(3);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-01');
     await page.getByLabel('Created At (to)').click();
@@ -55,7 +55,7 @@ test.describe('Test filter in style admin', () => {
   });
 
   test('Test modified date', async ({ page }) => {
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-01');
     await page.getByLabel('Modified At (to)').click();
     await page.getByLabel('Modified At (to)').fill('2025-01-10');
@@ -68,7 +68,7 @@ test.describe('Test filter in style admin', () => {
     let dataGridRow = page.locator('.MuiDataGrid-row');
     await expect(dataGridRow).toHaveCount(4);
 
-    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.locator('a[title="Filter"]').click();
     await page.getByLabel('Modified At (from)').click();
     await page.getByLabel('Modified At (from)').fill('2025-01-05');
     await page.getByLabel('Modified At (to)').click();

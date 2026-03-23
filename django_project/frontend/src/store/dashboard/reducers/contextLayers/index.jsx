@@ -110,13 +110,19 @@ export default function contextLayersReducer(state = initialState, action, dashb
             if (action.payload.styles) {
               contextLayer.styles = action.payload.styles
             }
-            if (action.payload.label_styles) {
-              contextLayer.label_styles = action.payload.label_styles
+            if (action.payload.label_config) {
+              contextLayer.label_config = action.payload.label_config
             }
+
             contextLayer.override_style = action.payload.override_style
             contextLayer.override_label = action.payload.override_label
             contextLayer.override_field = action.payload.override_field
             contextLayer.configuration = action.payload.configuration
+
+            // TODO: Deprecated, we need to migrate this
+            if (action.payload.label_styles) {
+              contextLayer.label_styles = action.payload.label_styles
+            }
           }
           contextLayers.push(contextLayer)
         })

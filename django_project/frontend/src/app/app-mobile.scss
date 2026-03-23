@@ -370,6 +370,18 @@
   footer {
     display: none;
   }
+  .preview,
+  .maplibregl-popup-content {
+    .content {
+      max-height: 250px;
+
+      table {
+        td {
+          max-width: 150px;
+        }
+      }
+    }
+  }
 }
 
 .maplibregl-popup {
