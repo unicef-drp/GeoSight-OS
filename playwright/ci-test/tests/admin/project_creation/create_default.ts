@@ -15,10 +15,19 @@ test.describe('Create project', () => {
   test('Create with default config', async ({ page }) => {
     const name = 'Test Project Default';
     let lastLog = null
+    let lastBBOX = null
     page.on('console', msg => {
       if (msg.text().indexOf('FILTERED_GEOM:') !== -1) {
         try {
           lastLog = JSON.parse(msg.text().replace('FILTERED_GEOM:', ''))
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
+      if (msg.text().indexOf('BBOX:') !== -1) {
+        try {
+          lastBBOX = msg.text().replace('BBOX:', '')
         } catch (e) {
           console.log(e)
 
@@ -160,6 +169,7 @@ test.describe('Create project', () => {
     // --------------------------------
     await new Promise(r => setTimeout(r, 2000));
     await page.locator('.TabPrimary').getByText('Filters').click();
+    await page.getByText('Zoom in automatically to filtered area').click();
 
     // Filter 1
     await page.locator('.Filters').getByTestId('AddCircleIcon').click();
@@ -261,6 +271,7 @@ test.describe('Create project', () => {
     await page.getByRole('button', { name: 'Show SOM_0002' }).getByRole('checkbox').check();
     await page.locator('.FilterInputWrapper').nth(1).locator('input').first().fill('SOM_0001');
     await page.waitForTimeout(1000);
+    await expect(lastBBOX).toEqual(" 42.68301,9.65724355,44.23612531,11.515203");
     await expect(lastLog).toEqual(["6bddaec7-83a1-4da5-9d37-8a32bc925e64", "7977bca3-3645-4072-bfe9-ad342c2674e8", "998e50ae-d1c4-48fa-8357-4dcbe3574517", "9e6b0956-fd2d-403b-8752-b13993cb1cdb", "a2006979-4f25-448c-891b-3935c4bcf6f0", "b1d27efa-bfc2-4a93-99da-cac93faba80b"])
     await page.locator('.FilterInputWrapper').nth(1).locator('input').first().fill('SOM_002');
     await page.waitForTimeout(1000);

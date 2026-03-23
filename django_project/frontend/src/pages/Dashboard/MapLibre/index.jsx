@@ -59,6 +59,8 @@ import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
 import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 import ReferenceLayerLevelSelection
   from "../Toolbars/ReferenceLayerLevelSelection";
+import ZoomToFilteredGeometries
+  from "../../../components/ZoomToFilteredGeometries";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
@@ -302,6 +304,7 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
     >
       {/* TOOLBARS */}
       <div className="Toolbar">
+        <ZoomToFilteredGeometries map={map} />
         <TiltControl map={map} is3DView={is3dMode} force={force} />
         <div className="Toolbar-Left">
           {leftPanelProps ? (

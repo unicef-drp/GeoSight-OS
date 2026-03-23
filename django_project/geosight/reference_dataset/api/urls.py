@@ -14,8 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
 
+from .v1.bbox import ReferenceDatasetBboxByConcept
 from .v1.entities import EntityViewSet, EntityReferenceDatasetViewSet
 from .v1.reference_dataset import ReferenceDatasetViewSet
 
@@ -36,4 +38,11 @@ router.register(
     basename='reference-datasets-api'
 )
 
-urlpatterns = router.urls
+urlpatterns = [
+    url(
+        r'^reference-datasets/(?P<identifier>[^/]+)/bbox/concept_uuid/$',
+        ReferenceDatasetBboxByConcept.as_view(),
+        name='reference-datasets-bbox-concept-uuid-api'
+    ),
+]
+urlpatterns += router.urls

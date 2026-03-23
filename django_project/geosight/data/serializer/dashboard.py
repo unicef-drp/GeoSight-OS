@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import os
+
 from django.shortcuts import reverse
 from rest_framework import serializers
 
@@ -498,6 +499,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             # Filters
             # ------------------------------
             'filters', 'filters_being_hidden', 'filters_allow_modify',
+            'auto_zoom_to_filter',
 
             # ------------------------------
             # Configuration for dashboard
