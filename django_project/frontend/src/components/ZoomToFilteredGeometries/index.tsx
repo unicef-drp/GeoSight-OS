@@ -73,13 +73,18 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
       });
       const session = new Session("ZoomToGeometriesByFilters", 1000);
       const georepoRequest = new GeorepoRequest(!referenceLayer.is_local);
-      const response = await georepoRequest.getBbox(
-        referenceLayer.identifier,
-        "concept_uuid",
-        usedConceptUUIDs,
-      );
+      let bbox: number[] = [];
+      try {
+        bbox = await georepoRequest.getBbox(
+          referenceLayer.identifier,
+          "concept_uuid",
+          usedConceptUUIDs,
+        );
+      } catch (_) {
+        setIsLoading(false);
+        return;
+      }
       if (session.isValid) {
-        const bbox = response as number[];
         Logger.log("BBOX: ", bbox);
         if (bbox?.length === 4) {
           map.fitBounds(
