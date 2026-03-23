@@ -21,6 +21,8 @@ import shutil
 from core.celery import app
 from django.conf import settings
 
+from geosight.log.models import CleanupDirectoryLog
+
 
 logger = logging.getLogger(__name__)
 
@@ -152,6 +154,14 @@ def cleanup_tmp_directory(threshold_override=None):
             logger.info(
                 f"Deleted {deleted_count} numbered log files, "
                 f"freed {freed_size / (1024*1024):.2f} MB in '{path}'"
+            )
+            CleanupDirectoryLog.objects.create(
+                storage_path=path,
+                usage_percentage=usage_percent,
+                critical_threshold=critical_threshold,
+                deleted_files_count=deleted_count,
+                freed_space_bytes=freed_size,
+                deleted_files=deleted_files
             )
 
     return {

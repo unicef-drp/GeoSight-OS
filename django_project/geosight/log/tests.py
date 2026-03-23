@@ -273,15 +273,20 @@ class TestCleanupTmpDirectory(unittest.TestCase):
         mock_delete.assert_not_called()
         self.assertEqual(result, {'deleted_count': 0, 'freed_size_bytes': 0})
 
+    @patch('geosight.log.tasks.CleanupDirectoryLog')
     @patch('geosight.log.tasks.delete_numbered_log_files')
     @patch('geosight.log.tasks.shutil.disk_usage')
-    def test_cleanup_above_threshold(self, mock_disk_usage, mock_delete):
+    def test_cleanup_above_threshold(
+        self, mock_disk_usage, mock_delete, mock_log_model
+    ):
         """Function IS called with args when usage exceeds threshold.
 
         :param mock_disk_usage: Mock for shutil.disk_usage
         :type mock_disk_usage: MagicMock
         :param mock_delete: Mock for delete_numbered_log_files
         :type mock_delete: MagicMock
+        :param mock_log_model: Mock for CleanupDirectoryLog model
+        :type mock_log_model: MagicMock
         """
         mock_disk_usage.return_value = self._make_disk_usage(95)
         mock_delete.return_value = (10, 1024 * 1024, ['/tmp/worker.log.1'])
@@ -291,6 +296,14 @@ class TestCleanupTmpDirectory(unittest.TestCase):
         mock_delete.assert_called_once_with('/tmp', max_depth=2, dry_run=False)
         self.assertEqual(
             result, {'deleted_count': 10, 'freed_size_bytes': 1024 * 1024}
+        )
+        mock_log_model.objects.create.assert_called_once_with(
+            storage_path='/tmp',
+            usage_percentage=95.0,
+            critical_threshold=90,
+            deleted_files_count=10,
+            freed_space_bytes=1024 * 1024,
+            deleted_files=['/tmp/worker.log.1'],
         )
 
     @patch('geosight.log.tasks.delete_numbered_log_files')
@@ -312,15 +325,20 @@ class TestCleanupTmpDirectory(unittest.TestCase):
         mock_delete.assert_not_called()
         self.assertEqual(result, {'deleted_count': 0, 'freed_size_bytes': 0})
 
+    @patch('geosight.log.tasks.CleanupDirectoryLog')
     @patch('geosight.log.tasks.delete_numbered_log_files')
     @patch('geosight.log.tasks.shutil.disk_usage')
-    def test_threshold_override(self, mock_disk_usage, mock_delete):
+    def test_threshold_override(
+        self, mock_disk_usage, mock_delete, mock_log_model
+    ):
         """threshold_override takes precedence over the settings value.
 
         :param mock_disk_usage: Mock for shutil.disk_usage
         :type mock_disk_usage: MagicMock
         :param mock_delete: Mock for delete_numbered_log_files
         :type mock_delete: MagicMock
+        :param mock_log_model: Mock for CleanupDirectoryLog model
+        :type mock_log_model: MagicMock
         """
         mock_disk_usage.return_value = self._make_disk_usage(50)
         mock_delete.return_value = (3, 512, [])
@@ -331,6 +349,14 @@ class TestCleanupTmpDirectory(unittest.TestCase):
 
         mock_delete.assert_called_once_with('/tmp', max_depth=2, dry_run=False)
         self.assertEqual(result, {'deleted_count': 3, 'freed_size_bytes': 512})
+        mock_log_model.objects.create.assert_called_once_with(
+            storage_path='/tmp',
+            usage_percentage=50.0,
+            critical_threshold=40,
+            deleted_files_count=3,
+            freed_space_bytes=512,
+            deleted_files=[],
+        )
 
     @patch('geosight.log.tasks.delete_numbered_log_files')
     @patch('geosight.log.tasks.os.path.exists')
