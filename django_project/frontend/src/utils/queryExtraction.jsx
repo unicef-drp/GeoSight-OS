@@ -333,7 +333,14 @@ export function returnWhereToDict(where, upperWhere) {
  * Return value
  */
 const cleanValueFn = (value, returnEmpty = false) => {
-  return [null, undefined, ''].includes(value) ? returnEmpty ? '' : "''" : (isNaN(value) ? `${value.includes("'") ? `"${value}"` : `'${value}'`}` : value);
+  if ([null, undefined, ''].includes(value)) {
+    return returnEmpty ? '' : "''";
+  }
+  if (!isNaN(value)) {
+    return value;
+  }
+  const str = String(value);
+  return str.includes("'") ? `"${str}"` : `'${str}'`;
 }
 
 /**

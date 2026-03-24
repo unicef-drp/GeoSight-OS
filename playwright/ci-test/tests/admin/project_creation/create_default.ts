@@ -12,6 +12,7 @@ test.describe('Create project', () => {
   });
 
   // A use case tests scenarios
+  // @ts-ignore
   test('Create with default config', async ({ page }) => {
     const name = 'Test Project Default';
     let lastLog = null
@@ -184,7 +185,7 @@ test.describe('Create project', () => {
     await page.locator('.modal--content').getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create filter' }).click();
 
-    // Filter 1
+    // Filter 2
     await page.locator('.Filters').getByTestId('AddCircleIcon').click();
     await page.getByText('Pick the field').click();
     await page.getByRole('option', { name: 'ucode' }).nth(1).click();
@@ -195,6 +196,22 @@ test.describe('Create project', () => {
     await page.getByPlaceholder('Filter description').fill('Description 2');
     await page.locator('.modal--content').getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create filter' }).click();
+
+    // Filter 3
+    // Just for test
+    await page.locator('.Filters').getByTestId('AddCircleIcon').click();
+    await page.getByText('Pick the field').click();
+    await page.getByRole('option', { name: 'name' }).nth(1).click();
+    await page.locator('.FilterEditModalQueryMethod').click();
+    await page.getByRole('option', { name: 'in', exact: true }).click();
+    await page.locator('.FilterEditModalQueryWrapper .FilterInputWrapper .MuiInputBase-input').click();
+    await page.getByRole('option', { name: 'Select all' }).click();
+    await expect(page.getByPlaceholder('All selected')).toBeVisible();
+    await page.locator('.FilterEditModalQueryMethod').click();
+    await page.getByRole('option', { name: 'equals', exact: true }).click();
+    await expect(page.locator('.FilterEditModalQueryWrapper').getByPlaceholder('Select 1 option')).toBeVisible();
+    await expect(page.locator('.FilterEditModalQueryWrapper').getByPlaceholder('Select 1 option')).toHaveValue('Awdal');
+    await page.locator('.modal--header--close').click();
 
     // --------------------------------------------
     // Save

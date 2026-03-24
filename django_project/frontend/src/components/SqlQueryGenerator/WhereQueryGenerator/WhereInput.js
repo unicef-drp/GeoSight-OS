@@ -71,6 +71,10 @@ export function WhereInputValue({
       betweenMax = parseFloat(value[1]);
     }
   }
+  try {
+    optionsData.sort();
+  } catch (err) {}
+  
   const [initValue, setInitValue] = useState(value);
   const [initBetweenMin, setInitBetweenMin] = useState(betweenMin);
   const [initBetweenMax, setInitBetweenMax] = useState(betweenMax);
@@ -292,10 +296,13 @@ export function WhereInputValue({
           if (Array.isArray(value)) {
             setValue(
               value.map((val) => (val.value !== undefined ? val.value : val)),
-              isAllSelected
+              isAllSelected,
             );
           } else {
-            setValue(value.value !== undefined ? value.value : value, isAllSelected);
+            setValue(
+              value.value !== undefined ? value.value : value,
+              isAllSelected,
+            );
           }
         }}
         options={optionsData ? optionsData : []}
@@ -304,10 +311,7 @@ export function WhereInputValue({
         {...props}
       />
     );
-  } else if (
-    SINGLE_SELECTABLE_OPERATORS.includes(operator) &&
-    textBasedOnMinMax
-  ) {
+  } else if (SINGLE_SELECTABLE_OPERATORS.includes(operator)) {
     if (!optionsData) {
       return defaultInput();
     }
@@ -544,7 +548,10 @@ export default function WhereInput({
     >
       {/* This is for the filtered */}
       {currentField?.isFiltered && (
-        <div className="ResetFilterQuery" style={{ float: "right", marginTop: "3px" }}>
+        <div
+          className="ResetFilterQuery"
+          style={{ float: "right", marginTop: "3px" }}
+        >
           <FilterIcon
             onClick={() => {
               if (props.resetFilter) {

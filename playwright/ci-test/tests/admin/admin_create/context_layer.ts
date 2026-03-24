@@ -59,7 +59,7 @@ test.describe('Context layer create admin', () => {
         y: 347
       }
     });
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr')).toHaveCount(3);
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr')).toHaveCount(5);
     await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toHaveText("Partner");
     await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(1)).toHaveText("Partner B");
     await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(0)).toHaveText("Pcode");
