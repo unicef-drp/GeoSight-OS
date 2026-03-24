@@ -65,11 +65,13 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
       Object.entries(referenceLayerData).forEach(([key, value]) => {
         // @ts-ignore
         const data = value[selectedAdminLevel.level];
-        Object.keys(data).map((conceptUUID) => {
-          if (filteredGeometries.includes(conceptUUID)) {
-            usedConceptUUIDs.push(conceptUUID);
-          }
-        });
+        if (data) {
+          Object.keys(data).map((conceptUUID) => {
+            if (filteredGeometries.includes(conceptUUID)) {
+              usedConceptUUIDs.push(conceptUUID);
+            }
+          });
+        }
       });
       const session = new Session("ZoomToGeometriesByFilters", 1000);
       const georepoRequest = new GeorepoRequest(!referenceLayer.is_local);
