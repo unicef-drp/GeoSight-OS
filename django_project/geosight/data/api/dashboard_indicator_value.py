@@ -30,7 +30,9 @@ from rest_framework.views import APIView
 
 from core.cache import VersionCache
 from geosight.data.models.dashboard import Dashboard
-from geosight.data.models.indicator import Indicator
+from geosight.data.models.indicator import (
+    Indicator, IndicatorValueWithGeo, IndicatorValue
+)
 from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
@@ -202,76 +204,105 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         entities = Entity.objects.filter(
             Q(geom_id=geom_id) | Q(concept_uuid=geom_id)
         )
-        if not entities.first():
+        entity = entities.first()
+        if not entity:
             return HttpResponseBadRequest(
                 f'Entity with geom_id: {geom_id} does not exist.'
             )
 
-        entities_id = []
-        for entity in entities:
-            entities_id.append(entity.id)
+        # Collect all entity IDs for bulk value fetching
+        entities_id = list(entities.values_list('id', flat=True))
 
-            # parent
+        use_parent = request.GET.get('parent', False)
+        use_siblings = request.GET.get('siblings', False)
+        use_children = request.GET.get('children', False)
+
+        # Fetch relationships once and reuse throughout
+        parent = None
+        if use_parent:
             parent = entity.parent
             if parent:
                 entities_id.append(parent.id)
-
-            # siblings
+        siblings = None
+        if use_siblings:
             siblings = entity.siblings
-            for sibling in siblings:
-                entities_id.append(sibling.id)
+            entities_id.extend(siblings.values_list('id', flat=True))
 
-            # children
+        children = None
+        if use_children:
             children = entity.children
-            for child in children:
-                entities_id.append(child.id)
+            entities_id.extend(children.values_list('id', flat=True))
 
-        entity = entities.first()
-        siblings = entity.siblings
-        children = entity.children
-        parent = entity.parent
-        if parent:
-            entities_id.append(parent.id)
-
-        # INIDATORS DATA
-        indicators = {}
-        for dashboard_indicator in dashboard.dashboardindicator_set.all():
+        # INDICATORS DATA
+        # Check permissions per indicator and collect allowed ones in one pass
+        allowed_indicators = {}  # {indicator_id: indicator_key}
+        dashboard_indicators = dashboard.dashboardindicator_set.all()
+        ids = request.GET.get('ids', None)
+        if ids:
+            dashboard_indicators = dashboard_indicators.filter(
+                object_id__in=ids.split(',')
+            )
+        for dashboard_indicator in dashboard_indicators:
             indicator = dashboard_indicator.object
             try:
                 reference_layer = self.check_permission(
                     request.user, indicator
                 )
-                values = indicator.values(
-                    date_data=None,
-                    min_date_data=None,
-                    entities_id=entities_id,
-                    last_value=False
+                indicator_key = (
+                    indicator.shortcode
+                    if indicator.shortcode else indicator.id
                 )
-                for value in values:
-                    key = value.concept_uuid
-                    if key not in indicators:
-                        indicators[key] = {}
-
-                    indicator_key = indicator.shortcode if \
-                        indicator.shortcode else indicator.id
-                    if indicator_key not in indicators[key]:
-                        indicators[key][indicator_key] = []
-
-                    indicators[key][indicator_key].append({
-                        'value': value.value,
-                        'time': datetime.combine(
-                            value.date, datetime.min.time(),
-                            tzinfo=pytz.timezone(settings.TIME_ZONE)
-                        ).isoformat(),
-                        'attributes': value.attributes
-                    })
+                allowed_indicators[indicator.id] = indicator_key
             except ResourcePermissionDenied:
                 pass
+
+        indicators = {}
+        if allowed_indicators:
+            # Single query for
+            # all indicator values across all allowed indicators
+            all_values = list(
+                IndicatorValueWithGeo.objects.filter(
+                    indicator_id__in=list(allowed_indicators.keys()),
+                    entity_id__in=entities_id
+                ).order_by('concept_uuid', 'geom_id', '-date')
+            )
+            # Batch-fetch attributes to avoid N+1 per value
+            attr_map = {
+                iv.id: iv.extra_value or {}
+                for iv in IndicatorValue.objects.filter(
+                    id__in=[v.id for v in all_values]
+                ).only('id', 'extra_value')
+            }
+            for value in all_values:
+                key = value.concept_uuid
+                if key not in indicators:
+                    indicators[key] = {}
+                indicator_key = allowed_indicators[value.indicator_id]
+                if indicator_key not in indicators[key]:
+                    indicators[key][indicator_key] = []
+                indicators[key][indicator_key].append({
+                    'value': value.value,
+                    'time': datetime.combine(
+                        value.date, datetime.min.time(),
+                        tzinfo=pytz.timezone(settings.TIME_ZONE)
+                    ).isoformat(),
+                    'attributes': attr_map.get(value.id, {})
+                })
 
         # RELATED TABLES DATA
         related_tables = {}
         rt_config = json.loads(request.GET.get('rtconfigs', '{}'))
-        for dashboard_related in dashboard.dashboardrelatedtable_set.all():
+        # Fetch once — same result for every related table
+        country_geom_ids = list(
+            reference_layer.countries.values_list('geom_id', flat=True)
+        )
+        dashboard_related = dashboard.dashboardrelatedtable_set.all()
+        ids = request.GET.get('ids', None)
+        if ids:
+            dashboard_related = dashboard_related.filter(
+                object_id__in=ids.split(',')
+            )
+        for dashboard_related in dashboard_related:
             related_table = dashboard_related.object
             date_field = None
             date_format = None
@@ -281,11 +312,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             except KeyError:
                 pass
             values, has_next = related_table.data_with_query(
-                country_geom_ids=list(
-                    reference_layer.countries.values_list(
-                        'geom_id', flat=True
-                    )
-                ),
+                country_geom_ids=country_geom_ids,
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,
                 date_field=date_field,
@@ -303,8 +330,8 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 del value['geometry_code']
                 related_tables[key][related_table.name].append(value)
 
-        # Construct context
         admin_boundary = EntitySerializer(entity).data
+        # Construct context
         try:
             admin_boundary['indicators'] = indicators[
                 admin_boundary['concept_uuid']
@@ -329,39 +356,45 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 admin_boundary['parent']['indicators'] = {}
 
             try:
-                admin_boundary['parent']['related_tables'] = related_tables[
-                    parent.concept_uuid
-                ]
+                admin_boundary['parent']['related_tables'] = \
+                    related_tables[parent.concept_uuid]
             except KeyError:
                 admin_boundary['parent']['related_tables'] = {}
 
-        # For children
-        admin_boundary['children'] = EntitySerializer(children, many=True).data
-        for child in admin_boundary['children']:
-            try:
-                child['indicators'] = indicators[child['concept_uuid']]
-            except KeyError:
-                child['indicators'] = {}
+        if children:
+            # For children
+            admin_boundary['children'] = EntitySerializer(
+                children, many=True
+            ).data
+            for child in admin_boundary['children']:
+                try:
+                    child['indicators'] = indicators[child['concept_uuid']]
+                except KeyError:
+                    child['indicators'] = {}
 
-            try:
-                child['related_tables'] = related_tables[child['concept_uuid']]
-            except KeyError:
-                child['related_tables'] = {}
+                try:
+                    child['related_tables'] = related_tables[
+                        child['concept_uuid']]
+                except KeyError:
+                    child['related_tables'] = {}
 
-        # For siblings
-        admin_boundary['siblings'] = EntitySerializer(siblings, many=True).data
-        for sibling in admin_boundary['siblings']:
-            try:
-                sibling['indicators'] = indicators[
-                    sibling['concept_uuid']
-                ]
-            except KeyError:
-                sibling['indicators'] = {}
-            try:
-                sibling['related_tables'] = related_tables[
-                    sibling['concept_uuid']
-                ]
-            except KeyError:
-                sibling['related_tables'] = {}
+        if siblings:
+            # For siblings
+            admin_boundary['siblings'] = EntitySerializer(
+                siblings, many=True
+            ).data
+            for sibling in admin_boundary['siblings']:
+                try:
+                    sibling['indicators'] = indicators[
+                        sibling['concept_uuid']
+                    ]
+                except KeyError:
+                    sibling['indicators'] = {}
+                try:
+                    sibling['related_tables'] = related_tables[
+                        sibling['concept_uuid']
+                    ]
+                except KeyError:
+                    sibling['related_tables'] = {}
 
         return Response(admin_boundary)

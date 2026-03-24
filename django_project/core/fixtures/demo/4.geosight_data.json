@@ -33045,6 +33045,136 @@
     }
   },
   {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 49,
+    "fields": {
+      "name": "context.current.indicator.name",
+      "alias": "Indicator",
+      "type": "string",
+      "visible": true,
+      "order": 0,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 50,
+    "fields": {
+      "name": "context.current.indicator.value",
+      "alias": "Value",
+      "type": "string",
+      "visible": true,
+      "order": 1,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 51,
+    "fields": {
+      "name": "context.current.indicator.label",
+      "alias": "Label",
+      "type": "string",
+      "visible": true,
+      "order": 2,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 52,
+    "fields": {
+      "name": "context.current.indicator.time",
+      "alias": "Date",
+      "type": "string",
+      "visible": true,
+      "order": 3,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 53,
+    "fields": {
+      "name": "context.current.geometry_data.admin_level",
+      "alias": "Admin level",
+      "type": "string",
+      "visible": true,
+      "order": 4,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 54,
+    "fields": {
+      "name": "context.current.geometry_data.admin_level_name",
+      "alias": "Admin level name",
+      "type": "string",
+      "visible": true,
+      "order": 5,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 55,
+    "fields": {
+      "name": "context.current.geometry_data.concept_uuid",
+      "alias": "Concept uuid",
+      "type": "string",
+      "visible": true,
+      "order": 6,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 56,
+    "fields": {
+      "name": "context.current.geometry_data.geom_code",
+      "alias": "Geom code",
+      "type": "string",
+      "visible": true,
+      "order": 7,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 57,
+    "fields": {
+      "name": "context.current.geometry_data.name",
+      "alias": "Name",
+      "type": "string",
+      "visible": true,
+      "order": 8,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerfield",
+    "pk": 58,
+    "fields": {
+      "name": "context.current.indicator.attributes",
+      "alias": "",
+      "type": "string",
+      "visible": true,
+      "order": 9,
+      "as_label": false,
+      "object": 428
+    }
+  },
+  {
     "model": "geosight_data.dashboardindicatorlayerconfig",
     "pk": 2449,
     "fields": {

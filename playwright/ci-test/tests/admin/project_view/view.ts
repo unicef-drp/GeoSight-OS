@@ -125,6 +125,62 @@ test.describe('View project', () => {
     await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(1).locator('td').nth(1)).toContainText('78');
     await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(1).locator('tr').nth(1).locator('td').nth(2)).toContainText('2020-01-01');
 
+    await page.getByTitle('Sample Indicator B').click();
+    await delay(1000)
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 575,
+        y: 359
+      }
+    });
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(0).locator('tr').nth(0).locator('td').nth(0)).toContainText('SOM_TEST_IND_A');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(0).locator('tr').nth(0).locator('td').nth(1)).toContainText('40');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(0).locator('tr').nth(1).locator('td').nth(0)).toContainText('SOM_TEST_IND_B');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('.popup-content').nth(0).locator('tr').nth(1).locator('td').nth(1)).toContainText('13');
+
+    await page.getByTitle('Test Indicator C').click();
+    await delay(1000)
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 575,
+        y: 359
+      }
+    });
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(0).locator('td').nth(0)).toContainText('Indicator');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(0).locator('td').nth(1)).toContainText('Sample Indicator C');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(1).locator('td').nth(0)).toContainText('Value');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(1).locator('td').nth(1)).toContainText('9');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(2).locator('td').nth(0)).toContainText('Label');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(2).locator('td').nth(1)).toContainText('91');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(3).locator('td').nth(0)).toContainText('Date');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(3).locator('td').nth(1)).toContainText('2021-12-31T00:00:00+00:00');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(6).locator('td').nth(0)).toContainText('Concept uuid');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(6).locator('td').nth(1)).toContainText('30052d36-45bb-46b2-83c8-63d642c22fb8');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(7).locator('td').nth(0)).toContainText('Geom code');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(7).locator('td').nth(1)).toContainText('SOM_0007_V1');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(8).locator('td').nth(0)).toContainText('Name');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(8).locator('td').nth(1)).toContainText('Gedo');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(9).locator('td').nth(0)).toContainText('Description');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(9).locator('td').nth(1)).toContainText('SUM of 6 records (from level 2)');
+
+    await page.getByText('Kenya Indicator A').click();
+    await delay(1000)
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 532,
+        y: 400
+      }
+    });
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(0).locator('td').nth(0)).toContainText('Indicator');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(0).locator('td').nth(1)).toContainText('Kenya Indicator A');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(1).locator('td').nth(0)).toContainText('Value');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(1).locator('td').nth(1)).toContainText('3');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(2).locator('td').nth(0)).toContainText('Label');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(2).locator('td').nth(1)).toContainText('2.00 - 3.00');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(3).locator('td').nth(0)).toContainText('Date');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(3).locator('td').nth(1)).toContainText('2025-01-01T00:00:00+00:00');
+    await expect(page.locator('.maplibregl-popup-content-main').locator('tr').nth(4)).toBeHidden();
+
     // ------------------------------------------------------------
     // LABEL
     // ------------------------------------------------------------
