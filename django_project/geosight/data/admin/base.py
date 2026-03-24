@@ -107,8 +107,11 @@ def invalidate_cache(modeladmin, request, queryset):  # noqa: DOC109, DOC110
     :param queryset: The queryset of selected objects to invalidate.
     :type queryset: django.db.models.QuerySet
     """
-    queryset.update(
-        version_data=timezone.now(),
-        cache_data=None,
-        cache_data_generated_at=None
-    )
+    model = queryset.model
+    field_names = {f.name for f in model._meta.get_fields()}
+    update_kwargs = {'version_data': timezone.now()}
+    if 'cache_data' in field_names:
+        update_kwargs['cache_data'] = None
+    if 'cache_data_generated_at' in field_names:
+        update_kwargs['cache_data_generated_at'] = None
+    queryset.update(**update_kwargs)

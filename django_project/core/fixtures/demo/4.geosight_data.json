@@ -26342,7 +26342,9 @@
         "Partner": "Partner A",
         "Latitude": 10.224881735,
         "Longitude": 43.53291619493366,
-        "NoBeneficiaries": 371.0
+        "NoBeneficiaries": 371.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -26361,7 +26363,9 @@
         "Partner": "Partner A",
         "Latitude": 10.09387252,
         "Longitude": 43.18190062632189,
-        "NoBeneficiaries": 159.0
+        "NoBeneficiaries": 159.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -26380,7 +26384,9 @@
         "Partner": "Partner A",
         "Latitude": 10.65983718,
         "Longitude": 43.56777399460487,
-        "NoBeneficiaries": 817.0
+        "NoBeneficiaries": 817.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -26399,7 +26405,9 @@
         "Partner": "Partner A",
         "Latitude": 10.8922892,
         "Longitude": 43.24549004734895,
-        "NoBeneficiaries": 908.0
+        "NoBeneficiaries": 908.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -26418,7 +26426,9 @@
         "Partner": "Partner A",
         "Latitude": 4.6942246,
         "Longitude": 43.93229801189854,
-        "NoBeneficiaries": 456.0
+        "NoBeneficiaries": 456.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -26437,7 +26447,9 @@
         "Partner": "Partner A",
         "Latitude": 4.21541909,
         "Longitude": 43.21641527887574,
-        "NoBeneficiaries": 922.0
+        "NoBeneficiaries": 922.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -26456,7 +26468,9 @@
         "Partner": "Partner A",
         "Latitude": 3.78149414,
         "Longitude": 44.5385284425,
-        "NoBeneficiaries": 730.0
+        "NoBeneficiaries": 730.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -26475,7 +26489,9 @@
         "Partner": "Partner A",
         "Latitude": 3.775889895,
         "Longitude": 43.42135960649223,
-        "NoBeneficiaries": 710.0
+        "NoBeneficiaries": 710.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -26494,7 +26510,9 @@
         "Partner": "Partner A",
         "Latitude": 4.031642075000001,
         "Longitude": 43.9709343325,
-        "NoBeneficiaries": 129.0
+        "NoBeneficiaries": 129.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -26513,7 +26531,9 @@
         "Partner": "Partner A",
         "Latitude": 2.07649714,
         "Longitude": 45.32529713304848,
-        "NoBeneficiaries": 108.0
+        "NoBeneficiaries": 108.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -26532,7 +26552,9 @@
         "Partner": "Partner A",
         "Latitude": 9.1266393,
         "Longitude": 50.28890658374632,
-        "NoBeneficiaries": 989.0
+        "NoBeneficiaries": 989.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -26551,7 +26573,9 @@
         "Partner": "Partner A",
         "Latitude": 10.9939396,
         "Longitude": 49.41597061706351,
-        "NoBeneficiaries": 856.0
+        "NoBeneficiaries": 856.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -26570,7 +26594,9 @@
         "Partner": "Partner A",
         "Latitude": 11.6951291,
         "Longitude": 50.85590650921409,
-        "NoBeneficiaries": 310.0
+        "NoBeneficiaries": 310.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -26589,7 +26615,9 @@
         "Partner": "Partner A",
         "Latitude": 10.657927635,
         "Longitude": 50.79581057986083,
-        "NoBeneficiaries": 681.0
+        "NoBeneficiaries": 681.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -26608,7 +26636,9 @@
         "Partner": "Partner A",
         "Latitude": 11.03776227,
         "Longitude": 50.12250942805919,
-        "NoBeneficiaries": 391.0
+        "NoBeneficiaries": 391.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -26627,7 +26657,9 @@
         "Partner": "Partner A",
         "Latitude": 9.41523786,
         "Longitude": 49.56791722685186,
-        "NoBeneficiaries": 161.0
+        "NoBeneficiaries": 161.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -26646,7 +26678,9 @@
         "Partner": "Partner A",
         "Latitude": 3.15658569,
         "Longitude": 43.5849717077492,
-        "NoBeneficiaries": 687.0
+        "NoBeneficiaries": 687.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -26665,7 +26699,9 @@
         "Partner": "Partner A",
         "Latitude": 2.501708985,
         "Longitude": 44.02555665065324,
-        "NoBeneficiaries": 769.0
+        "NoBeneficiaries": 769.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -26684,7 +26720,9 @@
         "Partner": "Partner B",
         "Latitude": 1.9967041,
         "Longitude": 42.80988507810294,
-        "NoBeneficiaries": 222.0
+        "NoBeneficiaries": 222.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -26703,7 +26741,9 @@
         "Partner": "Partner B",
         "Latitude": 2.87973064,
         "Longitude": 42.84348584275028,
-        "NoBeneficiaries": 161.0
+        "NoBeneficiaries": 161.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -26722,7 +26762,9 @@
         "Partner": "Partner B",
         "Latitude": 5.83895936,
         "Longitude": 46.13634372539151,
-        "NoBeneficiaries": 40.0
+        "NoBeneficiaries": 40.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -26741,7 +26783,9 @@
         "Partner": "Partner B",
         "Latitude": 6.143965834999999,
         "Longitude": 47.07444234472148,
-        "NoBeneficiaries": 102.0
+        "NoBeneficiaries": 102.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -26760,7 +26804,9 @@
         "Partner": "Partner B",
         "Latitude": 4.6820583,
         "Longitude": 46.82490038001757,
-        "NoBeneficiaries": 137.0
+        "NoBeneficiaries": 137.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -26779,7 +26825,9 @@
         "Partner": "Partner B",
         "Latitude": 3.977637555,
         "Longitude": 46.95422203065473,
-        "NoBeneficiaries": 266.0
+        "NoBeneficiaries": 266.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -26798,7 +26846,9 @@
         "Partner": "Partner B",
         "Latitude": 5.422321615,
         "Longitude": 46.73882059266055,
-        "NoBeneficiaries": 435.0
+        "NoBeneficiaries": 435.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -26817,7 +26867,9 @@
         "Partner": "Partner B",
         "Latitude": 2.083238095,
         "Longitude": 41.70957360248143,
-        "NoBeneficiaries": 65.0
+        "NoBeneficiaries": 65.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -26836,7 +26888,9 @@
         "Partner": "Partner B",
         "Latitude": 3.46031613,
         "Longitude": 41.74256186829171,
-        "NoBeneficiaries": 787.0
+        "NoBeneficiaries": 787.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -26855,7 +26909,9 @@
         "Partner": "Partner B",
         "Latitude": 2.718431525,
         "Longitude": 41.45012533889222,
-        "NoBeneficiaries": 485.0
+        "NoBeneficiaries": 485.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -26874,7 +26930,9 @@
         "Partner": "Partner B",
         "Latitude": 3.99320231,
         "Longitude": 42.11790772207714,
-        "NoBeneficiaries": 797.0
+        "NoBeneficiaries": 797.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -26893,7 +26951,9 @@
         "Partner": "Partner B",
         "Latitude": 3.15658569,
         "Longitude": 42.44797760748234,
-        "NoBeneficiaries": 813.0
+        "NoBeneficiaries": 813.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -26912,7 +26972,9 @@
         "Partner": "Partner B",
         "Latitude": 3.736511235,
         "Longitude": 42.59720664362428,
-        "NoBeneficiaries": 331.0
+        "NoBeneficiaries": 331.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -26931,7 +26993,9 @@
         "Partner": "Partner B",
         "Latitude": 4.806610105,
         "Longitude": 45.37880139084887,
-        "NoBeneficiaries": 54.0
+        "NoBeneficiaries": 54.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -26950,7 +27014,9 @@
         "Partner": "Partner B",
         "Latitude": 3.830200195,
         "Longitude": 45.53826761267229,
-        "NoBeneficiaries": 565.0
+        "NoBeneficiaries": 565.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -26969,7 +27035,9 @@
         "Partner": "Partner B",
         "Latitude": 3.38720703,
         "Longitude": 45.61103792469689,
-        "NoBeneficiaries": 516.0
+        "NoBeneficiaries": 516.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -26988,7 +27056,9 @@
         "Partner": "Partner B",
         "Latitude": 0.56542988,
         "Longitude": 41.83238849235676,
-        "NoBeneficiaries": 221.0
+        "NoBeneficiaries": 221.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27007,7 +27077,9 @@
         "Partner": "Partner B",
         "Latitude": -0.9022276250000001,
         "Longitude": 41.47450263705605,
-        "NoBeneficiaries": 850.0
+        "NoBeneficiaries": 850.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27026,7 +27098,9 @@
         "Partner": "Partner B",
         "Latitude": 0.08854552,
         "Longitude": 42.75496388641732,
-        "NoBeneficiaries": 594.0
+        "NoBeneficiaries": 594.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -27045,7 +27119,9 @@
         "Partner": "Partner C",
         "Latitude": -0.52025977,
         "Longitude": 41.98693052123907,
-        "NoBeneficiaries": 497.0
+        "NoBeneficiaries": 497.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -27064,7 +27140,9 @@
         "Partner": "Partner C",
         "Latitude": 2.31167603,
         "Longitude": 45.0697377623431,
-        "NoBeneficiaries": 825.0
+        "NoBeneficiaries": 825.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -27083,7 +27161,9 @@
         "Partner": "Partner C",
         "Latitude": 1.103197665,
         "Longitude": 43.816310204743,
-        "NoBeneficiaries": 906.0
+        "NoBeneficiaries": 906.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -27102,7 +27182,9 @@
         "Partner": "Partner C",
         "Latitude": 1.651702885,
         "Longitude": 44.1364129258174,
-        "NoBeneficiaries": 464.0
+        "NoBeneficiaries": 464.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27121,7 +27203,9 @@
         "Partner": "Partner C",
         "Latitude": 1.711069525,
         "Longitude": 44.66333811960108,
-        "NoBeneficiaries": 730.0
+        "NoBeneficiaries": 730.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -27140,7 +27224,9 @@
         "Partner": "Partner C",
         "Latitude": 1.97171021,
         "Longitude": 44.45041196731147,
-        "NoBeneficiaries": 583.0
+        "NoBeneficiaries": 583.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27159,7 +27245,9 @@
         "Partner": "Partner C",
         "Latitude": 1.338381575,
         "Longitude": 43.52442207443247,
-        "NoBeneficiaries": 869.0
+        "NoBeneficiaries": 869.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -27178,7 +27266,9 @@
         "Partner": "Partner C",
         "Latitude": 2.7612915,
         "Longitude": 44.98571273539854,
-        "NoBeneficiaries": 879.0
+        "NoBeneficiaries": 879.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27197,7 +27287,9 @@
         "Partner": "Partner C",
         "Latitude": 1.177093505,
         "Longitude": 42.82605734323676,
-        "NoBeneficiaries": 850.0
+        "NoBeneficiaries": 850.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -27216,7 +27308,9 @@
         "Partner": "Partner C",
         "Latitude": 0.699402345,
         "Longitude": 43.07034407343952,
-        "NoBeneficiaries": 580.0
+        "NoBeneficiaries": 580.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27235,7 +27329,9 @@
         "Partner": "Partner C",
         "Latitude": 1.60699463,
         "Longitude": 42.1717983886014,
-        "NoBeneficiaries": 867.0
+        "NoBeneficiaries": 867.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27254,7 +27350,9 @@
         "Partner": "Partner C",
         "Latitude": 3.502381375,
         "Longitude": 46.56687123516815,
-        "NoBeneficiaries": 642.0
+        "NoBeneficiaries": 642.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27273,7 +27371,9 @@
         "Partner": "Partner C",
         "Latitude": 2.456258845,
         "Longitude": 45.68564923622257,
-        "NoBeneficiaries": 413.0
+        "NoBeneficiaries": 413.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -27292,7 +27392,9 @@
         "Partner": "Partner C",
         "Latitude": 3.0517478,
         "Longitude": 46.30092067090455,
-        "NoBeneficiaries": 302.0
+        "NoBeneficiaries": 302.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27311,7 +27413,9 @@
         "Partner": "Partner C",
         "Latitude": 2.986297605,
         "Longitude": 45.55515595920596,
-        "NoBeneficiaries": 468.0
+        "NoBeneficiaries": 468.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -27330,7 +27434,9 @@
         "Partner": "Partner C",
         "Latitude": 6.955817925,
         "Longitude": 47.90989936868584,
-        "NoBeneficiaries": 188.0
+        "NoBeneficiaries": 188.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27349,7 +27455,9 @@
         "Partner": "Partner C",
         "Latitude": 7.04826088,
         "Longitude": 47.22668992828474,
-        "NoBeneficiaries": 840.0
+        "NoBeneficiaries": 840.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27368,7 +27476,9 @@
         "Partner": "Partner C",
         "Latitude": 5.91374549,
         "Longitude": 48.16751059039721,
-        "NoBeneficiaries": 926.0
+        "NoBeneficiaries": 926.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -27387,7 +27497,9 @@
         "Partner": "Partner C",
         "Latitude": 7.155232835,
         "Longitude": 48.99119335097649,
-        "NoBeneficiaries": 933.0
+        "NoBeneficiaries": 933.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27406,7 +27518,9 @@
         "Partner": "Partner C",
         "Latitude": 4.772972395,
         "Longitude": 47.84185999640059,
-        "NoBeneficiaries": 49.0
+        "NoBeneficiaries": 49.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27425,7 +27539,9 @@
         "Partner": "Partner C",
         "Latitude": 7.80981655,
         "Longitude": 48.44775756858062,
-        "NoBeneficiaries": 75.0
+        "NoBeneficiaries": 75.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27444,7 +27560,9 @@
         "Partner": "Partner C",
         "Latitude": 8.04485706,
         "Longitude": 49.5660938864259,
-        "NoBeneficiaries": 150.0
+        "NoBeneficiaries": 150.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -27463,7 +27581,9 @@
         "Partner": "Partner C",
         "Latitude": 8.576996484999999,
         "Longitude": 48.81097785520912,
-        "NoBeneficiaries": 196.0
+        "NoBeneficiaries": 196.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -27482,7 +27602,9 @@
         "Partner": "Partner C",
         "Latitude": 10.14022383,
         "Longitude": 46.69579903965978,
-        "NoBeneficiaries": 664.0
+        "NoBeneficiaries": 664.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27501,7 +27623,9 @@
         "Partner": "Partner C",
         "Latitude": 10.32403207,
         "Longitude": 47.92028403536129,
-        "NoBeneficiaries": 934.0
+        "NoBeneficiaries": 934.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -27520,7 +27644,9 @@
         "Partner": "Partner C",
         "Latitude": 10.445062555,
         "Longitude": 48.82374587796524,
-        "NoBeneficiaries": 568.0
+        "NoBeneficiaries": 568.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -27539,7 +27665,9 @@
         "Partner": "Partner C",
         "Latitude": 9.38424659,
         "Longitude": 46.53600466974044,
-        "NoBeneficiaries": 366.0
+        "NoBeneficiaries": 366.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27558,7 +27686,9 @@
         "Partner": "Partner C",
         "Latitude": 8.434691115,
         "Longitude": 47.65754477565876,
-        "NoBeneficiaries": 748.0
+        "NoBeneficiaries": 748.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27577,7 +27707,9 @@
         "Partner": "Partner C",
         "Latitude": 9.21816514,
         "Longitude": 48.5709387771567,
-        "NoBeneficiaries": 576.0
+        "NoBeneficiaries": 576.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -27596,7 +27728,9 @@
         "Partner": "Partner C",
         "Latitude": 9.03868558,
         "Longitude": 47.48615775991117,
-        "NoBeneficiaries": 363.0
+        "NoBeneficiaries": 363.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27615,7 +27749,9 @@
         "Partner": "Partner C",
         "Latitude": 9.18920544,
         "Longitude": 45.73752715517706,
-        "NoBeneficiaries": 236.0
+        "NoBeneficiaries": 236.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27634,7 +27770,9 @@
         "Partner": "Partner C",
         "Latitude": 8.344034820000001,
         "Longitude": 46.6550163835587,
-        "NoBeneficiaries": 940.0
+        "NoBeneficiaries": 940.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -27653,7 +27791,9 @@
         "Partner": "Partner C",
         "Latitude": 9.258589105,
         "Longitude": 44.98705092780503,
-        "NoBeneficiaries": 168.0
+        "NoBeneficiaries": 168.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27672,7 +27812,9 @@
         "Partner": "Partner C",
         "Latitude": 9.986083985,
         "Longitude": 45.37812393176339,
-        "NoBeneficiaries": 73.0
+        "NoBeneficiaries": 73.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -27691,7 +27833,9 @@
         "Partner": "Partner C",
         "Latitude": 10.4048891,
         "Longitude": 45.46228272412216,
-        "NoBeneficiaries": 193.0
+        "NoBeneficiaries": 193.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -27710,7 +27854,9 @@
         "Partner": "Partner C",
         "Latitude": 9.822087544999999,
         "Longitude": 43.64489923150281,
-        "NoBeneficiaries": 77.0
+        "NoBeneficiaries": 77.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27729,7 +27875,9 @@
         "Partner": "Partner C",
         "Latitude": 9.618523445000001,
         "Longitude": 44.25728347205476,
-        "NoBeneficiaries": 11.0
+        "NoBeneficiaries": 11.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27748,7 +27896,9 @@
         "Partner": "Partner A",
         "Latitude": 10.224881735,
         "Longitude": 43.53291619493366,
-        "NoBeneficiaries": 125.0
+        "NoBeneficiaries": 125.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -27767,7 +27917,9 @@
         "Partner": "Partner A",
         "Latitude": 10.09387252,
         "Longitude": 43.18190062632189,
-        "NoBeneficiaries": 234.0
+        "NoBeneficiaries": 234.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -27786,7 +27938,9 @@
         "Partner": "Partner A",
         "Latitude": 10.65983718,
         "Longitude": 43.56777399460487,
-        "NoBeneficiaries": 471.0
+        "NoBeneficiaries": 471.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -27805,7 +27959,9 @@
         "Partner": "Partner A",
         "Latitude": 10.8922892,
         "Longitude": 43.24549004734895,
-        "NoBeneficiaries": 276.0
+        "NoBeneficiaries": 276.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27824,7 +27980,9 @@
         "Partner": "Partner A",
         "Latitude": 4.6942246,
         "Longitude": 43.93229801189854,
-        "NoBeneficiaries": 705.0
+        "NoBeneficiaries": 705.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -27843,7 +28001,9 @@
         "Partner": "Partner A",
         "Latitude": 4.21541909,
         "Longitude": 43.21641527887574,
-        "NoBeneficiaries": 85.0
+        "NoBeneficiaries": 85.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -27862,7 +28022,9 @@
         "Partner": "Partner A",
         "Latitude": 3.78149414,
         "Longitude": 44.5385284425,
-        "NoBeneficiaries": 547.0
+        "NoBeneficiaries": 547.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -27881,7 +28043,9 @@
         "Partner": "Partner A",
         "Latitude": 3.775889895,
         "Longitude": 43.42135960649223,
-        "NoBeneficiaries": 582.0
+        "NoBeneficiaries": 582.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -27900,7 +28064,9 @@
         "Partner": "Partner A",
         "Latitude": 4.031642075000001,
         "Longitude": 43.9709343325,
-        "NoBeneficiaries": 629.0
+        "NoBeneficiaries": 629.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -27919,7 +28085,9 @@
         "Partner": "Partner A",
         "Latitude": 2.07649714,
         "Longitude": 45.32529713304848,
-        "NoBeneficiaries": 297.0
+        "NoBeneficiaries": 297.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -27938,7 +28106,9 @@
         "Partner": "Partner A",
         "Latitude": 9.1266393,
         "Longitude": 50.28890658374632,
-        "NoBeneficiaries": 208.0
+        "NoBeneficiaries": 208.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -27957,7 +28127,9 @@
         "Partner": "Partner A",
         "Latitude": 10.9939396,
         "Longitude": 49.41597061706351,
-        "NoBeneficiaries": 829.0
+        "NoBeneficiaries": 829.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -27976,7 +28148,9 @@
         "Partner": "Partner A",
         "Latitude": 11.6951291,
         "Longitude": 50.85590650921409,
-        "NoBeneficiaries": 137.0
+        "NoBeneficiaries": 137.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -27995,7 +28169,9 @@
         "Partner": "Partner A",
         "Latitude": 10.657927635,
         "Longitude": 50.79581057986083,
-        "NoBeneficiaries": 797.0
+        "NoBeneficiaries": 797.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -28014,7 +28190,9 @@
         "Partner": "Partner A",
         "Latitude": 11.03776227,
         "Longitude": 50.12250942805919,
-        "NoBeneficiaries": 15.0
+        "NoBeneficiaries": 15.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -28033,7 +28211,9 @@
         "Partner": "Partner A",
         "Latitude": 9.41523786,
         "Longitude": 49.56791722685186,
-        "NoBeneficiaries": 522.0
+        "NoBeneficiaries": 522.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -28052,7 +28232,9 @@
         "Partner": "Partner A",
         "Latitude": 3.15658569,
         "Longitude": 43.5849717077492,
-        "NoBeneficiaries": 302.0
+        "NoBeneficiaries": 302.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28071,7 +28253,9 @@
         "Partner": "Partner A",
         "Latitude": 2.501708985,
         "Longitude": 44.02555665065324,
-        "NoBeneficiaries": 935.0
+        "NoBeneficiaries": 935.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -28090,7 +28274,9 @@
         "Partner": "Partner B",
         "Latitude": 1.9967041,
         "Longitude": 42.80988507810294,
-        "NoBeneficiaries": 633.0
+        "NoBeneficiaries": 633.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -28109,7 +28295,9 @@
         "Partner": "Partner B",
         "Latitude": 2.87973064,
         "Longitude": 42.84348584275028,
-        "NoBeneficiaries": 836.0
+        "NoBeneficiaries": 836.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -28128,7 +28316,9 @@
         "Partner": "Partner B",
         "Latitude": 5.83895936,
         "Longitude": 46.13634372539151,
-        "NoBeneficiaries": 949.0
+        "NoBeneficiaries": 949.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -28147,7 +28337,9 @@
         "Partner": "Partner B",
         "Latitude": 6.143965834999999,
         "Longitude": 47.07444234472148,
-        "NoBeneficiaries": 559.0
+        "NoBeneficiaries": 559.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28166,7 +28358,9 @@
         "Partner": "Partner B",
         "Latitude": 4.6820583,
         "Longitude": 46.82490038001757,
-        "NoBeneficiaries": 507.0
+        "NoBeneficiaries": 507.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -28185,7 +28379,9 @@
         "Partner": "Partner B",
         "Latitude": 3.977637555,
         "Longitude": 46.95422203065473,
-        "NoBeneficiaries": 304.0
+        "NoBeneficiaries": 304.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -28204,7 +28400,9 @@
         "Partner": "Partner B",
         "Latitude": 5.422321615,
         "Longitude": 46.73882059266055,
-        "NoBeneficiaries": 638.0
+        "NoBeneficiaries": 638.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -28223,7 +28421,9 @@
         "Partner": "Partner B",
         "Latitude": 2.083238095,
         "Longitude": 41.70957360248143,
-        "NoBeneficiaries": 179.0
+        "NoBeneficiaries": 179.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -28242,7 +28442,9 @@
         "Partner": "Partner B",
         "Latitude": 3.46031613,
         "Longitude": 41.74256186829171,
-        "NoBeneficiaries": 317.0
+        "NoBeneficiaries": 317.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -28261,7 +28463,9 @@
         "Partner": "Partner B",
         "Latitude": 2.718431525,
         "Longitude": 41.45012533889222,
-        "NoBeneficiaries": 58.0
+        "NoBeneficiaries": 58.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -28280,7 +28484,9 @@
         "Partner": "Partner B",
         "Latitude": 3.99320231,
         "Longitude": 42.11790772207714,
-        "NoBeneficiaries": 819.0
+        "NoBeneficiaries": 819.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -28299,7 +28505,9 @@
         "Partner": "Partner B",
         "Latitude": 3.15658569,
         "Longitude": 42.44797760748234,
-        "NoBeneficiaries": 663.0
+        "NoBeneficiaries": 663.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -28318,7 +28526,9 @@
         "Partner": "Partner B",
         "Latitude": 3.736511235,
         "Longitude": 42.59720664362428,
-        "NoBeneficiaries": 900.0
+        "NoBeneficiaries": 900.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28337,7 +28547,9 @@
         "Partner": "Partner B",
         "Latitude": 4.806610105,
         "Longitude": 45.37880139084887,
-        "NoBeneficiaries": 659.0
+        "NoBeneficiaries": 659.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -28356,7 +28568,9 @@
         "Partner": "Partner B",
         "Latitude": 3.830200195,
         "Longitude": 45.53826761267229,
-        "NoBeneficiaries": 305.0
+        "NoBeneficiaries": 305.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -28375,7 +28589,9 @@
         "Partner": "Partner B",
         "Latitude": 3.38720703,
         "Longitude": 45.61103792469689,
-        "NoBeneficiaries": 980.0
+        "NoBeneficiaries": 980.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28394,7 +28610,9 @@
         "Partner": "Partner B",
         "Latitude": 0.56542988,
         "Longitude": 41.83238849235676,
-        "NoBeneficiaries": 92.0
+        "NoBeneficiaries": 92.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -28413,7 +28631,9 @@
         "Partner": "Partner B",
         "Latitude": -0.9022276250000001,
         "Longitude": 41.47450263705605,
-        "NoBeneficiaries": 843.0
+        "NoBeneficiaries": 843.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28432,7 +28652,9 @@
         "Partner": "Partner B",
         "Latitude": 0.08854552,
         "Longitude": 42.75496388641732,
-        "NoBeneficiaries": 980.0
+        "NoBeneficiaries": 980.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28451,7 +28673,9 @@
         "Partner": "Partner C",
         "Latitude": -0.52025977,
         "Longitude": 41.98693052123907,
-        "NoBeneficiaries": 485.0
+        "NoBeneficiaries": 485.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -28470,7 +28694,9 @@
         "Partner": "Partner C",
         "Latitude": 2.31167603,
         "Longitude": 45.0697377623431,
-        "NoBeneficiaries": 347.0
+        "NoBeneficiaries": 347.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28489,7 +28715,9 @@
         "Partner": "Partner C",
         "Latitude": 1.103197665,
         "Longitude": 43.816310204743,
-        "NoBeneficiaries": 311.0
+        "NoBeneficiaries": 311.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -28508,7 +28736,9 @@
         "Partner": "Partner C",
         "Latitude": 1.651702885,
         "Longitude": 44.1364129258174,
-        "NoBeneficiaries": 46.0
+        "NoBeneficiaries": 46.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -28527,7 +28757,9 @@
         "Partner": "Partner C",
         "Latitude": 1.711069525,
         "Longitude": 44.66333811960108,
-        "NoBeneficiaries": 511.0
+        "NoBeneficiaries": 511.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -28546,7 +28778,9 @@
         "Partner": "Partner C",
         "Latitude": 1.97171021,
         "Longitude": 44.45041196731147,
-        "NoBeneficiaries": 557.0
+        "NoBeneficiaries": 557.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -28565,7 +28799,9 @@
         "Partner": "Partner C",
         "Latitude": 1.338381575,
         "Longitude": 43.52442207443247,
-        "NoBeneficiaries": 393.0
+        "NoBeneficiaries": 393.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -28584,7 +28820,9 @@
         "Partner": "Partner C",
         "Latitude": 2.7612915,
         "Longitude": 44.98571273539854,
-        "NoBeneficiaries": 253.0
+        "NoBeneficiaries": 253.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28603,7 +28841,9 @@
         "Partner": "Partner C",
         "Latitude": 1.177093505,
         "Longitude": 42.82605734323676,
-        "NoBeneficiaries": 586.0
+        "NoBeneficiaries": 586.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -28622,7 +28862,9 @@
         "Partner": "Partner C",
         "Latitude": 0.699402345,
         "Longitude": 43.07034407343952,
-        "NoBeneficiaries": 94.0
+        "NoBeneficiaries": 94.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -28641,7 +28883,9 @@
         "Partner": "Partner C",
         "Latitude": 1.60699463,
         "Longitude": 42.1717983886014,
-        "NoBeneficiaries": 720.0
+        "NoBeneficiaries": 720.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28660,7 +28904,9 @@
         "Partner": "Partner C",
         "Latitude": 3.502381375,
         "Longitude": 46.56687123516815,
-        "NoBeneficiaries": 103.0
+        "NoBeneficiaries": 103.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28679,7 +28925,9 @@
         "Partner": "Partner C",
         "Latitude": 2.456258845,
         "Longitude": 45.68564923622257,
-        "NoBeneficiaries": 472.0
+        "NoBeneficiaries": 472.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28698,7 +28946,9 @@
         "Partner": "Partner C",
         "Latitude": 3.0517478,
         "Longitude": 46.30092067090455,
-        "NoBeneficiaries": 423.0
+        "NoBeneficiaries": 423.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -28717,7 +28967,9 @@
         "Partner": "Partner C",
         "Latitude": 2.986297605,
         "Longitude": 45.55515595920596,
-        "NoBeneficiaries": 49.0
+        "NoBeneficiaries": 49.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -28736,7 +28988,9 @@
         "Partner": "Partner C",
         "Latitude": 6.955817925,
         "Longitude": 47.90989936868584,
-        "NoBeneficiaries": 2.0
+        "NoBeneficiaries": 2.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28755,7 +29009,9 @@
         "Partner": "Partner C",
         "Latitude": 7.04826088,
         "Longitude": 47.22668992828474,
-        "NoBeneficiaries": 25.0
+        "NoBeneficiaries": 25.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -28774,7 +29030,9 @@
         "Partner": "Partner C",
         "Latitude": 5.91374549,
         "Longitude": 48.16751059039721,
-        "NoBeneficiaries": 811.0
+        "NoBeneficiaries": 811.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28793,7 +29051,9 @@
         "Partner": "Partner C",
         "Latitude": 7.155232835,
         "Longitude": 48.99119335097649,
-        "NoBeneficiaries": 641.0
+        "NoBeneficiaries": 641.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28812,7 +29072,9 @@
         "Partner": "Partner C",
         "Latitude": 4.772972395,
         "Longitude": 47.84185999640059,
-        "NoBeneficiaries": 835.0
+        "NoBeneficiaries": 835.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28831,7 +29093,9 @@
         "Partner": "Partner C",
         "Latitude": 7.80981655,
         "Longitude": 48.44775756858062,
-        "NoBeneficiaries": 890.0
+        "NoBeneficiaries": 890.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -28850,7 +29114,9 @@
         "Partner": "Partner C",
         "Latitude": 8.04485706,
         "Longitude": 49.5660938864259,
-        "NoBeneficiaries": 252.0
+        "NoBeneficiaries": 252.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -28869,7 +29135,9 @@
         "Partner": "Partner C",
         "Latitude": 8.576996484999999,
         "Longitude": 48.81097785520912,
-        "NoBeneficiaries": 213.0
+        "NoBeneficiaries": 213.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -28888,7 +29156,9 @@
         "Partner": "Partner C",
         "Latitude": 10.14022383,
         "Longitude": 46.69579903965978,
-        "NoBeneficiaries": 664.0
+        "NoBeneficiaries": 664.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -28907,7 +29177,9 @@
         "Partner": "Partner C",
         "Latitude": 10.32403207,
         "Longitude": 47.92028403536129,
-        "NoBeneficiaries": 785.0
+        "NoBeneficiaries": 785.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -28926,7 +29198,9 @@
         "Partner": "Partner C",
         "Latitude": 10.445062555,
         "Longitude": 48.82374587796524,
-        "NoBeneficiaries": 293.0
+        "NoBeneficiaries": 293.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -28945,7 +29219,9 @@
         "Partner": "Partner C",
         "Latitude": 9.38424659,
         "Longitude": 46.53600466974044,
-        "NoBeneficiaries": 788.0
+        "NoBeneficiaries": 788.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -28964,7 +29240,9 @@
         "Partner": "Partner C",
         "Latitude": 8.434691115,
         "Longitude": 47.65754477565876,
-        "NoBeneficiaries": 346.0
+        "NoBeneficiaries": 346.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -28983,7 +29261,9 @@
         "Partner": "Partner C",
         "Latitude": 9.21816514,
         "Longitude": 48.5709387771567,
-        "NoBeneficiaries": 412.0
+        "NoBeneficiaries": 412.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -29002,7 +29282,9 @@
         "Partner": "Partner C",
         "Latitude": 9.03868558,
         "Longitude": 47.48615775991117,
-        "NoBeneficiaries": 471.0
+        "NoBeneficiaries": 471.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -29021,7 +29303,9 @@
         "Partner": "Partner C",
         "Latitude": 9.18920544,
         "Longitude": 45.73752715517706,
-        "NoBeneficiaries": 705.0
+        "NoBeneficiaries": 705.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -29040,7 +29324,9 @@
         "Partner": "Partner C",
         "Latitude": 8.344034820000001,
         "Longitude": 46.6550163835587,
-        "NoBeneficiaries": 677.0
+        "NoBeneficiaries": 677.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -29059,7 +29345,9 @@
         "Partner": "Partner C",
         "Latitude": 9.258589105,
         "Longitude": 44.98705092780503,
-        "NoBeneficiaries": 51.0
+        "NoBeneficiaries": 51.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -29078,7 +29366,9 @@
         "Partner": "Partner C",
         "Latitude": 9.986083985,
         "Longitude": 45.37812393176339,
-        "NoBeneficiaries": 85.0
+        "NoBeneficiaries": 85.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29097,7 +29387,9 @@
         "Partner": "Partner C",
         "Latitude": 10.4048891,
         "Longitude": 45.46228272412216,
-        "NoBeneficiaries": 713.0
+        "NoBeneficiaries": 713.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -29116,7 +29408,9 @@
         "Partner": "Partner C",
         "Latitude": 9.822087544999999,
         "Longitude": 43.64489923150281,
-        "NoBeneficiaries": 392.0
+        "NoBeneficiaries": 392.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -29135,7 +29429,9 @@
         "Partner": "Partner C",
         "Latitude": 9.618523445000001,
         "Longitude": 44.25728347205476,
-        "NoBeneficiaries": 999.0
+        "NoBeneficiaries": 999.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29154,7 +29450,9 @@
         "Partner": "Partner A",
         "Latitude": 10.224881735,
         "Longitude": 43.53291619493366,
-        "NoBeneficiaries": 178.0
+        "NoBeneficiaries": 178.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29173,7 +29471,9 @@
         "Partner": "Partner A",
         "Latitude": 10.09387252,
         "Longitude": 43.18190062632189,
-        "NoBeneficiaries": 594.0
+        "NoBeneficiaries": 594.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -29192,7 +29492,9 @@
         "Partner": "Partner A",
         "Latitude": 10.65983718,
         "Longitude": 43.56777399460487,
-        "NoBeneficiaries": 161.0
+        "NoBeneficiaries": 161.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -29211,7 +29513,9 @@
         "Partner": "Partner A",
         "Latitude": 10.8922892,
         "Longitude": 43.24549004734895,
-        "NoBeneficiaries": 511.0
+        "NoBeneficiaries": 511.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29230,7 +29534,9 @@
         "Partner": "Partner A",
         "Latitude": 4.6942246,
         "Longitude": 43.93229801189854,
-        "NoBeneficiaries": 108.0
+        "NoBeneficiaries": 108.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -29249,7 +29555,9 @@
         "Partner": "Partner A",
         "Latitude": 4.21541909,
         "Longitude": 43.21641527887574,
-        "NoBeneficiaries": 213.0
+        "NoBeneficiaries": 213.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -29268,7 +29576,9 @@
         "Partner": "Partner A",
         "Latitude": 3.78149414,
         "Longitude": 44.5385284425,
-        "NoBeneficiaries": 612.0
+        "NoBeneficiaries": 612.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29287,7 +29597,9 @@
         "Partner": "Partner A",
         "Latitude": 3.775889895,
         "Longitude": 43.42135960649223,
-        "NoBeneficiaries": 536.0
+        "NoBeneficiaries": 536.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29306,7 +29618,9 @@
         "Partner": "Partner A",
         "Latitude": 4.031642075000001,
         "Longitude": 43.9709343325,
-        "NoBeneficiaries": 241.0
+        "NoBeneficiaries": 241.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29325,7 +29639,9 @@
         "Partner": "Partner A",
         "Latitude": 2.07649714,
         "Longitude": 45.32529713304848,
-        "NoBeneficiaries": 259.0
+        "NoBeneficiaries": 259.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -29344,7 +29660,9 @@
         "Partner": "Partner A",
         "Latitude": 9.1266393,
         "Longitude": 50.28890658374632,
-        "NoBeneficiaries": 5.0
+        "NoBeneficiaries": 5.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -29363,7 +29681,9 @@
         "Partner": "Partner A",
         "Latitude": 10.9939396,
         "Longitude": 49.41597061706351,
-        "NoBeneficiaries": 694.0
+        "NoBeneficiaries": 694.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -29382,7 +29702,9 @@
         "Partner": "Partner A",
         "Latitude": 11.6951291,
         "Longitude": 50.85590650921409,
-        "NoBeneficiaries": 188.0
+        "NoBeneficiaries": 188.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -29401,7 +29723,9 @@
         "Partner": "Partner A",
         "Latitude": 10.657927635,
         "Longitude": 50.79581057986083,
-        "NoBeneficiaries": 432.0
+        "NoBeneficiaries": 432.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -29420,7 +29744,9 @@
         "Partner": "Partner A",
         "Latitude": 11.03776227,
         "Longitude": 50.12250942805919,
-        "NoBeneficiaries": 275.0
+        "NoBeneficiaries": 275.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -29439,7 +29765,9 @@
         "Partner": "Partner A",
         "Latitude": 9.41523786,
         "Longitude": 49.56791722685186,
-        "NoBeneficiaries": 11.0
+        "NoBeneficiaries": 11.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29458,7 +29786,9 @@
         "Partner": "Partner A",
         "Latitude": 3.15658569,
         "Longitude": 43.5849717077492,
-        "NoBeneficiaries": 613.0
+        "NoBeneficiaries": 613.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -29477,7 +29807,9 @@
         "Partner": "Partner A",
         "Latitude": 2.501708985,
         "Longitude": 44.02555665065324,
-        "NoBeneficiaries": 370.0
+        "NoBeneficiaries": 370.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -29496,7 +29828,9 @@
         "Partner": "Partner B",
         "Latitude": 1.9967041,
         "Longitude": 42.80988507810294,
-        "NoBeneficiaries": 491.0
+        "NoBeneficiaries": 491.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -29515,7 +29849,9 @@
         "Partner": "Partner B",
         "Latitude": 2.87973064,
         "Longitude": 42.84348584275028,
-        "NoBeneficiaries": 335.0
+        "NoBeneficiaries": 335.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29534,7 +29870,9 @@
         "Partner": "Partner B",
         "Latitude": 5.83895936,
         "Longitude": 46.13634372539151,
-        "NoBeneficiaries": 802.0
+        "NoBeneficiaries": 802.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -29553,7 +29891,9 @@
         "Partner": "Partner B",
         "Latitude": 6.143965834999999,
         "Longitude": 47.07444234472148,
-        "NoBeneficiaries": 744.0
+        "NoBeneficiaries": 744.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -29572,7 +29912,9 @@
         "Partner": "Partner B",
         "Latitude": 4.6820583,
         "Longitude": 46.82490038001757,
-        "NoBeneficiaries": 920.0
+        "NoBeneficiaries": 920.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -29591,7 +29933,9 @@
         "Partner": "Partner B",
         "Latitude": 3.977637555,
         "Longitude": 46.95422203065473,
-        "NoBeneficiaries": 474.0
+        "NoBeneficiaries": 474.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29610,7 +29954,9 @@
         "Partner": "Partner B",
         "Latitude": 5.422321615,
         "Longitude": 46.73882059266055,
-        "NoBeneficiaries": 679.0
+        "NoBeneficiaries": 679.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -29629,7 +29975,9 @@
         "Partner": "Partner B",
         "Latitude": 2.083238095,
         "Longitude": 41.70957360248143,
-        "NoBeneficiaries": 198.0
+        "NoBeneficiaries": 198.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -29648,7 +29996,9 @@
         "Partner": "Partner B",
         "Latitude": 3.46031613,
         "Longitude": 41.74256186829171,
-        "NoBeneficiaries": 591.0
+        "NoBeneficiaries": 591.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -29667,7 +30017,9 @@
         "Partner": "Partner B",
         "Latitude": 2.718431525,
         "Longitude": 41.45012533889222,
-        "NoBeneficiaries": 3.0
+        "NoBeneficiaries": 3.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -29686,7 +30038,9 @@
         "Partner": "Partner B",
         "Latitude": 3.99320231,
         "Longitude": 42.11790772207714,
-        "NoBeneficiaries": 557.0
+        "NoBeneficiaries": 557.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -29705,7 +30059,9 @@
         "Partner": "Partner B",
         "Latitude": 3.15658569,
         "Longitude": 42.44797760748234,
-        "NoBeneficiaries": 251.0
+        "NoBeneficiaries": 251.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -29724,7 +30080,9 @@
         "Partner": "Partner B",
         "Latitude": 3.736511235,
         "Longitude": 42.59720664362428,
-        "NoBeneficiaries": 619.0
+        "NoBeneficiaries": 619.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29743,7 +30101,9 @@
         "Partner": "Partner B",
         "Latitude": 4.806610105,
         "Longitude": 45.37880139084887,
-        "NoBeneficiaries": 273.0
+        "NoBeneficiaries": 273.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29762,7 +30122,9 @@
         "Partner": "Partner B",
         "Latitude": 3.830200195,
         "Longitude": 45.53826761267229,
-        "NoBeneficiaries": 932.0
+        "NoBeneficiaries": 932.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -29781,7 +30143,9 @@
         "Partner": "Partner B",
         "Latitude": 3.38720703,
         "Longitude": 45.61103792469689,
-        "NoBeneficiaries": 818.0
+        "NoBeneficiaries": 818.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -29800,7 +30164,9 @@
         "Partner": "Partner B",
         "Latitude": 0.56542988,
         "Longitude": 41.83238849235676,
-        "NoBeneficiaries": 110.0
+        "NoBeneficiaries": 110.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -29819,7 +30185,9 @@
         "Partner": "Partner B",
         "Latitude": -0.9022276250000001,
         "Longitude": 41.47450263705605,
-        "NoBeneficiaries": 74.0
+        "NoBeneficiaries": 74.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29838,7 +30206,9 @@
         "Partner": "Partner B",
         "Latitude": 0.08854552,
         "Longitude": 42.75496388641732,
-        "NoBeneficiaries": 107.0
+        "NoBeneficiaries": 107.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29857,7 +30227,9 @@
         "Partner": "Partner C",
         "Latitude": -0.52025977,
         "Longitude": 41.98693052123907,
-        "NoBeneficiaries": 884.0
+        "NoBeneficiaries": 884.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -29876,7 +30248,9 @@
         "Partner": "Partner C",
         "Latitude": 2.31167603,
         "Longitude": 45.0697377623431,
-        "NoBeneficiaries": 485.0
+        "NoBeneficiaries": 485.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -29895,7 +30269,9 @@
         "Partner": "Partner C",
         "Latitude": 1.103197665,
         "Longitude": 43.816310204743,
-        "NoBeneficiaries": 407.0
+        "NoBeneficiaries": 407.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -29914,7 +30290,9 @@
         "Partner": "Partner C",
         "Latitude": 1.651702885,
         "Longitude": 44.1364129258174,
-        "NoBeneficiaries": 383.0
+        "NoBeneficiaries": 383.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -29933,7 +30311,9 @@
         "Partner": "Partner C",
         "Latitude": 1.711069525,
         "Longitude": 44.66333811960108,
-        "NoBeneficiaries": 367.0
+        "NoBeneficiaries": 367.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -29952,7 +30332,9 @@
         "Partner": "Partner C",
         "Latitude": 1.97171021,
         "Longitude": 44.45041196731147,
-        "NoBeneficiaries": 148.0
+        "NoBeneficiaries": 148.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -29971,7 +30353,9 @@
         "Partner": "Partner C",
         "Latitude": 1.338381575,
         "Longitude": 43.52442207443247,
-        "NoBeneficiaries": 939.0
+        "NoBeneficiaries": 939.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -29990,7 +30374,9 @@
         "Partner": "Partner C",
         "Latitude": 2.7612915,
         "Longitude": 44.98571273539854,
-        "NoBeneficiaries": 663.0
+        "NoBeneficiaries": 663.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -30009,7 +30395,9 @@
         "Partner": "Partner C",
         "Latitude": 1.177093505,
         "Longitude": 42.82605734323676,
-        "NoBeneficiaries": 710.0
+        "NoBeneficiaries": 710.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -30028,7 +30416,9 @@
         "Partner": "Partner C",
         "Latitude": 0.699402345,
         "Longitude": 43.07034407343952,
-        "NoBeneficiaries": 197.0
+        "NoBeneficiaries": 197.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30047,7 +30437,9 @@
         "Partner": "Partner C",
         "Latitude": 1.60699463,
         "Longitude": 42.1717983886014,
-        "NoBeneficiaries": 683.0
+        "NoBeneficiaries": 683.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -30066,7 +30458,9 @@
         "Partner": "Partner C",
         "Latitude": 3.502381375,
         "Longitude": 46.56687123516815,
-        "NoBeneficiaries": 262.0
+        "NoBeneficiaries": 262.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -30085,7 +30479,9 @@
         "Partner": "Partner C",
         "Latitude": 2.456258845,
         "Longitude": 45.68564923622257,
-        "NoBeneficiaries": 772.0
+        "NoBeneficiaries": 772.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -30104,7 +30500,9 @@
         "Partner": "Partner C",
         "Latitude": 3.0517478,
         "Longitude": 46.30092067090455,
-        "NoBeneficiaries": 268.0
+        "NoBeneficiaries": 268.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30123,7 +30521,9 @@
         "Partner": "Partner C",
         "Latitude": 2.986297605,
         "Longitude": 45.55515595920596,
-        "NoBeneficiaries": 688.0
+        "NoBeneficiaries": 688.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -30142,7 +30542,9 @@
         "Partner": "Partner C",
         "Latitude": 6.955817925,
         "Longitude": 47.90989936868584,
-        "NoBeneficiaries": 138.0
+        "NoBeneficiaries": 138.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -30161,7 +30563,9 @@
         "Partner": "Partner C",
         "Latitude": 7.04826088,
         "Longitude": 47.22668992828474,
-        "NoBeneficiaries": 925.0
+        "NoBeneficiaries": 925.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -30180,7 +30584,9 @@
         "Partner": "Partner C",
         "Latitude": 5.91374549,
         "Longitude": 48.16751059039721,
-        "NoBeneficiaries": 336.0
+        "NoBeneficiaries": 336.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -30199,7 +30605,9 @@
         "Partner": "Partner C",
         "Latitude": 7.155232835,
         "Longitude": 48.99119335097649,
-        "NoBeneficiaries": 577.0
+        "NoBeneficiaries": 577.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -30218,7 +30626,9 @@
         "Partner": "Partner C",
         "Latitude": 4.772972395,
         "Longitude": 47.84185999640059,
-        "NoBeneficiaries": 751.0
+        "NoBeneficiaries": 751.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -30237,7 +30647,9 @@
         "Partner": "Partner C",
         "Latitude": 7.80981655,
         "Longitude": 48.44775756858062,
-        "NoBeneficiaries": 139.0
+        "NoBeneficiaries": 139.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30256,7 +30668,9 @@
         "Partner": "Partner C",
         "Latitude": 8.04485706,
         "Longitude": 49.5660938864259,
-        "NoBeneficiaries": 149.0
+        "NoBeneficiaries": 149.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -30275,7 +30689,9 @@
         "Partner": "Partner C",
         "Latitude": 8.576996484999999,
         "Longitude": 48.81097785520912,
-        "NoBeneficiaries": 991.0
+        "NoBeneficiaries": 991.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30294,7 +30710,9 @@
         "Partner": "Partner C",
         "Latitude": 10.14022383,
         "Longitude": 46.69579903965978,
-        "NoBeneficiaries": 564.0
+        "NoBeneficiaries": 564.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -30313,7 +30731,9 @@
         "Partner": "Partner C",
         "Latitude": 10.32403207,
         "Longitude": 47.92028403536129,
-        "NoBeneficiaries": 147.0
+        "NoBeneficiaries": 147.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -30332,7 +30752,9 @@
         "Partner": "Partner C",
         "Latitude": 10.445062555,
         "Longitude": 48.82374587796524,
-        "NoBeneficiaries": 371.0
+        "NoBeneficiaries": 371.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -30351,7 +30773,9 @@
         "Partner": "Partner C",
         "Latitude": 9.38424659,
         "Longitude": 46.53600466974044,
-        "NoBeneficiaries": 845.0
+        "NoBeneficiaries": 845.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -30370,7 +30794,9 @@
         "Partner": "Partner C",
         "Latitude": 8.434691115,
         "Longitude": 47.65754477565876,
-        "NoBeneficiaries": 865.0
+        "NoBeneficiaries": 865.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30389,7 +30815,9 @@
         "Partner": "Partner C",
         "Latitude": 9.21816514,
         "Longitude": 48.5709387771567,
-        "NoBeneficiaries": 958.0
+        "NoBeneficiaries": 958.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -30408,7 +30836,9 @@
         "Partner": "Partner C",
         "Latitude": 9.03868558,
         "Longitude": 47.48615775991117,
-        "NoBeneficiaries": 343.0
+        "NoBeneficiaries": 343.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -30427,7 +30857,9 @@
         "Partner": "Partner C",
         "Latitude": 9.18920544,
         "Longitude": 45.73752715517706,
-        "NoBeneficiaries": 623.0
+        "NoBeneficiaries": 623.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -30446,7 +30878,9 @@
         "Partner": "Partner C",
         "Latitude": 8.344034820000001,
         "Longitude": 46.6550163835587,
-        "NoBeneficiaries": 108.0
+        "NoBeneficiaries": 108.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30465,7 +30899,9 @@
         "Partner": "Partner C",
         "Latitude": 9.258589105,
         "Longitude": 44.98705092780503,
-        "NoBeneficiaries": 833.0
+        "NoBeneficiaries": 833.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -30484,7 +30920,9 @@
         "Partner": "Partner C",
         "Latitude": 9.986083985,
         "Longitude": 45.37812393176339,
-        "NoBeneficiaries": 124.0
+        "NoBeneficiaries": 124.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -30503,7 +30941,9 @@
         "Partner": "Partner C",
         "Latitude": 10.4048891,
         "Longitude": 45.46228272412216,
-        "NoBeneficiaries": 88.0
+        "NoBeneficiaries": 88.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -30522,7 +30962,9 @@
         "Partner": "Partner C",
         "Latitude": 9.822087544999999,
         "Longitude": 43.64489923150281,
-        "NoBeneficiaries": 994.0
+        "NoBeneficiaries": 994.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -30541,7 +30983,9 @@
         "Partner": "Partner C",
         "Latitude": 9.618523445000001,
         "Longitude": 44.25728347205476,
-        "NoBeneficiaries": 749.0
+        "NoBeneficiaries": 749.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -30560,7 +31004,9 @@
         "Partner": "Partner A",
         "Latitude": 10.224881735,
         "Longitude": 43.53291619493366,
-        "NoBeneficiaries": 981.0
+        "NoBeneficiaries": 981.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -30579,7 +31025,9 @@
         "Partner": "Partner A",
         "Latitude": 10.09387252,
         "Longitude": 43.18190062632189,
-        "NoBeneficiaries": 42.0
+        "NoBeneficiaries": 42.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -30598,7 +31046,9 @@
         "Partner": "Partner A",
         "Latitude": 10.65983718,
         "Longitude": 43.56777399460487,
-        "NoBeneficiaries": 320.0
+        "NoBeneficiaries": 320.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30617,7 +31067,9 @@
         "Partner": "Partner A",
         "Latitude": 10.8922892,
         "Longitude": 43.24549004734895,
-        "NoBeneficiaries": 664.0
+        "NoBeneficiaries": 664.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -30636,7 +31088,9 @@
         "Partner": "Partner A",
         "Latitude": 4.6942246,
         "Longitude": 43.93229801189854,
-        "NoBeneficiaries": 669.0
+        "NoBeneficiaries": 669.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30655,7 +31109,9 @@
         "Partner": "Partner A",
         "Latitude": 4.21541909,
         "Longitude": 43.21641527887574,
-        "NoBeneficiaries": 75.0
+        "NoBeneficiaries": 75.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -30674,7 +31130,9 @@
         "Partner": "Partner A",
         "Latitude": 3.78149414,
         "Longitude": 44.5385284425,
-        "NoBeneficiaries": 657.0
+        "NoBeneficiaries": 657.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -30693,7 +31151,9 @@
         "Partner": "Partner A",
         "Latitude": 3.775889895,
         "Longitude": 43.42135960649223,
-        "NoBeneficiaries": 301.0
+        "NoBeneficiaries": 301.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -30712,7 +31172,9 @@
         "Partner": "Partner A",
         "Latitude": 4.031642075000001,
         "Longitude": 43.9709343325,
-        "NoBeneficiaries": 669.0
+        "NoBeneficiaries": 669.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -30731,7 +31193,9 @@
         "Partner": "Partner A",
         "Latitude": 2.07649714,
         "Longitude": 45.32529713304848,
-        "NoBeneficiaries": 401.0
+        "NoBeneficiaries": 401.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30750,7 +31214,9 @@
         "Partner": "Partner A",
         "Latitude": 9.1266393,
         "Longitude": 50.28890658374632,
-        "NoBeneficiaries": 445.0
+        "NoBeneficiaries": 445.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -30769,7 +31235,9 @@
         "Partner": "Partner A",
         "Latitude": 10.9939396,
         "Longitude": 49.41597061706351,
-        "NoBeneficiaries": 866.0
+        "NoBeneficiaries": 866.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -30788,7 +31256,9 @@
         "Partner": "Partner A",
         "Latitude": 11.6951291,
         "Longitude": 50.85590650921409,
-        "NoBeneficiaries": 721.0
+        "NoBeneficiaries": 721.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30807,7 +31277,9 @@
         "Partner": "Partner A",
         "Latitude": 10.657927635,
         "Longitude": 50.79581057986083,
-        "NoBeneficiaries": 421.0
+        "NoBeneficiaries": 421.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -30826,7 +31298,9 @@
         "Partner": "Partner A",
         "Latitude": 11.03776227,
         "Longitude": 50.12250942805919,
-        "NoBeneficiaries": 320.0
+        "NoBeneficiaries": 320.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -30845,7 +31319,9 @@
         "Partner": "Partner A",
         "Latitude": 9.41523786,
         "Longitude": 49.56791722685186,
-        "NoBeneficiaries": 210.0
+        "NoBeneficiaries": 210.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30864,7 +31340,9 @@
         "Partner": "Partner A",
         "Latitude": 3.15658569,
         "Longitude": 43.5849717077492,
-        "NoBeneficiaries": 31.0
+        "NoBeneficiaries": 31.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -30883,7 +31361,9 @@
         "Partner": "Partner A",
         "Latitude": 2.501708985,
         "Longitude": 44.02555665065324,
-        "NoBeneficiaries": 354.0
+        "NoBeneficiaries": 354.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30902,7 +31382,9 @@
         "Partner": "Partner B",
         "Latitude": 1.9967041,
         "Longitude": 42.80988507810294,
-        "NoBeneficiaries": 703.0
+        "NoBeneficiaries": 703.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -30921,7 +31403,9 @@
         "Partner": "Partner B",
         "Latitude": 2.87973064,
         "Longitude": 42.84348584275028,
-        "NoBeneficiaries": 89.0
+        "NoBeneficiaries": 89.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -30940,7 +31424,9 @@
         "Partner": "Partner B",
         "Latitude": 5.83895936,
         "Longitude": 46.13634372539151,
-        "NoBeneficiaries": 589.0
+        "NoBeneficiaries": 589.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30959,7 +31445,9 @@
         "Partner": "Partner B",
         "Latitude": 6.143965834999999,
         "Longitude": 47.07444234472148,
-        "NoBeneficiaries": 884.0
+        "NoBeneficiaries": 884.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Partner's data"
       }
     }
   },
@@ -30978,7 +31466,9 @@
         "Partner": "Partner B",
         "Latitude": 4.6820583,
         "Longitude": 46.82490038001757,
-        "NoBeneficiaries": 375.0
+        "NoBeneficiaries": 375.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -30997,7 +31487,9 @@
         "Partner": "Partner B",
         "Latitude": 3.977637555,
         "Longitude": 46.95422203065473,
-        "NoBeneficiaries": 417.0
+        "NoBeneficiaries": 417.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31016,7 +31508,9 @@
         "Partner": "Partner B",
         "Latitude": 5.422321615,
         "Longitude": 46.73882059266055,
-        "NoBeneficiaries": 510.0
+        "NoBeneficiaries": 510.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -31035,7 +31529,9 @@
         "Partner": "Partner B",
         "Latitude": 2.083238095,
         "Longitude": 41.70957360248143,
-        "NoBeneficiaries": 680.0
+        "NoBeneficiaries": 680.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31054,7 +31550,9 @@
         "Partner": "Partner B",
         "Latitude": 3.46031613,
         "Longitude": 41.74256186829171,
-        "NoBeneficiaries": 28.0
+        "NoBeneficiaries": 28.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -31073,7 +31571,9 @@
         "Partner": "Partner B",
         "Latitude": 2.718431525,
         "Longitude": 41.45012533889222,
-        "NoBeneficiaries": 540.0
+        "NoBeneficiaries": 540.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31092,7 +31592,9 @@
         "Partner": "Partner B",
         "Latitude": 3.99320231,
         "Longitude": 42.11790772207714,
-        "NoBeneficiaries": 498.0
+        "NoBeneficiaries": 498.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -31111,7 +31613,9 @@
         "Partner": "Partner B",
         "Latitude": 3.15658569,
         "Longitude": 42.44797760748234,
-        "NoBeneficiaries": 357.0
+        "NoBeneficiaries": 357.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -31130,7 +31634,9 @@
         "Partner": "Partner B",
         "Latitude": 3.736511235,
         "Longitude": 42.59720664362428,
-        "NoBeneficiaries": 179.0
+        "NoBeneficiaries": 179.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31149,7 +31655,9 @@
         "Partner": "Partner B",
         "Latitude": 4.806610105,
         "Longitude": 45.37880139084887,
-        "NoBeneficiaries": 304.0
+        "NoBeneficiaries": 304.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -31168,7 +31676,9 @@
         "Partner": "Partner B",
         "Latitude": 3.830200195,
         "Longitude": 45.53826761267229,
-        "NoBeneficiaries": 92.0
+        "NoBeneficiaries": 92.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31187,7 +31697,9 @@
         "Partner": "Partner B",
         "Latitude": 3.38720703,
         "Longitude": 45.61103792469689,
-        "NoBeneficiaries": 425.0
+        "NoBeneficiaries": 425.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31206,7 +31718,9 @@
         "Partner": "Partner B",
         "Latitude": 0.56542988,
         "Longitude": 41.83238849235676,
-        "NoBeneficiaries": 265.0
+        "NoBeneficiaries": 265.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31225,7 +31739,9 @@
         "Partner": "Partner B",
         "Latitude": -0.9022276250000001,
         "Longitude": 41.47450263705605,
-        "NoBeneficiaries": 359.0
+        "NoBeneficiaries": 359.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31244,7 +31760,9 @@
         "Partner": "Partner B",
         "Latitude": 0.08854552,
         "Longitude": 42.75496388641732,
-        "NoBeneficiaries": 860.0
+        "NoBeneficiaries": 860.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -31263,7 +31781,9 @@
         "Partner": "Partner C",
         "Latitude": -0.52025977,
         "Longitude": 41.98693052123907,
-        "NoBeneficiaries": 972.0
+        "NoBeneficiaries": 972.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31282,7 +31802,9 @@
         "Partner": "Partner C",
         "Latitude": 2.31167603,
         "Longitude": 45.0697377623431,
-        "NoBeneficiaries": 455.0
+        "NoBeneficiaries": 455.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -31301,7 +31823,9 @@
         "Partner": "Partner C",
         "Latitude": 1.103197665,
         "Longitude": 43.816310204743,
-        "NoBeneficiaries": 803.0
+        "NoBeneficiaries": 803.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31320,7 +31844,9 @@
         "Partner": "Partner C",
         "Latitude": 1.651702885,
         "Longitude": 44.1364129258174,
-        "NoBeneficiaries": 968.0
+        "NoBeneficiaries": 968.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31339,7 +31865,9 @@
         "Partner": "Partner C",
         "Latitude": 1.711069525,
         "Longitude": 44.66333811960108,
-        "NoBeneficiaries": 935.0
+        "NoBeneficiaries": 935.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31358,7 +31886,9 @@
         "Partner": "Partner C",
         "Latitude": 1.97171021,
         "Longitude": 44.45041196731147,
-        "NoBeneficiaries": 870.0
+        "NoBeneficiaries": 870.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -31377,7 +31907,9 @@
         "Partner": "Partner C",
         "Latitude": 1.338381575,
         "Longitude": 43.52442207443247,
-        "NoBeneficiaries": 441.0
+        "NoBeneficiaries": 441.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31396,7 +31928,9 @@
         "Partner": "Partner C",
         "Latitude": 2.7612915,
         "Longitude": 44.98571273539854,
-        "NoBeneficiaries": 24.0
+        "NoBeneficiaries": 24.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -31415,7 +31949,9 @@
         "Partner": "Partner C",
         "Latitude": 1.177093505,
         "Longitude": 42.82605734323676,
-        "NoBeneficiaries": 772.0
+        "NoBeneficiaries": 772.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Wasn't recorded"
       }
     }
   },
@@ -31434,7 +31970,9 @@
         "Partner": "Partner C",
         "Latitude": 0.699402345,
         "Longitude": 43.07034407343952,
-        "NoBeneficiaries": 641.0
+        "NoBeneficiaries": 641.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -31453,7 +31991,9 @@
         "Partner": "Partner C",
         "Latitude": 1.60699463,
         "Longitude": 42.1717983886014,
-        "NoBeneficiaries": 873.0
+        "NoBeneficiaries": 873.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31472,7 +32012,9 @@
         "Partner": "Partner C",
         "Latitude": 3.502381375,
         "Longitude": 46.56687123516815,
-        "NoBeneficiaries": 297.0
+        "NoBeneficiaries": 297.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31491,7 +32033,9 @@
         "Partner": "Partner C",
         "Latitude": 2.456258845,
         "Longitude": 45.68564923622257,
-        "NoBeneficiaries": 60.0
+        "NoBeneficiaries": 60.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -31510,7 +32054,9 @@
         "Partner": "Partner C",
         "Latitude": 3.0517478,
         "Longitude": 46.30092067090455,
-        "NoBeneficiaries": 907.0
+        "NoBeneficiaries": 907.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -31529,7 +32075,9 @@
         "Partner": "Partner C",
         "Latitude": 2.986297605,
         "Longitude": 45.55515595920596,
-        "NoBeneficiaries": 324.0
+        "NoBeneficiaries": 324.0,
+        "SpeedLimit": "40 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -31548,7 +32096,9 @@
         "Partner": "Partner C",
         "Latitude": 6.955817925,
         "Longitude": 47.90989936868584,
-        "NoBeneficiaries": 812.0
+        "NoBeneficiaries": 812.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31567,7 +32117,9 @@
         "Partner": "Partner C",
         "Latitude": 7.04826088,
         "Longitude": 47.22668992828474,
-        "NoBeneficiaries": 64.0
+        "NoBeneficiaries": 64.0,
+        "SpeedLimit": "30 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -31586,7 +32138,9 @@
         "Partner": "Partner C",
         "Latitude": 5.91374549,
         "Longitude": 48.16751059039721,
-        "NoBeneficiaries": 538.0
+        "NoBeneficiaries": 538.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -31605,7 +32159,9 @@
         "Partner": "Partner C",
         "Latitude": 7.155232835,
         "Longitude": 48.99119335097649,
-        "NoBeneficiaries": 480.0
+        "NoBeneficiaries": 480.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31624,7 +32180,9 @@
         "Partner": "Partner C",
         "Latitude": 4.772972395,
         "Longitude": 47.84185999640059,
-        "NoBeneficiaries": 907.0
+        "NoBeneficiaries": 907.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -31643,7 +32201,9 @@
         "Partner": "Partner C",
         "Latitude": 7.80981655,
         "Longitude": 48.44775756858062,
-        "NoBeneficiaries": 190.0
+        "NoBeneficiaries": 190.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Somalia's region"
       }
     }
   },
@@ -31662,7 +32222,9 @@
         "Partner": "Partner C",
         "Latitude": 8.04485706,
         "Longitude": 49.5660938864259,
-        "NoBeneficiaries": 161.0
+        "NoBeneficiaries": 161.0,
+        "SpeedLimit": "50 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31681,7 +32243,9 @@
         "Partner": "Partner C",
         "Latitude": 8.576996484999999,
         "Longitude": 48.81097785520912,
-        "NoBeneficiaries": 528.0
+        "NoBeneficiaries": 528.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31700,7 +32264,9 @@
         "Partner": "Partner C",
         "Latitude": 10.14022383,
         "Longitude": 46.69579903965978,
-        "NoBeneficiaries": 972.0
+        "NoBeneficiaries": 972.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31719,7 +32285,9 @@
         "Partner": "Partner C",
         "Latitude": 10.32403207,
         "Longitude": 47.92028403536129,
-        "NoBeneficiaries": 283.0
+        "NoBeneficiaries": 283.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -31738,7 +32306,9 @@
         "Partner": "Partner C",
         "Latitude": 10.445062555,
         "Longitude": 48.82374587796524,
-        "NoBeneficiaries": 459.0
+        "NoBeneficiaries": 459.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "Can't find it"
       }
     }
   },
@@ -31757,7 +32327,9 @@
         "Partner": "Partner C",
         "Latitude": 9.38424659,
         "Longitude": 46.53600466974044,
-        "NoBeneficiaries": 457.0
+        "NoBeneficiaries": 457.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -31776,7 +32348,9 @@
         "Partner": "Partner C",
         "Latitude": 8.434691115,
         "Longitude": 47.65754477565876,
-        "NoBeneficiaries": 873.0
+        "NoBeneficiaries": 873.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's a test"
       }
     }
   },
@@ -31795,7 +32369,9 @@
         "Partner": "Partner C",
         "Latitude": 9.21816514,
         "Longitude": 48.5709387771567,
-        "NoBeneficiaries": 497.0
+        "NoBeneficiaries": 497.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31814,7 +32390,9 @@
         "Partner": "Partner C",
         "Latitude": 9.03868558,
         "Longitude": 47.48615775991117,
-        "NoBeneficiaries": 3.0
+        "NoBeneficiaries": 3.0,
+        "SpeedLimit": "100 km/h",
+        "TestText": "Won't work"
       }
     }
   },
@@ -31833,7 +32411,9 @@
         "Partner": "Partner C",
         "Latitude": 9.18920544,
         "Longitude": 45.73752715517706,
-        "NoBeneficiaries": 357.0
+        "NoBeneficiaries": 357.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31852,7 +32432,9 @@
         "Partner": "Partner C",
         "Latitude": 8.344034820000001,
         "Longitude": 46.6550163835587,
-        "NoBeneficiaries": 454.0
+        "NoBeneficiaries": 454.0,
+        "SpeedLimit": "120 km/h",
+        "TestText": "People's choice"
       }
     }
   },
@@ -31871,7 +32453,9 @@
         "Partner": "Partner C",
         "Latitude": 9.258589105,
         "Longitude": 44.98705092780503,
-        "NoBeneficiaries": 319.0
+        "NoBeneficiaries": 319.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "Don't stop"
       }
     }
   },
@@ -31890,7 +32474,9 @@
         "Partner": "Partner C",
         "Latitude": 9.986083985,
         "Longitude": 45.37812393176339,
-        "NoBeneficiaries": 284.0
+        "NoBeneficiaries": 284.0,
+        "SpeedLimit": "80 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31909,7 +32495,9 @@
         "Partner": "Partner C",
         "Latitude": 10.4048891,
         "Longitude": 45.46228272412216,
-        "NoBeneficiaries": 392.0
+        "NoBeneficiaries": 392.0,
+        "SpeedLimit": "20 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
@@ -31928,7 +32516,9 @@
         "Partner": "Partner C",
         "Latitude": 9.822087544999999,
         "Longitude": 43.64489923150281,
-        "NoBeneficiaries": 649.0
+        "NoBeneficiaries": 649.0,
+        "SpeedLimit": "10 km/h",
+        "TestText": "Driver's license"
       }
     }
   },
@@ -31947,7 +32537,9 @@
         "Partner": "Partner C",
         "Latitude": 9.618523445000001,
         "Longitude": 44.25728347205476,
-        "NoBeneficiaries": 303.0
+        "NoBeneficiaries": 303.0,
+        "SpeedLimit": "60 km/h",
+        "TestText": "It's 30 km/h here"
       }
     }
   },
