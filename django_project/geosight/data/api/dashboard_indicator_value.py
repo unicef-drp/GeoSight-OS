@@ -201,7 +201,6 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         dashboard = get_object_or_404(Dashboard, slug=slug)
         reference_layer = self.return_reference_view()
 
-        no_geom = request.GET.get('no-geom', False)
         entities = Entity.objects.filter(
             Q(geom_id=geom_id) | Q(concept_uuid=geom_id)
         )
@@ -214,15 +213,24 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         # Collect all entity IDs for bulk value fetching
         entities_id = list(entities.values_list('id', flat=True))
 
-        # Fetch relationships once and reuse throughout
-        if not no_geom:
-            parent = entity.parent
-            siblings = entity.siblings
-            children = entity.children
+        use_parent = request.GET.get('parent', False)
+        use_siblings = request.GET.get('siblings', False)
+        use_children = request.GET.get('children', False)
 
+        # Fetch relationships once and reuse throughout
+        parent = None
+        if use_parent:
+            parent = entity.parent
             if parent:
                 entities_id.append(parent.id)
+        siblings = None
+        if use_siblings:
+            siblings = entity.siblings
             entities_id.extend(siblings.values_list('id', flat=True))
+
+        children = None
+        if use_children:
+            children = entity.children
             entities_id.extend(children.values_list('id', flat=True))
 
         # INDICATORS DATA
@@ -337,23 +345,23 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         except KeyError:
             admin_boundary['related_tables'] = {}
 
-        if not no_geom:
-            # For parent
-            if parent:
-                admin_boundary['parent'] = EntitySerializer(parent).data
-                try:
-                    admin_boundary['parent']['indicators'] = indicators[
-                        parent.concept_uuid
-                    ]
-                except KeyError:
-                    admin_boundary['parent']['indicators'] = {}
+        # For parent
+        if parent:
+            admin_boundary['parent'] = EntitySerializer(parent).data
+            try:
+                admin_boundary['parent']['indicators'] = indicators[
+                    parent.concept_uuid
+                ]
+            except KeyError:
+                admin_boundary['parent']['indicators'] = {}
 
-                try:
-                    admin_boundary['parent']['related_tables'] = \
-                        related_tables[parent.concept_uuid]
-                except KeyError:
-                    admin_boundary['parent']['related_tables'] = {}
+            try:
+                admin_boundary['parent']['related_tables'] = \
+                    related_tables[parent.concept_uuid]
+            except KeyError:
+                admin_boundary['parent']['related_tables'] = {}
 
+        if children:
             # For children
             admin_boundary['children'] = EntitySerializer(
                 children, many=True
@@ -370,6 +378,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 except KeyError:
                     child['related_tables'] = {}
 
+        if siblings:
             # For siblings
             admin_boundary['siblings'] = EntitySerializer(
                 siblings, many=True

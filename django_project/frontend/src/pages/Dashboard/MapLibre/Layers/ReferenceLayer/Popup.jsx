@@ -390,6 +390,18 @@ export function getContext(
       params["no-geom"] = true;
     }
   }
+  const template = currentIndicatorLayer.popup_template;
+  if (isCustom) {
+    if (template.includes("parent")) {
+      params["parent"] = true;
+    }
+    if (template.includes("sibling")) {
+      params["siblings"] = true;
+    }
+    if (template.includes("children")) {
+      params["children"] = true;
+    }
+  }
   if (needAttributes || isCustom) {
     fetchingData(url, params, {}, function (admin_boundary, error) {
       if (!session.isValid) {
