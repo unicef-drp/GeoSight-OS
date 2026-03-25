@@ -13,6 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+declare const staticUrl: string;
+
 export const DEFAULT_STYLES = {
   circle: {
     type: "circle",
@@ -28,7 +30,7 @@ export const DEFAULT_STYLES = {
     source: "source",
     filter: ["all", ["==", "$type", "Point"]],
     layout: {
-      "icon-image": "/static/img/point.png",
+      "icon-image": `${staticUrl}img/point.png`,
       "icon-size": 0.1,
     },
   },

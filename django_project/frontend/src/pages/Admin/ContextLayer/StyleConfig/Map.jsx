@@ -80,7 +80,7 @@ export default function MapConfig({ data, setData, layerInput, setLoading }) {
         container: 'StyleMapConfig',
         style: {
           version: 8, sources: {}, layers: [],
-          glyphs: "/static/fonts/{fontstack}/{range}.pbf"
+          glyphs: staticUrl + "fonts/{fontstack}/{range}.pbf"
         },
         center: [0, 0],
         zoom: 1,
