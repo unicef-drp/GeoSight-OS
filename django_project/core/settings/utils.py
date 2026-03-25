@@ -26,3 +26,17 @@ DJANGO_ROOT = os.path.dirname(
 def ABS_PATH(*args):
     """Return absolute path of django project."""
     return os.path.join(DJANGO_ROOT, *args)
+
+
+def code_release_version():
+    """ Read code release version from file."""
+    version = ABS_PATH('_version.txt')
+    if os.path.exists(version):
+        try:
+            with open(version, 'rb') as f:
+                version = f.read().decode("utf-8")
+        except Exception:
+            version = None
+        if version:
+            return version.strip()
+    return '0.0.1'
