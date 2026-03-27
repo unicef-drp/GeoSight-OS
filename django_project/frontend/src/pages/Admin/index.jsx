@@ -24,6 +24,7 @@ export const pageNames = {
   Indicators: 'indicators', 
   Basemaps: 'basemaps',
   ContextLayer: 'contextLayer',
+  ContextLayerData: 'contextLayerData',
   UsersAndGroups: 'usersAndGroups',
   Styles: 'styles',
   Dataset: 'dataset',

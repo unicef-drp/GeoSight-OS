@@ -13,7 +13,13 @@ __author__ = 'Irwan Fathurrahman'
 __date__ = '10/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+from rest_framework import serializers
+
 from core.serializer.dynamic_serializer import DynamicModelSerializer
+from geosight.data.models.related_table import RelatedTableRow
+from geosight.data.serializer.related_table import (
+    RelatedTableRowApiFlatSerializer
+)
 
 
 def serializer_factory(model_class):
@@ -31,10 +37,13 @@ def serializer_factory(model_class):
         A dynamically generated serializer class exposing all model fields.
     :rtype: rest_framework.serializers.ModelSerializer
     """
+    if model_class is RelatedTableRow:
+        return RelatedTableRowApiFlatSerializer
     return type(
         'DynamicContextLayerSerializer',
         (DynamicModelSerializer,),
         {
+            'id': serializers.CharField(source='pk', read_only=True),
             'Meta': type(
                 'Meta', (), {'model': model_class, 'fields': '__all__'}
             )

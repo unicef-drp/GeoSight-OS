@@ -69,6 +69,12 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
                 obj.cloud_native_gis_layer_id = layer.id
                 obj.save()
                 return layer
+        elif obj.layer_type == LayerType.RELATED_TABLE:
+            if not obj.related_table:
+                raise ValueError(
+                    "Related table is not set for this layer. "
+                )
+            return obj.related_table
         raise ValueError("Invalid layer type for this request.")
 
     def list(self, request, *args, **kwargs):  # noqa DOC110, DOC103

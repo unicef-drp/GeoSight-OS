@@ -15,6 +15,7 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 from cloud_native_gis.serializer.layer import LayerAttributeSerializer
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import serializers
 
 from core.api_utils import common_api_params, ApiTag
 from core.serializer.dynamic_serializer import DynamicModelSerializer
@@ -22,6 +23,7 @@ from geosight.data.api.v1.context_layer.detail.base_detail import (
     ContextBaseDetailDataView
 )
 from geosight.data.models import LayerType
+from geosight.data.models.related_table import RelatedTableField
 
 
 class DynamicLayerAttributeSerializer(
@@ -29,6 +31,27 @@ class DynamicLayerAttributeSerializer(
     """Dynamic Layer Attribute Serializer."""
 
     pass
+
+
+class RelatedTableFieldAttributeSerializer(DynamicModelSerializer):
+    """Serializer for RelatedTableField mapped to LayerAttributes format."""
+
+    attribute_name = serializers.CharField(source='name')
+    attribute_label = serializers.CharField(source='alias', allow_null=True)
+    attribute_type = serializers.CharField(source='type')
+    attribute_description = serializers.SerializerMethodField()
+    attribute_order = serializers.IntegerField(source='id')
+
+    def get_attribute_description(self, obj):
+        """Return None for attribute_description."""
+        return None
+
+    class Meta:  # noqa: D106
+        model = RelatedTableField
+        fields = [
+            'id', 'attribute_name', 'attribute_type',
+            'attribute_label', 'attribute_description', 'attribute_order'
+        ]
 
 
 class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
@@ -49,6 +72,8 @@ class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
         obj = self._get_object()
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
             return DynamicLayerAttributeSerializer
+        if obj.layer_type == LayerType.RELATED_TABLE:
+            return RelatedTableFieldAttributeSerializer
         return None
 
     @property
@@ -64,9 +89,11 @@ class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
         :raises ValueError: If the layer type is invalid for this request.
         """
         obj = self._get_object()
+        layer = self.get_context_layer_object()
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
-            layer = self.get_context_layer_object()
             return layer.layerattributes_set.all()
+        elif obj.layer_type == LayerType.RELATED_TABLE:
+            return layer.fields_definition_query
         raise ValueError("Invalid layer type for this request.")
 
     @swagger_auto_schema(

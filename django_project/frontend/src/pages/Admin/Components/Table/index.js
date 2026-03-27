@@ -106,7 +106,7 @@ export function AdminTable(
             return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
           }}
           columnVisibilityModel={{
-            id: false
+            id: props.showIdColumn ? true : false,
           }}
           rows={isLoading ? [] : rows}
           columns={columns}
