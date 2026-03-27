@@ -16,17 +16,17 @@
 import React, { useEffect, useState } from "react";
 import { fetchingData } from "../../../../../Requests";
 import { capitalize, parseDateTime } from "../../../../../utils/main";
-import { AdminListPagination } from "../../../AdminListPagination";
 import { Variables } from "../../../../../utils/Variables";
+import { AdminListContent } from "../../../../../components/AdminList/Content";
 
 export function ContextLayerDataTable({ data }) {
-  const [columns, setColums] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [error, setError] = useState(null);
   const url = `/api/v1/context-layers/${data.id}/data/features/`;
 
   // Show modal when url changed
   useEffect(() => {
-    setColums([]);
+    setColumns([]);
     setError(null);
     if (!data.id) {
       return;
@@ -39,41 +39,58 @@ export function ContextLayerDataTable({ data }) {
         (response, error) => {
           setError(error);
           if (response) {
-            setColums(
+            setColumns(
               [
                 {
                   field: "id",
                   headerName: "id",
                   minWidth: 200,
                 },
-              ].concat(
-                response.map((fieldDefinition) => {
-                  const field = fieldDefinition.attribute_name;
-                  const isDate = fieldDefinition.attribute_type === "date";
+              ]
+                .concat(
+                  response.map((fieldDefinition) => {
+                    const field = fieldDefinition.attribute_name;
+                    const isDate = fieldDefinition.attribute_type === "date";
 
-                  return {
-                    field: field,
-                    headerName: fieldDefinition.attribute_label
-                      ? fieldDefinition.attribute_label
-                      : capitalize(field),
-                    flex: 1,
-                    minWidth: 200,
-                    renderCell: (params) => {
-                      if (isDate) {
-                        return parseDateTime(params.value);
-                      }
-                      return (
-                        <div
-                          title={params.value}
-                          className="MuiDataGrid-cellContent"
-                        >
-                          {params.value}
-                        </div>
-                      );
+                    return {
+                      field: field,
+                      headerName: fieldDefinition.attribute_label
+                        ? fieldDefinition.attribute_label
+                        : capitalize(field),
+                      serverKey:
+                        data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE
+                          ? `data__${field}`
+                          : `${field}`,
+                      type: fieldDefinition.attribute_type,
+                      flex: 1,
+                      minWidth: 200,
+                      renderCell: (params) => {
+                        if (isDate) {
+                          return parseDateTime(params.value);
+                        }
+                        return (
+                          <div
+                            title={params.value}
+                            className="MuiDataGrid-cellContent"
+                          >
+                            {params.value}
+                          </div>
+                        );
+                      },
+                    };
+                  }),
+                )
+                .concat([
+                  {
+                    field: "actions",
+                    type: "actions",
+                    cellClassName: "MuiDataGrid-ActionsColumn",
+                    width: 50,
+                    getActions: (params) => {
+                      return [];
                     },
-                  };
-                }),
-              ),
+                  },
+                ]),
             );
           }
         },
@@ -87,7 +104,8 @@ export function ContextLayerDataTable({ data }) {
   ) {
     return (
       <div className="form-helptext" style={{ padding: "1rem" }}>
-        This layer does not have a cloud-native layer. Please upload or save the
+        This layer does not have a cloud-native layer. Please upload or save
+        the
         context layer to apply the data.
       </div>
     );
@@ -105,14 +123,24 @@ export function ContextLayerDataTable({ data }) {
     );
   }
   return (
-    <AdminListPagination
-      urlData={url}
-      columns={columns}
-      disabledDelete={true}
-      checkboxSelection={false}
-      hideSearch={true}
+    <AdminListContent
+      columns={!columns ? null : columns}
+      pageName={"Data"}
       error={error}
-      showIdColumn={true}
+      url={{
+        list: url,
+        detail: null,
+        create: null,
+        edit: null,
+        batch: null,
+      }}
+      defaults={{
+        sort: [{ field: "name", sort: "asc" }],
+      }}
+      useSearch={false}
+      enableFilter={false}
+      // Table props
+      multipleDelete={false}
     />
   );
 }

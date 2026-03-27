@@ -105,6 +105,12 @@ export const AdminForm = forwardRef(
         key={tabName}
         onClick={_ => {
           if (!disabled) {
+            try {
+              $("#Form").removeClass(tab)
+              $("#Form").addClass(tabName)
+            }catch (e) {
+
+            }
             setTab(tabName)
           }
         }}

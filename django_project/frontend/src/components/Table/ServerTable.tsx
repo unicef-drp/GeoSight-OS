@@ -485,7 +485,7 @@ const ServerTable = forwardRef(
           <MainDataGrid
             className={className}
             columns={columns}
-            rows={data ? data : []}
+            rows={!columns?.length ? [] : data ? data : []}
             rowCount={dataCount}
             page={parameters.page}
             getCellClassName={(params: any) => {
@@ -504,7 +504,7 @@ const ServerTable = forwardRef(
               return className;
             }}
             pagination
-            loading={!data}
+            loading={!columns?.length || !data}
             pageSize={parameters.page_size}
             rowsPerPageOptions={[10, 25, 50, 100]}
             onPageSizeChange={(newPageSize: number) => {
