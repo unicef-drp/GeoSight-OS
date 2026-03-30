@@ -214,7 +214,7 @@ const GeneralForm = memo(({}: Props) => {
         <div className="BasicFormSection">
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <label className="form-label required" htmlFor="name">
+              <label className="form-label" htmlFor="name">
                 View
               </label>
               <div className="ReferenceDatasetSection">
@@ -243,7 +243,7 @@ const GeneralForm = memo(({}: Props) => {
               </div>
             </Grid>
             <Grid item xs={6} className="CodeMappingConfig">
-              <label className="form-label required" htmlFor="name">
+              <label className="form-label" htmlFor="name">
                 {t("admin.dashboard.mappingIndicatorsUsing")}
               </label>
               <SelectWithSearch

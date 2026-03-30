@@ -71,7 +71,7 @@
     width: fit-content;
 
     &.required {
-      font-weight: var(--base-font-bold);
+      font-weight: 600;
 
       &:after {
         content: ' *';

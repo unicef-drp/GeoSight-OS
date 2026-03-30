@@ -15,7 +15,12 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IconTextField } from "../Elements/Input";
-import { ArrowDownwardIcon, FilterIcon, MagnifyIcon } from "../Icons";
+import {
+  ArrowDownwardIcon,
+  CloseIcon,
+  FilterIcon,
+  MagnifyIcon,
+} from "../Icons";
 import { ServerTable } from "../Table";
 import Modal, { ModalHeader } from "../Modal";
 import { debounce } from "@mui/material/utils";
@@ -139,7 +144,22 @@ export function ModalInputSelector({
               placeholder={
                 `Select ${dataName}` + (multipleSelection ? "(s)" : "")
               }
-              iconEnd={<ArrowDownwardIcon />}
+              iconEnd={
+                <>
+                  {selectionModel?.length ? (
+                    <CloseIcon
+                      className="ModalInputSelectorClearIcon"
+                      onClick={(e: any) => {
+                        setSelectionModel([]);
+                        setSelectionModelData([]);
+                        dataSelected([]);
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : null}
+                  <ArrowDownwardIcon />
+                </>
+              }
               onClick={() => setOpen(true)}
               value={inputValue}
               disabled={disabled}
