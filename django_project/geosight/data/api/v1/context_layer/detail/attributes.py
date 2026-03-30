@@ -28,13 +28,24 @@ from geosight.data.models.related_table import RelatedTableField
 
 class DynamicLayerAttributeSerializer(
     LayerAttributeSerializer, DynamicModelSerializer):
-    """Dynamic Layer Attribute Serializer."""
+    """Dynamic Layer Attribute Serializer.
+
+    Combines :class:`LayerAttributeSerializer` with
+    :class:`DynamicModelSerializer` to support dynamic field selection
+    for cloud-native GIS layer attributes.
+    """
 
     pass
 
 
 class RelatedTableFieldAttributeSerializer(DynamicModelSerializer):
-    """Serializer for RelatedTableField mapped to LayerAttributes format."""
+    """Serializer for RelatedTableField mapped to LayerAttributes format.
+
+    Maps :class:`~geosight.data.models.related_table.RelatedTableField`
+    fields to the same structure used by
+    :class:`~cloud_native_gis.serializer.layer.LayerAttributeSerializer`
+    for consistency across layer types.
+    """
 
     attribute_name = serializers.CharField(source='name')
     attribute_label = serializers.CharField(source='alias', allow_null=True)
@@ -43,7 +54,13 @@ class RelatedTableFieldAttributeSerializer(DynamicModelSerializer):
     attribute_order = serializers.IntegerField(source='id')
 
     def get_attribute_description(self, obj):
-        """Return None for attribute_description."""
+        """Return None for attribute_description.
+
+        :param obj: The :class:`RelatedTableField` instance being serialized.
+        :type obj: geosight.data.models.related_table.RelatedTableField
+        :return: Always ``None``; description is not available for this type.
+        :rtype: None
+        """
         return None
 
     class Meta:  # noqa: D106
@@ -55,7 +72,15 @@ class RelatedTableFieldAttributeSerializer(DynamicModelSerializer):
 
 
 class ContextLayerAttributesViewSet(ContextBaseDetailDataView):
-    """Context Layer Data ViewSet."""
+    """ViewSet for listing attributes of a context layer.
+
+    Supports both ``CLOUD_NATIVE_GIS_LAYER`` and ``RELATED_TABLE`` layer
+    types, returning their attribute definitions in a unified format.
+
+    :cvar non_filtered_keys: Query parameters excluded from attribute
+        filtering.
+    :vartype non_filtered_keys: list[str]
+    """
 
     non_filtered_keys = ['page', 'page_size']
 
