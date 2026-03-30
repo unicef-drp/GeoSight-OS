@@ -30,8 +30,8 @@ export const Logger = {
       );
 
       // Zoom to the layer
-      const labelLayer = output.layers.find(
-        (layer) => layer.id === "context-layer-label",
+      const labelLayer = output.layers.find((layer) =>
+        /^context-layer-\d+-label$/.test(layer.id),
       );
       if (labelLayer) {
         const features = output.sources[labelLayer.source]?.data?.features;

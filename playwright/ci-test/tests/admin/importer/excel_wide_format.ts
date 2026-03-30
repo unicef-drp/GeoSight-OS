@@ -59,7 +59,7 @@ test.describe('Test excel wide format', () => {
     await expect(page.locator('#Form #id_source')).toHaveValue("Source");
     await expect(page.locator('#Form #id_group')).toHaveText("Category");
     await page.locator('.TabPrimary').getByText('Data').click();
-    await expect(page.locator('.MuiDataGrid-columnHeader').first()).toHaveText('Attribute1');
+    await expect(page.locator('.MuiDataGrid-columnHeader').first()).toHaveText('Value');
     await expect(page.locator('.Data .AdminTable .MuiTablePagination-displayedRows')).toHaveText('1–47 of 47');
 
     // Delete RT
