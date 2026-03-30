@@ -149,6 +149,7 @@ export function ModalInputSelector({
                   {selectionModel?.length ? (
                     <CloseIcon
                       className="ModalInputSelectorClearIcon"
+                      title="Clear Selection"
                       onClick={(e: any) => {
                         setSelectionModel([]);
                         setSelectionModelData([]);
