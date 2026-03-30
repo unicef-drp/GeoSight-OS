@@ -37,7 +37,6 @@ export interface FilterEditorModalProps {
 
 /** Update value based on operator **/
 const updateValue = (operator: string, value: any) => {
-  console.log("updateValue", operator, value);
   if ([IS_IN, IS_NOT_IN].includes(operator) && !Array.isArray(value)) {
     return value ? [value] : [];
   } else if (![IS_IN, IS_NOT_IN].includes(operator) && Array.isArray(value)) {

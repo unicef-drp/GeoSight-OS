@@ -60,12 +60,12 @@ test.describe('Context layer create admin', () => {
       }
     });
     await expect(page.locator('.maplibregl-popup-content-wrapper tr')).toHaveCount(5);
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toHaveText("Partner");
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(1)).toHaveText("Partner B");
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(0)).toHaveText("Pcode");
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(1)).toHaveText("SO1904");
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(0)).toHaveText("Sector");
-    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(1)).toHaveText("WASH");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toHaveText("Pcode");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(1)).toHaveText("SO1904");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(0)).toHaveText("Sector");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(1).locator('td').nth(1)).toHaveText("WASH");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(0)).toHaveText("Partner");
+    await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(2).locator('td').nth(1)).toHaveText("Partner B");
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
@@ -95,8 +95,8 @@ test.describe('Context layer create admin', () => {
     await page.getByRole('option', { name: 'Cloud Native GIS Layer' }).click();
 
     // Error save without delete the data
-    await page.getByText('Save').isEnabled();
-    await page.getByText('Save').click();
+    await page.getByText('Save', { exact: true }).isEnabled();
+    await page.getByText('Save', { exact: true }).click();
     await expect(page.locator('[data-wrapper-name="cloud_native_gis"]')).toContainText('This field is required.');
 
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
