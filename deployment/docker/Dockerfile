@@ -44,8 +44,8 @@ ENV LANGUAGE en_ZA:en
 ENV LC_ALL en_ZA.UTF-8
 
 ADD deployment/docker/requirements.txt /requirements.txt
-RUN pip3 install --upgrade pip && pip install --upgrade pip
-RUN pip install -r /requirements.txt
+RUN python3 -m pip install --upgrade pip setuptools wheel
+RUN python3 -m pip install -r /requirements.txt
 
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
@@ -128,3 +128,4 @@ FROM dev AS test
 ADD django_project /home/web/django_project
 WORKDIR /home/web/django_project/frontend
 RUN npm install --verbose && npm run build
+WORKDIR /home/web/django_project

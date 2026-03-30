@@ -44,6 +44,7 @@ export function ContextLayerDataTable({ data }) {
                 {
                   field: "id",
                   headerName: "id",
+                  serverKey: "pk",
                   minWidth: 200,
                 },
               ]
