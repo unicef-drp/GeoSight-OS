@@ -426,6 +426,32 @@ test.describe('View project', () => {
     await expect(pin3).toHaveCSS('width', '30px');
     await expect(pin3).toHaveCSS('border-radius', '50%');
 
+    // ----------------------------------------------------------------------------
+    // DYNAMIC LAYER
+    // ----------------------------------------------------------------------------
+    const dynamicLayer = 'Dynamic Layer'
+    await page.getByRole('radio', { name: dynamicLayer, exact: true }).click();
+    await expect(page.getByLabel(layer1)).not.toBeChecked();
+    await expect(page.getByLabel(layer2)).not.toBeChecked();
+    await delay(1000)
+    await expect(page.locator('.MapLegendSectionTitle')).toContainText(dynamicLayer);
+    const slider0 = page.locator('.IndicatorLayerMiddleConfig .WhereConfigurationQuery').nth(0).locator('.MuiInputSlider');
+    const slider1 = page.locator('.IndicatorLayerMiddleConfig .WhereConfigurationQuery').nth(1).locator('.MuiInputSlider');
+    const slider2 = page.locator('.IndicatorLayerMiddleConfig .WhereConfigurationQuery').nth(2).locator('.MuiInputSlider');
+    await expect(slider0).toBeVisible();
+    await expect(slider1).toBeVisible();
+    await expect(slider2).toBeVisible();
+
+    let box0 = await slider0.boundingBox();
+    await page.mouse.click(box0.x + box0.width / 2, box0.y + box0.height / 2);
+    await expect(page.locator('.widget__content').nth(1)).toContainText('978.5');
+    let box1 = await slider1.boundingBox();
+    await page.mouse.click(box1.x + box1.width / 2, box1.y + box1.height / 2);
+    await expect(page.locator('.widget__content').nth(1)).toContainText('922.84');
+    let box2 = await slider2.boundingBox();
+    await page.mouse.click(box2.x + box2.width / 2, box2.y + box2.height / 2);
+    await expect(page.locator('.widget__content').nth(1)).toContainText('978.5');
+
     // ---------------------------------
     // Related Table Layer
     // ---------------------------------

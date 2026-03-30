@@ -74,7 +74,7 @@ export function WhereInputValue({
   try {
     optionsData.sort();
   } catch (err) {}
-  
+
   const [initValue, setInitValue] = useState(value);
   const [initBetweenMin, setInitBetweenMin] = useState(betweenMin);
   const [initBetweenMax, setInitBetweenMax] = useState(betweenMax);
@@ -311,7 +311,10 @@ export function WhereInputValue({
         {...props}
       />
     );
-  } else if (SINGLE_SELECTABLE_OPERATORS.includes(operator)) {
+  } else if (
+    SINGLE_SELECTABLE_OPERATORS.includes(operator) &&
+    textBasedOnMinMax
+  ) {
     if (!optionsData) {
       return defaultInput();
     }
