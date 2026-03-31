@@ -1,6 +1,7 @@
 /***
  * Log system based on the debug
  */
+import { testExampleQueries } from "./alasql";
 
 export let IS_DEBUG = false;
 try {
@@ -11,6 +12,12 @@ export const Logger = {
   log: function (key, text) {
     if (IS_DEBUG) {
       console.log(key + text);
+      try {
+        testExampleQueries();
+        console.log("ALASQL:OK");
+      } catch (e) {
+        console.log("ALASQL: Error ", e);
+      }
     }
   },
   layers: function (map) {
