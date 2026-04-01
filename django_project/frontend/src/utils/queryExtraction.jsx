@@ -15,7 +15,7 @@
 
 import { dictDeepCopy } from "./main";
 import { alasqlQuery } from "./alasql";
-import { INTERNEXT_REGEX } from "../components/SqlQueryGenerator/WhereQueryGenerator";
+import { INTERNEXT_REGEX, INTERVAL_REGEX } from "../components/SqlQueryGenerator/WhereQueryGenerator";
 
 export const IDENTIFIER = "indicator_";
 export const JOIN_IDENTIFIER = "concept_uuid";
@@ -394,20 +394,22 @@ export function returnDataToExpression(field, operator, value) {
   let cleanValue = cleanValueFn(value);
 
   // if it is interval
-  try {
-    const regex = INTERVAL_REGEX;
-    const matches = cleanValue.match(regex);
-    if (matches) {
-      cleanValue = value;
-    }
-  } catch (err) {}
-  try {
-    const regex = INTERNEXT_REGEX;
-    const matches = cleanValue.match(regex);
-    if (matches) {
-      cleanValue = value;
-    }
-  } catch (err) {}
+  if (value !== null && value !== undefined) {
+    try {
+      const regex = INTERVAL_REGEX;
+      const matches = cleanValue.match(regex);
+      if (matches) {
+        cleanValue = value;
+      }
+    } catch (err) {}
+    try {
+      const regex = INTERNEXT_REGEX;
+      const matches = cleanValue.match(regex);
+      if (matches) {
+        cleanValue = value;
+      }
+    } catch (err) {}
+  }
 
   if ([IS_IN, IS_NOT_IN].includes(operator)) {
     if (value) {
