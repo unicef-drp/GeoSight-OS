@@ -230,7 +230,6 @@ export function returnWhere(
         }
       }
     case TYPE.EXPRESSION:
-      console.log(where)
       const needQuote = isNeedQuote(where.field);
       let field = needQuote
         ? `"${where.field}"`.replaceAll('""', '"')
@@ -387,18 +386,12 @@ const cleanValueFn = (value, returnEmpty = false) => {
  * Return DATA in SQL
  */
 export function returnDataToExpression(field, operator, value) {
-  console.log("--------------------")
-  console.log(field)
-  console.log(operator)
-  console.log(value)
-
   // Fix field text
   const needQuote = isNeedQuote(field);
   field = needQuote ? `"${field}"`.replaceAll('""', '"') : field;
 
   const cleanOperator = operator;
   let cleanValue = cleanValueFn(value);
-  console.log("cleanValue 1 : ", cleanValue)
 
   // if it is interval
   if (value !== null && value !== undefined) {
@@ -417,7 +410,6 @@ export function returnDataToExpression(field, operator, value) {
       }
     } catch (err) {}
   }
-  console.log("cleanValue 2 : ", cleanValue)
 
   if ([IS_IN, IS_NOT_IN].includes(operator)) {
     if (value) {
@@ -451,6 +443,5 @@ export function returnDataToExpression(field, operator, value) {
     const max = isNaN(parseFloat(value[1])) ? 100 : parseFloat(value[1]);
     return `${field} ${operator} ${min} AND ${max}`;
   }
-  console.log("cleanValue 3 : ", cleanValue)
   return `${field} ${cleanOperator} ${cleanValue}`;
 }
