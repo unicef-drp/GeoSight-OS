@@ -15,6 +15,7 @@
 
 import React, { useEffect, useState } from "react";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import RestartAlt from "@mui/icons-material/RestartAlt";
 import { Input } from "@mui/material";
 import Slider from "@mui/material/Slider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -43,7 +44,6 @@ import {
   SelectWithSearch,
 } from "../../Input/SelectWithSearch";
 import { INTERNEXT_IDENTIFIER, INTERVAL_IDENTIFIER } from "./index";
-import { FilterIcon } from "../../Icons";
 
 // VARIABLES
 // export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
@@ -551,11 +551,8 @@ export default function WhereInput({
     >
       {/* This is for the filtered */}
       {currentField?.isFiltered && (
-        <div
-          className="ResetFilterQuery"
-          style={{ float: "right", marginTop: "3px" }}
-        >
-          <FilterIcon
+        <div className="ResetFilterQuery">
+          <RestartAlt
             onClick={() => {
               if (props.resetFilter) {
                 props.resetFilter(currentField.name);
