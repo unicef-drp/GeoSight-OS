@@ -349,7 +349,7 @@ test.describe('View project', () => {
     await page.getByLabel(kenyaLayer).click();
     await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Level 1')
     // TODO:
-    //  Commented to prevent failing because of project_view tests for Mapping Indicators Using changes
+    //  Commented to prevent failing because of project_view_ucode tests for Mapping Indicators Using changes
     // await delay(1000)
     // await expect(lastLog).toEqual(assertLogs[0]);
     // await delay(1000)
