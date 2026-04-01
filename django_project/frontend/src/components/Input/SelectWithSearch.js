@@ -79,6 +79,7 @@ export function SelectWithSearch(
         }
       }}
       disabled={disabled}
+      inputName={props.inputName}
     />
   </div>
 }
@@ -181,6 +182,7 @@ export function MultipleSelectWithSearch(
       }}
       disabled={disabled}
       multiple
+      inputName={props.inputName}
     />
   </>
 }

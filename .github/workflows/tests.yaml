@@ -81,10 +81,7 @@ jobs:
           load: true
           target: test
           tags: ${{ env.APP_IMAGE }}
-          cache-from: |
-            type=gha,scope=test
-            type=gha,scope=prod
-          cache-to: type=gha,scope=test
+          no-cache: true
 
       - name: Save Docker Image as Tar File
         run: docker save -o /tmp/my-image.tar ${{ env.APP_IMAGE }}

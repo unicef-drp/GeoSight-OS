@@ -157,6 +157,7 @@ export default function RelatedTableLayerMapConfig() {
 
   const resetFilter = (field, isDelete, allSelected) => {
     const layerMetadata = metadata[relatedTableLayer.id];
+    if (!layerMetadata) return;
 
     // We skip this if
     // The field is not selected yet

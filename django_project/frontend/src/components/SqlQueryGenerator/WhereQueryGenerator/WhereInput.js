@@ -647,6 +647,7 @@ export default function WhereInput({
         }}
         optionsData={currentField?.options}
         disabled={disabledChanges.value}
+        inputName={field}
         {...props}
       />
       <div className="Separator" />

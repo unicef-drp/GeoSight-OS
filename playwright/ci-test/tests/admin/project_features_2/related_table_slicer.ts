@@ -7,6 +7,28 @@ test.describe('Related table slicer', () => {
     // --------------------------------------------------------------------
     // Check configuration
     // --------------------------------------------------------------------
+    // Check slicer
+    await page.goto(`/admin/project/demo-geosight-project/edit`);
+
+    // Update slicer
+    await page.getByText('Indicator Layers (10)').click();
+    await page.locator('span').filter({ hasText: 'Related Table Config' }).getByRole('button').click();
+    await page.getByRole('textbox', { name: 'SQL Filter' }).click();
+
+    await expect(page.locator('.WhereConfigurationQuery').nth(2).locator('.FilterInput input')).toHaveValue('WASH');
+    await page.getByRole('combobox').filter({ hasText: 'Sector' }).click();
+    await page.getByRole('option', { name: 'Partner' }).click();
+    await expect(page.locator('.WhereConfigurationQuery').nth(2).locator('.FilterInput input')).toHaveValue('Partner A');
+    await page.getByText('Single selection').click();
+    await page.getByRole('option', { name: 'Multi-selection' }).locator('div').click();
+    await expect(page.locator('.WhereConfigurationQuery').nth(2).locator('.FilterInput .MuiChip-root')).toHaveCount(1);
+    await expect(page.locator('.WhereConfigurationQuery').nth(2).locator('.FilterInput .MuiChip-root').nth(0)).toHaveText('Partner A');
+    await page.getByText('Partner', { exact: true }).nth(2).click();
+    await page.getByRole('option', { name: 'Sector' }).click();
+    await expect(page.locator('.WhereConfigurationQuery').nth(2).locator('.FilterInput .MuiChip-root')).toHaveCount(1);
+    await expect(page.locator('.WhereConfigurationQuery').nth(2).locator('.FilterInput .MuiChip-root').nth(0)).toHaveText('');
+
+    // --------------------------------------------------------------------
     // Create project
     // --------------------------------------------------------------------
     const name = 'Demo GeoSight Project RT Silcer'
