@@ -13,13 +13,17 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from "react";
+import React, { useRef } from "react";
 import { isArray } from "chart.js/helpers";
-import ReactAutocomplete from "@mui/material/Autocomplete";
+import ReactAutocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Grow, Popper } from "@mui/material";
 
+const defaultFilter = createFilterOptions();
+
 export default function Autocomplete({ ...props }) {
+  const isTyping = useRef(false);
+
   if (!isArray(props.value)) {
     if (props.value && !props.options.includes(props.value)) {
       props.options.push(props.value);
@@ -32,6 +36,18 @@ export default function Autocomplete({ ...props }) {
         "ReactAutocomplete " + (props.className ? props.className : "")
       }
       popupIcon={<ArrowDropDownIcon />}
+      filterOptions={props.filterOptions ?? ((options, state) => {
+        if (!isTyping.current) return options;
+        return defaultFilter(options, state);
+      })}
+      onInputChange={(event, value, reason) => {
+        isTyping.current = reason === "input";
+        props.onInputChange?.(event, value, reason);
+      }}
+      onChange={(event, value, reason, details) => {
+        isTyping.current = false;
+        props.onChange?.(event, value, reason, details);
+      }}
       slotProps={{
         paper: {
           sx: {
