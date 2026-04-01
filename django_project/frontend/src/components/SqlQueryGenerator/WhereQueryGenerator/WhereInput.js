@@ -159,7 +159,7 @@ export function WhereInputValue({
   const textBasedOnMinMax =
     (isNaN(min) && isNaN(max)) ||
     (!isFinite(min) && !isFinite(max)) ||
-    fieldType?.toLowerCase() === "date";
+    ["date", "text"].includes(fieldType?.toLowerCase());
   /** -------- IF DATE --------- **/
   if (isDate) {
     if ([">", ">=", "<", "<="].includes(operator)) {
