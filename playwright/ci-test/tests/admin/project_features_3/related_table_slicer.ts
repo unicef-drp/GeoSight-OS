@@ -1,9 +1,12 @@
 import { expect, test } from '@playwright/test';
 import { deleteProject, saveAsProject } from "../../utils/project";
 import { BASE_URL } from "../../variables";
+import { writeFileSync } from 'fs';
 
 test.describe('Related table slicer', () => {
-  test('Related table slicer', async ({ page }) => {
+  test('Related table slicer', async ({ page }, testInfo) => {
+    const logs: string[] = [];
+    page.on('console', msg => logs.push(`[${msg.type()}] ${msg.text()}`));
     // --------------------------------------------------------------------
     // Check configuration
     // --------------------------------------------------------------------
@@ -152,5 +155,8 @@ test.describe('Related table slicer', () => {
     // Delete project
     // --------------------------------------------------------------------
     await deleteProject(page, name)
+
+    // Write browser console logs to file
+    writeFileSync(testInfo.outputPath('console.log'), logs.join('\n'));
   })
 });
