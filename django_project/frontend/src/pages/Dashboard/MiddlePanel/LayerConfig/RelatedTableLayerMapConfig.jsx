@@ -224,7 +224,7 @@ export default function RelatedTableLayerMapConfig() {
                 }}
                 isCompact={true}
                 onValueInputChange={(field, allSelected) => {
-                  resetFilter(field, false, allSelected);
+                  resetFilter(field, false);
                 }}
                 resetFilter={(field) => {
                   resetFilter(field, true);
