@@ -10,8 +10,7 @@
     {% endblock %}
 
     {% block favicon %}
-        {# -- Maybe replace the favicon -- #}
-        <link rel="shortcut icon" href="{% static 'favicon.ico' %}"
+        <link rel="shortcut icon" href="{{ preferences.favicon }}"
               type="image/x-icon">
     {% endblock %}
 
