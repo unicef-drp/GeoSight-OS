@@ -1,0 +1,38 @@
+[
+  {
+    "model": "geosight_permission.basemaplayerpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "organization_permission": "List",
+      "public_permission": "Read"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayerpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "organization_permission": "List",
+      "public_permission": "Read"
+    }
+  },
+  {
+    "model": "geosight_permission.basemaplayerpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 3,
+      "organization_permission": "List",
+      "public_permission": "Read"
+    }
+  },
+  {
+    "model": "geosight_permission.stylepermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "organization_permission": "List",
+      "public_permission": "Read"
+    }
+  }
+]

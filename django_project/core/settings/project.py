@@ -202,3 +202,12 @@ if TENANTS_ENABLED:
 LOGS_DIRECTORY = os.environ.get(
     'LOGS_DIRECTORY', '/home/web/logs'
 )
+
+# ----------------------------------------
+# Setup for data restorer
+# ----------------------------------------
+if DATA_RESTORER_ENABLED:
+    TEMPLATES[0]['OPTIONS']['context_processors'] += [
+        'geosight.data_restorer.'
+        'context_processors.data_restorer_context_processors'
+    ]

@@ -173,6 +173,7 @@
   const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';
   const csrfmiddlewaretoken = '{{ csrf_token }}';
   const preferences = {{ preferences_js|safe }};
+  const dataRestorerEnabled = '{{ data_restorer_enabled }}'.toLowerCase() === 'true';
   const plugins = {{ plugins|safe }};
   const localReferenceDatasetEnabled = plugins.includes('reference_dataset')
   const version = "{{ version }}";
