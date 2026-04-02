@@ -33,8 +33,15 @@ class FixtureTypesAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
-    def get(self, request, *args, **kwargs):
-        """Return list of available fixture types."""
+    def get(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
+        """
+        Return list of available fixture types.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: List of fixture types with name, description, and info.
+        :rtype: Response
+        """
         return Response([
             {
                 'name': f.name,
@@ -53,8 +60,15 @@ class RequestRestoreDataAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
-    def post(self, request, *args, **kwargs):
-        """Create a restore request and dispatch the task."""
+    def post(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
+        """
+        Create a restore request and dispatch the task.
+
+        :param request: The HTTP request object containing ``data_type``.
+        :type request: HttpRequest
+        :return: HTTP 201 on success, HTTP 400 if restoration is disabled.
+        :rtype: Response
+        """
         preferences = Preferences.load()
         if not preferences.is_enabled:
             return Response(
@@ -76,8 +90,16 @@ class RequestRestoreDataDetailAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
-    def get(self, request, *args, **kwargs):
-        """Return the last RequestRestoreData."""
+    def get(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
+        """
+        Return the last RequestRestoreData.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: The most recent restore request with data_type, state,
+            and note, or HTTP 404 if none exists.
+        :rtype: Response
+        """
         restore_request = RequestRestoreData.objects.order_by('-id').first()
         if not restore_request:
             return Response(status=404)
@@ -94,8 +116,15 @@ class PreferencesAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
-    def post(self, request, *args, **kwargs):
-        """Disable data restoration."""
+    def post(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
+        """
+        Disable data restoration.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :return: HTTP 200 on success.
+        :rtype: Response
+        """
         preferences = Preferences.load()
         preferences.enable_request = False
         preferences.save()

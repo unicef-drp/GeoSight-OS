@@ -20,8 +20,19 @@ from geosight.data_restorer.models import RequestRestoreData
 
 
 @app.task
-def run_request_restore_data(request_id):
-    """Run request restore data."""
+def run_request_restore_data(request_id):  # noqa: DOC101,DOC103
+    """
+    Run request restore data as a Celery task.
+
+    Fetches the :class:`~geosight.data_restorer.models.RequestRestoreData`
+    by ``request_id`` and calls its ``run()`` method.
+    Does nothing if the record does not exist.
+
+    :param request_id: Primary key of the ``RequestRestoreData`` to execute.
+    :type request_id: int
+    :return: None
+    :rtype: None
+    """
     try:
         request = RequestRestoreData.objects.get(id=request_id)
     except RequestRestoreData.DoesNotExist:

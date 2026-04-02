@@ -18,7 +18,14 @@ from geosight.data_restorer.models import Preferences
 
 
 def data_restorer_context_processors(request):
-    """Return if able to restore data."""
+    """
+    Return if able to restore data.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Context with ``data_restorer_enabled`` boolean flag.
+    :rtype: dict
+    """
     preferences = Preferences.load()
     is_enable = preferences.is_enabled
     if not request.user.is_superuser:

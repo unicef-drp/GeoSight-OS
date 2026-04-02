@@ -29,7 +29,15 @@ from geosight.data.models import (
 class FixtureObjectInfo:
     """Information of number of object that will be restored."""
 
-    def __init__(self, name, count):
+    def __init__(self, name, count):  # noqa: DOC101,DOC103
+        """
+        Initialize FixtureObjectInfo.
+
+        :param name: Name of the object type.
+        :type name: str
+        :param count: Number of objects to be restored.
+        :type count: int
+        """
         self.name = name
         self.count = count
 
@@ -37,10 +45,22 @@ class FixtureObjectInfo:
 class FixtureTypeObject:
     """Fixture type object."""
 
-    def __init__(
+    def __init__(  # noqa: DOC101,DOC103
             self, name, description, info: List[FixtureObjectInfo],
             command_name
     ):
+        """
+        Initialize FixtureTypeObject.
+
+        :param name: Name of the fixture type.
+        :type name: str
+        :param description: Human-readable description of this fixture type.
+        :type description: str
+        :param info: List of object info entries describing what is restored.
+        :type info: List[FixtureObjectInfo]
+        :param command_name: Django management command name to run.
+        :type command_name: str
+        """
         self.name = name
         self.description = description
         self.info = info
@@ -105,7 +125,13 @@ class Preferences(SingletonModel):
 
     @property
     def is_enabled(self):
-        """Return True if enable_request is True."""
+        """
+        Return True if data restoration is currently enabled.
+
+        :return: True if restoration is enabled and no data exists yet
+            and no active restore request is running.
+        :rtype: bool
+        """
         if any(
                 model.objects.exists()
                 for model in [
@@ -128,6 +154,8 @@ class RequestRestoreData(models.Model):
     """Request to restore data."""
 
     class State(models.TextChoices):
+        """State choices for a restore request."""
+
         CREATED = 'created', _('Created')
         RUNNING = 'running', _('Running')
         FINISH = 'finish', _('Finish')
@@ -150,7 +178,18 @@ class RequestRestoreData(models.Model):
         verbose_name_plural = "request restore data"
 
     def run(self):
-        """Run the command."""
+        """
+        Run the management command for the requested fixture type.
+
+        Looks up the fixture type by ``data_type``, sets state to
+        ``RUNNING``, executes the management command, then sets state
+        to ``FINISH`` on success or ``FAILED`` on exception.
+        Does nothing if restoration is currently disabled or if the
+        ``data_type`` does not match any known fixture type.
+
+        :return: None
+        :rtype: None
+        """
         preferences = Preferences.load()
         if not preferences.is_enabled:
             return

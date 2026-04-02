@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
+
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
