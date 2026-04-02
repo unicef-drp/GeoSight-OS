@@ -15,7 +15,7 @@ test.describe('Functions test', () => {
     // Test the alasql
     await expect(alasSQLTest.length).toBeGreaterThan(0)
     for (const result of alasSQLTest) {
-      await expect(result.trim()).toBe('AAA')
+      await expect(result.trim()).toBe('OK')
     }
   });
 });
