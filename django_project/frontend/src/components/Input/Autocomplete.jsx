@@ -13,18 +13,49 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { isArray } from "chart.js/helpers";
-import ReactAutocomplete from "@mui/material/Autocomplete";
+import ReactAutocomplete, {
+  createFilterOptions,
+} from "@mui/material/Autocomplete";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Grow, Popper } from "@mui/material";
+
+const defaultFilter = createFilterOptions();
 
 export default function Autocomplete({ ...props }) {
-  if (!isArray(props.value)) {
-    if (props.value && !props.options.includes(props.value)) {
-      props.options.push(props.value);
-    }
-  }
+  const isTyping = useRef(false);
+  useEffect(() => {
+    try {
+      const syntheticEvent = { target: { getAttribute: () => null } };
+      const options = props.options.filter(
+        (option) => !["select all", "loading"].includes(option.toLowerCase()),
+      );
+      if (props.multiple) {
+        if (
+          isArray(props.value) &&
+          props.value.length &&
+          props.onChange &&
+          options.length
+        ) {
+          const filtered = props.value.filter((v) => options.includes(v));
+          if (filtered.length !== props.value.length) {
+            props.onChange(syntheticEvent, filtered, "selectOption");
+          }
+        }
+      } else {
+        if (
+          !isArray(props.value) &&
+          props.value &&
+          !options.includes(props.value)
+        ) {
+          if (options.length && props.onChange) {
+            props.onChange(syntheticEvent, options[0], "selectOption");
+          }
+        }
+      }
+    } catch (err) {}
+  }, [props.inputName]);
+
   return (
     <ReactAutocomplete
       {...props}
@@ -32,6 +63,21 @@ export default function Autocomplete({ ...props }) {
         "ReactAutocomplete " + (props.className ? props.className : "")
       }
       popupIcon={<ArrowDropDownIcon />}
+      filterOptions={
+        props.filterOptions ??
+        ((options, state) => {
+          if (!isTyping.current) return options;
+          return defaultFilter(options, state);
+        })
+      }
+      onInputChange={(event, value, reason) => {
+        isTyping.current = reason === "input";
+        props.onInputChange?.(event, value, reason);
+      }}
+      onChange={(event, value, reason, details) => {
+        isTyping.current = false;
+        props.onChange?.(event, value, reason, details);
+      }}
       slotProps={{
         paper: {
           sx: {

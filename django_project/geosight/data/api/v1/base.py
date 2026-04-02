@@ -130,9 +130,15 @@ class BaseApiV1(FilteredAPI):
         # Override the exclude if the user is not logged in
         if not self.request.user.is_authenticated:
             try:
-                kwargs['exclude'] += ["created_by", "modified_by"]
+                kwargs['exclude'] += [
+                    "created_by", "modified_by", "creator_username",
+                    "modified_by_username"
+                ]
             except KeyError:
-                kwargs['exclude'] = ["created_by", "modified_by"]
+                kwargs['exclude'] = [
+                    "created_by", "modified_by", "creator_username",
+                    "modified_by_username"
+                ]
 
         return serializer_class(*args, **kwargs)
 

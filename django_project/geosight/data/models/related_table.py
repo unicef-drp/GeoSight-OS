@@ -208,6 +208,18 @@ class RelatedTable(
         return output
 
     @property
+    def fields_definition_query(self):
+        """
+        Return all fields with their definitions and examples.
+
+        :return: Serialized field definitions.
+        :rtype: QuerySet[RelatedTableField]
+        """
+        if not self.relatedtablefield_set.count():
+            self.set_fields()
+        return self.relatedtablefield_set.all()
+
+    @property
     def fields_definition(self):
         """
         Return all fields with their definitions and examples.
@@ -218,10 +230,8 @@ class RelatedTable(
         from geosight.data.serializer.related_table import (
             RelatedTableFieldSerializer
         )
-        if not self.relatedtablefield_set.count():
-            self.set_fields()
         return RelatedTableFieldSerializer(
-            self.relatedtablefield_set.order_by('name'), many=True,
+            self.fields_definition_query, many=True,
             context={
                 'example_data': [
                     self.relatedtablerow_set.first(),

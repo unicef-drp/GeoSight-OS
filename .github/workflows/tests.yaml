@@ -81,10 +81,7 @@ jobs:
           load: true
           target: test
           tags: ${{ env.APP_IMAGE }}
-          cache-from: |
-            type=gha,scope=test
-            type=gha,scope=prod
-          cache-to: type=gha,scope=test
+          no-cache: true
 
       - name: Save Docker Image as Tar File
         run: docker save -o /tmp/my-image.tar ${{ env.APP_IMAGE }}
@@ -115,10 +112,14 @@ jobs:
       matrix:
         test_suite: [
           { id: "backend-tests", mode: "backend" },
+          { id: "e2e-functions", mode: "e2e", path: "tests/admin/functions/", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-creation", mode: "e2e", path: "tests/admin/project_creation/", workers: 2, script: "make load-test-data" },
+          { id: "e2e-project-view-ucode", mode: "e2e", path: "tests/admin/project_view_ucode/", workers: 1, script: "make load-test-data" },
+          { id: "e2e-project-view-concept-uuid", mode: "e2e", path: "tests/admin/project_view_concept_uuid/", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-view", mode: "e2e", path: "tests/admin/project_view/", workers: 3, script: "make load-test-data" },
           { id: "e2e-project-features", mode: "e2e", path: "tests/admin/project_features/", workers: 3, script: "make load-test-data" },
           { id: "e2e-project-features-2", mode: "e2e", path: "tests/admin/project_features_2/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-features-3", mode: "e2e", path: "tests/admin/project_features_3/", workers: 3, script: "make load-test-data" },
           { id: "e2e-admin-create", mode: "e2e", path: "tests/admin/admin_create/", workers: 3, script: "make load-test-data" },
           { id: "e2e-admin-list", mode: "e2e", path: "tests/admin/admin_list/", workers: 3, script: "make load-test-data" },
           { id: "e2e-admin-edit", mode: "e2e", path: "tests/admin/admin_edit/", workers: 3, script: "make load-test-data" },

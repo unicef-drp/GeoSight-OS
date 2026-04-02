@@ -157,9 +157,11 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         :raises ValueError: If the layer type is not supported.
         """
         obj = self._get_object()
+        layer = self.get_context_layer_object()
         if obj.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
-            Model = model_factory(self.get_context_layer_object())
-            return Model.objects.all()
+            return model_factory(layer).objects.all()
+        elif obj.layer_type == LayerType.RELATED_TABLE:
+            return obj.related_table.relatedtablerow_set.all()
         raise ValueError(
             "Currently, "
             "only cloud-native layers are supported for this endpoint. "
@@ -308,7 +310,8 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
         layer = self.get_context_layer_object()
         if isinstance(layer, Layer):
             layer.reset_attributes()
-
+        else:
+            raise ValueError("Invalid layer type for this request.")
         fields(schema_name=layer.schema_name, table_name=layer.table_name)
         return output
 

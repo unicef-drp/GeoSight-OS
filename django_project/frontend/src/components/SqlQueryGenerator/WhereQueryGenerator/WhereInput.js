@@ -15,6 +15,7 @@
 
 import React, { useEffect, useState } from "react";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import RestartAlt from "@mui/icons-material/RestartAlt";
 import { Input } from "@mui/material";
 import Slider from "@mui/material/Slider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -43,7 +44,6 @@ import {
   SelectWithSearch,
 } from "../../Input/SelectWithSearch";
 import { INTERNEXT_IDENTIFIER, INTERVAL_IDENTIFIER } from "./index";
-import { FilterIcon } from "../../Icons";
 
 // VARIABLES
 // export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
@@ -74,7 +74,7 @@ export function WhereInputValue({
   try {
     optionsData.sort();
   } catch (err) {}
-  
+
   const [initValue, setInitValue] = useState(value);
   const [initBetweenMin, setInitBetweenMin] = useState(betweenMin);
   const [initBetweenMax, setInitBetweenMax] = useState(betweenMax);
@@ -159,7 +159,7 @@ export function WhereInputValue({
   const textBasedOnMinMax =
     (isNaN(min) && isNaN(max)) ||
     (!isFinite(min) && !isFinite(max)) ||
-    fieldType?.toLowerCase() === "date";
+    ["date", "text"].includes(fieldType?.toLowerCase());
   /** -------- IF DATE --------- **/
   if (isDate) {
     if ([">", ">=", "<", "<="].includes(operator)) {
@@ -311,7 +311,10 @@ export function WhereInputValue({
         {...props}
       />
     );
-  } else if (SINGLE_SELECTABLE_OPERATORS.includes(operator)) {
+  } else if (
+    SINGLE_SELECTABLE_OPERATORS.includes(operator) &&
+    textBasedOnMinMax
+  ) {
     if (!optionsData) {
       return defaultInput();
     }
@@ -548,11 +551,8 @@ export default function WhereInput({
     >
       {/* This is for the filtered */}
       {currentField?.isFiltered && (
-        <div
-          className="ResetFilterQuery"
-          style={{ float: "right", marginTop: "3px" }}
-        >
-          <FilterIcon
+        <div className="ResetFilterQuery">
+          <RestartAlt
             onClick={() => {
               if (props.resetFilter) {
                 props.resetFilter(currentField.name);
@@ -647,6 +647,7 @@ export default function WhereInput({
         }}
         optionsData={currentField?.options}
         disabled={disabledChanges.value}
+        inputName={field}
         {...props}
       />
       <div className="Separator" />
