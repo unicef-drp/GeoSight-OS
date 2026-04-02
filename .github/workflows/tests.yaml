@@ -112,6 +112,7 @@ jobs:
       matrix:
         test_suite: [
           { id: "backend-tests", mode: "backend" },
+          { id: "e2e-functions", mode: "e2e", path: "tests/admin/functions/", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-creation", mode: "e2e", path: "tests/admin/project_creation/", workers: 2, script: "make load-test-data" },
           { id: "e2e-project-view-ucode", mode: "e2e", path: "tests/admin/project_view_ucode/", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-view-concept-uuid", mode: "e2e", path: "tests/admin/project_view_concept_uuid/", workers: 1, script: "make load-test-data" },
