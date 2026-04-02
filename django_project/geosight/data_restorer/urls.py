@@ -17,10 +17,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.urls import path
 
 from geosight.data_restorer.api import (
-    PreferencesAPI, RequestRestoreDataAPI, RequestRestoreDataDetailAPI
+    FixtureTypesAPI, PreferencesAPI,
+    RequestRestoreDataAPI, RequestRestoreDataDetailAPI,
 )
 
 urlpatterns = [
+    path(
+        'data-restorer/fixture-types/',
+        FixtureTypesAPI.as_view(),
+        name='data-restorer-fixture-types'
+    ),
     path(
         'data-restorer/request/status/',
         RequestRestoreDataDetailAPI.as_view(),

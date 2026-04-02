@@ -21,8 +21,30 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from geosight.data_restorer.models import Preferences, RequestRestoreData
+from geosight.data_restorer.models import (
+    Preferences, RequestRestoreData, fixtures_types
+)
 from geosight.data_restorer.tasks import run_request_restore_data
+
+
+class FixtureTypesAPI(APIView):
+    """API to return available fixture types."""
+
+    permission_classes = [IsAdminUser]
+    authentication_classes = [SessionAuthentication]
+
+    def get(self, request, *args, **kwargs):
+        """Return list of available fixture types."""
+        return Response([
+            {
+                'name': f.name,
+                'description': f.description,
+                'info': [
+                    {'name': i.name, 'count': i.count} for i in f.info
+                ],
+            }
+            for f in fixtures_types
+        ])
 
 
 class RequestRestoreDataAPI(APIView):
@@ -62,6 +84,7 @@ class RequestRestoreDataDetailAPI(APIView):
         return Response({
             'data_type': restore_request.data_type,
             'state': restore_request.state,
+            'note': restore_request.note,
         })
 
 

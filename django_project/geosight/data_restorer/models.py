@@ -21,6 +21,9 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
+from geosight.data.models import (
+    BasemapLayer, Indicator, Dashboard, ContextLayer, RelatedTable, Style
+)
 
 
 class FixtureObjectInfo:
@@ -60,8 +63,23 @@ fixtures_types = (
     ),
     FixtureTypeObject(
         name='Demo',
-        description='Restore demo data',
-        info=[FixtureObjectInfo(name='layer', count=0)],
+        description=(
+            'Restore demo data focusing on Somalia and Kenya.'
+        ),
+        info=[
+            FixtureObjectInfo(name='Basemap', count=3),
+            FixtureObjectInfo(name='Color palette', count=8),
+            FixtureObjectInfo(name='Code list', count=3),
+            FixtureObjectInfo(name='Indicator', count=3),
+            FixtureObjectInfo(name='Indicator data', count=1054),
+            FixtureObjectInfo(name='Project', count=1),
+            FixtureObjectInfo(name='Context layer', count=3),
+            FixtureObjectInfo(name='Related tabel', count=1),
+            FixtureObjectInfo(name='Related tabel data', count=296),
+            FixtureObjectInfo(name='Reference Datasets', count=3),
+            FixtureObjectInfo(name='User', count=3),
+            FixtureObjectInfo(name='Style', count=1),
+        ],
         command_name='load_demo_data'
     )
 )
@@ -88,7 +106,20 @@ class Preferences(SingletonModel):
     @property
     def is_enabled(self):
         """Return True if enable_request is True."""
-        if ColorPalette.objects.count():
+        if any(
+                model.objects.exists()
+                for model in [
+                    ColorPalette, BasemapLayer,
+                    Indicator, Dashboard, ContextLayer, RelatedTable, Style,
+                ]
+        ):
+            return False
+        if RequestRestoreData.objects.exclude(
+                state__in=[
+                    RequestRestoreData.State.CREATED.value,
+                    RequestRestoreData.State.FAILED.value,
+                ]
+        ).count():
             return False
         return self.enable_request
 
@@ -100,6 +131,7 @@ class RequestRestoreData(models.Model):
         CREATED = 'created', _('Created')
         RUNNING = 'running', _('Running')
         FINISH = 'finish', _('Finish')
+        FAILED = 'failed', _('Failed')
 
     data_type = models.CharField(
         max_length=255, choices=[
@@ -112,6 +144,7 @@ class RequestRestoreData(models.Model):
         choices=State.choices,
         default=State.CREATED
     )
+    note = models.TextField(blank=True, default='')
 
     def run(self):
         """Run the command."""
@@ -129,11 +162,18 @@ class RequestRestoreData(models.Model):
         self.save()
 
         from django.core.management import call_command
-        call_command(fixture_type.command_name)
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                call_command(fixture_type.command_name)
+        except Exception as e:
+            self.state = self.State.FAILED
+            self.note = str(e)
+            self.save()
+            return
 
         self.state = self.State.FINISH
         self.save()
 
         preferences.enable_request = False
         preferences.save()
-

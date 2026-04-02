@@ -22,15 +22,11 @@ from geosight.data_restorer.models import (
 )
 
 
-class PreferencesTest(TestCase):
-    """Tests for Preferences model."""
-
-    def setUp(self):
-        """Set up test."""
-        super(PreferencesTest, self).setUp()
+class PreferencesIsEnabledTest(TestCase):
+    """Tests for Preferences.is_enabled."""
 
     def test_is_enabled_default(self):
-        """Preferences is enabled by default."""
+        """Preferences is enabled by default with no data."""
         preferences = Preferences.load()
         self.assertTrue(preferences.is_enabled)
 
@@ -44,12 +40,93 @@ class PreferencesTest(TestCase):
     def test_is_enabled_false_when_color_palette_exists(self):
         """Preferences is not enabled when a ColorPalette exists."""
         from core.models.color import ColorPalette
-        palette = ColorPalette.objects.create(name='test', colors=['#000000'])
+        obj = ColorPalette.objects.create(name='test', colors=['#000000'])
         try:
-            preferences = Preferences.load()
-            self.assertFalse(preferences.is_enabled)
+            self.assertFalse(Preferences.load().is_enabled)
         finally:
-            palette.delete()
+            obj.delete()
+
+    def test_is_enabled_false_when_basemap_layer_exists(self):
+        """Preferences is not enabled when a BasemapLayer exists."""
+        from geosight.data.tests.model_factories.basemap_layer import BasemapLayerF
+        obj = BasemapLayerF()
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_indicator_exists(self):
+        """Preferences is not enabled when an Indicator exists."""
+        from geosight.data.tests.model_factories.indicator.indicator import IndicatorF
+        obj = IndicatorF()
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_dashboard_exists(self):
+        """Preferences is not enabled when a Dashboard exists."""
+        from geosight.data.tests.model_factories.dashboard.dashboard import DashboardF
+        obj = DashboardF()
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_context_layer_exists(self):
+        """Preferences is not enabled when a ContextLayer exists."""
+        from geosight.data.tests.model_factories.context_layers import ContextLayerF
+        obj = ContextLayerF()
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_related_table_exists(self):
+        """Preferences is not enabled when a RelatedTable exists."""
+        from geosight.data.tests.model_factories.related_table import RelatedTableF
+        obj = RelatedTableF()
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_style_exists(self):
+        """Preferences is not enabled when a Style exists."""
+        from geosight.data.models import Style
+        obj = Style.objects.create(name='test-style')
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_true_when_restore_request_is_created(self):
+        """A CREATED restore request does not disable preferences."""
+        obj = RequestRestoreData.objects.create(data_type='Default')
+        try:
+            self.assertTrue(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_restore_request_is_running(self):
+        """Preferences is not enabled when a restore request is RUNNING."""
+        obj = RequestRestoreData.objects.create(
+            data_type='Default', state=RequestRestoreData.State.RUNNING
+        )
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_false_when_restore_request_is_finished(self):
+        """Preferences is not enabled when a restore request is FINISH."""
+        obj = RequestRestoreData.objects.create(
+            data_type='Default', state=RequestRestoreData.State.FINISH
+        )
+        try:
+            self.assertFalse(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
 
 
 class RequestRestoreDataTest(TestCase):
@@ -109,3 +186,40 @@ class RequestRestoreDataTest(TestCase):
 
         preferences = Preferences.load()
         self.assertFalse(preferences.enable_request)
+
+    def test_run_sets_failed_state_on_error(self):
+        """run() sets state to FAILED and saves the error note on exception."""
+        obj = RequestRestoreData.objects.create(data_type='Default')
+
+        with patch(
+                'django.core.management.call_command',
+                side_effect=Exception('something went wrong')
+        ):
+            obj.run()
+
+        obj.refresh_from_db()
+        self.assertEqual(obj.state, RequestRestoreData.State.FAILED)
+        self.assertIn('something went wrong', obj.note)
+
+    def test_run_failed_does_not_disable_preferences(self):
+        """run() does not disable preferences when the command fails."""
+        obj = RequestRestoreData.objects.create(data_type='Default')
+
+        with patch(
+                'django.core.management.call_command',
+                side_effect=Exception('boom')
+        ):
+            obj.run()
+
+        preferences = Preferences.load()
+        self.assertTrue(preferences.enable_request)
+
+    def test_is_enabled_true_after_failed_request(self):
+        """A FAILED restore request does not block new requests."""
+        obj = RequestRestoreData.objects.create(
+            data_type='Default', state=RequestRestoreData.State.FAILED
+        )
+        try:
+            self.assertTrue(Preferences.load().is_enabled)
+        finally:
+            obj.delete()

@@ -12,89 +12,274 @@
  * __date__ = '02/04/2026'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React, { useEffect, useState } from "react";
-import Slider from "@mui/material/Slider";
+import React, { useEffect, useRef, useState } from "react";
+import Modal, { ModalContent, ModalFooter } from "../Modal";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useConfirmDialog } from "../../providers/ConfirmDialog";
 
-export interface Props {
-  value: number;
-  onChange?: (value: number) => void;
-  onChangeCommitted?: (value: number) => void;
+import "./styles.scss";
+
+declare const dataRestorerEnabled: boolean;
+declare const csrfmiddlewaretoken: string;
+
+interface FixtureInfo {
+  name: string;
+  count: number;
 }
 
-export default function TransparencySlider({
-  value,
-  onChange,
-  onChangeCommitted,
-}: Props) {
-  /** Transparency slider */
-  const [currValue, setCurrentValue] = useState(value);
+interface FixtureType {
+  name: string;
+  description: string;
+  info: FixtureInfo[];
+}
+
+interface RestoreStatus {
+  data_type: string;
+  state: "created" | "running" | "finish" | "failed";
+  note: string;
+}
+
+const POLL_INTERVAL = 3000;
+
+export default function DataRestorerModal() {
+  const [open, setOpen] = useState(dataRestorerEnabled);
+  const [loading, setLoading] = useState<string | null>(null);
+  const [fixtureTypes, setFixtureTypes] = useState<FixtureType[]>([]);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [restoreStatus, setRestoreStatus] = useState<RestoreStatus | null>(
+    null,
+  );
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchStatus = async () => {
+    const r = await fetch("/api/v1/data-restorer/request/status/");
+    if (r.status === 404) {
+      setRestoreStatus(null);
+      return null;
+    }
+    const data: RestoreStatus = await r.json();
+    setRestoreStatus(data);
+    return data;
+  };
+
+  const stopPolling = () => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+  };
+
+  const startPolling = () => {
+    stopPolling();
+    pollRef.current = setInterval(async () => {
+      const data = await fetchStatus();
+      if (!data || data.state === "finish") {
+        stopPolling();
+        window.location.reload();
+      } else if (data.state === "failed") {
+        stopPolling();
+      }
+    }, POLL_INTERVAL);
+  };
 
   useEffect(() => {
-    if (value !== currValue) {
-      setCurrentValue(value);
-    }
-  }, [value]);
+    if (!dataRestorerEnabled) return;
 
-  useEffect(() => {
-    if (onChange) {
-      onChange(currValue);
+    Promise.all([
+      fetch("/api/v1/data-restorer/fixture-types/").then((r) => r.json()),
+      fetchStatus(),
+    ]).then(([types, status]) => {
+      setFixtureTypes(types);
+      if (status && status.state !== "finish") {
+        startPolling();
+      }
+    });
+
+    return stopPolling;
+  }, []);
+
+  const { openConfirmDialog } = useConfirmDialog();
+
+  const doRestore = async (dataType: string) => {
+    setLoading(dataType);
+    try {
+      await fetch("/api/v1/data-restorer/request/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfmiddlewaretoken,
+        },
+        body: JSON.stringify({ data_type: dataType }),
+      });
+      await fetchStatus();
+      startPolling();
+    } finally {
+      setLoading(null);
     }
-  }, [currValue]);
+  };
+
+  const handleConfirm = (dataType: string) => {
+    openConfirmDialog({
+      header: `Restore ${dataType} data?`,
+      children: `This will restore the ${dataType} dataset. Any existing data will be overwritten and cannot be recovered. Are you sure you want to continue?`,
+      theme: "Error",
+      onConfirmed: () => doRestore(dataType),
+    });
+  };
+
+  const handleSkip = () => {
+    openConfirmDialog({
+      header: "Skip data restoration?",
+      children:
+        "You are about to skip restoring data. This option will no longer be available once dismissed. Are you sure?",
+      onConfirmed: async () => {
+        await fetch("/api/v1/data-restorer/preferences/disable/", {
+          method: "POST",
+          headers: { "X-CSRFToken": csrfmiddlewaretoken },
+        });
+        setOpen(false);
+      },
+    });
+  };
+
+  const isFailed = restoreStatus?.state === "failed";
+  const isRestoring =
+    restoreStatus !== null &&
+    restoreStatus.state !== "finish" &&
+    restoreStatus.state !== "failed";
 
   return (
-    <div className="Transparency" style={{ padding: "0 1.5rem" }}>
-      <Slider
-        value={currValue}
-        step={1}
-        min={0}
-        max={100}
-        onChange={(event) => {
-          // @ts-ignore
-          setCurrentValue(event.target.value);
-        }}
-        onChangeCommitted={() => {
-          if (onChangeCommitted) {
+    <Modal
+      open={open}
+      onClosed={() => {}}
+      className="DataRestorerModal"
+      disableBackdropClick
+    >
+      <div className="modal--header">
+        <div className="modal--header--title">Welcome to GeoSight</div>
+      </div>
+      <ModalContent>
+        {isRestoring ? (
+          <div className="DataRestorerModal__restoring">
+            <div className="DataRestorerModal__restoring__spinner" />
+            <div className="DataRestorerModal__restoring__text">
+              <strong>Restoring {restoreStatus.data_type} data…</strong>
+              <p>
+                Please wait while the data is being restored. This may take a
+                few moments.
+              </p>
+              <div className="DataRestorerModal__restoring__state">
+                Status: {restoreStatus.state}
+              </div>
+            </div>
+          </div>
+        ) : isFailed ? (
+          <div className="DataRestorerModal__failed">
+            <strong>Restoration failed</strong>
+            <p>
+              An error occurred while restoring{" "}
+              <em>{restoreStatus!.data_type}</em> data.
+            </p>
+            {restoreStatus!.note && (
+              <pre className="DataRestorerModal__failed__note">
+                {restoreStatus!.note}
+              </pre>
+            )}
+            <Button
+              // @ts-ignore
+              variant="primary"
+              onClick={() => setRestoreStatus(null)}
+            >
+              ← Back to welcome message
+            </Button>
+          </div>
+        ) : (
+          <>
+            <p>
+              Welcome! It looks like this is a fresh installation with no data
+              yet. Choose a dataset below to restore and get started quickly, or
+              skip if you prefer to set things up manually.
+            </p>
+            <div className="DataRestorerModal__warning">
+              <strong>Warning:</strong> Restoring data will overwrite any
+              existing data currently in the system. This action cannot be
+              undone.
+            </div>
+            <div className="DataRestorerModal__options">
+              {fixtureTypes.map((opt) => {
+                const totalCount = opt.info.reduce((s, i) => s + i.count, 0);
+                return (
+                  <Accordion
+                    key={opt.name}
+                    expanded={expanded === opt.name}
+                    onChange={(_, isExpanded) =>
+                      setExpanded(isExpanded ? opt.name : null)
+                    }
+                    className="DataRestorerModal__option"
+                    disableGutters
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      className="DataRestorerModal__option__row"
+                    >
+                      <span className="DataRestorerModal__option__name">
+                        {opt.name}
+                      </span>
+                      <span className="DataRestorerModal__option__count">
+                        {totalCount} items
+                      </span>
+                      <Button
+                        // @ts-ignore
+                        variant="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleConfirm(opt.name);
+                        }}
+                        disabled={loading !== null}
+                      >
+                        {loading === opt.name ? "Restoring…" : "Restore"}
+                      </Button>
+                    </AccordionSummary>
+                    <AccordionDetails className="DataRestorerModal__option__detail">
+                      <p className="DataRestorerModal__option__description">
+                        {opt.description}
+                      </p>
+                      {opt.info.length > 0 && (
+                        <ul className="DataRestorerModal__option__items">
+                          {opt.info.map((item) => (
+                            <li key={item.name}>
+                              <span>{item.name}</span>
+                              <span>{item.count}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </ModalContent>
+      {!isRestoring && (
+        <ModalFooter>
+          <Button
             // @ts-ignore
-            onChangeCommitted(currValue);
-          }
-        }}
-        valueLabelDisplay="on"
-        /* STYLES */
-        sx={{
-          height: 4,
-          "& .MuiSlider-valueLabel": {
-            background: "none",
-            color: "white",
-            top: "0",
-            transform: "translateY(0) scale(1) !important",
-            fontSize: 10,
-          },
-          "& .MuiSlider-thumb": {
-            height: 20,
-            width: 30,
-            borderRadius: 4,
-            backgroundColor: "var(--primary-color)",
-            "&:hover": {
-              boxShadow: "0px 0px 0px 4px rgba(25, 118, 210, 0.1)",
-            },
-            "&.Mui-focusVisible": {
-              boxShadow: "0px 0px 0px 4px rgba(25, 118, 210, 0.1)",
-            },
-            "&.Mui-active": {
-              boxShadow: "0px 0px 0px 6px rgba(25, 118, 210, 0.1)",
-            },
-          },
-          "& .MuiSlider-track": {
-            borderRadius: 4,
-            backgroundColor: "var(--primary-color)",
-            opacity: 0.5,
-          },
-          "& .MuiSlider-rail": {
-            borderRadius: 4,
-            backgroundColor: "#aaa",
-          },
-        }}
-      />
-    </div>
+            variant="primary"
+            onClick={handleSkip}
+            disabled={loading !== null}
+          >
+            Skip restoring data
+          </Button>
+        </ModalFooter>
+      )}
+    </Modal>
   );
 }
