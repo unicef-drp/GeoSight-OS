@@ -11,7 +11,6 @@ test.describe('Create empty project', () => {
   // A use case tests scenarios
   test('Create empty project', async ({ page }) => {
     let lastSearchEntity = null
-    let alasSQLTest = []
     page.on('console', msg => {
       if (msg.text().indexOf('SEARCH_GEOMETRY_INPUT:') !== -1) {
         try {
@@ -21,12 +20,15 @@ test.describe('Create empty project', () => {
 
         }
       }
-      if (msg.text().indexOf('ALASQL:') !== -1) {
-        alasSQLTest.push(msg.text().replace('ALASQL:', ''))
-      }
     })
 
     const name = 'Empty'
+
+    // ------------------------------------
+    // DELETE EXISTING PROJECT
+    // ------------------------------------
+    await deleteProject(page, name)
+
     await page.goto('/admin/project/create');
     await page.getByRole('textbox', { name: 'Select View' }).click();
     await page.getByText('Somalia', { exact: true }).click();
@@ -56,12 +58,6 @@ test.describe('Create empty project', () => {
     // DELETE PROJECT
     // ------------------------------------
     await deleteProject(page, name)
-
-    // Test the alasql
-    await expect(alasSQLTest.length).toBeGreaterThan(0)
-    for (const result of alasSQLTest) {
-      await expect(result.trim()).toBe('OK')
-    }
   });
 
   // A use case tests scenarios

@@ -28,7 +28,7 @@ export default function Autocomplete({ ...props }) {
     try {
       const syntheticEvent = { target: { getAttribute: () => null } };
       const options = props.options.filter(
-        (option) => option.toLowerCase() !== "select all",
+        (option) => !["select all", "loading"].includes(option.toLowerCase()),
       );
       if (props.multiple) {
         if (
