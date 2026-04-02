@@ -36,7 +36,13 @@ def prune(static_root_base, keep=3):
     :param keep: Number of most recent versions to keep.
     :type keep: int
     """
-    releases = sorted(os.listdir(static_root_base), key=_version_key)
+    releases = sorted(
+        [
+            name for name in os.listdir(static_root_base)
+            if os.path.isdir(os.path.join(static_root_base, name))
+        ],
+        key=_version_key
+    )
     to_delete = releases[:-keep]
     for release in to_delete:
         print(f"Removing old static version: {release}")
