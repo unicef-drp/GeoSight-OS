@@ -16,7 +16,7 @@ export const Logger = {
         testExampleQueries();
         console.log("ALASQL:OK");
       } catch (e) {
-        console.log("ALASQL: Error ", e);
+        console.log("ALASQL:Error ", e);
       }
     }
   },
