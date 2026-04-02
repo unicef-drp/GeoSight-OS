@@ -44,9 +44,8 @@ ENV LANGUAGE en_ZA:en
 ENV LC_ALL en_ZA.UTF-8
 
 ADD deployment/docker/requirements.txt /requirements.txt
-RUN pip3 install --upgrade pip && pip install --upgrade pip
-RUN pip install -r /requirements.txt
-
+RUN pip install --upgrade pip setuptools wheel Cython
+RUN pip install --no-build-isolation -r /requirements.txt
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
 # setup node

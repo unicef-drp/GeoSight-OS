@@ -32,6 +32,7 @@ from geosight.data.serializer.dashboard_relation import (
     DashboardContextLayerSerializer, DashboardRelatedTableSerializer,
     DashboardToolSerializer
 )
+from geosight.data.serializer.dashboard_story import DashboardStorySerializer
 from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
 from geosight.data.serializer.indicator import IndicatorSerializer
 from geosight.data.serializer.related_table import RelatedTableSerializer
@@ -46,6 +47,7 @@ class DashboardSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     group = serializers.SerializerMethodField()
     widgets = serializers.SerializerMethodField()
+    stories = serializers.SerializerMethodField()
     extent = serializers.SerializerMethodField()
     min_zoom = serializers.SerializerMethodField()
     max_zoom = serializers.SerializerMethodField()
@@ -116,6 +118,22 @@ class DashboardSerializer(serializers.ModelSerializer):
         if obj.id:
             return DashboardWidgetSerializer(
                 obj.dashboardwidget_set.all(), many=True
+            ).data
+        else:
+            return []
+
+    def get_stories(self, obj: Dashboard):
+        """
+        Return serialized stories for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of serialized stories.
+        :rtype: list[dict]
+        """
+        if obj.id:
+            return DashboardStorySerializer(
+                obj.dashboardstory_set.all(), many=True
             ).data
         else:
             return []
@@ -489,6 +507,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'context_layers', 'context_layers_structure',
             'basemaps_layers', 'basemaps_layers_structure',
             'widgets', 'widgets_structure',
+            'stories', 'stories_structure',
             'related_tables',
             'user_permission',
             'geo_field',
@@ -507,7 +526,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'show_splash_first_open',
             'truncate_indicator_layer_name',
             'layer_tabs_visibility', 'transparency_config',
-            'show_map_toolbar', 'featured'
+            'show_map_toolbar', 'story_map_enabled', 'featured'
         )
 
 

@@ -203,6 +203,8 @@ export function DashboardSaveForm() {
     relatedTables,
     widgets,
     widgetsStructure,
+    stories,
+    storiesStructure,
     extent,
     minZoom,
     maxZoom,
@@ -218,6 +220,7 @@ export function DashboardSaveForm() {
     truncate_indicator_layer_name,
     layer_tabs_visibility,
     show_map_toolbar,
+    story_map_enabled,
 
     // Filter configurations
     filters,
@@ -346,8 +349,22 @@ export function DashboardSaveForm() {
         max_zoom: maxZoom,
         widgets: widgets,
         widgets_structure: widgetsStructure,
+        stories: stories.map(function (model) {
+          return {
+            id: model.id,
+            name: model.name,
+            description: model.description,
+            icon: model.icon,
+            bookmark_id: model.bookmark_id,
+            visible_by_default: model.visible_by_default,
+            order: model.order,
+            config: model.config,
+          };
+        }),
+        stories_structure: storiesStructure,
         permission: permission,
         tools: tools,
+        story_map_enabled: story_map_enabled,
 
         // Filter configurations
         filters: filters,
@@ -369,6 +386,11 @@ export function DashboardSaveForm() {
       formData.append("group", category);
       formData.append("data", JSON.stringify(dashboardData));
       formData.append("geoField", geoField);
+      stories.forEach((story) => {
+        if (story.iconFile) {
+          formData.append(`story_icon_${story.id}`, story.iconFile);
+        }
+      });
 
       // Check featured
       const $projectFeatured = $("#ProjectFeatured");

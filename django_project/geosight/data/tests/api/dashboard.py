@@ -19,7 +19,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from core.models.preferences import SitePreferences
-from geosight.data.models.dashboard import Dashboard
+from geosight.data.models.dashboard import (
+    Dashboard, DashboardBookmark, DashboardStory
+)
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.models.manager import PermissionException
 from geosight.permission.tests._base import BasePermissionTest
@@ -205,6 +207,9 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         data = response.json()
         self.assertEqual(data['name'], 'Dashboard test 1')
         self.assertEqual(data['slug'], resource.slug)
+        self.assertEqual(data['stories'], [])
+        self.assertEqual(data['stories_structure'], None)
+        self.assertEqual(data['story_map_enabled'], False)
         pref = SitePreferences.preferences()
         self.assertEqual(data['default_time_mode'], {
             'use_only_last_known_value': True,
@@ -255,6 +260,64 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
             'show_last_known_value_in_range': True,
             'default_interval': 'Daily',
         })
+
+    def test_story_map_data_and_duplicate_api(self):
+        """Test story map data is serialized and preserved on duplicate."""
+        resource = self.create_resource(self.creator, 'Dashboard with story')
+        bookmark = DashboardBookmark.objects.create(
+            dashboard=resource,
+            creator=self.creator,
+            name='Story bookmark'
+        )
+        story = DashboardStory.objects.create(
+            dashboard=resource,
+            name='Story page 1',
+            description='Narrative step',
+            bookmark=bookmark,
+            visible_by_default=True,
+            order=1,
+            config={'auto_play': False}
+        )
+        resource.story_map_enabled = True
+        resource.stories_structure = {
+            'children': [
+                {
+                    'id': story.id,
+                    'children': []
+                }
+            ]
+        }
+        resource.save()
+
+        url = reverse('dashboard-data-api', kwargs={'slug': resource.slug})
+        response = self.assertRequestGetView(url, 200, self.creator)
+        data = response.json()
+        self.assertEqual(data['story_map_enabled'], True)
+        self.assertEqual(len(data['stories']), 1)
+        self.assertEqual(data['stories'][0]['name'], 'Story page 1')
+        self.assertEqual(data['stories'][0]['bookmark_id'], bookmark.id)
+        self.assertEqual(data['stories'][0]['config'], {'auto_play': False})
+        self.assertEqual(
+            data['stories_structure'],
+            {'children': [{'id': story.id, 'children': []}]}
+        )
+
+        duplicate_url = reverse(
+            'dashboard-duplicate-api', kwargs={'slug': resource.slug}
+        )
+        self.assertRequestPostView(
+            duplicate_url, 302, data={}, user=self.creator
+        )
+        duplicated = Dashboard.objects.get(slug=resource.slug + '-1')
+        duplicated_story = duplicated.dashboardstory_set.get(name='Story page 1')
+        self.assertEqual(duplicated.story_map_enabled, True)
+        self.assertEqual(
+            duplicated.stories_structure,
+            {'children': [{'id': duplicated_story.id, 'children': []}]}
+        )
+        self.assertEqual(duplicated_story.description, 'Narrative step')
+        self.assertEqual(duplicated_story.config, {'auto_play': False})
+        self.assertEqual(duplicated_story.bookmark.name, 'Story bookmark')
 
     def test_delete_api(self):
         """Test list API."""

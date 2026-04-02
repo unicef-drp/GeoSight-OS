@@ -55,3 +55,9 @@ export const isContextLayerContentVisible =
       layer_tabs_visibility.includes("context_layers")
     );
   };
+
+export const isStoryMapEnabled =
+  () =>
+  (state: any): boolean => {
+    return !!state?.dashboard?.data?.story_map_enabled;
+  };

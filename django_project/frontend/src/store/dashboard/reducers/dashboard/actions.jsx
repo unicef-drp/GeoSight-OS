@@ -137,6 +137,14 @@ function receive(data, error = null) {
       data.widgetsStructure = data.widgets_structure;
     }
     delete data.widgets_structure;
+    if (!data.stories) {
+      data.stories = [];
+    }
+    data.storiesStructure = dictDeepCopy(groupDefault);
+    if (data.stories_structure) {
+      data.storiesStructure = data.stories_structure;
+    }
+    delete data.stories_structure;
     if (!data.relatedTables) {
       data.relatedTables = data.related_tables;
       delete data.related_tables;
@@ -219,8 +227,8 @@ function receive(data, error = null) {
 /**
  * Fetching dashboard data.
  */
-export function fetch(dispatch) {
-  fetchingData(urls.dashboardData, {}, {}, async function (response, error) {
+export function fetch(dispatch, dashboardUrlAPI = urls.dashboardData) {
+  fetchingData(dashboardUrlAPI, {}, {}, async function (response, error) {
     await updateColorPaletteData()
       .then((palettes) => {
         dispatch(receive(response, null));

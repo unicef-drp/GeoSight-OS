@@ -26,14 +26,27 @@ import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
 import { useTranslation } from "react-i18next";
-import { isDashboardToolEnabled } from "../../selectors/dashboard";
+import {
+  isContextLayerContentVisible,
+  isDashboardToolEnabled,
+  isFilterContentVisible,
+  isIndicatorLayerContentVisible,
+} from "../../selectors/dashboard";
 import { Variables } from "../../utils/Variables";
 
 import "./style.scss";
 
-export default function Dashboard({ children }) {
+export default function Dashboard({ children, dashboardUrlAPI = null }) {
   const dispatch = useDispatch();
   const widgets = useSelector((state) => state.dashboard.data?.widgets);
+  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
+  const contextLayerContentVisible = useSelector(
+    isContextLayerContentVisible(),
+  );
+  const filterVisible = useSelector(isFilterContentVisible());
+  const storyMapEnabled = useSelector(
+    (state) => state.dashboard.data?.story_map_enabled,
+  );
   const user_permission = useSelector(
     (state) => state.dashboard.data?.user_permission,
   );
@@ -44,17 +57,23 @@ export default function Dashboard({ children }) {
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
   );
 
-  const showLayerTab = !!EmbedConfig().layer_tab;
-  const showFilterTab = !!EmbedConfig().filter_tab;
+  const showLayerTab =
+    !!EmbedConfig().layer_tab &&
+    (indicatorLayerVisible || contextLayerContentVisible);
+  const showFilterTab = !!EmbedConfig().filter_tab && filterVisible;
   const showWidget = EmbedConfig().widget_tab;
+  const showLeftPanel = showLayerTab || showFilterTab || storyMapEnabled;
   const [leftExpanded, setLeftExpanded] = useState(
-    showLayerTab || showFilterTab,
+    showLeftPanel,
+  );
+  const [leftPanelTab, setLeftPanelTab] = useState(
+    showLayerTab ? "layers" : showFilterTab ? "filters" : "story",
   );
   const [rightExpanded, setRightExpanded] = useState(showWidget);
   const { t } = useTranslation();
 
   const leftPanelProps =
-    showLayerTab || showFilterTab
+    showLeftPanel
       ? {
           className: "LeftButton",
           initState: leftExpanded ? LEFT : RIGHT,
@@ -85,8 +104,10 @@ export default function Dashboard({ children }) {
 
   // Fetch data of dashboard
   useEffect(() => {
-    dispatch(Actions.Dashboard.fetch(dispatch));
-  }, []);
+    dispatch(
+      Actions.Dashboard.fetch(dispatch, dashboardUrlAPI || urls.dashboardData),
+    );
+  }, [dispatch, dashboardUrlAPI]);
 
   return (
     <div
@@ -102,8 +123,30 @@ export default function Dashboard({ children }) {
           <MapLibre
             leftPanelProps={leftPanelProps}
             rightPanelProps={rightPanelProps}
+            storyMapEnabled={storyMapEnabled}
+            storyMapActive={leftExpanded && leftPanelTab === "story"}
+            onToggleStoryPanel={() => {
+              if (leftExpanded && leftPanelTab === "story") {
+                if (showLayerTab) {
+                  setLeftPanelTab("layers");
+                  setLeftExpanded(true);
+                } else if (showFilterTab) {
+                  setLeftPanelTab("filters");
+                  setLeftExpanded(true);
+                } else {
+                  setLeftExpanded(false);
+                }
+              } else {
+                setLeftExpanded(true);
+                setLeftPanelTab("story");
+              }
+            }}
           />
-          <LeftPanel leftExpanded={leftExpanded} />
+          <LeftPanel
+            leftExpanded={leftExpanded}
+            selectedTab={leftPanelTab}
+            setSelectedTab={setLeftPanelTab}
+          />
           <MiddlePanel
             leftExpanded={leftExpanded}
             setLeftExpanded={setLeftExpanded}
