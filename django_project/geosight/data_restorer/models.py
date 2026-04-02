@@ -146,6 +146,9 @@ class RequestRestoreData(models.Model):
     )
     note = models.TextField(blank=True, default='')
 
+    class Meta:  # noqa: D106
+        verbose_name_plural = "request restore data"
+
     def run(self):
         """Run the command."""
         preferences = Preferences.load()
@@ -162,10 +165,8 @@ class RequestRestoreData(models.Model):
         self.save()
 
         from django.core.management import call_command
-        from django.db import transaction
         try:
-            with transaction.atomic():
-                call_command(fixture_type.command_name)
+            call_command(fixture_type.command_name)
         except Exception as e:
             self.state = self.State.FAILED
             self.note = str(e)

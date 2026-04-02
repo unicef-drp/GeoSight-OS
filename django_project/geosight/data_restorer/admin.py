@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
-from geosight.data_restorer.models import Preferences
+from geosight.data_restorer.models import Preferences, RequestRestoreData
 
 
 @admin.register(Preferences)
@@ -24,3 +24,12 @@ class PreferencesAdmin(admin.ModelAdmin):
     """Preferences admin."""
 
     pass
+
+
+@admin.register(RequestRestoreData)
+class RequestRestoreDataAdmin(admin.ModelAdmin):
+    """RequestRestoreData admin."""
+
+    list_display = ('data_type', 'state', 'note')
+    list_filter = ('state', 'data_type')
+    readonly_fields = ('state', 'note')
