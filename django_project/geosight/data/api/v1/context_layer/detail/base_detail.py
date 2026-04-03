@@ -26,7 +26,7 @@ from geosight.data.api.v1.base import (
     BaseApiV1ResourceReadOnly
 )
 from geosight.data.models.context_layer import ContextLayer, LayerType
-from geosight.permission.access import read_data_permission_resource
+from geosight.permission.access import read_permission_resource
 
 
 class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
@@ -95,7 +95,7 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
             If an invalid layer type or data access error occurs.
         """
         obj = self._get_object()
-        read_data_permission_resource(obj, self.request.user)
+        read_permission_resource(obj, self.request.user)
         try:
             return super().list(request, *args, **kwargs)
         except ValueError as e:

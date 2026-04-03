@@ -71,7 +71,9 @@ class IndicatorsDataViewSet(
         if self.action == 'retrieve':
             return []
         else:
-            return self.non_filtered_keys
+            return [
+                key for key in self.non_filtered_keys if key != 'attributes'
+            ]
 
     def get_queryset(self):
         """
