@@ -28,7 +28,8 @@ import "./style.scss";
  */
 export default function LayerConfig() {
   const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
-  if (!indicatorLayerVisible) {
+  const { indicatorShow } = useSelector((state) => state.map);
+  if (!indicatorLayerVisible || !indicatorShow) {
     return null;
   }
   return (

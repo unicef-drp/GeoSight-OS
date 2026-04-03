@@ -66,6 +66,12 @@ test.describe('Project navigation', () => {
     await expect(page.locator(indicatorTab)).toBeVisible();
     await expect(page.locator(contextLayerTab)).toBeVisible();
     await expect(page.locator(middleConfig)).toBeVisible();
+    // Hide layer
+    await page.locator(indicatorTab).locator('svg').click();
+    await expect(page.locator(middleConfig)).toBeHidden();
+    // Hide layer
+    await page.locator(indicatorTab).locator('svg').click();
+    await expect(page.locator(middleConfig)).toBeEnabled();
 
     // Context layer tab only
     await page.locator(".EditProjectLinkButton").click();
