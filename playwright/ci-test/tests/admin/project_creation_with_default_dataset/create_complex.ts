@@ -442,7 +442,7 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
 
     // Checking tools works
-    await expect(page.locator('#simple-tabpanel-1.layers-panel')).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel')).toBeVisible();
     await checkToolIconNotVisible()
 
     // --------------------------------------------------------------
@@ -472,7 +472,7 @@ test.describe('Create complex project', () => {
     // ----------------------------------
     // Checking tools works
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
-    await expect(page.locator('#simple-tabpanel-0.layers-panel')).toBeVisible();
+    await expect(page.locator('#context-layer-tab-panel.layers-panel')).toBeVisible();
     await checkToolIconVisible();
 
     // --------------------------------------------------------------

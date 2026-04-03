@@ -40,7 +40,8 @@ import {
 import TabPanel, { tabProps } from "../../../components/Tabs/index";
 import { EmbedConfig } from "../../../utils/embed";
 import {
-  isContextLayerContentVisible, isFilterContentVisible,
+  isContextLayerContentVisible,
+  isFilterContentVisible,
   isIndicatorLayerContentVisible,
 } from "../../../selectors/dashboard";
 
@@ -173,19 +174,20 @@ export default function LeftPanel({ leftExpanded }) {
                       label={t("dashboardPage.contextLayers")}
                       icon={<ContextLayerVisibility />}
                       iconPosition="end"
-                      {...tabProps(0)}
+                      {...tabProps("context-layer")}
                     />
                     <Tab
                       label={t("dashboardPage.indicators")}
                       icon={<IndicatorsVisibility />}
                       iconPosition="end"
-                      {...tabProps(1)}
+                      {...tabProps("indicator")}
                     />
                   </Tabs>
                 </Box>
               )}
               {contextLayerContentVisible && (
                 <TabPanel
+                  id={"context-layer-tab-panel"}
                   value={tab2Value}
                   index={0}
                   className={"sidepanel-tab layers-panel"}
@@ -194,6 +196,7 @@ export default function LeftPanel({ leftExpanded }) {
                 </TabPanel>
               )}
               <TabPanel
+                id={"indicator-tab-panel"}
                 value={tab2Value}
                 index={1}
                 className={"sidepanel-tab layers-panel"}
@@ -205,6 +208,7 @@ export default function LeftPanel({ leftExpanded }) {
             <RelatedTables />
           </TabPanel>
           <TabPanel
+            id={"filter-tab-panel"}
             value={tabValue}
             index={1}
             className={"sidepanel-tab filters-tab-content"}

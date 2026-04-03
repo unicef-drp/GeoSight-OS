@@ -237,10 +237,10 @@ test.describe('Create project', () => {
 
     // Check transparency
     await page.getByRole('tab', { name: 'Context Layers' }).click();
-    await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel')).toBeHidden();
-    await expect(page.locator('#simple-tabpanel-0 .TreeView').first()).toHaveText("No context layers available");
+    await expect(page.locator('#context-layer-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel')).toBeHidden();
+    await expect(page.locator('#context-layer-tab-panel .TreeView').first()).toHaveText("No context layers available");
     await page.getByRole('tab', { name: 'Indicators' }).click();
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
 
     await page.goto(editUrl);
     await page.waitForURL(editUrl)
@@ -255,9 +255,9 @@ test.describe('Create project', () => {
     await expect(page.getByText('Configuration has been saved!')).toBeVisible()
     await page.goto('/project/test-project-default');
     await page.getByRole('tab', { name: 'Context Layers' }).click();
-    await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
+    await expect(page.locator('#context-layer-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
     await page.getByRole('tab', { name: 'Indicators' }).click();
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
 
     // Check RRR as Context Layer visualization
     await page.getByRole('tab', { name: 'Context Layers' }).click();
