@@ -306,7 +306,7 @@ test.describe('Create project', () => {
     // Do fast filter
     await page.getByRole('button', { name: 'Admin level 1 Delete Group' }).getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Admin level 1 Delete Group' }).click();
-    await page.getByRole('tabpanel', { name: 'Indicators' }).getByPlaceholder('Select 1 option').click();
+    await page.locator('#filter-tab-panel').getByPlaceholder('Select 1 option').click();
     await page.getByRole('option', { name: 'SOM_0001_V1' }).click();
     await page.getByRole('option', { name: 'SOM_0002_V1' }).click();
     await page.getByRole('option', { name: 'SOM_0003_V1' }).click();

@@ -95,9 +95,9 @@ export const assert = async (page, assertLogs) => {
   await expect(page.locator('.MapLegend')).toBeVisible();
   await expect(page.getByLabel(layer1)).toBeChecked();
   await expect(page.getByLabel(layer2)).not.toBeChecked();
-  await page.locator('#indicator-tab-panel svg').click();
+  await page.locator('#simple-tab-indicator svg').click();
   await expect(page.locator('.MapLegendSection')).toHaveCount(0);
-  await page.locator('#indicator-tab-panel svg').click();
+  await page.locator('#simple-tab-indicator svg').click();
   await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
   // Check transparency
