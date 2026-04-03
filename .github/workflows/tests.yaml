@@ -111,7 +111,7 @@ jobs:
       fail-fast: false
       matrix:
         test_suite: [
-          { id: "backend-tests", mode: "backend", plugins: "cloud_native_gis,reference_dataset,data_restorer" },
+          { id: "backend-tests", mode: "backend", plugins: "tenants,reference_dataset,cloud_native_gis,data_restorer" },
           { id: "e2e-functions", mode: "e2e", path: "tests/admin/functions/", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-creation", mode: "e2e", path: "tests/admin/project_creation/", workers: 2, script: "make load-test-data" },
           { id: "e2e-project-view-ucode", mode: "e2e", path: "tests/admin/project_view_ucode/", workers: 1, script: "make load-test-data" },
