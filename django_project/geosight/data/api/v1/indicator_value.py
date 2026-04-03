@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '05/03/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from django.core.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied
 from django.db.models import OuterRef, Subquery, Sum, Min, Max, Avg, Count
 from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
@@ -49,9 +49,14 @@ class IndicatorValueApiUtilities:
                 indicators_id.append(int(indicator_id))
             except ValueError:
                 pass
-        indicators = Indicator.permissions.read_data(self.request.user).filter(
-            id__in=indicators_id
-        )
+        if indicators_id:
+            indicators = Indicator.permissions.read_data(
+                self.request.user
+            ).filter(
+                id__in=indicators_id
+            )
+        else:
+            indicators = Indicator.permissions.read_data(self.request.user)
         if not indicators:
             raise PermissionDenied(
                 "You do not have permission "

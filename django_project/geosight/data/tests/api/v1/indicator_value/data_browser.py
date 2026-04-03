@@ -148,7 +148,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
 
         self.assertRequestGetView(
             f'{ids_url}',
-            403, user=user
+            200, user=user
         )
         if '?' in ids_url:
             url = (
@@ -193,7 +193,8 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
             f'indicator_id__in='
             f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
         )
-        self.assertRequestGetView(url, 403, user=user)
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 200, user=user)
         response = self.assertRequestGetView(
             url + f'?{indicators_parameter}', 200, user=user
         )
@@ -202,7 +203,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
             ['A', 'AA', 'B', 'BA', 'C', 'E', 'EA', 'F', 'FA', 'G']
         )
         self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 403, user=user
+            f'{url}?admin_level__in=1', 200, user=user
         )
         response = self.assertRequestGetView(
             f'{url}?admin_level__in=1&{indicators_parameter}',
@@ -224,7 +225,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         )
         self.assertRequestGetView(
             url + '?fields=date, value, value_str&sort=-date,id',
-            403, user=user
+            200, user=user
         )
         response = self.assertRequestGetView(
             url + f'?fields=date, value, '
@@ -275,7 +276,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         self.assertRequestGetView(
             f'{url}?fields=date, value, value_str&'
             'admin_level__in=1&sort=-date,id',
-            403,
+            200,
             user=user
         )
         response = self.assertRequestGetView(
@@ -319,7 +320,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
             f'indicator_id__in='
             f'{",".join([f"{self.indicator_1.id}", f"{self.indicator_2.id}"])}'
         )
-        self.assertRequestGetView(url, 403, user=user)
+        self.assertRequestGetView(url, 200, user=user)
         response = self.assertRequestGetView(
             url + f'?{indicators_parameter}', 200, user=user
         )
@@ -328,7 +329,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
             {'min': 1.0, 'max': 4.0, 'avg': 2.3333333333333335}
         )
         self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 403, user=user
+            f'{url}?admin_level__in=1', 200, user=user
         )
         response = self.assertRequestGetView(
             f'{url}?admin_level__in=1&{indicators_parameter}',

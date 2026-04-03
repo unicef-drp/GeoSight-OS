@@ -78,8 +78,8 @@ export const assert = async (page, assertLogs) => {
   await page.getByRole('button', { name: 'Close' }).click();
 
   // Check the info
-  await expect(page.locator('#simple-tabpanel-1 .LayerName').nth(1)).toHaveText('Sample Indicator A');
-  await page.locator('#simple-tabpanel-1 .LayerInfoIcon').first().hover()
+  await expect(page.locator('#indicator-tab-panel .LayerName').nth(1)).toHaveText('Sample Indicator A');
+  await page.locator('#indicator-tab-panel .LayerInfoIcon').first().hover()
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div')).toHaveCount(5);
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(0)).toHaveText('Sample Indicator A');
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(1)).toHaveText('Last Update: 2020-01-01 00:00:00');
@@ -95,13 +95,13 @@ export const assert = async (page, assertLogs) => {
   await expect(page.locator('.MapLegend')).toBeVisible();
   await expect(page.getByLabel(layer1)).toBeChecked();
   await expect(page.getByLabel(layer2)).not.toBeChecked();
-  await page.locator('#simple-tab-1 svg').click();
+  await page.locator('#simple-tab-indicator svg').click();
   await expect(page.locator('.MapLegendSection')).toHaveCount(0);
-  await page.locator('#simple-tab-1 svg').click();
+  await page.locator('#simple-tab-indicator svg').click();
   await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
   // Check transparency
-  await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
+  await expect(page.locator('#indicator-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
 
   // ------------------------------------------------------------
   // Check drilldown
@@ -524,11 +524,11 @@ export const assert = async (page, assertLogs) => {
   // COMPARE
   await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
   await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
-  await expect(page.locator('#simple-tabpanel-1 .MuiCheckbox-root:visible')).toHaveCount(0);
-  await expect(page.locator('#simple-tabpanel-1 .MuiRadio-root:visible')).toHaveCount(10);
+  await expect(page.locator('#indicator-tab-panel .MuiCheckbox-root:visible')).toHaveCount(0);
+  await expect(page.locator('#indicator-tab-panel .MuiRadio-root:visible')).toHaveCount(10);
   await page.getByTitle('Turn on compare Layers').click();
-  await expect(page.locator('#simple-tabpanel-1 .MuiCheckbox-root:visible')).toHaveCount(10);
-  await expect(page.locator('#simple-tabpanel-1 .MuiRadio-root:visible')).toHaveCount(0);
+  await expect(page.locator('#indicator-tab-panel .MuiCheckbox-root:visible')).toHaveCount(10);
+  await expect(page.locator('#indicator-tab-panel .MuiRadio-root:visible')).toHaveCount(0);
   await page.getByLabel(kenyaLayer).click();
   await delay(1000)
   await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
@@ -536,8 +536,8 @@ export const assert = async (page, assertLogs) => {
   await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Kenya Indicator A (Inner)')
   await page.getByLabel(kenyaLayer).click();
   await page.getByTitle('Turn off compare Layers').click();
-  await expect(page.locator('#simple-tabpanel-1 .MuiCheckbox-root:visible')).toHaveCount(0);
-  await expect(page.locator('#simple-tabpanel-1 .MuiRadio-root:visible')).toHaveCount(10);
+  await expect(page.locator('#indicator-tab-panel .MuiCheckbox-root:visible')).toHaveCount(0);
+  await expect(page.locator('#indicator-tab-panel .MuiRadio-root:visible')).toHaveCount(10);
   await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
   await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
 
