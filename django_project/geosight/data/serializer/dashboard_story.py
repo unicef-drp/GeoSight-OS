@@ -25,7 +25,14 @@ class DashboardStorySerializer(serializers.ModelSerializer):
     bookmark_id = serializers.SerializerMethodField()
 
     def get_bookmark_id(self, obj: DashboardStory):
-        """Return bookmark identifier."""
+        """
+        Return the related bookmark identifier.
+
+        :param obj: Dashboard story instance being serialized.
+        :type obj: DashboardStory
+        :return: The related bookmark ID, if any.
+        :rtype: int or None
+        """
         return obj.bookmark.id if obj.bookmark else None
 
     class Meta:  # noqa: D106

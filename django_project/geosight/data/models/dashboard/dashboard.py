@@ -287,7 +287,9 @@ class Dashboard(
         )
         stories_structure = data.get('stories_structure', {'children': []})
         self.story_ids_new = stories_new
-        self.stories_structure = update_structure(stories_structure, stories_new)
+        self.stories_structure = update_structure(
+            stories_structure, stories_new
+        )
         self.story_map_enabled = data.get('story_map_enabled', False)
 
         # INDICATORS
@@ -811,18 +813,21 @@ class Dashboard(
         :param story_data:
             A list of dictionaries containing story data.
         :type story_data: list[dict]
+        :param files:
+            Uploaded files keyed by story-specific field names.
+        :type files: MultiValueDict or dict or None
         :param allow_missing_bookmark:
             Allow stories to be saved without their bookmark when the bookmark
             will be cloned and reattached in a later step, such as dashboard
             duplication.
         :type allow_missing_bookmark: bool
-        :param files:
-            Uploaded files keyed by story-specific field names.
-        :type files: MultiValueDict or dict or None
         :return:
             A mapping of original story IDs (or 0 for new ones)
             to actual saved story IDs.
         :rtype: dict[int, int]
+        :raises ValueError:
+            If a referenced bookmark does not belong to this dashboard and
+            missing bookmarks are not allowed.
         """
         from .bookmark import DashboardBookmark
         from .dashboard_story import DashboardStory
@@ -865,10 +870,14 @@ class Dashboard(
                 story.visible_by_default = data.get('visible_by_default', True)
                 story.bookmark = bookmark
                 story.config = data.get('config', None)
-                icon_key = f"story_icon_{story.id or data.get('id', 'new')}"
+                icon_key = (
+                    f"story_icon_{story.id or data.get('id', 'new')}"
+                )
                 temp_icon_key = f"story_icon_{data.get('id', 'new')}"
                 if files:
-                    story_icon = files.get(icon_key) or files.get(temp_icon_key)
+                    story_icon = (
+                        files.get(icon_key) or files.get(temp_icon_key)
+                    )
                     if story_icon:
                         story.icon = story_icon
                 story.save()
@@ -913,7 +922,9 @@ class Dashboard(
                     is_3d_mode=origin_bookmark.is_3d_mode,
                     position=origin_bookmark.position,
                     context_layer_show=origin_bookmark.context_layer_show,
-                    context_layers_config=origin_bookmark.context_layers_config,
+                    context_layers_config=(
+                        origin_bookmark.context_layers_config
+                    ),
                     transparency_config=origin_bookmark.transparency_config,
                 )
                 bookmark.selected_context_layers.set(
@@ -933,7 +944,9 @@ class Dashboard(
                 ).first()
 
             if story:
-                story.bookmark = cloned_bookmarks[origin_bookmark.id]
+                story.bookmark = cloned_bookmarks[
+                    origin_bookmark.id
+                ]
                 story.save(update_fields=['bookmark'])
 
     @staticmethod
