@@ -101,3 +101,7 @@ if settings.REFERENCE_DATASET_ENABLED:
     urlpatterns += [
         url(r'^', include('geosight.reference_dataset.api.urls')),
     ]
+if settings.DATA_RESTORER_ENABLED:
+    urlpatterns += [
+        url(r'^', include('geosight.data_restorer.urls')),
+    ]

@@ -1,0 +1,339 @@
+[
+  {
+    "model": "geosight_data.basemapgroup",
+    "pk": 1,
+    "fields": {
+      "name": "Default",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 1,
+    "fields": {
+      "name": "OSM",
+      "description": "",
+      "creator": 1,
+      "creator_username": "admin",
+      "modified_by": 1,
+      "modified_by_username": "admin",
+      "created_at": "2022-09-14T10:15:29Z",
+      "modified_at": "2023-11-03T07:18:05.023Z",
+      "icon": "",
+      "url": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png?noWrap=true",
+      "type": "XYZ Tile",
+      "group": 1
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayerparameter",
+    "pk": 1,
+    "fields": {
+      "basemap_layer": 1,
+      "name": "attribution",
+      "value": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 2,
+    "fields": {
+      "name": "Open Topo Map",
+      "description": "",
+      "creator": 1,
+      "creator_username": "admin",
+      "modified_by": 1,
+      "modified_by_username": "admin",
+      "created_at": "2022-09-14T10:15:29Z",
+      "modified_at": "2023-11-03T07:18:00.265Z",
+      "icon": "",
+      "url": "https://a.tile.opentopomap.org/{z}/{x}/{y}.png?noWrap=true",
+      "type": "XYZ Tile",
+      "group": 1
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 3,
+    "fields": {
+      "name": "Mapbox Satellite",
+      "description": "",
+      "creator": 1,
+      "creator_username": "admin",
+      "created_at": "2022-09-14T10:15:29Z",
+      "modified_by": 1,
+      "modified_by_username": "admin",
+      "modified_at": "2023-11-03T07:17:56.612Z",
+      "icon": "",
+      "url": "https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg",
+      "type": "XYZ Tile",
+      "group": 1
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 1,
+    "fields": {
+      "name": "Female",
+      "description": "",
+      "value": "f"
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 2,
+    "fields": {
+      "name": "Male",
+      "description": "",
+      "value": "m"
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 3,
+    "fields": {
+      "name": "Low",
+      "description": "",
+      "value": "Low"
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 4,
+    "fields": {
+      "name": "Medium",
+      "description": "",
+      "value": "Medium"
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 5,
+    "fields": {
+      "name": "High",
+      "description": "",
+      "value": "High"
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 6,
+    "fields": {
+      "name": "Yes",
+      "description": "",
+      "value": "Yes"
+    }
+  },
+  {
+    "model": "geosight_data.code",
+    "pk": 7,
+    "fields": {
+      "name": "No",
+      "description": "",
+      "value": "No"
+    }
+  },
+  {
+    "model": "geosight_data.codelist",
+    "pk": 1,
+    "fields": {
+      "name": "Gender",
+      "description": ""
+    }
+  },
+  {
+    "model": "geosight_data.codelist",
+    "pk": 2,
+    "fields": {
+      "name": "Low-Medium-High",
+      "description": ""
+    }
+  },
+  {
+    "model": "geosight_data.codelist",
+    "pk": 3,
+    "fields": {
+      "name": "Yes No",
+      "description": ""
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 1,
+    "fields": {
+      "codelist": 1,
+      "code": 2,
+      "order": 0
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 2,
+    "fields": {
+      "codelist": 1,
+      "code": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 3,
+    "fields": {
+      "codelist": 2,
+      "code": 3,
+      "order": 0
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 4,
+    "fields": {
+      "codelist": 2,
+      "code": 4,
+      "order": 1
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 5,
+    "fields": {
+      "codelist": 2,
+      "code": 5,
+      "order": 2
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 6,
+    "fields": {
+      "codelist": 3,
+      "code": 6,
+      "order": 0
+    }
+  },
+  {
+    "model": "geosight_data.codeincodelist",
+    "pk": 7,
+    "fields": {
+      "codelist": 3,
+      "code": 7,
+      "order": 0
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 1,
+    "fields": {
+      "description": "Generic style with 5 classes for 0-100 range (float, diverging colors, red-green)",
+      "creator": 1,
+      "creator_username": "admin",
+      "created_at": "2023-05-19T08:13:55Z",
+      "modified_by": 1,
+      "modified_by_username": "admin",
+      "modified_at": "2023-11-03T07:40:35.598Z",
+      "name": "Generic style with 5 classes for 0-100 range (float, diverging colors, red-green)",
+      "group": "Generic",
+      "style_type": "Predefined style/color rules.",
+      "style_config": null,
+      "value_type": "Float"
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 1,
+    "fields": {
+      "name": "80 - 100",
+      "rule": "x>80 and x<=100",
+      "color": "#d7191c",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 0,
+      "active": true,
+      "style": 1
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 2,
+    "fields": {
+      "name": "60 - 80",
+      "rule": "x>60 and x<=80",
+      "color": "#fdae61",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 1,
+      "active": true,
+      "style": 1
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 3,
+    "fields": {
+      "name": "40 - 60",
+      "rule": "x>40 and x<=60",
+      "color": "#ffffbf",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 2,
+      "active": true,
+      "style": 1
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 4,
+    "fields": {
+      "name": "20 - 40",
+      "rule": "x>20 and x<=40",
+      "color": "#a6d96a",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 3,
+      "active": true,
+      "style": 1
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 5,
+    "fields": {
+      "name": "0 - 20",
+      "rule": "x>0 and x<=20",
+      "color": "#1a9641",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 4,
+      "active": true,
+      "style": 1
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 6,
+    "fields": {
+      "name": "No data",
+      "rule": "No data",
+      "color": "#D8D8D8",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 5,
+      "active": true,
+      "style": 1
+    }
+  },
+  {
+    "model": "geosight_data.stylerule",
+    "pk": 7,
+    "fields": {
+      "name": "Other data",
+      "rule": "Other data",
+      "color": "#A6A6A6",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 6,
+      "active": true,
+      "style": 1
+    }
+  }
+]

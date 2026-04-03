@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
+
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
@@ -202,3 +203,12 @@ if TENANTS_ENABLED:
 LOGS_DIRECTORY = os.environ.get(
     'LOGS_DIRECTORY', '/home/web/logs'
 )
+
+# ----------------------------------------
+# Setup for data restorer
+# ----------------------------------------
+if DATA_RESTORER_ENABLED:
+    TEMPLATES[0]['OPTIONS']['context_processors'] += [
+        'geosight.data_restorer.'
+        'context_processors.data_restorer_context_processors'
+    ]

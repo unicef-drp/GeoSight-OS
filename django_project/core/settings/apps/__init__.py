@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from .cloud_native_gis import *
 from .contrib import *
 from .django import *
+from .data_restorer import *
 from .machine_info_fetcher import *
 from .project import *
 from .reference_dataset import *
@@ -37,11 +38,12 @@ except ImportError:
 SHARED_APPS = (
         TENANTS_APPS + DJANGO_APPS + CONTRIB_APPS + PROJECT_APPS +
         CLOUD_NATIVE_GIS_APPS + REFERENCE_DATASET_APPS +
-        MACHINE_INFO_FETCHER_APPS
+        MACHINE_INFO_FETCHER_APPS + DATA_RESTORER_APPS
 )
 TENANT_APPS = (
         DJANGO_APPS_TENANT + CONTRIB_APPS_TENANT + TENANTS_CONTRIB_APPS +
-        PROJECT_APPS + CLOUD_NATIVE_GIS_APPS + REFERENCE_DATASET_APPS
+        PROJECT_APPS + CLOUD_NATIVE_GIS_APPS + REFERENCE_DATASET_APPS +
+        DATA_RESTORER_APPS
 )
 
 # Save it to installed apps
@@ -57,3 +59,5 @@ if TENANTS_ENABLED:
     PLUGINS.append(TENANTS_PLUGIN_NAME)
 if REFERENCE_DATASET_ENABLED:
     PLUGINS.append(REFERENCE_DATASET_PLUGIN_NAME)
+if DATA_RESTORER_ENABLED:
+    PLUGINS.append(DATA_RESTORER_PLUGIN_NAME)
