@@ -265,8 +265,7 @@
   .dashboard__left_side {
     width: 0 !important;
   }
-  .layers-tab #simple-tabpanel-0,
-  .layers-tab #simple-tabpanel-1,
+  .layers-tab .sidepanel-tab,
   .filters-tab-content,
   .DashboardMiddlePanel .RightContent {
     display: block !important;;
@@ -300,7 +299,7 @@
   html {
     &.Mobile_Context_Layers {
       .layers-tab {
-        #simple-tabpanel-0 {
+        #context-layer-tab-panel {
           left: 0;
         }
       }
@@ -308,7 +307,7 @@
 
     &.Mobile_Indicators {
       .layers-tab {
-        #simple-tabpanel-1 {
+        #indicator-tab-panel {
           left: 0;
         }
       }
