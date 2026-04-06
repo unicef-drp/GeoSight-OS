@@ -80,14 +80,10 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1)
 # Test command (optional)
 CMD ["chromedriver", "--version"]
 
-ADD django_project /home/web/django_project
-
 # Run NPM
+ADD django_project /home/web/django_project
 WORKDIR /home/web/django_project/frontend
-RUN echo "npm install"
-RUN npm install --verbose
-RUN echo "npm build"
-RUN npm run build
+RUN npm install --verbose && npm run build
 
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
