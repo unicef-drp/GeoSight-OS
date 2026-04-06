@@ -79,7 +79,7 @@ jobs:
           file: deployment/docker/Dockerfile
           push: false
           load: true
-          target: test
+          target: dev
           tags: ${{ env.APP_IMAGE }}
           no-cache: true
 
