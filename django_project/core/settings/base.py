@@ -16,7 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
 
-from core.settings.utils import ABS_PATH
+from core.settings.utils import ABS_PATH, code_release_version
+
+# Read code release version from file
+CODE_RELEASE_VERSION = code_release_version()
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -55,11 +58,12 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/home/web/static'
+STATIC_BASE_DIR = '/home/web/static'
+STATIC_ROOT = f"{STATIC_BASE_DIR}/{CODE_RELEASE_VERSION}"
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = f"/static/{CODE_RELEASE_VERSION}/"
 
 # Additional locations of static files
 STATICFILES_DIRS = (

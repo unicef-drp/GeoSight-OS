@@ -139,7 +139,7 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
           version: 8,
           sources: {},
           layers: [],
-          glyphs: "/static/fonts/{fontstack}/{range}.pbf",
+          glyphs: staticUrl + "fonts/{fontstack}/{range}.pbf",
         },
         center: [0, 0],
         zoom: minZoomConfig > 1 ? minZoomConfig : 1,

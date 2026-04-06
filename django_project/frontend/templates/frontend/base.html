@@ -181,6 +181,7 @@
   const contentTitle = `{{ content_title|safe }}`;
   const headerTitle = `{{ header_title|safe }}`;
   const useAzureAuth = {% if use_azure_auth %}true{% else %}false{% endif %};
+  const staticUrl = "{% get_static_prefix %}";
   let urls = {
     'requestAccess': '{% url 'signup-view' %}',
     'login': "{% url 'login' %}",
