@@ -58,36 +58,36 @@ test.describe('View project', () => {
     });
     const toMap = async () => {
       await page.locator(`.MobileBottomNav .Item[data-item="Map"]`).click();
-      await expect(page.locator('.layers-tab #simple-tabpanel-0')).not.toHaveCSS('left', '0px');
-      await expect(page.locator('.layers-tab #simple-tabpanel-1.layers-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #context-layer-tab-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #indicator-tab-panel.layers-panel')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.filters-tab-content')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.RightContent')).not.toHaveCSS('left', '0px');
     }
     const toIndicatorLayer = async () => {
       await page.locator(`.MobileBottomNav .Item[data-item="Indicators"]`).click();
-      await expect(page.locator('.layers-tab #simple-tabpanel-0')).not.toHaveCSS('left', '0px');
-      await expect(page.locator('.layers-tab #simple-tabpanel-1.layers-panel')).toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #context-layer-tab-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #indicator-tab-panel.layers-panel')).toHaveCSS('left', '0px');
       await expect(page.locator('.filters-tab-content')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.RightContent')).not.toHaveCSS('left', '0px');
     }
     const toContextLayer = async () => {
       await page.locator(`.MobileBottomNav .Item[data-item="Context Layers"]`).click();
-      await expect(page.locator('.layers-tab #simple-tabpanel-0')).toHaveCSS('left', '0px');
-      await expect(page.locator('.layers-tab #simple-tabpanel-1.layers-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #context-layer-tab-panel')).toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #indicator-tab-panel.layers-panel')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.filters-tab-content')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.RightContent')).not.toHaveCSS('left', '0px');
     }
     const toFilter = async () => {
       await page.locator(`.MobileBottomNav .Item[data-item="Filter"]`).click();
-      await expect(page.locator('.layers-tab #simple-tabpanel-0')).not.toHaveCSS('left', '0px');
-      await expect(page.locator('.layers-tab #simple-tabpanel-1.layers-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #context-layer-tab-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #indicator-tab-panel.layers-panel')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.filters-tab-content')).toHaveCSS('left', '0px');
       await expect(page.locator('.RightContent')).not.toHaveCSS('left', '0px');
     }
     const toWidget = async () => {
       await page.locator(`.MobileBottomNav .Item[data-item="Widget"]`).click();
-      await expect(page.locator('.layers-tab #simple-tabpanel-0')).not.toHaveCSS('left', '0px');
-      await expect(page.locator('.layers-tab #simple-tabpanel-1.layers-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #context-layer-tab-panel')).not.toHaveCSS('left', '0px');
+      await expect(page.locator('.layers-tab #indicator-tab-panel.layers-panel')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.filters-tab-content')).not.toHaveCSS('left', '0px');
       await expect(page.locator('.RightContent')).toHaveCSS('left', '0px');
     }
@@ -133,7 +133,7 @@ test.describe('View project', () => {
     // await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
     // Check transparency
-    await expect(page.locator('#simple-tabpanel-1.layers-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
 
     // ------------------------------------------------------------
     // LABEL
@@ -349,7 +349,7 @@ test.describe('View project', () => {
     await page.getByLabel(kenyaLayer).click();
     await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Level 1')
     // TODO:
-    //  Commented to prevent failing because of project_view tests for Mapping Indicators Using changes
+    //  Commented to prevent failing because of project_view_ucode tests for Mapping Indicators Using changes
     // await delay(1000)
     // await expect(lastLog).toEqual(assertLogs[0]);
     // await delay(1000)
@@ -444,13 +444,13 @@ test.describe('View project', () => {
     await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
     await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
     await toIndicatorLayer()
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .MuiCheckbox-root:visible')).toHaveCount(0);
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .MuiRadio-root:visible')).toHaveCount(10);
+    await expect(page.locator('#indicator-tab-panel.layers-panel .MuiCheckbox-root:visible')).toHaveCount(0);
+    await expect(page.locator('#indicator-tab-panel.layers-panel .MuiRadio-root:visible')).toHaveCount(10);
     await toMap();
     await page.getByTitle('Turn on compare Layers').click();
     await toIndicatorLayer()
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .MuiCheckbox-root:visible')).toHaveCount(10);
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .MuiRadio-root:visible')).toHaveCount(0);
+    await expect(page.locator('#indicator-tab-panel.layers-panel .MuiCheckbox-root:visible')).toHaveCount(10);
+    await expect(page.locator('#indicator-tab-panel.layers-panel .MuiRadio-root:visible')).toHaveCount(0);
     await page.getByLabel(kenyaLayer).click();
     await delay(1000)
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
@@ -460,8 +460,8 @@ test.describe('View project', () => {
     await toMap();
     await page.getByTitle('Turn off compare Layers').click();
     await toIndicatorLayer()
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .MuiCheckbox-root:visible')).toHaveCount(0);
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .MuiRadio-root:visible')).toHaveCount(10);
+    await expect(page.locator('#indicator-tab-panel.layers-panel .MuiCheckbox-root:visible')).toHaveCount(0);
+    await expect(page.locator('#indicator-tab-panel.layers-panel .MuiRadio-root:visible')).toHaveCount(10);
     await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
     await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
 

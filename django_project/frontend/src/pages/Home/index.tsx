@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useTranslation } from "react-i18next";
@@ -24,6 +24,7 @@ import ProjectList from "../../components/Home";
 import { VisibilityIcon } from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from "../Basic";
+import { Logger } from "../../utils/logger";
 
 import "./style.scss";
 
@@ -41,6 +42,11 @@ export default function Home() {
   // @ts-ignore
   const projectsUrl =
     "/api/v1/dashboards?fields=__all__&page=1&page_size=12&featured=True";
+
+  // For calling testing
+  useEffect(() => {
+    Logger.tests();
+  }, []);
 
   return (
     <BasicPage className="Home">

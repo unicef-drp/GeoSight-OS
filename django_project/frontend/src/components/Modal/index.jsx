@@ -34,14 +34,17 @@ import "./style.scss";
  * @param {string} className Class name for modal.
  * @param {React.Component} children React component to be rendered.
  */
-export default function Modal({ open, onClosed, className, children }) {
+export default function Modal({ open, onClosed, className, children, disableBackdropClick = false }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsOpen(open);
   }, [open]);
 
-  const onClosedFn = () => {
+  const onClosedFn = (event, reason) => {
+    if (disableBackdropClick && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+      return;
+    }
     setIsOpen(false);
     onClosed();
   };

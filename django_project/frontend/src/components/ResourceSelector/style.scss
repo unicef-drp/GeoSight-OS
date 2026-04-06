@@ -19,6 +19,18 @@
   }
 }
 
+.ModalInputSelectorClearIcon {
+  margin-right: 10px;
+  cursor: pointer;
+  width: 10px;
+  transition: color linear 0.1s;
+
+  &:hover {
+    opacity: 0.6;
+    color: var(--primary-color);
+  }
+}
+
 .ModalDataSelector {
 
   .AdminList {

@@ -13,18 +13,29 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment } from 'react';
+import React from "react";
+import { useSelector } from "react-redux";
+import {
+  isIndicatorLayerContentVisible
+} from "../../../../selectors/dashboard";
 import DynamicIndicatorLayerMapConfig from "./DynamicIndicatorLayerMapConfig";
 import RelatedTableLayerMapConfig from "./RelatedTableLayerMapConfig";
 
-import './style.scss';
+import "./style.scss";
 
-/**
- * Left panel.
+/** This is layer config component
+ * Shows it on the middle of the panel
  */
 export default function LayerConfig() {
-  return <Fragment>
-    <DynamicIndicatorLayerMapConfig/>
-    <RelatedTableLayerMapConfig/>
-  </Fragment>
+  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
+  const { indicatorShow } = useSelector((state) => state.map);
+  if (!indicatorLayerVisible || !indicatorShow) {
+    return null;
+  }
+  return (
+    <>
+      <DynamicIndicatorLayerMapConfig />
+      <RelatedTableLayerMapConfig />
+    </>
+  );
 }

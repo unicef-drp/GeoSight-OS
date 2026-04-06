@@ -131,7 +131,6 @@ test.describe('Create project', () => {
     await page.locator('.WhereConfigurationResult > svg').click();
     await page.getByRole('combobox').filter({ hasText: 'Date' }).click();
     await page.getByRole('option', { name: 'Partner' }).click();
-    await page.getByRole('option', { name: 'Partner' }).click();
     await page.getByRole('combobox', { name: 'Select 1 option' }).click();
     await page.getByRole('option', { name: 'Partner B' }).click();
     await page.getByRole('button', { name: 'Apply' }).click();
@@ -213,6 +212,16 @@ test.describe('Create project', () => {
     await expect(page.locator('.FilterEditModalQueryWrapper').getByPlaceholder('Select 1 option')).toHaveValue('Awdal');
     await page.locator('.modal--header--close').click();
 
+    // Filter 3 real
+    await page.locator('.Filters').getByTestId('AddCircleIcon').click();
+    await page.getByText('Pick the field').click();
+    await page.getByRole('option', { name: 'ucode' }).nth(1).click();
+    await page.getByRole('combobox', { name: 'Select 1 option' }).click();
+    await page.getByRole('option', { name: 'SOM_0001_V1' }).click();
+    await page.getByRole('textbox', { name: 'Filter name' }).fill('Admin level 1');
+    await page.locator('.modal--content').getByRole('checkbox').check();
+    await page.getByRole('button', { name: 'Create filter' }).click();
+
     // --------------------------------------------
     // Save
     // --------------------------------------------
@@ -228,10 +237,10 @@ test.describe('Create project', () => {
 
     // Check transparency
     await page.getByRole('tab', { name: 'Context Layers' }).click();
-    await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel')).toBeHidden();
-    await expect(page.locator('#simple-tabpanel-0 .TreeView').first()).toHaveText("No context layers available");
+    await expect(page.locator('#context-layer-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel')).toBeHidden();
+    await expect(page.locator('#context-layer-tab-panel .TreeView').first()).toHaveText("No context layers available");
     await page.getByRole('tab', { name: 'Indicators' }).click();
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
 
     await page.goto(editUrl);
     await page.waitForURL(editUrl)
@@ -246,9 +255,9 @@ test.describe('Create project', () => {
     await expect(page.getByText('Configuration has been saved!')).toBeVisible()
     await page.goto('/project/test-project-default');
     await page.getByRole('tab', { name: 'Context Layers' }).click();
-    await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
+    await expect(page.locator('#context-layer-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
     await page.getByRole('tab', { name: 'Indicators' }).click();
-    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
 
     // Check RRR as Context Layer visualization
     await page.getByRole('tab', { name: 'Context Layers' }).click();
@@ -293,6 +302,24 @@ test.describe('Create project', () => {
     await page.locator('.FilterInputWrapper').nth(1).locator('input').first().fill('SOM_002');
     await page.waitForTimeout(1000);
     await expect(lastLog).toEqual([])
+
+    // Do fast filter
+    await page.getByRole('button', { name: 'Admin level 1 Delete Group' }).getByRole('checkbox').check();
+    await page.getByRole('button', { name: 'Admin level 1 Delete Group' }).click();
+    await page.locator('#filter-tab-panel').getByPlaceholder('Select 1 option').click();
+    await page.getByRole('option', { name: 'SOM_0001_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0002_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0003_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0004_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0005_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0006_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0007_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0008_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0009_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0010_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0011_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0012_V1' }).click();
+    await page.getByRole('option', { name: 'SOM_0013_V1' }).click();
 
     // Check RT
     await page.getByRole('tab', { name: 'Layers', exact: true }).click();

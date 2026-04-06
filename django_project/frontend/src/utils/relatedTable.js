@@ -13,7 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import alasql from "alasql";
 import { isValidDate, parseDateTime, updateDate } from "./main";
 import { queryData, spacedField } from "./queryExtraction";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
@@ -24,6 +23,7 @@ import {
   INTERVAL_REGEX,
 } from "../components/SqlQueryGenerator/WhereQueryGenerator";
 import { deepClone } from "@mui/x-data-grid/utils/utils";
+import { alasqlQuery } from "./alasql";
 
 const cache = {};
 
@@ -180,7 +180,7 @@ export const getRelatedTableData = (
            FROM ? as data` +
           (where ? ` WHERE ${where}` : "") +
           ` GROUP BY ${geography_code_field_name}  ORDER BY ${geography_code_field_name} DESC`;
-        const results = alasql(sql, [data]).map((result, idx) => {
+        const results = alasqlQuery(sql, [data]).map((result, idx) => {
           return {
             id: idx,
             admin_level: result._admin_level,
@@ -273,7 +273,7 @@ export const getRelatedTableData = (
             `  
                    ORDER BY ${geography_code_field_name} DESC `;
         }
-        const results = alasql(sql, [data]).map((result, idx) => {
+        const results = alasqlQuery(sql, [data]).map((result, idx) => {
           return {
             id: idx,
             admin_level: result._admin_level,

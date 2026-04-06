@@ -27,6 +27,7 @@ import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
 import { dictDeepCopy } from "../../../../utils/main";
 import { Variables } from "../../../../utils/Variables";
+import { ContextLayerDataTable } from "./Data";
 
 import "./style.scss";
 
@@ -95,6 +96,7 @@ export default function ContextLayerForm() {
         formData["configuration"] = {};
       }
     }
+    formData.id = initialData?.id;
     setData(dictDeepCopy(formData));
   };
 
@@ -172,6 +174,58 @@ export default function ContextLayerForm() {
     }
   };
 
+  const form = {
+    General: (
+      <DjangoTemplateForm
+        selectableInput={selectableInput}
+        selectableInputExcluded={["name", "shortcode"]}
+        onChange={(name, value) => {
+          if (["override_field", "override_style"].includes(name)) {
+            return;
+          }
+          if (name === "layer_type") {
+            typeChange(value);
+          } else if (name === "arcgis_config") {
+            arcGisConfigChange(value);
+            setDataFn();
+          } else if (["url", "url_legend"].includes(name)) {
+            setDataFn();
+          }
+        }}
+      >
+        {/* For form payload */}
+        <Checkbox
+          name={"override_field"}
+          style={{ display: "none" }}
+          checked={data?.override_field ? data?.override_field : false}
+          onChange={(evt) => {}}
+        />
+        <Checkbox
+          name={"override_style"}
+          style={{ display: "none" }}
+          checked={data?.override_style ? data?.override_style : false}
+          onChange={(evt) => {}}
+        />
+      </DjangoTemplateForm>
+    ),
+    Preview: (
+      <StyleConfig
+        data={data}
+        setData={updateData}
+        defaultTab={tab}
+        useOverride={Variables.LAYER.LIST.OVERRIDE_STYLES.includes(
+          data.layer_type,
+        )}
+        useOverrideLabel={false}
+      />
+    ),
+    Fields: <div />,
+    Label: <div />,
+  };
+  if ([Variables.LAYER.TYPE.CLOUD_NATIVE_GIS, Variables.LAYER.TYPE.RELATED_TABLE].includes(data.layer_type)) {
+    form.Data = <ContextLayerDataTable data={data} />;
+  }
+
   return (
     <Admin
       minifySideNavigation={true}
@@ -223,54 +277,7 @@ export default function ContextLayerForm() {
           ref={formRef}
           selectableInput={selectableInput}
           onTabChanges={setTab}
-          forms={{
-            General: (
-              <DjangoTemplateForm
-                selectableInput={selectableInput}
-                selectableInputExcluded={["name", "shortcode"]}
-                onChange={(name, value) => {
-                  if (["override_field", "override_style"].includes(name)) {
-                    return;
-                  }
-                  if (name === "layer_type") {
-                    typeChange(value);
-                  } else if (name === "arcgis_config") {
-                    arcGisConfigChange(value);
-                    setDataFn();
-                  } else if (["url", "url_legend"].includes(name)) {
-                    setDataFn();
-                  }
-                }}
-              >
-                {/* For form payload */}
-                <Checkbox
-                  name={"override_field"}
-                  style={{ display: "none" }}
-                  checked={data?.override_field ? data?.override_field : false}
-                  onChange={(evt) => {}}
-                />
-                <Checkbox
-                  name={"override_style"}
-                  style={{ display: "none" }}
-                  checked={data?.override_style ? data?.override_style : false}
-                  onChange={(evt) => {}}
-                />
-              </DjangoTemplateForm>
-            ),
-            Preview: (
-              <StyleConfig
-                data={data}
-                setData={updateData}
-                defaultTab={tab}
-                useOverride={Variables.LAYER.LIST.OVERRIDE_STYLES.includes(
-                  data.layer_type,
-                )}
-                useOverrideLabel={false}
-              />
-            ),
-            Fields: <div />,
-            Label: <div />,
-          }}
+          forms={form}
         />
       )}
     </Admin>

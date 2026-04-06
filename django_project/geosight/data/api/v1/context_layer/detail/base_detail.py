@@ -26,7 +26,7 @@ from geosight.data.api.v1.base import (
     BaseApiV1ResourceReadOnly
 )
 from geosight.data.models.context_layer import ContextLayer, LayerType
-from geosight.permission.access import read_data_permission_resource
+from geosight.permission.access import read_permission_resource
 
 
 class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
@@ -69,6 +69,12 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
                 obj.cloud_native_gis_layer_id = layer.id
                 obj.save()
                 return layer
+        elif obj.layer_type == LayerType.RELATED_TABLE:
+            if not obj.related_table:
+                raise ValueError(
+                    "Related table is not set for this layer. "
+                )
+            return obj.related_table
         raise ValueError("Invalid layer type for this request.")
 
     def list(self, request, *args, **kwargs):  # noqa DOC110, DOC103
@@ -89,7 +95,7 @@ class ContextBaseDetailDataView(BaseApiV1ResourceReadOnly):
             If an invalid layer type or data access error occurs.
         """
         obj = self._get_object()
-        read_data_permission_resource(obj, self.request.user)
+        read_permission_resource(obj, self.request.user)
         try:
             return super().list(request, *args, **kwargs)
         except ValueError as e:

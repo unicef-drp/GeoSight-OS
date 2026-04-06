@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/01/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from .attributes import ContextLayerAttributesViewSetTest  # noqa
 from .cloud_native_gis import ContextLayerCloudNativeTest  # noqa
 from .cloud_native_gis_api_flow import ContextLayerCloudNativeAPIFlowTest
 from .cloud_native_gis_download import ContextLayerCloudNativeDownloadTest

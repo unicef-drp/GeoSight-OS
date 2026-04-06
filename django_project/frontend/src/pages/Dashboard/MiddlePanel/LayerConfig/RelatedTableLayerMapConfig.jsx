@@ -157,6 +157,7 @@ export default function RelatedTableLayerMapConfig() {
 
   const resetFilter = (field, isDelete, allSelected) => {
     const layerMetadata = metadata[relatedTableLayer.id];
+    if (!layerMetadata) return;
 
     // We skip this if
     // The field is not selected yet
@@ -224,7 +225,7 @@ export default function RelatedTableLayerMapConfig() {
                 }}
                 isCompact={true}
                 onValueInputChange={(field, allSelected) => {
-                  resetFilter(field, false, allSelected);
+                  resetFilter(field, false);
                 }}
                 resetFilter={(field) => {
                   resetFilter(field, true);

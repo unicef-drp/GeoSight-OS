@@ -13,41 +13,43 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
-import App from '../../app';
-import SideNavigation from './Components/SideNavigation'
+import React from "react";
+import App from "../../app";
+import SideNavigation from "./Components/SideNavigation";
+import DataRestorerModal from "../../components/DataRestorer";
 
-import './style.scss';
+import "./style.scss";
 
 export const pageNames = {
-  Dashboard: 'dashboard',
-  Indicators: 'indicators', 
-  Basemaps: 'basemaps',
-  ContextLayer: 'contextLayer',
-  UsersAndGroups: 'usersAndGroups',
-  Styles: 'styles',
-  Dataset: 'dataset',
-  RelatedTables: 'relatedTables',
-  RelatedTablesData: 'relatedTablesData',
+  Dashboard: "dashboard",
+  Indicators: "indicators",
+  Basemaps: "basemaps",
+  ContextLayer: "contextLayer",
+  ContextLayerData: "contextLayerData",
+  UsersAndGroups: "usersAndGroups",
+  Styles: "styles",
+  Dataset: "dataset",
+  RelatedTables: "relatedTables",
+  RelatedTablesData: "relatedTablesData",
 
   // Importer
-  Importer: 'importer',
-  DataManagement: 'dataManagement', 
-  ScheduledJobs: 'scheduledJobs',
-  Logs: 'logs',
+  Importer: "importer",
+  DataManagement: "dataManagement",
+  ScheduledJobs: "scheduledJobs",
+  Logs: "logs",
 
   // Access Request
-  AccessRequestList: 'accessRequest',
-  AccessRequestUserDetail: 'accessRequestUserDetail',
-  AccessRequestPermissionDetail: 'accessRequestPermissionDetail',
+  AccessRequestList: "accessRequest",
+  AccessRequestUserDetail: "accessRequestUserDetail",
+  AccessRequestPermissionDetail: "accessRequestPermissionDetail",
 
   // Profile
-  UserProfile: 'userProfile',
+  UserProfile: "userProfile",
 
   // ReferenceLayerView
-  ReferenceLayerView: 'referenceLayerView',
-  referenceDatesetImporter: 'referenceDatasetImporter',
-}
+  ReferenceLayerView: "referenceLayerView",
+  referenceDatesetImporter: "referenceDatasetImporter",
+};
 
 /**
  * Base Admin App that contains side navigation and receive children
@@ -57,11 +59,16 @@ export const pageNames = {
  */
 export function AdminPage({ pageName, children, ...props }) {
   return (
-    <App className='Admin' hideNavbar={true}>
-      <SideNavigation pageName={pageName}
-                      minified={props.minifySideNavigation}/>
-      {children}
-    </App>
+    <>
+      <DataRestorerModal />
+      <App className="Admin" hideNavbar={true}>
+        <SideNavigation
+          pageName={pageName}
+          minified={props.minifySideNavigation}
+        />
+        {children}
+      </App>
+    </>
   );
 }
 
@@ -72,18 +79,22 @@ export function AdminPage({ pageName, children, ...props }) {
  * @param {React.Component} children React component to be rendered
  */
 export function AdminPageContent({ rightHeader, title, children }) {
-  return <div className='AdminContent'>
-    <div className='AdminContentHeader'>
-      <div className='AdminContentHeader-Left'>
-        <b className='light'
-           dangerouslySetInnerHTML={{ __html: title ? title : contentTitle }}></b>
+  return (
+    <div className="AdminContent">
+      <div className="AdminContentHeader">
+        <div className="AdminContentHeader-Left">
+          <b
+            className="light"
+            dangerouslySetInnerHTML={{ __html: title ? title : contentTitle }}
+          ></b>
+        </div>
+        <div className="AdminContentHeader-Right">
+          {rightHeader ? rightHeader : ""}
+        </div>
       </div>
-      <div className='AdminContentHeader-Right'>
-        {rightHeader ? rightHeader : ''}
-      </div>
+      {children}
     </div>
-    {children}
-  </div>
+  );
 }
 
 /**
@@ -93,10 +104,9 @@ export function AdminPageContent({ rightHeader, title, children }) {
  * @param {React.Component} children React component to be rendered
  */
 export default function Admin({ pageName, rightHeader, children, ...props }) {
-
   return (
     <AdminPage pageName={pageName} {...props}>
-      <AdminPageContent rightHeader={rightHeader} children={children}/>
+      <AdminPageContent rightHeader={rightHeader} children={children} />
     </AdminPage>
   );
 }

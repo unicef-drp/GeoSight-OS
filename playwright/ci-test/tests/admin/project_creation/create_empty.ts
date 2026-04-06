@@ -23,6 +23,12 @@ test.describe('Create empty project', () => {
     })
 
     const name = 'Empty'
+
+    // ------------------------------------
+    // DELETE EXISTING PROJECT
+    // ------------------------------------
+    await deleteProject(page, name)
+
     await page.goto('/admin/project/create');
     await page.getByRole('textbox', { name: 'Select View' }).click();
     await page.getByText('Somalia', { exact: true }).click();

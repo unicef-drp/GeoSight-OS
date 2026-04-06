@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
-import { deleteProject, editProject, fillProjectName } from "../../utils/project";
+import {
+  deleteProject,
+  editProject,
+  fillProjectName
+} from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -58,8 +62,17 @@ test.describe('Create complex project', () => {
     await page.getByText('Create New Project').click();
 
     // Select dataset
+    await expect(page.locator('.MuiButtonLike').getByText('Indicators')).toHaveClass('MuiButtonLike Disabled');
     await page.locator(".ReferenceDatasetSection input").click();
     await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
+    await expect(page.locator('.MuiButtonLike').getByText('Indicators')).not.toHaveClass('MuiButtonLike Disabled');
+
+    // We clear it
+    await page.locator('.ModalInputSelectorClearIcon').click();
+    await expect(page.locator('.MuiButtonLike').getByText('Indicators')).toHaveClass('MuiButtonLike Disabled');
+    await page.locator(".ReferenceDatasetSection input").click();
+    await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
+    await expect(page.locator('.MuiButtonLike').getByText('Indicators')).not.toHaveClass('MuiButtonLike Disabled');
 
     // Check extent
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
@@ -67,7 +80,7 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
-    await fillProjectName(page,name);
+    await fillProjectName(page, name);
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Complex');
     await page.keyboard.press('Enter');
@@ -441,7 +454,7 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
 
     // Checking tools works
-    await expect(page.locator('#simple-tabpanel-1.layers-panel')).toBeVisible();
+    await expect(page.locator('#indicator-tab-panel.layers-panel')).toBeVisible();
     await checkToolIconNotVisible()
 
     // --------------------------------------------------------------
@@ -471,7 +484,7 @@ test.describe('Create complex project', () => {
     // ----------------------------------
     // Checking tools works
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
-    await expect(page.locator('#simple-tabpanel-0.layers-panel')).toBeVisible();
+    await expect(page.locator('#context-layer-tab-panel.layers-panel')).toBeVisible();
     await checkToolIconVisible();
 
     // --------------------------------------------------------------

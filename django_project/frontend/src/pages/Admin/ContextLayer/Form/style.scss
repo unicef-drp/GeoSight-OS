@@ -37,6 +37,19 @@ form {
   .ContextLayerConfigTab {
     display: none !important;
   }
+
+  &.Data {
+    .General,
+    .Preview {
+      display: none !important;
+    }
+  }
+
+  &.Preview {
+    .General {
+      display: none !important;
+    }
+  }
 }
 
 .dzu-submitButtonContainer {
