@@ -45,6 +45,7 @@ import { Indicator } from "../../../../class/Indicator";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
+  isPropertiesInFilteredGeometries,
 } from "../../../../utils/indicatorLayer";
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { ThemeButton } from "../../../../components/Elements/Button";
@@ -513,12 +514,8 @@ export default function IndicatorDataDownloader() {
             a.ucode > b.ucode ? 1 : b.ucode > a.ucode ? -1 : 0,
           );
           if (state.geographyFilter === GeographyFilter.Filtered) {
-            geometryData = geometryData.filter(
-              (geom) =>
-                filteredGeometries.includes(
-                  extractCode(geom, "concept_uuid"),
-                ) ||
-                filteredGeometries.includes(extractCode(geom, "geometry_code")),
+            geometryData = geometryData.filter((geom) =>
+              isPropertiesInFilteredGeometries(filteredGeometries, geom),
             );
           }
           geometries = geometries.concat(geometryData);
@@ -586,7 +583,10 @@ export default function IndicatorDataDownloader() {
           );
           if (state.geographyFilter === GeographyFilter.Filtered) {
             geometryData = geometryData.filter((geom) =>
-              filteredGeometries.includes(extractCode(geom.properties)),
+              isPropertiesInFilteredGeometries(
+                filteredGeometries,
+                geom.properties,
+              ),
             );
           }
           geometries = geometries.concat(geometryData);

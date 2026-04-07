@@ -2,13 +2,55 @@ import { expect } from "@playwright/test";
 
 // URL That we need to check
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+export const preparing = async (page) => {
+  // Update Filter
+  await page.locator('.MuiButtonLike').getByText('Filters', { exact: true }).click();
+  await page.getByText('Zoom in automatically to filtered area').click();
 
-export const assert = async (page, assertLogs) => {
+  await page.getByTestId('AddCircleIcon').nth(2).click();
+  await page.getByRole('textbox', { name: 'Filter name' }).click();
+  await page.getByRole('textbox', { name: 'Filter name' }).fill('Country');
+  await page.getByText('Pick the field').click();
+  await page.getByRole('option', {
+    name: 'name',
+    exact: true
+  }).first().click();
+  await page.getByRole('combobox', { name: 'Select 1 option' }).click();
+  await page.getByRole('option', { name: 'Somalia' }).click();
+  await page.getByText('Allow users to modify filter parameters (values)').click();
+  await page.getByRole('button', { name: 'Create filter' }).click();
+
+  // Update widget
+  await page.getByText('Widgets (6)').click();
+  await page.getByRole('listitem').filter({ hasText: 'Time Chart by EntityTime' }).getByTestId('EditIcon').click();
+  await page.getByText('Sync with the current map').nth(1).click();
+  await page.getByRole('button', { name: 'Apply' }).click();
+  await page.getByRole('listitem').filter({ hasText: 'Total of Dynamic LayerSummary' }).locator('path').nth(2).click();
+  await page.getByRole('combobox').nth(1).click();
+  await page.getByRole('option', { name: 'Dynamic Layer' }).click();
+  await page.getByRole('button', { name: 'Apply' }).click();
+
+  // Update layer
+  await page.getByText('Indicator Layers (10)').click();
+  await page.getByRole('listitem').filter({ hasText: 'Test Indicator CSingle Config' }).getByRole('button').nth(1).click();
+  await page.getByText('Popup', { exact: true }).click();
+  await expect(page.locator('.FieldConfig tr').nth(1).locator('td').nth(1)).toHaveText('context.current.indicator.name');
+  await page.getByRole('button', { name: 'Apply' }).click();
+
+  const button = page.getByRole('button', { name: 'Save', exact: true });
+  if (await button.isEnabled()) {
+    await button.click();
+  }
+  await page.getByText('Configuration has been saved!');
+}
+
+export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, assertLogs) => {
   let lastLayers = null
   let lastVisibleLayers = null
   let lastLog = null
   let lastLogLabel = null
   let lastSearchEntity = null
+  let lastZoomLog = null
   page.on('console', msg => {
     if (msg.text().indexOf('VALUED_GEOM:') !== -1) {
       try {
@@ -50,12 +92,20 @@ export const assert = async (page, assertLogs) => {
 
       }
     }
+    if (msg.text().indexOf('BBOX:') !== -1) {
+      try {
+        lastZoomLog = msg.text().replace('BBOX: ', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
   });
 
   // ------------------------------------------------------------
   // Check search
   // ------------------------------------------------------------
-  await page.goto('/project/demo-geosight-project');
+  await page.goto(url);
   await page.getByRole('button', { name: 'Close' }).click();
   await page.getByRole('combobox', { name: 'Search Geography Entity' }).click();
   await page.getByRole('option', { name: 'Banadir Admin Level' }).click();
@@ -74,7 +124,7 @@ export const assert = async (page, assertLogs) => {
   // ------------------------------------------------------------
   // Check initial state
   // ------------------------------------------------------------
-  await page.goto('/project/demo-geosight-project');
+  await page.goto(url);
   await page.getByRole('button', { name: 'Close' }).click();
 
   // Check the info
@@ -217,9 +267,9 @@ export const assert = async (page, assertLogs) => {
 
   // Widget 3
   await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Awdal');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Bakool');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Banadir');
 
   // Widget 4
   await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
@@ -244,6 +294,8 @@ export const assert = async (page, assertLogs) => {
   await expect(page.locator('.widget__content').nth(1)).toContainText('978.5');
   await delay(1000)
   await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Banadir,SOM_0003_V1,2020-01-01,20 - 40,30,Bari,SOM_0004_V1,2020-01-01,0 - 20,11,Bay,SOM_0005_V1,2020-01-01,20 - 40,40,Galgaduud,SOM_0006_V1,2020-01-01,0 - 20,10,Gedo,SOM_0007_V1,2020-01-01,20 - 40,40,Hiraan,SOM_0008_V1,2020-01-01,20 - 40,32,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Lower Shabelle,SOM_0010_V1,2020-01-01,40 - 60,59,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Sanaag,SOM_0015_V1,2020-01-01,0 - 20,14,Sool,SOM_0016_V1,2020-01-01,20 - 40,35,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89,Woqooyi Galbeed,SOM_0018_V1,2020-01-01,0 - 20,1");
+
+  // Do filter
   await page.getByRole('tab', { name: 'Filters' }).click();
   lastLogLabel = null
   await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
@@ -251,8 +303,22 @@ export const assert = async (page, assertLogs) => {
   await delay(1000)
   await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89");
   await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
+  // Widget 3
+  await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Awdal');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Bakool');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Lower Juba');
+
+  // Check zoom log
+  await expect(lastZoomLog).toEqual("40.99565,-1.65683996,50.1768442,11.515203")
+
   await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
   await page.getByRole('tab', { name: 'Layers' }).click();
+  // Widget 3
+  await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Awdal');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Bakool');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Banadir');
 
   // ------------------------------------------------------------
   // LEVEL 0
@@ -276,9 +342,7 @@ export const assert = async (page, assertLogs) => {
 
   // Widget 3
   await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Somalia');
 
   // Widget 4
   await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
@@ -299,7 +363,7 @@ export const assert = async (page, assertLogs) => {
 
   // Check the label
   await delay(1000)
-  await expect(lastLogLabel).toEqual("Somalia,SOM_V1,2020-01-01,60 - 80,77");
+  await expect(lastLogLabel).toEqual(countryLastLog);
 
   // ------------------------------------------------------------
   // LEVEL 2
@@ -322,10 +386,11 @@ export const assert = async (page, assertLogs) => {
   await expect(page.locator('.widget__content').nth(1)).toContainText('3,778.5');
 
   // Widget 3
+  await delay(2000)
   await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
-  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Xudur');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Qardho');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sablaale');
 
   // Widget 4
   await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
@@ -356,18 +421,26 @@ export const assert = async (page, assertLogs) => {
   lastLogLabel = null
   await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
   await expect(page.locator('.widget__content').nth(1)).toContainText('1,674.5');
-  await delay(1000)
+  await delay(2000)
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Lughaye');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Zeylac');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText("Bu'Aale");
+
   await expect(lastLogLabel).toEqual("Lughaye,SOM_0001_0003_V1,2020-01-01,80 - 100,91,Zeylac,SOM_0001_0004_V1,2020-01-01,80 - 100,82,Waajid,SOM_0002_0004_V1,2020-01-01,80 - 100,94,Caluula,SOM_0004_0003_V1,2020-01-01,60 - 80,67,Ceel Dheer,SOM_0006_0004_V1,2020-01-01,60 - 80,70,Dhuusamarreeb,SOM_0006_0005_V1,2020-01-01,60 - 80,80,Ceel Waaq,SOM_0007_0003_V1,2020-01-01,80 - 100,94,Luuq,SOM_0007_0006_V1,2020-01-01,80 - 100,84,Jalalaqsi,SOM_0008_0003_V1,2020-01-01,60 - 80,79,Badhaadhe,SOM_0009_0002_V1,2020-01-01,80 - 100,87,Kismaayo,SOM_0009_0004_V1,2020-01-01,80 - 100,98,Baraawe,SOM_0010_0002_V1,2020-01-01,60 - 80,63,Kurtunwaarey,SOM_0010_0003_V1,2020-01-01,80 - 100,96,Marka,SOM_0010_0004_V1,2020-01-01,80 - 100,94,Bu'Aale,SOM_0011_0001_V1,2020-01-01,80 - 100,94,Jilib,SOM_0011_0002_V1,2020-01-01,60 - 80,72,Saakow,SOM_0011_0003_V1,2020-01-01,60 - 80,71,Cadale,SOM_0012_0003_V1,2020-01-01,60 - 80,62,Jowhar,SOM_0012_0004_V1,2020-01-01,60 - 80,75,Galdogob,SOM_0013_0002_V1,2020-01-01,80 - 100,93,Hobyo,SOM_0013_0003_V1,2020-01-01,80 - 100,91,Jariiban,SOM_0013_0004_V1,2020-01-01,60 - 80,65,Garoowe,SOM_0014_0003_V1,2020-01-01,60 - 80,67,Caynabo,SOM_0016_0001_V1,2020-01-01,60 - 80,65,Berbera,SOM_0018_0001_V1,2020-01-01,80 - 100,81");
   await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
   await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
+
+  await delay(2000)
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Xudur');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Qardho');
+  await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sablaale');
   await page.getByRole('tab', { name: 'Layers' }).click();
 
   // --------------------------------
   // Check multi reference layer
   // --------------------------------
-  await page.hover('.ReferenceLayerLevelSelected')
-  await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 1').click()
-  await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Admin Level 1 ')
+  await page.goto(url);
+  await page.getByRole('button', { name: 'Close' }).click();
   const kenyaLayer = 'Kenya Indicator A'
   await page.getByLabel(kenyaLayer).click();
   await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Level 1')
@@ -575,4 +648,20 @@ export const assert = async (page, assertLogs) => {
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(0)).toHaveText('Somalia sample context layer');
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(1)).toHaveText('Description: Somalia sample context layer');
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(2)).toHaveText('Source: Source of somalia sample');
+
+  // ---------------------------------------------------------
+  // Check the data
+  // ---------------------------------------------------------
+  await page.goto(url);
+  await page.getByRole('button', { name: 'Close' }).click();
+  await page.hover('.ReferenceLayerLevelSelected')
+  await page.locator('.ReferenceLayerLevelOption').getByText('Admin Level 0').click()
+  await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Admin Level 0')
+
+  // Widget 1
+  await expect(page.locator('.widget__content').nth(0)).toContainText('77');
+
+  await page.getByRole('tab', { name: 'Filters' }).click();
+  await page.getByRole('button', { name: 'Country' }).getByRole('checkbox').check();
+  await expect(page.locator('.widget__content').nth(0)).toContainText(sumIndicatorAByCountry);
 }

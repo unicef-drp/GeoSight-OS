@@ -29,6 +29,7 @@ import GeorepoRequest from "../../utils/GeorepoRequest";
 import { Logger } from "../../utils/logger";
 
 import "./style.scss";
+import { isProjectUsingConceptUUID } from "../../selectors/dashboard";
 
 export interface Props {
   map: maplibregl.Map;
@@ -51,36 +52,25 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   // @ts-ignore
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
-  // @ts-ignore
-  const referenceLayerData = useSelector((state) => state.datasetGeometries);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID())
+    ? "concept_uuid"
+    : "ucode";
 
   useEffect(() => {
     (async () => {
       if (!autoZoomToFilter || !map || !filteredGeometries?.length) {
         return;
       }
-      const usedConceptUUIDs: string[] = [];
-      setIsLoading(true);
-      Object.entries(referenceLayerData).forEach(([key, value]) => {
-        // @ts-ignore
-        const data = value[selectedAdminLevel.level];
-        if (data) {
-          Object.keys(data).map((conceptUUID) => {
-            if (filteredGeometries.includes(conceptUUID)) {
-              usedConceptUUIDs.push(conceptUUID);
-            }
-          });
-        }
-      });
       const session = new Session("ZoomToGeometriesByFilters", 1000);
       const georepoRequest = new GeorepoRequest(!referenceLayer.is_local);
       let bbox: number[] = [];
       try {
         bbox = await georepoRequest.getBbox(
           referenceLayer.identifier,
-          "concept_uuid",
-          usedConceptUUIDs,
+          isUsingConceptUUID,
+          filteredGeometries,
         );
       } catch (_) {
         setIsLoading(false);

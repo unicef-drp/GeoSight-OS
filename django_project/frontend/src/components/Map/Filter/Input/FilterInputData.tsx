@@ -36,9 +36,10 @@ import {
   FetchIndicatorOptions,
   FetchRelatedTableOptions,
 } from "../Data/DataOptions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
 import { alasqlQuery } from "../../../../utils/alasql";
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 /** Props for input data **/
 export interface Props extends FilterExpressionProps {
@@ -67,6 +68,7 @@ export const FilterInputData = memo(
   }: Props) => {
     const dispatch = useDispatch();
     const isEnabled = isAdmin || allowModify;
+    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
     // Get the id and keyField
     const [id, keyField] = field
@@ -140,6 +142,7 @@ export const FilterInputData = memo(
                 admin_level: row.admin_level,
                 concept_uuid: row.concept_uuid,
                 geometry_code: row.geometry_code,
+                ucode: row.geometry_code,
                 label: row.label,
                 value: row.value,
               };
@@ -171,14 +174,27 @@ export const FilterInputData = memo(
           operator,
           value,
         );
-        const query = `
-            SELECT ARRAY(concept_uuid) AS concept_uuids
-            FROM ? data
-            WHERE ${queryWhere}
-            ORDER BY concept_uuid
-        `;
+        let query = "";
+        if (isUsingConceptUUID) {
+          query = `
+              SELECT ARRAY(concept_uuid) AS codes
+              FROM ? data
+              WHERE ${queryWhere}
+              ORDER BY concept_uuid
+          `;
+        } else {
+          query = `
+              SELECT ARRAY(ucode) AS codes
+              FROM ? data
+              WHERE ${queryWhere}
+              ORDER BY ucode
+          `;
+        }
+        console.log("---------------")
+        console.log(data)
+        console.log(query)
         const _result = alasqlQuery(query, [data]);
-        setResult(_result[0].concept_uuids ? _result[0].concept_uuids : []);
+        setResult(_result[0].codes ? _result[0].codes : []);
       }
     };
 

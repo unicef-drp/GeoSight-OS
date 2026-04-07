@@ -133,12 +133,8 @@ export function fetchDynamicLayerData(
       const id = indicator.shortcode ? indicator.shortcode : indicator.id;
       indicatorsData[indicator.id].data.map((row) => {
         if (filteredGeometries !== null) {
-          if (
-            !filteredGeometries.includes(row.concept_uuid) &&
-            !filteredGeometries.includes(row.geometry_code)
-          ) {
+          if (!isPropertiesInFilteredGeometries(filteredGeometries, row))
             return;
-          }
         }
         data.push({
           admin_level: row.admin_level,
@@ -373,7 +369,7 @@ export function getLayerDataCleaned(
 
   if (filteredGeometries && Array.isArray(data[0]?.data)) {
     data[0].data = data[0].data.filter((row) =>
-      filteredGeometries.includes(row.concept_uuid),
+      isPropertiesInFilteredGeometries(filteredGeometries, row),
     );
   }
   return data;
@@ -453,3 +449,18 @@ export function getIndicatorsOfIndicatorLayers(layer, indicators) {
   }
   return _indicators;
 }
+
+export const isPropertiesInFilteredGeometries = (
+  filteredGeometries,
+  properties,
+) => {
+  if ([undefined, null].includes(filteredGeometries)) {
+    return true;
+  }
+  return (
+    filteredGeometries?.includes(extractCode(properties, "concept_uuid")) ||
+    filteredGeometries?.includes(extractCode(properties, "geometry_code")) ||
+    filteredGeometries?.includes(extractCode(properties, "geom_id")) ||
+    filteredGeometries?.includes(extractCode(properties, "ucode"))
+  );
+};

@@ -85,7 +85,7 @@ export default function RequestParameter({ widget, setParameter }: Props) {
     };
 
     // Check filtered geometries
-    if (filteredGeometries) {
+    if (filteredGeometries && filteredGeometries.length > 0) {
       const isUUID = Match.String.isUUID(filteredGeometries[0]);
       if (isUUID) {
         params["concept_uuid__in"] = filteredGeometries;

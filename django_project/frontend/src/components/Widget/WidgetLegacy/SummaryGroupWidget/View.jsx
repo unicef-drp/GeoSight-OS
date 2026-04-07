@@ -26,6 +26,7 @@ import SummaryWidget from "../View/Summary";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
+  isPropertiesInFilteredGeometries,
   isIndicatorLayerLikeIndicator,
 } from "../../../../utils/indicatorLayer";
 import { Session } from "../../../../utils/Sessions";
@@ -255,10 +256,7 @@ export default function SummaryGroupWidgetView({ data }) {
     indicatorData = Object.assign({}, layerData);
     if (filteredGeometries && indicatorData?.fetched && indicatorData?.data) {
       indicatorData.data = indicatorData.data.filter((row) => {
-        return (
-          filteredGeometries?.includes(row.concept_uuid) ||
-          filteredGeometries?.includes(row.geom_id)
-        );
+        return isPropertiesInFilteredGeometries(filteredGeometries, row);
       });
     }
   }

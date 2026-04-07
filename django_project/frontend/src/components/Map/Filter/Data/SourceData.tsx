@@ -70,7 +70,7 @@ export const FetchSourceGeometryData = memo(
           row.members.map((member: any) => {
             data.push({
               concept_uuid: member.code,
-              ucode: row.ucode,
+              ucode: member.ucode,
               name: row.name,
             })
           })

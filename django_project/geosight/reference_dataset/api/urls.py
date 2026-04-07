@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
 
-from .v1.bbox import ReferenceDatasetBboxByConcept
+from .v1.bbox import ReferenceDatasetBboxByConcept, ReferenceDatasetBboxByUCode
 from .v1.entities import EntityViewSet, EntityReferenceDatasetViewSet
 from .v1.reference_dataset import ReferenceDatasetViewSet
 
@@ -43,6 +43,11 @@ urlpatterns = [
         r'^reference-datasets/(?P<identifier>[^/]+)/bbox/concept_uuid/$',
         ReferenceDatasetBboxByConcept.as_view(),
         name='reference-datasets-bbox-concept-uuid-api'
+    ),
+    url(
+        r'^reference-datasets/(?P<identifier>[^/]+)/bbox/ucode/$',
+        ReferenceDatasetBboxByUCode.as_view(),
+        name='reference-datasets-bbox-ucode-api'
     ),
 ]
 urlpatterns += router.urls
