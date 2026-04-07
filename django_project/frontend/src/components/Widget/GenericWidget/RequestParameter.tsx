@@ -27,6 +27,7 @@ import TimeParameter, { TimeParametersProps } from "./TimeParameter";
 import { CountryDatasetView } from "../../../types/DatasetView";
 import { ParameterProps } from "../../../class/IndicatorData";
 import Match from "../../../utils/Match";
+import { isProjectUsingConceptUUID } from "../../../selectors/dashboard";
 
 export interface Props {
   widget: Widget;
@@ -37,9 +38,7 @@ export interface Props {
 export default function RequestParameter({ widget, setParameter }: Props) {
   const { config } = widget;
 
-  const isUsingConceptUUID =
-    // @ts-ignore
-    useSelector((state) => state.dashboard.data?.geoField) === "concept_uuid";
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
   // @ts-ignore
   const referenceLayers = useSelector((state) => state.map?.referenceLayers);

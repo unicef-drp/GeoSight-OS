@@ -34,6 +34,12 @@ export const isFilterContentVisible =
     return !state?.dashboard?.data?.filtersBeingHidden === true;
   };
 
+export const isProjectUsingConceptUUID =
+  () =>
+  (state: any): boolean => {
+    return state.dashboard.data?.geoField === "concept_uuid";
+  };
+
 export const isIndicatorLayerContentVisible =
   () =>
   (state: any): boolean => {

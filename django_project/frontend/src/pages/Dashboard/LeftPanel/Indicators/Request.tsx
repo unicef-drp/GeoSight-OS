@@ -21,6 +21,7 @@ import {
   UpdateStyleData,
 } from "../../../../utils/indicatorData";
 import { Actions } from "../../../../store/dashboard";
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 interface Parameter {
   date__lte: string;
@@ -51,9 +52,7 @@ export const IndicatorRequest = memo(
   }: Props) => {
     const dispatch = useDispatch();
 
-    const isUsingConceptUUID =
-      // @ts-ignore
-      useSelector((state) => state.dashboard.data?.geoField) === "concept_uuid";
+    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
     // @ts-ignore
     const prevState = useRef();

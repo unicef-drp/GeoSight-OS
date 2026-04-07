@@ -48,6 +48,7 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { ThemeButton } from "../../../../components/Elements/Button";
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 export const GeographyFilter = {
   All: "All Geographies",
@@ -77,8 +78,7 @@ export default function IndicatorDataDownloader() {
   );
   const name = useSelector((state) => state.dashboard.data?.name);
 
-  const geoField = useSelector((state) => state.dashboard.data?.geoField);
-  const isUsingConceptUUID = geoField === "concept_uuid";
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
   const referenceLayerData = useSelector(
     (state) => state.referenceLayerData[referenceLayer.identifier],

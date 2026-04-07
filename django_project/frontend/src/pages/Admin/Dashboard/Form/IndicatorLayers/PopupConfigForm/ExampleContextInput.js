@@ -23,7 +23,7 @@ import { Select } from "../../../../../../components/Input";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../../../utils/indicatorLayer";
-import { PROJECT_TERMS } from "../../../../../../class/Project";
+import { isProjectUsingConceptUUID } from "../../../../../../selectors/dashboard";
 
 import "./style.scss";
 
@@ -43,9 +43,7 @@ export default function ExampleContextInput({
   const relatedTables = useSelector(
     (state) => state.dashboard.data?.relatedTables,
   );
-  const isUsingConceptUUID = useSelector(
-    (state) => state.dashboard.data?.geoField === PROJECT_TERMS.CONCEPT_UUID,
-  );
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
   const referenceLayer = referenceLayerIndicatorLayer(
     referenceLayerDashboard,
