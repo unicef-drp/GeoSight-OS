@@ -48,6 +48,7 @@ import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 import { addLayerWithOrder } from "../../Render";
 import { Variables } from "../../../../../utils/Variables";
+import { isProjectUsingConceptUUID } from "../../../../../selectors/dashboard";
 
 export const CONTEXT_LAYER_ID = `context-layer`;
 const MAX_ELEVATION = 500000;
@@ -70,8 +71,6 @@ const LAYER_HIGHLIGHT_ID = "reference-layer-highlight";
 export const REFERENCE_LAYER_ID_KEY = `reference-layer`;
 export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-fill";
 const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-outline";
-
-const geo_field = "concept_uuid";
 
 // GLobal data
 // To make data persist
@@ -132,8 +131,9 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
   const [layerCreated, setLayerCreated] = useState(false);
   const [referenceLayerConfig, setReferenceLayerConfig] = useState({});
 
-  const geomFieldOnVectorTile =
-    geoField === "geometry_code" ? "ucode" : geoField;
+  const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID())
+    ? "concept_uuid"
+    : "ucode";
   const compareOutlineSize = preferences.style_compare_mode_outline_size;
 
   const isReady = () => {
@@ -193,7 +193,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     compareMode,
     layerCreated,
     relatedTableData,
-    geoField,
+    geomFieldOnVectorTile,
     currentLevel,
   ]);
 
@@ -354,8 +354,14 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     if (isReady()) {
       const codes = checkCodes();
       if (codes) {
-        map.setFilter(FILL_LAYER_ID, ["in", geo_field].concat(codes));
-        map.setFilter(OUTLINE_LAYER_ID, ["in", geo_field].concat(codes));
+        map.setFilter(
+          FILL_LAYER_ID,
+          ["in", geomFieldOnVectorTile].concat(codes),
+        );
+        map.setFilter(
+          OUTLINE_LAYER_ID,
+          ["in", geomFieldOnVectorTile].concat(codes),
+        );
       } else {
         map.setFilter(FILL_LAYER_ID, null);
         map.setFilter(OUTLINE_LAYER_ID, null);

@@ -27,10 +27,14 @@ import { SeriesDataType, SeriesType, TimeType } from "../Definition";
 import { fetchingData } from "../../../Requests";
 import { getRandomColor } from "../../../utils/main";
 import { dateLabel } from "../../../utils/Dates";
-import { indicatorLayerId } from "../../../utils/indicatorLayer";
+import {
+  indicatorLayerId,
+  isPropertiesInFilteredGeometries,
+} from "../../../utils/indicatorLayer";
 import RequestData from "./RequestData";
 import { ExecuteWebWorker } from "../../../utils/WebWorker";
 import workerReformatGeometries from "../../../workers/reformat_geometries";
+import { isProjectUsingConceptUUID } from "../../../selectors/dashboard";
 
 import "./style.scss";
 
@@ -71,6 +75,7 @@ export default function TimeSeriesChartWidget({ data }) {
   const { slug, default_time_mode } = useSelector(
     (state) => state.dashboard.data,
   );
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
   const { referenceLayers } = useSelector((state) => state.map);
   const referenceLayer = referenceLayers[0];
   const { use_only_last_known_value } = default_time_mode;
@@ -124,9 +129,8 @@ export default function TimeSeriesChartWidget({ data }) {
       break;
     }
     case SeriesDataType.SYNC: {
-      geographicUnits = unitList.filter(
-        (geom) =>
-          !(filteredGeometries && !filteredGeometries.includes(geom.id)),
+      geographicUnits = unitList.filter((geom) =>
+        isPropertiesInFilteredGeometries(filteredGeometries, geom),
       );
       break;
     }

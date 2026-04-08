@@ -74,7 +74,6 @@ export default function dashboardReducer(
           };
         }
         case DASHBOARD_ACTION_TYPE_UPDATE_PROPS: {
-          console.log(action.payload);
           return {
             ...state,
             data: {

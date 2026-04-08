@@ -28,7 +28,10 @@ import { Session } from "../../utils/Sessions";
 import GeorepoRequest from "../../utils/GeorepoRequest";
 import { Logger } from "../../utils/logger";
 
+import { isProjectUsingConceptUUID } from "../../selectors/dashboard";
+
 import "./style.scss";
+import { isPropertiesInFilteredGeometries } from "../../utils/indicatorLayer";
 
 export interface Props {
   map: maplibregl.Map;
@@ -55,31 +58,40 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
   const referenceLayerData = useSelector((state) => state.datasetGeometries);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const conceptKey = useSelector(isProjectUsingConceptUUID())
+    ? "concept_uuid"
+    : "ucode";
+
   useEffect(() => {
     (async () => {
       if (!autoZoomToFilter || !map || !filteredGeometries?.length) {
         return;
       }
-      const usedConceptUUIDs: string[] = [];
+      let usedConceptUUIDs: string[] = [];
       setIsLoading(true);
       Object.entries(referenceLayerData).forEach(([key, value]) => {
         // @ts-ignore
         const data = value[selectedAdminLevel.level];
         if (data) {
-          Object.keys(data).map((conceptUUID) => {
-            if (filteredGeometries.includes(conceptUUID)) {
-              usedConceptUUIDs.push(conceptUUID);
-            }
-          });
+          usedConceptUUIDs.push(
+            ...Object.values(data)
+              .filter((row: any) =>
+                isPropertiesInFilteredGeometries(filteredGeometries, row),
+              )
+              .map((row: any) => row[conceptKey]),
+          );
         }
       });
+      if (!usedConceptUUIDs.length) {
+        usedConceptUUIDs = filteredGeometries;
+      }
       const session = new Session("ZoomToGeometriesByFilters", 1000);
       const georepoRequest = new GeorepoRequest(!referenceLayer.is_local);
       let bbox: number[] = [];
       try {
         bbox = await georepoRequest.getBbox(
           referenceLayer.identifier,
-          "concept_uuid",
+          conceptKey,
           usedConceptUUIDs,
         );
       } catch (_) {

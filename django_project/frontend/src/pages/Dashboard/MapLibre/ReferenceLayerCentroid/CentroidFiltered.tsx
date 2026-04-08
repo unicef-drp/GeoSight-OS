@@ -20,8 +20,7 @@ import maplibregl from "maplibre-gl";
 import { hasLayer } from "../utils";
 import { INDICATOR_LABEL_ID } from "./Label";
 import { IS_DEBUG, Logger } from "../../../../utils/logger";
-
-const geo_field = 'concept_uuid'
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 interface Props {
   map: maplibregl.Map;
@@ -29,74 +28,83 @@ interface Props {
 
 /** GeometryCenter. */
 export const ReferenceLayerFilterCentroid = forwardRef(
-  ({ map }: Props, ref
-  ): null => {
+  ({ map }: Props, ref): null => {
     // @ts-ignore
-    const filteredGeometries = useSelector(state => state.filteredGeometries)
+    const filteredGeometries = useSelector((state) => state.filteredGeometries);
+    // @ts-ignore
+    const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID())
+      ? "concept_uuid"
+      : "ucode";
 
     /*** UPDATE FILTER OF LAYER */
     const updateFilter = () => {
-      const codes = filteredGeometries
+      const codes = filteredGeometries;
       if (hasLayer(map, INDICATOR_LABEL_ID)) {
         if (codes) {
-          // @ts-ignore
-          map.setFilter(INDICATOR_LABEL_ID, ['in', geo_field].concat(codes));
+          map.setFilter(
+            INDICATOR_LABEL_ID,
+            // @ts-ignore
+            ["in", geomFieldOnVectorTile].concat(codes),
+          );
         } else {
           map.setFilter(INDICATOR_LABEL_ID, null);
         }
       }
       // For chart
       if (!codes) {
-        $('.centroid-chart').show()
+        $(".centroid-chart").show();
       } else {
-        $('.centroid-chart').hide()
+        $(".centroid-chart").hide();
         codes.map((code: string) => {
-          $(`#${code}-wrapper`).show()
-          $(`#${code}-pin`).show()
-        })
+          $(`#${code}-wrapper`).show();
+          $(`#${code}-pin`).show();
+        });
       }
 
       // LOG THE LABELS
       if (IS_DEBUG) {
         setTimeout(function () {
           if (!hasLayer(map, INDICATOR_LABEL_ID)) {
-            return
+            return;
           }
           const features = map.queryRenderedFeatures({
-            layers: [INDICATOR_LABEL_ID]
+            layers: [INDICATOR_LABEL_ID],
           });
-          const output = features.sort(
-            (a, b) => {
+          const output = features
+            .sort((a, b) => {
               try {
-                return a.properties.geometry_code.localeCompare(b.properties.geometry_code)
+                return a.properties.geometry_code.localeCompare(
+                  b.properties.geometry_code,
+                );
               } catch (err) {
-                return false
+                return false;
               }
+            })
+            .map((feature) => [
+              feature.properties.name,
+              feature.properties.code,
+              feature.properties.date,
+              feature.properties.label,
+              feature.properties.value,
+            ]);
 
-            }
-          ).map(
-            feature => [
-              feature.properties.name, feature.properties.code, feature.properties.date, feature.properties.label, feature.properties.value
-            ]
-          )
-
-          Logger.log('LABEL_GEOM:', output)
+          Logger.log("LABEL_GEOM:", output);
         }, 500);
       }
-    }
+    };
 
     // Ready check
     useImperativeHandle(ref, () => ({
       call() {
-        updateFilter()
-      }
+        updateFilter();
+      },
     }));
 
     // When everything changed
     useEffect(() => {
-      updateFilter()
+      updateFilter();
     }, [filteredGeometries]);
 
     return null;
-  }
-)
+  },
+);

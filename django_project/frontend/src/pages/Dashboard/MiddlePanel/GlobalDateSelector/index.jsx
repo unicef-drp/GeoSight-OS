@@ -45,9 +45,9 @@ import { Session } from "../../../../utils/Sessions";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
-import { PROJECT_TERMS } from "../../../../class/Project";
 
 import "./style.scss";
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 /**
  * Indicator data.
@@ -60,9 +60,7 @@ export default function GlobalDateSelector() {
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
-  const isUsingConceptUUID = useSelector(
-    (state) => state.dashboard.data?.geoField === PROJECT_TERMS.CONCEPT_UUID,
-  );
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
   const indicators = useSelector((state) => state.dashboard.data?.indicators);
   const indicatorLayers = useSelector(
     (state) => state.dashboard.data?.indicatorLayers,

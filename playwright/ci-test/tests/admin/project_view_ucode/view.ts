@@ -1,19 +1,27 @@
 import { test } from '@playwright/test';
-import { assert } from "../../utils/project_view";
+import { assert, preparing } from "../../utils/project_view";
+import { deleteProject, saveAsProject } from "../../utils/project";
 
 test.describe('View project', () => {
   // A use case tests scenarios
   test('View project with latest ucode', async ({ page }) => {
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    const name = 'Demo GeoSight Project Ucode';
+
+    // --------------------------------------------------------------------
+    // Delete project if exists
+    // --------------------------------------------------------------------
+    await deleteProject(page, name)
+    await saveAsProject(page, 'Demo GeoSight Project', name)
+
     await page.getByPlaceholder('Select 1 option').click();
     await page.getByRole('option', { name: 'Latest ucode' }).click();
-    const button = page.getByRole('button', { name: 'Save', exact: true });
-    if (await button.isEnabled()) {
-      await button.click();
-    }
-    await page.getByText('Configuration has been saved!');
+
+    await preparing(page);
     await assert(
       page,
+      '/project/demo-geosight-project-ucode',
+      'Somalia,SOM_V1,,Somalia,',
+      '',
       [
         "KEN_0001_V1,KEN_0002_V1,KEN_0003_V1,KEN_0004_V1,KEN_0005_V1,KEN_0006_V1,KEN_0007_V1,KEN_0008_V1,KEN_0009_V1,KEN_0010_V1,KEN_0011_V1,KEN_0012_V1,KEN_0013_V1,KEN_0014_V1,KEN_0015_V1,KEN_0016_V1,KEN_0017_V1,KEN_0018_V1,KEN_0019_V1,KEN_0020_V1,KEN_0021_V1,KEN_0022_V1,KEN_0023_V1,KEN_0024_V1,KEN_0025_V1,KEN_0026_V1,KEN_0027_V1,KEN_0028_V1,KEN_0029_V1,KEN_0030_V1,KEN_0031_V1,KEN_0032_V1,KEN_0033_V1,KEN_0034_V1,KEN_0035_V1,KEN_0036_V1,KEN_0037_V1,KEN_0038_V1,KEN_0039_V1,KEN_0040_V1,KEN_0041_V1,KEN_0042_V1,KEN_0043_V1,KEN_0044_V1,KEN_0045_V1,KEN_0046_V1,KEN_0047_V1",
         "SOM_0001_0001_V1",
@@ -23,5 +31,10 @@ test.describe('View project', () => {
 
       ]
     )
+
+    // ------------------------------------
+    // DELETE PROJECT
+    // ------------------------------------
+    await deleteProject(page, name)
   });
 });

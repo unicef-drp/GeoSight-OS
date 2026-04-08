@@ -35,6 +35,8 @@ export default () => {
         if (!geomInList) {
           newGeographicUnits.push({
             id: geom.concept_uuid,
+            concept_uuid: geom.concept_uuid,
+            ucode: geom.ucode,
             name: `${geom.name} (${geom.ucode})`,
             color: "" + getRandomColor(),
             reference_layer_uuid: identifier,
