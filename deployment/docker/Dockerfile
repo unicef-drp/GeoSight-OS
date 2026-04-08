@@ -125,10 +125,3 @@ EXPOSE 8080
 EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
-
-FROM dev AS test
-
-ADD django_project /home/web/django_project
-WORKDIR /home/web/django_project/frontend
-RUN npm install --verbose && npm run build
-WORKDIR /home/web/django_project
