@@ -49,7 +49,7 @@ export function indicatorLayerId(indicatorLayer) {
  */
 export function isIndicatorLayerLikeIndicator(indicatorLayer) {
   return [DynamicIndicatorType, CompositeIndexLayerType].includes(
-    indicatorLayer.type,
+    indicatorLayer?.type,
   );
 }
 
@@ -458,9 +458,9 @@ export const isPropertiesInFilteredGeometries = (
     return true;
   }
   return (
-    filteredGeometries?.includes(extractCode(properties, "concept_uuid")) ||
-    filteredGeometries?.includes(extractCode(properties, "geometry_code")) ||
-    filteredGeometries?.includes(extractCode(properties, "geom_id")) ||
-    filteredGeometries?.includes(extractCode(properties, "ucode"))
+    filteredGeometries?.includes(properties.concept_uuid) ||
+    filteredGeometries?.includes(properties.geometry_code) ||
+    filteredGeometries?.includes(properties.geom_id) ||
+    filteredGeometries?.includes(properties.ucode)
   );
 };

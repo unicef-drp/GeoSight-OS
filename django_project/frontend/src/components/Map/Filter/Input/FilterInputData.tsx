@@ -69,6 +69,8 @@ export const FilterInputData = memo(
     const dispatch = useDispatch();
     const isEnabled = isAdmin || allowModify;
     const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+    // @ts-ignore
+    const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
 
     // Get the id and keyField
     const [id, keyField] = field
@@ -184,15 +186,12 @@ export const FilterInputData = memo(
           `;
         } else {
           query = `
-              SELECT ARRAY(ucode) AS codes
+              SELECT ARRAY(geometry_code) AS codes
               FROM ? data
               WHERE ${queryWhere}
-              ORDER BY ucode
+              ORDER BY geometry_code
           `;
         }
-        console.log("---------------")
-        console.log(data)
-        console.log(query)
         const _result = alasqlQuery(query, [data]);
         setResult(_result[0].codes ? _result[0].codes : []);
       }

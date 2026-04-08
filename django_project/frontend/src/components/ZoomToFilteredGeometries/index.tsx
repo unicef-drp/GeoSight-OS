@@ -28,8 +28,10 @@ import { Session } from "../../utils/Sessions";
 import GeorepoRequest from "../../utils/GeorepoRequest";
 import { Logger } from "../../utils/logger";
 
-import "./style.scss";
 import { isProjectUsingConceptUUID } from "../../selectors/dashboard";
+
+import "./style.scss";
+import { isPropertiesInFilteredGeometries } from "../../utils/indicatorLayer";
 
 export interface Props {
   map: maplibregl.Map;
@@ -52,9 +54,11 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   // @ts-ignore
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  // @ts-ignore
+  const referenceLayerData = useSelector((state) => state.datasetGeometries);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID())
+  const conceptKey = useSelector(isProjectUsingConceptUUID())
     ? "concept_uuid"
     : "ucode";
 
@@ -63,14 +67,32 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
       if (!autoZoomToFilter || !map || !filteredGeometries?.length) {
         return;
       }
+      let usedConceptUUIDs: string[] = [];
+      setIsLoading(true);
+      Object.entries(referenceLayerData).forEach(([key, value]) => {
+        // @ts-ignore
+        const data = value[selectedAdminLevel.level];
+        if (data) {
+          usedConceptUUIDs.push(
+            ...Object.values(data)
+              .filter((row: any) =>
+                isPropertiesInFilteredGeometries(filteredGeometries, row),
+              )
+              .map((row: any) => row[conceptKey]),
+          );
+        }
+      });
+      if (!usedConceptUUIDs.length) {
+        usedConceptUUIDs = filteredGeometries;
+      }
       const session = new Session("ZoomToGeometriesByFilters", 1000);
       const georepoRequest = new GeorepoRequest(!referenceLayer.is_local);
       let bbox: number[] = [];
       try {
         bbox = await georepoRequest.getBbox(
           referenceLayer.identifier,
-          isUsingConceptUUID,
-          filteredGeometries,
+          conceptKey,
+          usedConceptUUIDs,
         );
       } catch (_) {
         setIsLoading(false);

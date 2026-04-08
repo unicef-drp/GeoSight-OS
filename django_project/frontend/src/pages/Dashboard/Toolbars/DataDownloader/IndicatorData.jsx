@@ -71,6 +71,7 @@ export default function IndicatorDataDownloader() {
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
+  const geoField = useSelector((state) => state.dashboard.data?.geoField);
   const indicatorLayers = useSelector(
     (state) => state.dashboard.data?.indicatorLayers,
   );

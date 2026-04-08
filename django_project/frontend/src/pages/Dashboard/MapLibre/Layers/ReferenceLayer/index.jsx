@@ -353,7 +353,6 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
   const updateFilter = () => {
     if (isReady()) {
       const codes = checkCodes();
-      console.log("CODES:", codes);
       if (codes) {
         map.setFilter(
           FILL_LAYER_ID,
