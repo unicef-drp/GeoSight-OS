@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
-import { fillProjectName } from "../../utils/project";
+import { deleteProject, fillProjectName } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -15,6 +15,10 @@ test.describe('Create project', () => {
   // @ts-ignore
   test('Create with default config', async ({ page }) => {
     const name = 'Test Project Default';
+    // --------------------------------------------------------------------
+    // Delete project if exists
+    // --------------------------------------------------------------------
+    await deleteProject(page, name)
     let lastLog = null
     let lastBBOX = null
     page.on('console', msg => {
@@ -35,6 +39,7 @@ test.describe('Create project', () => {
         }
       }
     });
+    await page.goto('');
     await page.waitForSelector('.Home', { timeout: timeout });
     await page.getByText('Admin panel').click();
     await expect(page.getByText('Create New Project')).toBeVisible();
@@ -46,6 +51,10 @@ test.describe('Create project', () => {
     // Select dataset
     await page.locator(".ReferenceDatasetSection input").click();
     await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
+
+    // Using concept uuid
+    await page.getByPlaceholder('Select 1 option').click();
+    await page.getByRole('option', { name: 'Concept uuid' }).click();
 
     // Update indicator layer transparency
     const slider = await page.locator('.transparency-indicator-layer .MuiSlider-root');
@@ -334,7 +343,7 @@ test.describe('Create project', () => {
     await page.waitForURL(`${BASE_URL}/admin/project/test-project-default/edit`);
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
-    await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Latest ucode');
+    await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Concept uuid');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 2');
 
     const availableLayers = [];

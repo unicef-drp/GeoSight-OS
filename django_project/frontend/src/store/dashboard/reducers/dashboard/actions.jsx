@@ -327,7 +327,6 @@ export function updateStructure(key, structure) {
  * Update auto zoom to filter.
  */
 export function updateAutoZoomToFilter() {
-  console.log("updateAutoZoomToFilter");
   return {
     name: DASHBOARD_ACTION_NAME,
     type: DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER,

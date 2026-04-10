@@ -45,9 +45,11 @@ import { Indicator } from "../../../../class/Indicator";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
+  isPropertiesInFilteredGeometries,
 } from "../../../../utils/indicatorLayer";
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { ThemeButton } from "../../../../components/Elements/Button";
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 export const GeographyFilter = {
   All: "All Geographies",
@@ -69,6 +71,7 @@ export default function IndicatorDataDownloader() {
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
+  const geoField = useSelector((state) => state.dashboard.data?.geoField);
   const indicatorLayers = useSelector(
     (state) => state.dashboard.data?.indicatorLayers,
   );
@@ -77,8 +80,7 @@ export default function IndicatorDataDownloader() {
   );
   const name = useSelector((state) => state.dashboard.data?.name);
 
-  const geoField = useSelector((state) => state.dashboard.data?.geoField);
-  const isUsingConceptUUID = geoField === "concept_uuid";
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
   const referenceLayerData = useSelector(
     (state) => state.referenceLayerData[referenceLayer.identifier],
@@ -513,12 +515,8 @@ export default function IndicatorDataDownloader() {
             a.ucode > b.ucode ? 1 : b.ucode > a.ucode ? -1 : 0,
           );
           if (state.geographyFilter === GeographyFilter.Filtered) {
-            geometryData = geometryData.filter(
-              (geom) =>
-                filteredGeometries.includes(
-                  extractCode(geom, "concept_uuid"),
-                ) ||
-                filteredGeometries.includes(extractCode(geom, "geometry_code")),
+            geometryData = geometryData.filter((geom) =>
+              isPropertiesInFilteredGeometries(filteredGeometries, geom),
             );
           }
           geometries = geometries.concat(geometryData);
@@ -586,7 +584,10 @@ export default function IndicatorDataDownloader() {
           );
           if (state.geographyFilter === GeographyFilter.Filtered) {
             geometryData = geometryData.filter((geom) =>
-              filteredGeometries.includes(extractCode(geom.properties)),
+              isPropertiesInFilteredGeometries(
+                filteredGeometries,
+                geom.properties,
+              ),
             );
           }
           geometries = geometries.concat(geometryData);

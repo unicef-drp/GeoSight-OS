@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { fetchingData } from "../../../../Requests";
 import { Indicator } from "../../../../class/Indicator";
 import { CountryDatasetView } from "../../../../types/DatasetView";
+import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
 
 export const FetchFromDataOptions = memo(
   ({ id, data, keyField, operator, onChange }: FetchOptionsData) => {
@@ -59,9 +60,8 @@ export const FetchIndicatorOptions = memo(
       // @ts-ignore
       (state) => state.referenceLayerData[referenceLayer?.identifier],
     );
-    const isUsingConceptUUID =
-      // @ts-ignore
-      useSelector((state) => state.dashboard.data?.geoField) === "concept_uuid";
+
+    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
 
     // @ts-ignore
     const indicator = new Indicator({ id: id });
