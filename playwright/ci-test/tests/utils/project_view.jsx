@@ -45,6 +45,8 @@ export const preparing = async (page) => {
 }
 
 export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, assertLogs) => {
+  const layer1 = 'Sample Indicator A'
+  const layer2 = 'Dynamic Layer based on a list of interventions'
   let lastLayers = null
   let lastVisibleLayers = null
   let lastLog = null
@@ -138,8 +140,6 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await expect(page.locator('#simple-popover > .MuiPaper-root > .LayerInfoPopover > .LayerInfoPopover > div').nth(4)).toHaveText('Unit: Percentage');
 
   // Check layer
-  const layer1 = 'Sample Indicator A'
-  const layer2 = 'Dynamic Layer based on a list of interventions'
   await expect(page.getByLabel(layer1)).toBeVisible();
   await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
   await expect(page.locator('.MapLegend')).toBeVisible();
@@ -338,8 +338,7 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await expect(page.locator('.widget__content').nth(0)).toContainText('77');
 
   // Widget 2
-  // TODO: Fix this
-  // await expect(page.locator('.widget__content').nth(1)).toContainText('72.5');
+  await expect(page.locator('.widget__content').nth(1)).toContainText('72.5');
 
   // Widget 3
   await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
@@ -436,6 +435,67 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Qardho');
   await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sablaale');
   await page.getByRole('tab', { name: 'Layers' }).click();
+}
+
+export const assert_2 = async (page, url, countryLastLog, sumIndicatorAByCountry, assertLogs) => {
+  const layer1 = 'Sample Indicator A'
+  const layer2 = 'Dynamic Layer based on a list of interventions'
+  let lastLayers = null
+  let lastVisibleLayers = null
+  let lastLog = null
+  let lastLogLabel = null
+  let lastSearchEntity = null
+  let lastZoomLog = null
+  page.on('console', msg => {
+    if (msg.text().indexOf('VALUED_GEOM:') !== -1) {
+      try {
+        lastLog = msg.text().replace('VALUED_GEOM:', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
+    if (msg.text().indexOf('LABEL_GEOM:') !== -1) {
+      try {
+        lastLogLabel = msg.text().replace('LABEL_GEOM:', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
+    if (msg.text().indexOf('LAYERS:') !== -1) {
+      try {
+        lastLayers = msg.text().replace('LAYERS:', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
+    if (msg.text().indexOf('LAYERS-VISIBLE:') !== -1) {
+      try {
+        lastVisibleLayers = msg.text().replace('LAYERS-VISIBLE:', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
+    if (msg.text().indexOf('SEARCH_GEOMETRY_INPUT:') !== -1) {
+      try {
+        lastSearchEntity = msg.text().replace('SEARCH_GEOMETRY_INPUT:', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
+    if (msg.text().indexOf('BBOX:') !== -1) {
+      try {
+        lastZoomLog = msg.text().replace('BBOX: ', '')
+      } catch (e) {
+        console.log(e)
+
+      }
+    }
+  });
 
   // --------------------------------
   // Check multi reference layer
