@@ -111,37 +111,37 @@ jobs:
       fail-fast: false
       matrix:
         test_suite: [
-#          { id: "backend-tests", mode: "backend", plugins: "tenants,reference_dataset,cloud_native_gis,data_restorer" },
-#          { id: "e2e-functions", mode: "e2e", path: "tests/admin/functions/", workers: 1, script: "make load-test-data" },
-#          { id: "e2e-project-creation", mode: "e2e", path: "tests/admin/project_creation/", workers: 2, script: "make load-test-data" },
+          { id: "backend-tests", mode: "backend", plugins: "tenants,reference_dataset,cloud_native_gis,data_restorer" },
+          { id: "e2e-functions", mode: "e2e", path: "tests/admin/functions/", workers: 1, script: "make load-test-data" },
+          { id: "e2e-project-creation", mode: "e2e", path: "tests/admin/project_creation/", workers: 2, script: "make load-test-data" },
           { id: "e2e-project-view-ucode", mode: "e2e", path: "tests/admin/project_view_default/project_view_ucode.ts", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-view-ucode-2", mode: "e2e", path: "tests/admin/project_view_default/project_view_ucode_2.ts", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-view-concept-uuid", mode: "e2e", path: "tests/admin/project_view_default/project_view_concept_uuid.ts", workers: 1, script: "make load-test-data" },
           { id: "e2e-project-view-concept-uuid-2", mode: "e2e", path: "tests/admin/project_view_default/project_view_concept_uuid_2.ts", workers: 1, script: "make load-test-data" },
-#          { id: "e2e-project-view", mode: "e2e", path: "tests/admin/project_view/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-project-features", mode: "e2e", path: "tests/admin/project_features/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-project-features-2", mode: "e2e", path: "tests/admin/project_features_2/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-project-features-3", mode: "e2e", path: "tests/admin/project_features_3/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-admin-create", mode: "e2e", path: "tests/admin/admin_create/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-admin-list", mode: "e2e", path: "tests/admin/admin_list/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-admin-edit", mode: "e2e", path: "tests/admin/admin_edit/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-importer", mode: "e2e", path: "tests/admin/importer/", workers: 3, script: "make load-test-data" },
-#          { id: "e2e-project-bookmark-embed", mode: "e2e", path: "tests/admin/project_bookmark_embed/", workers: 3, script: "make load-test-data" },
-#          # Filter
-#          { id: "e2e-admin-list-filter", mode: "e2e", path: "tests/admin/admin_filter/", workers: 3, script: "make load-test-data-for-filter" },
-#          # Contributor
-#          { id: "e2e-contributor", mode: "e2e", path: "tests/contributor/", workers: 3, script: "make load-test-data" },
-#          # Creator
-#          { id: "e2e-creator", mode: "e2e", path: "tests/creator/", workers: 3, script: "make load-test-data" },
-#          # Mobile
-#          { id: "e2e-project-view-mobile", mode: "e2e", path: "tests/admin/project_view_mobile/", workers: 3, script: "make load-test-data" },
-#          # With default dataset
-#          { id: "e2e-project-creation-with-default-dataset", mode: "e2e", path: "tests/admin/project_creation_with_default_dataset/", workers: 3, script: "make load-test-data-default-dataset" },
-#          # Data restorer test
-#          { id: "e2e-data-restorer-plugin-disabled", mode: "e2e", path: "tests/admin/data_restorer/disabled.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset" },
-#          { id: "e2e-data-restorer-plugin-enable-with-data", mode: "e2e", path: "tests/admin/data_restorer/with_data.ts", workers: 1, script: "make load-test-data-for-filter", plugins: "cloud_native_gis,reference_dataset,data_restorer" },
-#          { id: "e2e-data-restorer-plugin-enable-default-data", mode: "e2e", path: "tests/admin/data_restorer/default_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer" },
-#          { id: "e2e-data-restorer-plugin-enable-demo-data", mode: "e2e", path: "tests/admin/data_restorer/demo_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer" },
+          { id: "e2e-project-view", mode: "e2e", path: "tests/admin/project_view/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-features", mode: "e2e", path: "tests/admin/project_features/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-features-2", mode: "e2e", path: "tests/admin/project_features_2/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-features-3", mode: "e2e", path: "tests/admin/project_features_3/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-admin-create", mode: "e2e", path: "tests/admin/admin_create/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-admin-list", mode: "e2e", path: "tests/admin/admin_list/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-admin-edit", mode: "e2e", path: "tests/admin/admin_edit/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-importer", mode: "e2e", path: "tests/admin/importer/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-bookmark-embed", mode: "e2e", path: "tests/admin/project_bookmark_embed/", workers: 3, script: "make load-test-data" },
+          # Filter
+          { id: "e2e-admin-list-filter", mode: "e2e", path: "tests/admin/admin_filter/", workers: 3, script: "make load-test-data-for-filter" },
+          # Contributor
+          { id: "e2e-contributor", mode: "e2e", path: "tests/contributor/", workers: 3, script: "make load-test-data" },
+          # Creator
+          { id: "e2e-creator", mode: "e2e", path: "tests/creator/", workers: 3, script: "make load-test-data" },
+          # Mobile
+          { id: "e2e-project-view-mobile", mode: "e2e", path: "tests/admin/project_view_mobile/", workers: 3, script: "make load-test-data" },
+          # With default dataset
+          { id: "e2e-project-creation-with-default-dataset", mode: "e2e", path: "tests/admin/project_creation_with_default_dataset/", workers: 3, script: "make load-test-data-default-dataset" },
+          # Data restorer test
+          { id: "e2e-data-restorer-plugin-disabled", mode: "e2e", path: "tests/admin/data_restorer/disabled.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset" },
+          { id: "e2e-data-restorer-plugin-enable-with-data", mode: "e2e", path: "tests/admin/data_restorer/with_data.ts", workers: 1, script: "make load-test-data-for-filter", plugins: "cloud_native_gis,reference_dataset,data_restorer" },
+          { id: "e2e-data-restorer-plugin-enable-default-data", mode: "e2e", path: "tests/admin/data_restorer/default_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer" },
+          { id: "e2e-data-restorer-plugin-enable-demo-data", mode: "e2e", path: "tests/admin/data_restorer/demo_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer" },
         ]
     env:
       APP_IMAGE: kartoza/geosight
