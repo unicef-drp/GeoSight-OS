@@ -17,24 +17,20 @@ __copyright__ = ('Copyright 2023, Unicef')
 from drf_yasg.utils import swagger_auto_schema
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
-from geosight.data.api.v1.base import (
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
-)
+from geosight.data.api.v1.base import BaseApiV1Resource
+from geosight.data.forms.indicator import IndicatorForm
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
-    IndicatorAdminListSerializer
+    IndicatorAdminListSerializer, IndicatorSerializer
 )
 
 
-class IndicatorViewSet(
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
-):
+class IndicatorViewSet(BaseApiV1Resource):
     """Indicator view set."""
 
     model_class = Indicator
     serializer_class = IndicatorAdminListSerializer
+    form_class = IndicatorForm
     extra_exclude_fields = ['url', 'permission']
     query_search_fields = ['name', 'description', 'shortcode']
 
@@ -65,6 +61,82 @@ class IndicatorViewSet(
         :rtype: Response
         """
         return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='indicator-create',
+        tags=[ApiTag.INDICATOR],
+        manual_parameters=[],
+        request_body=IndicatorSerializer.Meta.post_body,
+        operation_description='Create a indicator.'
+    )
+    def create(self, request, *args, **kwargs):
+        """Create a new indicator.
+
+        This endpoint creates a new indicator
+        instance using the data provided in the request payload.
+
+        :param request: The HTTP request object containing creation data.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return:
+            The HTTP response containing the created indicator details.
+        :rtype: rest_framework.response.Response
+        """
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='indicator-detail-update',
+        tags=[ApiTag.INDICATOR],
+        manual_parameters=[],
+        request_body=IndicatorSerializer.Meta.post_body,
+        operation_description='Replace a detailed of indicator.'
+    )
+    def update(self, request, *args, **kwargs):
+        """Fully update a indicator.
+
+        This endpoint replaces all fields of a indicator instance
+        with the values provided in the request payload.
+
+        :param request: The HTTP request object containing update data.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return: The HTTP response after the full update.
+        :rtype: rest_framework.response.Response
+        """
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='indicator-detail-partial-update',
+        tags=[ApiTag.INDICATOR],
+        manual_parameters=[],
+        request_body=IndicatorSerializer.Meta.post_body,
+        operation_description=(
+                'Update just partial data based on payload '
+                'a detailed of indicator.'
+        )
+    )
+    def partial_update(self, request, *args, **kwargs):
+        """Update a indicator partially.
+
+        This endpoint allows updating specific fields of a indicator
+        instance without replacing the entire resource.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :param *args: Variable length positional arguments.
+        :type *args: Any
+        :param **kwargs: Arbitrary keyword arguments.
+        :type **kwargs: Any
+        :return: The HTTP response after partial update.
+        :rtype: rest_framework.response.Response
+        """
+        return super().partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_id='indicator-detail',
