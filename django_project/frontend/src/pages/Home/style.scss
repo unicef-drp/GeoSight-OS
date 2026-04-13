@@ -14,9 +14,8 @@
 */
 
 .Home {
-  ::-webkit-scrollbar {
-    width: 10px !important;
-    height: 10px !important;;
+  header {
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
   }
 
   main {
@@ -26,14 +25,11 @@
   }
 
   div.banner {
-    height: 420px;
+    height: fit-content;
     position: relative;
-    transition: height 0.5s;
     width: 100%;
 
     &.Hide {
-      height: 0;
-
       .ShowBanner {
         display: inline-flex;
       }
@@ -56,15 +52,19 @@
       width: 100%;
     }
 
+    &.NoHasText:before {
+      display: none;
+    }
+
     .BannerContent {
       box-sizing: border-box;
       color: white;
       display: flex;
       flex-direction: column;
-      height: 420px;
+      height: auto;
       margin: auto;
-      padding: 3rem;
-      padding-right: 11rem;
+      transition: height 0.5s;
+      box-sizing: border-box;
 
       .wmde-markdown {
         color: white;
@@ -73,7 +73,7 @@
 
     .ShowBanner {
       background-color: white;
-      bottom: -2.5rem;
+      bottom: -3.5rem;
       border: 1px solid var(--base-black-color);
       border-radius: 0;
       display: none;
@@ -89,18 +89,28 @@
       bottom: 2rem;
     }
 
-    .HideBanner,
-    .ShowBanner {
-      right: 2rem;
-      position: absolute;
-      font-size: 10px !important;
-
+    .HideBanner {
       svg {
         margin-right: 0 !important;
         margin-left: 3px;
         height: 16px;
         width: 16px;
       }
+    }
+
+    .ShowBanner {
+      svg {
+        margin-right: 3px !important;
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+    .HideBanner,
+    .ShowBanner {
+      right: 2rem;
+      position: absolute;
+      font-size: 10px !important;
     }
   }
 

@@ -39,6 +39,8 @@ class ResourceSerializer(DynamicModelSerializer):
         :return: Formatted datetime string (``YYYY-MM-DD HH:MM:SS``).
         :rtype: str
         """
+        if not obj.modified_at:
+            return None
         return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_modified_by(self, obj):

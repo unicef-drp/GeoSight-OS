@@ -123,7 +123,10 @@ class GeorepoUrl:
     def __init__(self, api_key: str = None, api_key_email: str = None):
         """Init Class."""
         pref = SitePreferences.preferences()
-        self.georepo_url = pref.georepo_url.strip('/')
+        if pref.georepo_url:
+            self.georepo_url = pref.georepo_url.strip('/')
+        else:
+            self.georepo_url = ''
         parsed = urlparse(self.georepo_url)
         self.georepo_domain = parsed.scheme + '://' + parsed.netloc
 

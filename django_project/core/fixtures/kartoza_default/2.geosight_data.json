@@ -12,14 +12,8 @@
     "pk": 1,
     "fields": {
       "name": "OSM",
-      "description": "",
       "creator": 1,
       "creator_username": "admin",
-      "modified_by": 1,
-      "modified_by_username": "admin",
-      "created_at": "2022-09-14T10:15:29Z",
-      "modified_at": "2023-11-03T07:18:05.023Z",
-      "icon": "",
       "url": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png?noWrap=true",
       "type": "XYZ Tile",
       "group": 1
@@ -39,33 +33,9 @@
     "pk": 2,
     "fields": {
       "name": "Open Topo Map",
-      "description": "",
       "creator": 1,
       "creator_username": "admin",
-      "modified_by": 1,
-      "modified_by_username": "admin",
-      "created_at": "2022-09-14T10:15:29Z",
-      "modified_at": "2023-11-03T07:18:00.265Z",
-      "icon": "",
       "url": "https://a.tile.opentopomap.org/{z}/{x}/{y}.png?noWrap=true",
-      "type": "XYZ Tile",
-      "group": 1
-    }
-  },
-  {
-    "model": "geosight_data.basemaplayer",
-    "pk": 3,
-    "fields": {
-      "name": "Mapbox Satellite",
-      "description": "",
-      "creator": 1,
-      "creator_username": "admin",
-      "created_at": "2022-09-14T10:15:29Z",
-      "modified_by": 1,
-      "modified_by_username": "admin",
-      "modified_at": "2023-11-03T07:17:56.612Z",
-      "icon": "",
-      "url": "https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg",
       "type": "XYZ Tile",
       "group": 1
     }
@@ -227,10 +197,6 @@
       "description": "Generic style with 5 classes for 0-100 range (float, diverging colors, red-green)",
       "creator": 1,
       "creator_username": "admin",
-      "created_at": "2023-05-19T08:13:55Z",
-      "modified_by": 1,
-      "modified_by_username": "admin",
-      "modified_at": "2023-11-03T07:40:35.598Z",
       "name": "Generic style with 5 classes for 0-100 range (float, diverging colors, red-green)",
       "group": "Generic",
       "style_type": "Predefined style/color rules.",
