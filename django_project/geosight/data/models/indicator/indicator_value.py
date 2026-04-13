@@ -128,7 +128,7 @@ class IndicatorValue(models.Model):
 
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
-        ordering = ('-date',)
+        ordering = ('-date', 'id')
         indexes = [
             models.Index(
                 fields=['geom_id']
@@ -271,12 +271,7 @@ class IndicatorValue(models.Model):
         """
         entity_query = """
                        UPDATE geosight_data_indicatorvalue AS value
-                       SET entity_id = entity.id, entity_name = entity.name,
-                           admin_level = entity.admin_level,
-                           concept_uuid = entity.concept_uuid,
-                           entity_start_date = entity.start_date,
-                           entity_end_date = entity.end_date,
-                           country_id = CASE
+                       SET entity_id = entity.id, entity_name = entity.name, admin_level = entity.admin_level, concept_uuid = entity.concept_uuid, entity_start_date = entity.start_date, entity_end_date = entity.end_date, country_id = CASE
                            WHEN entity.parents IS NULL
                            OR jsonb_array_length(entity.parents) = 0
                            THEN entity.id
@@ -318,8 +313,7 @@ class IndicatorValue(models.Model):
         indicator_query = """
                           UPDATE geosight_data_indicatorvalue AS value
                           SET
-                              indicator_name = indicator.name,
-                              indicator_shortcode = indicator.shortcode
+                              indicator_name = indicator.name, indicator_shortcode = indicator.shortcode
                           FROM geosight_data_indicator AS indicator
                           WHERE
                               value.indicator_id = indicator.id
@@ -331,8 +325,7 @@ class IndicatorValue(models.Model):
                             SET extra_value = subquery.json_data
                             FROM (
                                 SELECT
-                                indicator_value_id,
-                                jsonb_object_agg(name, value) AS json_data
+                                indicator_value_id, jsonb_object_agg(name, value) AS json_data
                                 FROM geosight_data_indicatorextravalue
                                 GROUP BY indicator_value_id
                                 ) subquery
