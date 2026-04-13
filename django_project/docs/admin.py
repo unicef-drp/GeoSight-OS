@@ -21,6 +21,7 @@ from docs.models import (
 )
 
 
+@admin.register(Preferences)
 class PreferencesAdmin(admin.ModelAdmin):
     """Documentation preferences admin."""
 
@@ -38,6 +39,7 @@ class PageBlockInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Page)
 class PageAdmin(admin.ModelAdmin):
     """Page admin."""
 
@@ -53,13 +55,9 @@ class BlockChildInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Block)
 class BlockAdmin(admin.ModelAdmin):
     """Block admin."""
 
     list_filter = ('url', 'anchor')
     inlines = (BlockChildInline,)
-
-
-admin.site.register(Preferences, PreferencesAdmin)
-admin.site.register(Page, PageAdmin)
-admin.site.register(Block, BlockAdmin)

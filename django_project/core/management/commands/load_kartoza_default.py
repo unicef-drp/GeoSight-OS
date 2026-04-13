@@ -30,7 +30,8 @@ class Command(BaseCommand):
         'core/fixtures/kartoza_default/0.preferences.json',
         'core/fixtures/kartoza_default/1.core.json',
         'core/fixtures/kartoza_default/2.geosight_data.json',
-        'core/fixtures/kartoza_default/3.geosight_permission.json'
+        'core/fixtures/kartoza_default/3.geosight_permission.json',
+        'core/fixtures/kartoza_default/4.docs.json'
     ]
 
     # Mapping of BasemapLayer pk to icon filename
