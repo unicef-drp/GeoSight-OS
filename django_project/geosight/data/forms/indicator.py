@@ -50,9 +50,17 @@ class IndicatorForm(BaseStyleForm):
     def __init__(self, *args, **kwargs):  # noqa: DOC101, DOC103
         """Initialise the form and populate group choices.
 
+        Maps the ``category`` key to ``group`` when present in the first
+        positional argument, so API payloads using ``category`` are accepted
+        alongside form submissions that use ``group``.
+
         :param args: Positional arguments passed to the parent form.
         :param kwargs: Keyword arguments passed to the parent form.
         """
+        try:
+            args[0]['group'] = args[0]['category']
+        except Exception:
+            pass
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
             (group.name, group.name)
@@ -83,7 +91,13 @@ class IndicatorForm(BaseStyleForm):
         :rtype: str
         """
         name = self.cleaned_data['name']
-        group = self.data['group']
+        try:
+            group = self.data['group']
+        except KeyError:
+            try:
+                group = self.data['category']
+            except KeyError:
+                raise ValidationError("Category is required.")
         indicators = Indicator.objects.exclude(
             id=self.instance.id
         ).filter(name=name, group__name=group)

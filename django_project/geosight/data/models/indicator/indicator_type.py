@@ -31,3 +31,27 @@ IndicatorTypeChoices = (
     (IndicatorType.FLOAT, IndicatorType.FLOAT),
     (IndicatorType.STRING, 'Category'),
 )
+
+
+# INDICATOR AGGREGATIONS TYPE
+class IndicatorAggregationsType(object):
+    """Indicator aggregations type for the indicator based on value."""
+
+    COUNT = 'COUNT'
+    SUM = 'SUM(value)'
+    MAX = 'MAX(value)'
+    MIN = 'MIN(value)'
+    AVG = 'AVG(value)'
+    MAJORITY = 'MAJORITY(value)'
+    MINORITY = 'MINORITY(value)'
+
+
+IndicatorAggregationsTypeChoices = (
+    (IndicatorAggregationsType.COUNT, IndicatorAggregationsType.COUNT),
+    (IndicatorAggregationsType.SUM, IndicatorAggregationsType.SUM),
+    (IndicatorAggregationsType.MAX, IndicatorAggregationsType.MAX),
+    (IndicatorAggregationsType.MIN, IndicatorAggregationsType.MIN),
+    (IndicatorAggregationsType.AVG, IndicatorAggregationsType.AVG),
+    (IndicatorAggregationsType.MAJORITY, IndicatorAggregationsType.MAJORITY),
+    (IndicatorAggregationsType.MINORITY, IndicatorAggregationsType.MINORITY),
+)
