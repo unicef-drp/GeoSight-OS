@@ -26,7 +26,7 @@ export function update(payload) {
   return {
     name: FILTERED_GEOMETRIES_ACTION_NAME,
     type: FILTERED_GEOMETRIES_ACTION_TYPE_UPDATE,
-    payload: payload
+    payload: payload?.filter(row => !!row)
   };
 }
 

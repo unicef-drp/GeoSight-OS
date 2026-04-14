@@ -377,10 +377,10 @@ export function getContext(
   };
   const session = new Session("FetchingPopupContext");
   const isCustom =
-    currentIndicatorLayer.popup_type.toLowerCase() === "custom" ||
-    currentIndicatorSecondLayer.popup_type === "custom";
+    currentIndicatorLayer.popup_type?.toLowerCase() === "custom" ||
+    currentIndicatorSecondLayer.popup_type?.toLowerCase() === "custom";
 
-  const needAttributes = currentIndicatorLayer.data_fields.find(
+  const needAttributes = currentIndicatorLayer.data_fields?.find(
     (field) =>
       field.name === "context.current.indicator.attributes" && field.visible,
   );

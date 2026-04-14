@@ -112,6 +112,12 @@ class Preferences(SingletonModel):
     - enable_request
     """
 
+    is_kartoza_data_restored = models.BooleanField(
+        default=False,
+        help_text=_(
+            'Indicates whether default data has been restored.'
+        )
+    )
     enable_request = models.BooleanField(
         default=True,
         help_text=_(

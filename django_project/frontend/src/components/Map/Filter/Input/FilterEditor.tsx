@@ -20,7 +20,12 @@ import React, {
 } from "react";
 import { Button, Checkbox, Input, InputLabel } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { INIT_DATA, IS_IN, IS_NOT_IN } from "../../../../utils/queryExtraction";
+import {
+  INIT_DATA,
+  IS_BETWEEN,
+  IS_IN,
+  IS_NOT_IN,
+} from "../../../../utils/queryExtraction";
 import Modal, { ModalContent, ModalHeader } from "../../../Modal";
 import { FilterExpressionProps } from "../types.d";
 import { FilterFieldOperatorInput } from "./FieldOperator";
@@ -37,9 +42,15 @@ export interface FilterEditorModalProps {
 
 /** Update value based on operator **/
 const updateValue = (operator: string, value: any) => {
-  if ([IS_IN, IS_NOT_IN].includes(operator) && !Array.isArray(value)) {
+  if (
+    [IS_IN, IS_NOT_IN, IS_BETWEEN].includes(operator) &&
+    !Array.isArray(value)
+  ) {
     return value ? [value] : [];
-  } else if (![IS_IN, IS_NOT_IN].includes(operator) && Array.isArray(value)) {
+  } else if (
+    ![IS_IN, IS_NOT_IN, IS_BETWEEN].includes(operator) &&
+    Array.isArray(value)
+  ) {
     return value[0] ? value[0] : "";
   }
   return value;

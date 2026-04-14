@@ -27,11 +27,11 @@ class Command(BaseCommand):
     """Load kartoza default data for geosight."""
 
     fixtures = [
-        'core/fixtures/kartoza_default/0.preferences.json',
-        'core/fixtures/kartoza_default/1.core.json',
-        'core/fixtures/kartoza_default/2.geosight_data.json',
-        'core/fixtures/kartoza_default/3.geosight_permission.json',
-        'core/fixtures/kartoza_default/4.docs.json'
+        'kartoza_default/0.preferences.json',
+        'kartoza_default/1.core.json',
+        'kartoza_default/2.geosight_data.json',
+        'kartoza_default/3.geosight_permission.json',
+        'kartoza_default/4.docs.json'
     ]
 
     # Mapping of BasemapLayer pk to icon filename
@@ -42,17 +42,30 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Command handler."""
+        from geosight.data_restorer.models import Preferences
+        preferences = Preferences.load()
+        if preferences.is_kartoza_data_restored:
+            print(
+                'Kartoza default data already restored, skipping.'
+            )
+            return
+
         for fixture in self.fixtures:
-            call_command('loaddata', fixture)
+            call_command(
+                'loaddata', fixture
+            )
         self.load_icons()
         self.load_site_preferences_icons()
+
+        preferences.is_kartoza_data_restored = True
+        preferences.save()
 
     def load_icons(self):
         """Save icons to BasemapLayer.icon field."""
         from geosight.data.models.basemap_layer import BasemapLayer
 
         icons_dir = ABS_PATH(
-            'core', 'fixtures', 'kartoza_default', 'icons'
+            'geosight', 'data_restorer', 'fixtures', 'kartoza_default', 'icons'
         )
         for pk, filename in self.basemap_icons.items():
             filepath = os.path.join(icons_dir, filename)
@@ -71,7 +84,7 @@ class Command(BaseCommand):
         from core.models.preferences import SitePreferences
 
         icons_dir = ABS_PATH(
-            'core', 'fixtures', 'kartoza_default', 'icons'
+            'geosight', 'data_restorer', 'fixtures', 'kartoza_default', 'icons'
         )
         preferences = SitePreferences.load()
 
