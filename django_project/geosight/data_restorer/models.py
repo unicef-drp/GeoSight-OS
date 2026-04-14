@@ -69,39 +69,20 @@ class FixtureTypeObject:
 
 fixtures_types = (
     FixtureTypeObject(
-        name='Default',
+        name='Country demo data',
         description=(
-            'This is the default data that just restored some core data.'
+            'The country demo dataset includes a single indicator with data '
+            'available for all countries on '
+            '2000-01-01, 2010-01-01, and 2020-01-01.'
         ),
         info=[
-            FixtureObjectInfo(name='Basemap', count=3),
-            FixtureObjectInfo(name='Color palette', count=8),
-            FixtureObjectInfo(name='Code list', count=3),
-            FixtureObjectInfo(name='Style', count=1),
-        ],
-        command_name='load_default_data'
-    ),
-    FixtureTypeObject(
-        name='Demo',
-        description=(
-            'Restore demo data focusing on Somalia and Kenya.'
-        ),
-        info=[
-            FixtureObjectInfo(name='Basemap', count=3),
-            FixtureObjectInfo(name='Color palette', count=8),
-            FixtureObjectInfo(name='Code list', count=3),
-            FixtureObjectInfo(name='Indicator', count=3),
-            FixtureObjectInfo(name='Indicator data', count=1054),
+            FixtureObjectInfo(name='Indicator', count=1),
+            FixtureObjectInfo(name='Indicator data', count=528),
             FixtureObjectInfo(name='Project', count=1),
-            FixtureObjectInfo(name='Context layer', count=3),
-            FixtureObjectInfo(name='Related tabel', count=1),
-            FixtureObjectInfo(name='Related tabel data', count=296),
-            FixtureObjectInfo(name='Reference Datasets', count=3),
-            FixtureObjectInfo(name='User', count=3),
-            FixtureObjectInfo(name='Style', count=1),
+            FixtureObjectInfo(name='Reference Datasets', count=1),
         ],
-        command_name='load_demo_data'
-    )
+        command_name='load_demo_country_data'
+    ),
 )
 
 
