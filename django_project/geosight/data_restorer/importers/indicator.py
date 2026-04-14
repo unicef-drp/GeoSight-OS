@@ -26,13 +26,31 @@ from geosight.georepo.models.reference_layer import (
 
 
 class IndicatorImporter(BaseImporter):
-    """Import indicator from a JSON file as new records (no pk reuse)."""
+    """Import an indicator and its related data from a JSON fixture file.
+
+    Creates new ``Indicator``, ``IndicatorRule``, and ``IndicatorValue``
+    records without reusing primary keys.  Uses ``Model.save()`` directly
+    to bypass the overridden ``Indicator.save()`` which would otherwise
+    dispatch a Celery task.  Data-access rows (``ReferenceLayerIndicator``)
+    are created synchronously for every existing reference layer view.
+    """
 
     def run(self):
         """
-        Import all records from the indicator file as new objects.
+        Import all records from the indicator fixture file as new objects.
 
-        Returns the newly created Indicator instance.
+        Steps performed:
+
+        1. Create the ``Indicator`` (raises if the shortcode already exists).
+        2. Create ``ReferenceLayerIndicator`` rows for every existing view.
+        3. Create all ``IndicatorRule`` records.
+        4. Bulk-create ``IndicatorValue`` records and populate the flat table.
+
+        :return: The newly created ``Indicator`` instance.
+        :rtype: geosight.data.models.indicator.indicator.Indicator
+        :raises ValueError: If no ``geosight_data.indicator`` record is found
+            in the fixture, or if an indicator with the same shortcode already
+            exists in the database.
         """
         by_model = self._load()
 
@@ -47,7 +65,8 @@ class IndicatorImporter(BaseImporter):
 
         if Indicator.objects.filter(shortcode=ind['shortcode']).exists():
             raise ValueError(
-                f'Indicator with shortcode "{ind["shortcode"]}" already exists.'
+                'Indicator with shortcode '
+                f'"{ind["shortcode"]}" already exists.'
             )
 
         creator = self._get_user(ind['creator'])

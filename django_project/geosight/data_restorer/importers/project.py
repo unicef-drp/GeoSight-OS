@@ -40,9 +40,12 @@ class ProjectImporter(BaseImporter):
 
     def run(self):
         """
-        Import all records from the project file as new objects.
+        Import all records from the project fixture file as new objects.
 
-        Returns the newly created Dashboard instance.
+        :return: The newly created ``Dashboard`` instance.
+        :rtype: geosight.data.models.dashboard.dashboard.Dashboard
+        :raises ValueError: If no ``geosight_data.dashboard`` record is found
+            in the fixture.
         """
         by_model = self._load()
 

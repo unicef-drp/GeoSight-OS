@@ -25,12 +25,23 @@ User = get_user_model()
 class BaseImporter(ABC):
     """Abstract base class for demo-data importers."""
 
-    def __init__(self, filepath):
-        """Initialize with path to the JSON file."""
+    def __init__(self, filepath):  # noqa: DOC101,DOC103
+        """
+        Initialize the importer with the path to a JSON fixture file.
+
+        :param filepath: Absolute path to the JSON file to import.
+        :type filepath: str
+        """
         self.filepath = filepath
 
     def _load(self):
-        """Load and group JSON records by model label."""
+        """
+        Load the JSON fixture file and group records by model label.
+
+        :return: Mapping of model label (e.g. ``'geosight_data.indicator'``)
+            to the list of serialised record dicts for that model.
+        :rtype: dict[str, list[dict]]
+        """
         with open(self.filepath, 'r') as f:
             data = json.load(f)
         by_model = {}
@@ -40,10 +51,26 @@ class BaseImporter(ABC):
 
     @staticmethod
     def _get_user(pk):
-        """Return the User matching pk, or None."""
+        """
+        Return the User instance matching the given primary key.
+
+        :param pk: Primary key of the user to retrieve.
+        :type pk: int
+        :return: The matching user instance.
+        :rtype: django.contrib.auth.models.AbstractBaseUser
+        """
         return User.objects.get(pk=pk)
 
     @abstractmethod
     def run(self):
-        """Import all records and return the primary created object."""
+        """
+        Import all records from the fixture file and return the primary object.
+
+        Subclasses must implement this method to read ``self.filepath``,
+        create all necessary database records, and return the top-level
+        object that was created (e.g. an ``Indicator`` or ``Dashboard``).
+
+        :raises NotImplementedError: If the subclass does not override this
+            method.
+        """
         raise NotImplementedError

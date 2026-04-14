@@ -34,9 +34,14 @@ class DatasetImporter(BaseImporter):
 
     def run(self):
         """
-        Import all records from the dataset file as new objects.
+        Import all records from the dataset fixture file as new objects.
 
-        Returns the newly created ReferenceLayerView instance.
+        :return: The newly created ``ReferenceLayerView`` instance.
+        :rtype: geosight.georepo.models.reference_layer.ReferenceLayerView
+        :raises ValueError: If no ``geosight_georepo.referencelayerview``
+            record is found in the fixture.
+        :raises IntegrityError: If a ``ReferenceLayerView`` with the same
+            identifier already exists.
         """
         by_model = self._load()
 
