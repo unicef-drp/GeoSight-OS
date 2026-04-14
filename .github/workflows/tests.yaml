@@ -140,7 +140,7 @@ jobs:
           # Data restorer test
           { id: "e2e-data-restorer-plugin-disabled", mode: "e2e", path: "tests/admin/data_restorer/disabled.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset" },
 
-          { id: "e2e-data-restorer-plugin-enable-country-data", mode: "e2e", path: "tests/admin/data_restorer/countries_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer", initial_kartoza_data: "true" },
+          { id: "e2e-data-restorer-plugin-enable-country-data", mode: "e2e", path: "tests/admin/data_restorer/country_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer", initial_kartoza_data: "true" },
           { id: "e2e-data-restorer-plugin-enable-with-data", mode: "e2e", path: "tests/admin/data_restorer/with_data.ts", workers: 1, script: "make load-test-data", plugins: "cloud_native_gis,reference_dataset,data_restorer" },
         ]
     env:
