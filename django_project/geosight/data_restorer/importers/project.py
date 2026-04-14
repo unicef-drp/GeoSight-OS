@@ -14,6 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '14/04/2026'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
+
+from django.core.files import File
+
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.dashboard.dashboard import Dashboard, DashboardGroup
 from geosight.data.models.dashboard.dashboard_cache_permissions import (
@@ -213,6 +217,15 @@ class ProjectImporter(BaseImporter):
             "children": [layer.id for layer in widgets]
         }
         dashboard.save()
+
+        icon_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            'demo_data', 'countries_data', 'icon.png'
+        )
+        if os.path.isfile(icon_path):
+            with open(icon_path, 'rb') as f:
+                dashboard.icon.save('icon.png', File(f), save=True)
+
         dashboard.update_cache(None)
         cache_permission, _ = DashboardCachePermissions.objects.get_or_create(
             dashboard=dashboard, user=creator

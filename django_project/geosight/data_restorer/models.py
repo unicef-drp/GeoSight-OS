@@ -19,11 +19,7 @@ from typing import List
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
-from geosight.data.models import (
-    BasemapLayer, Indicator, Dashboard, ContextLayer, RelatedTable, Style
-)
 
 
 class FixtureObjectInfo:
@@ -119,20 +115,12 @@ class Preferences(SingletonModel):
             and no active restore request is running.
         :rtype: bool
         """
-        if any(
-                model.objects.exists()
-                for model in [
-                    ColorPalette, BasemapLayer,
-                    Indicator, Dashboard, ContextLayer, RelatedTable, Style,
-                ]
-        ):
-            return False
-        if RequestRestoreData.objects.exclude(
-                state__in=[
-                    RequestRestoreData.State.CREATED.value,
-                    RequestRestoreData.State.FAILED.value,
-                ]
-        ).count():
+        finished = set(
+            RequestRestoreData.objects.filter(
+                state=RequestRestoreData.State.FINISH
+            ).values_list('data_type', flat=True)
+        )
+        if all(f.name in finished for f in fixtures_types):
             return False
         return self.enable_request
 
