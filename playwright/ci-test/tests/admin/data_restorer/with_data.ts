@@ -82,7 +82,7 @@ test.describe('Restore data', () => {
 
     await page.goto('/admin/related-table/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Related Tables');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1-1 of 1');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
 
     await page.goto('/admin/dataset/dataset/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Data Browser');
