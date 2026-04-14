@@ -1,0 +1,4299 @@
+[
+  {
+    "model": "geosight_data.indicator",
+    "fields": {
+      "name": "Sample Country Indicator",
+      "description": "Sample indicator showing country-level data.",
+      "creator": 1,
+      "style_type": "Dynamic quantitative style.",
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": "true",
+          "outline_size": "0.5",
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 1,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": "on",
+        "dynamic_classification": "Equidistant."
+      },
+      "label_config": {
+        "text": "{value}.round(2)",
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 10,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 2,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SAMPLE_COUNTRY_INDICATOR",
+      "aggregation_multiple_values": "COUNT",
+      "aggregation_upper_level_allowed": false,
+      "aggregation_upper_level": "COUNT",
+      "type": "Float",
+      "min_value": 0.0,
+      "max_value": 100.0
+    }
+  },
+  {
+    "model": "geosight_data.indicatorrule",
+    "fields": {
+      "name": "No data",
+      "rule": "No data",
+      "color": "#D8D8D8",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 0,
+      "active": false
+    }
+  },
+  {
+    "model": "geosight_data.indicatorrule",
+    "fields": {
+      "name": "Other data",
+      "rule": "Other data",
+      "color": "#A6A6A6",
+      "outline_color": "#ffffff",
+      "outline_size": 0.5,
+      "order": 1,
+      "active": false
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 76,
+      "geom_id": "FJI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 73,
+      "geom_id": "TZA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 96,
+      "geom_id": "SAH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 11,
+      "geom_id": "CAN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 47,
+      "geom_id": "USA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 64,
+      "geom_id": "KAZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 14,
+      "geom_id": "UZB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 2,
+      "geom_id": "PNG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 3,
+      "geom_id": "IDN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 72,
+      "geom_id": "ARG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 35,
+      "geom_id": "CHL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 6,
+      "geom_id": "COD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 67,
+      "geom_id": "SOM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 81,
+      "geom_id": "KEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 83,
+      "geom_id": "SDN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 96,
+      "geom_id": "TCD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 75,
+      "geom_id": "HTI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 89,
+      "geom_id": "DOM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 43,
+      "geom_id": "RUS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 16,
+      "geom_id": "BHS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 27,
+      "geom_id": "FLK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 87,
+      "geom_id": "NOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 51,
+      "geom_id": "GRL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 24,
+      "geom_id": "ATF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 40,
+      "geom_id": "TLS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 20,
+      "geom_id": "ZAF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 97,
+      "geom_id": "LSO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 45,
+      "geom_id": "MEX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 77,
+      "geom_id": "URY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "BRA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 18,
+      "geom_id": "BOL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 19,
+      "geom_id": "PER"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 94,
+      "geom_id": "COL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 20,
+      "geom_id": "PAN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 75,
+      "geom_id": "CRI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 42,
+      "geom_id": "NIC"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 13,
+      "geom_id": "HND"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 26,
+      "geom_id": "SLV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 20,
+      "geom_id": "GTM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 24,
+      "geom_id": "BLZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 13,
+      "geom_id": "VEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 55,
+      "geom_id": "GUY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 12,
+      "geom_id": "SUR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 57,
+      "geom_id": "FRA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 72,
+      "geom_id": "ECU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 95,
+      "geom_id": "PRI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 97,
+      "geom_id": "JAM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 36,
+      "geom_id": "CUB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 81,
+      "geom_id": "ZWE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "BWA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 41,
+      "geom_id": "NAM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 77,
+      "geom_id": "SEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 10,
+      "geom_id": "MLI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 7,
+      "geom_id": "MRT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 50,
+      "geom_id": "BEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 71,
+      "geom_id": "NER"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 86,
+      "geom_id": "NGA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 88,
+      "geom_id": "CMR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 73,
+      "geom_id": "TGO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 78,
+      "geom_id": "GHA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 75,
+      "geom_id": "CIV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 20,
+      "geom_id": "GIN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 14,
+      "geom_id": "GNB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 32,
+      "geom_id": "LBR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 69,
+      "geom_id": "SLE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 70,
+      "geom_id": "BFA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "CAF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 76,
+      "geom_id": "COG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 27,
+      "geom_id": "GAB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 66,
+      "geom_id": "GNQ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 9,
+      "geom_id": "ZMB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 27,
+      "geom_id": "MWI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 46,
+      "geom_id": "MOZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 69,
+      "geom_id": "SWZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 22,
+      "geom_id": "AGO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 90,
+      "geom_id": "BDI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "ISR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 24,
+      "geom_id": "LBN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 64,
+      "geom_id": "MDG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 68,
+      "geom_id": "PSX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 67,
+      "geom_id": "GMB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 23,
+      "geom_id": "TUN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 67,
+      "geom_id": "DZA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 49,
+      "geom_id": "JOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 15,
+      "geom_id": "ARE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 37,
+      "geom_id": "QAT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 61,
+      "geom_id": "KWT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 44,
+      "geom_id": "IRQ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 92,
+      "geom_id": "OMN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 93,
+      "geom_id": "VUT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 64,
+      "geom_id": "KHM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 19,
+      "geom_id": "THA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 63,
+      "geom_id": "LAO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 49,
+      "geom_id": "MMR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 35,
+      "geom_id": "VNM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 54,
+      "geom_id": "PRK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 27,
+      "geom_id": "KOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 15,
+      "geom_id": "MNG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 21,
+      "geom_id": "IND"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 17,
+      "geom_id": "BGD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 83,
+      "geom_id": "BTN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 66,
+      "geom_id": "NPL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 71,
+      "geom_id": "PAK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 97,
+      "geom_id": "AFG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 96,
+      "geom_id": "TJK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 87,
+      "geom_id": "KGZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 18,
+      "geom_id": "TKM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 80,
+      "geom_id": "IRN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 43,
+      "geom_id": "SYR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 64,
+      "geom_id": "ARM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "SWE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 75,
+      "geom_id": "BLR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 88,
+      "geom_id": "UKR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 19,
+      "geom_id": "POL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 8,
+      "geom_id": "AUT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 99,
+      "geom_id": "HUN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 23,
+      "geom_id": "MDA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 91,
+      "geom_id": "ROU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 2,
+      "geom_id": "LTU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 64,
+      "geom_id": "LVA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 13,
+      "geom_id": "EST"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 24,
+      "geom_id": "DEU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 69,
+      "geom_id": "BGR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 77,
+      "geom_id": "GRC"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 23,
+      "geom_id": "TUR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 10,
+      "geom_id": "ALB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 63,
+      "geom_id": "HRV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 47,
+      "geom_id": "CHE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 74,
+      "geom_id": "LUX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 66,
+      "geom_id": "BEL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 35,
+      "geom_id": "NLD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 83,
+      "geom_id": "PRT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 83,
+      "geom_id": "ESP"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 8,
+      "geom_id": "IRL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 8,
+      "geom_id": "NCL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 30,
+      "geom_id": "SLB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 47,
+      "geom_id": "NZL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 73,
+      "geom_id": "AUS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 9,
+      "geom_id": "LKA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 23,
+      "geom_id": "CHN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 44,
+      "geom_id": "TWN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 89,
+      "geom_id": "ITA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 13,
+      "geom_id": "DNK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 98,
+      "geom_id": "GBR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 65,
+      "geom_id": "ISL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "AZE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 2,
+      "geom_id": "GEO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 73,
+      "geom_id": "PHL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 41,
+      "geom_id": "MYS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 13,
+      "geom_id": "BRN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 53,
+      "geom_id": "SVN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 66,
+      "geom_id": "FIN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 85,
+      "geom_id": "SVK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 34,
+      "geom_id": "CZE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 12,
+      "geom_id": "ERI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 25,
+      "geom_id": "JPN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 30,
+      "geom_id": "PRY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 43,
+      "geom_id": "YEM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 42,
+      "geom_id": "SAU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 93,
+      "geom_id": "CYN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 46,
+      "geom_id": "CYP"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 31,
+      "geom_id": "MAR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 63,
+      "geom_id": "EGY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 23,
+      "geom_id": "LBY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 82,
+      "geom_id": "ETH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 47,
+      "geom_id": "DJI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 29,
+      "geom_id": "SOL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 44,
+      "geom_id": "UGA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 30,
+      "geom_id": "RWA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 2,
+      "geom_id": "BIH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 25,
+      "geom_id": "MKD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 42,
+      "geom_id": "SRB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 18,
+      "geom_id": "MNE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 45,
+      "geom_id": "KOS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 82,
+      "geom_id": "TTO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2020-01-01",
+      "value": 50,
+      "geom_id": "SDS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 53,
+      "geom_id": "FJI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 91,
+      "geom_id": "TZA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 58,
+      "geom_id": "SAH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 50,
+      "geom_id": "CAN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 89,
+      "geom_id": "USA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 42,
+      "geom_id": "KAZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 95,
+      "geom_id": "UZB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 37,
+      "geom_id": "PNG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 6,
+      "geom_id": "IDN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 27,
+      "geom_id": "ARG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 13,
+      "geom_id": "CHL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 59,
+      "geom_id": "COD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 81,
+      "geom_id": "SOM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 66,
+      "geom_id": "KEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "SDN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 15,
+      "geom_id": "TCD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "HTI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 58,
+      "geom_id": "DOM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 27,
+      "geom_id": "RUS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 15,
+      "geom_id": "BHS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 64,
+      "geom_id": "FLK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 43,
+      "geom_id": "NOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 54,
+      "geom_id": "GRL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 38,
+      "geom_id": "ATF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 36,
+      "geom_id": "TLS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 8,
+      "geom_id": "ZAF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 65,
+      "geom_id": "LSO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 58,
+      "geom_id": "MEX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 30,
+      "geom_id": "URY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 93,
+      "geom_id": "BRA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 65,
+      "geom_id": "BOL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 15,
+      "geom_id": "PER"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 26,
+      "geom_id": "COL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 37,
+      "geom_id": "PAN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 24,
+      "geom_id": "CRI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 67,
+      "geom_id": "NIC"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 79,
+      "geom_id": "HND"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 11,
+      "geom_id": "SLV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 77,
+      "geom_id": "GTM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 46,
+      "geom_id": "BLZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 34,
+      "geom_id": "VEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 48,
+      "geom_id": "GUY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 80,
+      "geom_id": "SUR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 72,
+      "geom_id": "FRA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 97,
+      "geom_id": "ECU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 61,
+      "geom_id": "PRI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 19,
+      "geom_id": "JAM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "CUB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 77,
+      "geom_id": "ZWE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 71,
+      "geom_id": "BWA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 83,
+      "geom_id": "NAM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 54,
+      "geom_id": "SEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 16,
+      "geom_id": "MLI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 96,
+      "geom_id": "MRT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 28,
+      "geom_id": "BEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 20,
+      "geom_id": "NER"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 44,
+      "geom_id": "NGA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "CMR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 76,
+      "geom_id": "TGO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 68,
+      "geom_id": "GHA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 30,
+      "geom_id": "CIV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 23,
+      "geom_id": "GIN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 87,
+      "geom_id": "GNB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 54,
+      "geom_id": "LBR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 83,
+      "geom_id": "SLE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 97,
+      "geom_id": "BFA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 77,
+      "geom_id": "CAF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 96,
+      "geom_id": "COG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 73,
+      "geom_id": "GAB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 90,
+      "geom_id": "GNQ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 54,
+      "geom_id": "ZMB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 87,
+      "geom_id": "MWI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 79,
+      "geom_id": "MOZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 57,
+      "geom_id": "SWZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 10,
+      "geom_id": "AGO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 8,
+      "geom_id": "BDI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 82,
+      "geom_id": "ISR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 92,
+      "geom_id": "LBN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 47,
+      "geom_id": "MDG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 49,
+      "geom_id": "PSX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 15,
+      "geom_id": "GMB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 72,
+      "geom_id": "TUN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 23,
+      "geom_id": "DZA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 99,
+      "geom_id": "JOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 47,
+      "geom_id": "ARE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 32,
+      "geom_id": "QAT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 28,
+      "geom_id": "KWT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 42,
+      "geom_id": "IRQ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 77,
+      "geom_id": "OMN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 45,
+      "geom_id": "VUT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 70,
+      "geom_id": "KHM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 56,
+      "geom_id": "THA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 56,
+      "geom_id": "LAO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 43,
+      "geom_id": "MMR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 64,
+      "geom_id": "VNM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 96,
+      "geom_id": "PRK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 79,
+      "geom_id": "KOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 83,
+      "geom_id": "MNG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 98,
+      "geom_id": "IND"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 30,
+      "geom_id": "BGD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 67,
+      "geom_id": "BTN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 84,
+      "geom_id": "NPL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "PAK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 30,
+      "geom_id": "AFG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 43,
+      "geom_id": "TJK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 31,
+      "geom_id": "KGZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 29,
+      "geom_id": "TKM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 96,
+      "geom_id": "IRN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 3,
+      "geom_id": "SYR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 18,
+      "geom_id": "ARM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 30,
+      "geom_id": "SWE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 35,
+      "geom_id": "BLR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 85,
+      "geom_id": "UKR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 12,
+      "geom_id": "POL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 68,
+      "geom_id": "AUT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 50,
+      "geom_id": "HUN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 88,
+      "geom_id": "MDA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 99,
+      "geom_id": "ROU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 59,
+      "geom_id": "LTU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 89,
+      "geom_id": "LVA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 13,
+      "geom_id": "EST"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 64,
+      "geom_id": "DEU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 97,
+      "geom_id": "BGR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 60,
+      "geom_id": "GRC"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 38,
+      "geom_id": "TUR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 50,
+      "geom_id": "ALB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 66,
+      "geom_id": "HRV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "CHE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 56,
+      "geom_id": "LUX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 32,
+      "geom_id": "BEL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 76,
+      "geom_id": "NLD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 78,
+      "geom_id": "PRT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 47,
+      "geom_id": "ESP"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 17,
+      "geom_id": "IRL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 0,
+      "geom_id": "NCL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 79,
+      "geom_id": "SLB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 97,
+      "geom_id": "NZL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 60,
+      "geom_id": "AUS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 12,
+      "geom_id": "LKA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 68,
+      "geom_id": "CHN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 75,
+      "geom_id": "TWN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 3,
+      "geom_id": "ITA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 1,
+      "geom_id": "DNK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 38,
+      "geom_id": "GBR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 33,
+      "geom_id": "ISL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 41,
+      "geom_id": "AZE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 12,
+      "geom_id": "GEO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 63,
+      "geom_id": "PHL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 6,
+      "geom_id": "MYS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 51,
+      "geom_id": "BRN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 46,
+      "geom_id": "SVN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 79,
+      "geom_id": "FIN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 9,
+      "geom_id": "SVK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 78,
+      "geom_id": "CZE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 5,
+      "geom_id": "ERI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 56,
+      "geom_id": "JPN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 31,
+      "geom_id": "PRY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 70,
+      "geom_id": "YEM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 42,
+      "geom_id": "SAU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 22,
+      "geom_id": "CYN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 73,
+      "geom_id": "CYP"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 84,
+      "geom_id": "MAR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 1,
+      "geom_id": "EGY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 21,
+      "geom_id": "LBY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 10,
+      "geom_id": "ETH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 81,
+      "geom_id": "DJI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 55,
+      "geom_id": "SOL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 13,
+      "geom_id": "UGA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 76,
+      "geom_id": "RWA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 95,
+      "geom_id": "BIH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 17,
+      "geom_id": "MKD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 28,
+      "geom_id": "SRB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 85,
+      "geom_id": "MNE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 42,
+      "geom_id": "KOS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 40,
+      "geom_id": "TTO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2010-01-01",
+      "value": 8,
+      "geom_id": "SDS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 3,
+      "geom_id": "FJI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 100,
+      "geom_id": "TZA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 71,
+      "geom_id": "SAH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 25,
+      "geom_id": "CAN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 93,
+      "geom_id": "USA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 54,
+      "geom_id": "KAZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 13,
+      "geom_id": "UZB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 15,
+      "geom_id": "PNG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 49,
+      "geom_id": "IDN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 45,
+      "geom_id": "ARG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 30,
+      "geom_id": "CHL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 10,
+      "geom_id": "COD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 60,
+      "geom_id": "SOM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 23,
+      "geom_id": "KEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 80,
+      "geom_id": "SDN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 53,
+      "geom_id": "TCD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 49,
+      "geom_id": "HTI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 74,
+      "geom_id": "DOM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 39,
+      "geom_id": "RUS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 2,
+      "geom_id": "BHS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 6,
+      "geom_id": "FLK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 86,
+      "geom_id": "NOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 27,
+      "geom_id": "GRL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 49,
+      "geom_id": "ATF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 1,
+      "geom_id": "TLS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 89,
+      "geom_id": "ZAF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 31,
+      "geom_id": "LSO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 80,
+      "geom_id": "MEX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 55,
+      "geom_id": "URY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 14,
+      "geom_id": "BRA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 8,
+      "geom_id": "BOL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 88,
+      "geom_id": "PER"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 73,
+      "geom_id": "COL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 70,
+      "geom_id": "PAN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 33,
+      "geom_id": "CRI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 31,
+      "geom_id": "NIC"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 0,
+      "geom_id": "HND"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 54,
+      "geom_id": "SLV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 87,
+      "geom_id": "GTM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 35,
+      "geom_id": "BLZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 46,
+      "geom_id": "VEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 83,
+      "geom_id": "GUY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 55,
+      "geom_id": "SUR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 50,
+      "geom_id": "FRA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 60,
+      "geom_id": "ECU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 14,
+      "geom_id": "PRI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 45,
+      "geom_id": "JAM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 30,
+      "geom_id": "CUB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 16,
+      "geom_id": "ZWE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 30,
+      "geom_id": "BWA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 89,
+      "geom_id": "NAM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 67,
+      "geom_id": "SEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 55,
+      "geom_id": "MLI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 52,
+      "geom_id": "MRT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 26,
+      "geom_id": "BEN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 29,
+      "geom_id": "NER"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 47,
+      "geom_id": "NGA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 25,
+      "geom_id": "CMR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 3,
+      "geom_id": "TGO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 67,
+      "geom_id": "GHA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 54,
+      "geom_id": "CIV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 74,
+      "geom_id": "GIN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 61,
+      "geom_id": "GNB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 93,
+      "geom_id": "LBR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 69,
+      "geom_id": "SLE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 84,
+      "geom_id": "BFA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 37,
+      "geom_id": "CAF"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 53,
+      "geom_id": "COG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 47,
+      "geom_id": "GAB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 13,
+      "geom_id": "GNQ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 0,
+      "geom_id": "ZMB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 50,
+      "geom_id": "MWI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 79,
+      "geom_id": "MOZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 18,
+      "geom_id": "SWZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 20,
+      "geom_id": "AGO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 53,
+      "geom_id": "BDI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 1,
+      "geom_id": "ISR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 92,
+      "geom_id": "LBN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 79,
+      "geom_id": "MDG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 70,
+      "geom_id": "PSX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 65,
+      "geom_id": "GMB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 48,
+      "geom_id": "TUN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 61,
+      "geom_id": "DZA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 71,
+      "geom_id": "JOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 84,
+      "geom_id": "ARE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 80,
+      "geom_id": "QAT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 54,
+      "geom_id": "KWT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 94,
+      "geom_id": "IRQ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 97,
+      "geom_id": "OMN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 65,
+      "geom_id": "VUT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 84,
+      "geom_id": "KHM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 5,
+      "geom_id": "THA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 36,
+      "geom_id": "LAO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 70,
+      "geom_id": "MMR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 55,
+      "geom_id": "VNM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 80,
+      "geom_id": "PRK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 75,
+      "geom_id": "KOR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 1,
+      "geom_id": "MNG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 65,
+      "geom_id": "IND"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 38,
+      "geom_id": "BGD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 84,
+      "geom_id": "BTN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 78,
+      "geom_id": "NPL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 31,
+      "geom_id": "PAK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 73,
+      "geom_id": "AFG"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 17,
+      "geom_id": "TJK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 77,
+      "geom_id": "KGZ"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 49,
+      "geom_id": "TKM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 23,
+      "geom_id": "IRN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 69,
+      "geom_id": "SYR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 27,
+      "geom_id": "ARM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 12,
+      "geom_id": "SWE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 39,
+      "geom_id": "BLR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 71,
+      "geom_id": "UKR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 40,
+      "geom_id": "POL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 39,
+      "geom_id": "AUT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 84,
+      "geom_id": "HUN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 42,
+      "geom_id": "MDA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 40,
+      "geom_id": "ROU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 42,
+      "geom_id": "LTU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 33,
+      "geom_id": "LVA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 31,
+      "geom_id": "EST"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 65,
+      "geom_id": "DEU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 69,
+      "geom_id": "BGR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 2,
+      "geom_id": "GRC"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 4,
+      "geom_id": "TUR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 6,
+      "geom_id": "ALB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 25,
+      "geom_id": "HRV"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 5,
+      "geom_id": "CHE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 45,
+      "geom_id": "LUX"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 59,
+      "geom_id": "BEL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 46,
+      "geom_id": "NLD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 20,
+      "geom_id": "PRT"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 23,
+      "geom_id": "ESP"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 28,
+      "geom_id": "IRL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 67,
+      "geom_id": "NCL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 0,
+      "geom_id": "SLB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 28,
+      "geom_id": "NZL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 70,
+      "geom_id": "AUS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 19,
+      "geom_id": "LKA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 63,
+      "geom_id": "CHN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 66,
+      "geom_id": "TWN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 90,
+      "geom_id": "ITA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 88,
+      "geom_id": "DNK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 68,
+      "geom_id": "GBR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 54,
+      "geom_id": "ISL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 70,
+      "geom_id": "AZE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 71,
+      "geom_id": "GEO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 32,
+      "geom_id": "PHL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 16,
+      "geom_id": "MYS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 53,
+      "geom_id": "BRN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 4,
+      "geom_id": "SVN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 27,
+      "geom_id": "FIN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 14,
+      "geom_id": "SVK"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 99,
+      "geom_id": "CZE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 39,
+      "geom_id": "ERI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 7,
+      "geom_id": "JPN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 17,
+      "geom_id": "PRY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 88,
+      "geom_id": "YEM"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 77,
+      "geom_id": "SAU"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 90,
+      "geom_id": "CYN"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 74,
+      "geom_id": "CYP"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 35,
+      "geom_id": "MAR"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 5,
+      "geom_id": "EGY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 2,
+      "geom_id": "LBY"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 98,
+      "geom_id": "ETH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 76,
+      "geom_id": "DJI"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 95,
+      "geom_id": "SOL"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 34,
+      "geom_id": "UGA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 16,
+      "geom_id": "RWA"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 66,
+      "geom_id": "BIH"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 2,
+      "geom_id": "MKD"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 75,
+      "geom_id": "SRB"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 7,
+      "geom_id": "MNE"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 88,
+      "geom_id": "KOS"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 60,
+      "geom_id": "TTO"
+    }
+  },
+  {
+    "model": "geosight_data.indicatorvalue",
+    "fields": {
+      "date": "2000-01-01",
+      "value": 86,
+      "geom_id": "SDS"
+    }
+  }
+]

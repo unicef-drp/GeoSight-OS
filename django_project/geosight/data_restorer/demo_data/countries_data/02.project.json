@@ -1,0 +1,273 @@
+[
+  {
+    "model": "geosight_data.dashboard",
+    "fields": {
+      "name": "Sample Country Project",
+      "description": "The Sample Country Project showcases basic Sample Country Indicator data, providing interactive filtering options and simple dashboard widgets to help users explore and understand the dataset more effectively.",
+      "creator": 1,
+      "slug": "sample-country-project",
+      "overview": "**The Sample Country Project** showcases basic **Sample Country Indicator** data, providing interactive filtering options and simple dashboard widgets to help users explore and understand the dataset more effectively.",
+      "dataset_identifier": "10000000-0000-0000-0000-000000000000",
+      "extent": "SRID=4326;POLYGON ((-180 -55.6118, -180 83.6451, 180 83.6451, 180 -55.6118, -180 -55.6118))",
+      "min_zoom": 0,
+      "max_zoom": 24,
+      "geo_field": "geometry_code",
+      "level_config": {
+        "levels": [
+          0
+        ],
+        "default_level": 0
+      },
+      "filters": "{\"type\": \"GROUP\", \"queries\": [{\"name\": \"Countries\", \"type\": \"EXPRESSION\", \"field\": \"geometry_0.name\", \"value\": [\"Afghanistan\", \"Albania\", \"Algeria\", \"Angola\", \"Argentina\", \"Armenia\", \"Australia\", \"Austria\", \"Azerbaijan\", \"Bangladesh\", \"Belarus\", \"Belgium\", \"Belize\", \"Benin\", \"Bhutan\", \"Bolivia\", \"Bosnia and Herzegovina\", \"Botswana\", \"Brazil\", \"Brunei\", \"Bulgaria\", \"Burkina Faso\", \"Burundi\", \"Cambodia\", \"Cameroon\", \"Canada\", \"Central African Republic\", \"Chad\", \"Chile\", \"China\", \"Colombia\", \"Costa Rica\", \"Croatia\", \"Cuba\", \"Cyprus\", \"Czechia\", \"Democratic Republic of the Congo\", \"Denmark\", \"Djibouti\", \"Dominican Republic\", \"East Timor\", \"Ecuador\", \"Egypt\", \"El Salvador\", \"Equatorial Guinea\", \"Eritrea\", \"Estonia\", \"Ethiopia\", \"Falkland Islands\", \"Fiji\", \"Finland\", \"France\", \"French Southern and Antarctic Lands\", \"Gabon\", \"Gambia\", \"Georgia\", \"Germany\", \"Ghana\", \"Greece\", \"Greenland\", \"Guatemala\", \"Guinea\", \"Guinea-Bissau\", \"Guyana\", \"Haiti\", \"Honduras\", \"Hungary\", \"Iceland\", \"India\", \"Indonesia\", \"Iran\", \"Iraq\", \"Ireland\", \"Israel\", \"Italy\", \"Ivory Coast\", \"Jamaica\", \"Japan\", \"Jordan\", \"Kazakhstan\", \"Kenya\", \"Kosovo\", \"Kuwait\", \"Kyrgyzstan\", \"Laos\", \"Latvia\", \"Lebanon\", \"Lesotho\", \"Liberia\", \"Libya\", \"Lithuania\", \"Luxembourg\", \"Madagascar\", \"Malawi\", \"Malaysia\", \"Mali\", \"Mauritania\", \"Mexico\", \"Moldova\", \"Mongolia\", \"Montenegro\", \"Morocco\", \"Mozambique\", \"Myanmar\", \"Namibia\", \"Nepal\", \"Netherlands\", \"New Caledonia\", \"New Zealand\", \"Nicaragua\", \"Niger\", \"Nigeria\", \"North Korea\", \"North Macedonia\", \"Northern Cyprus\", \"Norway\", \"Oman\", \"Pakistan\", \"Palestine\", \"Panama\", \"Papua New Guinea\", \"Paraguay\", \"Peru\", \"Philippines\", \"Poland\", \"Portugal\", \"Puerto Rico\", \"Qatar\", \"Republic of Serbia\", \"Republic of the Congo\", \"Romania\", \"Russia\", \"Rwanda\", \"Saudi Arabia\", \"Senegal\", \"Sierra Leone\", \"Slovakia\", \"Slovenia\", \"Solomon Islands\", \"Somalia\", \"Somaliland\", \"South Africa\", \"South Korea\", \"South Sudan\", \"Spain\", \"Sri Lanka\", \"Sudan\", \"Suriname\", \"Sweden\", \"Switzerland\", \"Syria\", \"Taiwan\", \"Tajikistan\", \"Thailand\", \"The Bahamas\", \"Togo\", \"Trinidad and Tobago\", \"Tunisia\", \"Turkey\", \"Turkmenistan\", \"Uganda\", \"Ukraine\", \"United Arab Emirates\", \"United Kingdom\", \"United Republic of Tanzania\", \"United States of America\", \"Uruguay\", \"Uzbekistan\", \"Vanuatu\", \"Venezuela\", \"Vietnam\", \"Western Sahara\", \"Yemen\", \"Zambia\", \"Zimbabwe\", \"eSwatini\"], \"operator\": \"IN\", \"allowModify\": true, \"whereOperator\": \"AND\"}, {\"name\": \"Value in range\", \"type\": \"EXPRESSION\", \"field\": \"indicator_1.value\", \"value\": [0, 100], \"operator\": \"BETWEEN\", \"allowModify\": true, \"whereOperator\": \"AND\"}], \"operator\": \"AND\"}",
+      "filters_allow_modify": false,
+      "filters_being_hidden": false,
+      "auto_zoom_to_filter": true,
+      "show_splash_first_open": true,
+      "truncate_indicator_layer_name": false,
+      "layer_tabs_visibility": "indicator_layers,context_layers",
+      "default_time_mode": {
+        "default_interval": "Monthly",
+        "use_only_last_known_value": false,
+        "fit_to_current_indicator_range": false,
+        "show_last_known_value_in_range": true
+      },
+      "show_map_toolbar": true,
+      "transparency_config": {
+        "contextLayer": 100,
+        "indicatorLayer": 100
+      },
+      "featured": true
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicator",
+    "fields": {
+      "style_type": "Dynamic quantitative style.",
+      "style": null,
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": "true",
+          "outline_size": 0.5,
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 1,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": "on",
+        "dynamic_classification": "Equidistant."
+      },
+      "label_config": {
+        "text": "{value}.round(2)",
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 13,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 2,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "order": 0,
+      "visible_by_default": false,
+      "relation_group": null,
+      "indicator_shortcode": "SAMPLE_COUNTRY_INDICATOR",
+      "override_style": false,
+      "override_label": false
+    }
+  },
+  {
+    "model": "geosight_data.dashboardbasemap",
+    "fields": {
+      "order": 0,
+      "visible_by_default": true,
+      "relation_group": null,
+      "object": 1
+    }
+  },
+  {
+    "model": "geosight_data.dashboardbasemap",
+    "fields": {
+      "order": 0,
+      "visible_by_default": false,
+      "relation_group": null,
+      "object": 2
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayer",
+    "fields": {
+      "style_type": "",
+      "style": null,
+      "style_config": null,
+      "label_config": null,
+      "order": 0,
+      "visible_by_default": true,
+      "relation_group": null,
+      "name": "Sample Country Indicator",
+      "description": "",
+      "level_config": {},
+      "type": "Float",
+      "popup_type": "Simplified",
+      "popup_template": "{}",
+      "override_style": false,
+      "override_label": false,
+      "multi_indicator_mode": "Chart",
+      "chart_style": null,
+      "raw_data_popup_enable": false,
+      "raw_data_popup_config": []
+    }
+  },
+  {
+    "model": "geosight_data.dashboardindicatorlayerindicator",
+    "fields": {
+      "style_type": "Style from library.",
+      "style": null,
+      "style_config": null,
+      "label_config": null,
+      "order": 0,
+      "name": "Sample Country Indicator",
+      "color": null,
+      "indicator_shortcode": "SAMPLE_COUNTRY_INDICATOR",
+      "override_style": false
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "fields": {
+      "name": "Max value",
+      "description": "",
+      "order": 1,
+      "visible_by_default": true,
+      "relation_group": null,
+      "type": "GenericSummaryWidget",
+      "config": {
+        "sort": {
+          "topN": 0,
+          "field": "Value",
+          "method": "Ascending",
+          "useTopN": false
+        },
+        "indicators": [
+          {
+            "indicator_shortcode": "SAMPLE_COUNTRY_INDICATOR",
+            "color": "#000000"
+          }
+        ],
+        "seriesType": "None",
+        "aggregation": {
+          "method": "MAX",
+          "decimalPlace": 0,
+          "useAutoUnits": false,
+          "useDecimalPlace": false
+        },
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": null
+        },
+        "indicatorsType": "Predefined list",
+        "geographicalUnit": [],
+        "geographicalUnitType": "Sync with the current map",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "fields": {
+      "name": "Sum value",
+      "description": "",
+      "order": 2,
+      "visible_by_default": true,
+      "relation_group": null,
+      "type": "GenericSummaryWidget",
+      "config": {
+        "sort": {
+          "topN": 0,
+          "field": "Value",
+          "method": "Ascending",
+          "useTopN": false
+        },
+        "indicators": [
+          {
+            "indicator_shortcode": "SAMPLE_COUNTRY_INDICATOR",
+            "color": "#000000"
+          }
+        ],
+        "seriesType": "None",
+        "aggregation": {
+          "method": "SUM",
+          "decimalPlace": 0,
+          "useAutoUnits": false,
+          "useDecimalPlace": false
+        },
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": null
+        },
+        "indicatorsType": "Predefined list",
+        "geographicalUnit": [],
+        "geographicalUnitType": "Sync with the current map",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "fields": {
+      "name": "Values",
+      "description": "",
+      "order": 3,
+      "visible_by_default": true,
+      "relation_group": null,
+      "type": "GenericSummaryWidget",
+      "config": {
+        "sort": {
+          "topN": 10,
+          "field": "Value",
+          "method": "Descending",
+          "useTopN": true
+        },
+        "indicators": [
+          {
+            "indicator_shortcode": "SAMPLE_COUNTRY_INDICATOR",
+            "color": "#000000"
+          }
+        ],
+        "seriesType": "Geographical units",
+        "aggregation": {
+          "method": "SUM",
+          "decimalPlace": 0,
+          "useAutoUnits": false,
+          "useDecimalPlace": false
+        },
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": null
+        },
+        "indicatorsType": "Predefined list",
+        "geographicalUnit": [],
+        "geographicalUnitType": "Sync with the current map",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
+      }
+    }
+  }
+]

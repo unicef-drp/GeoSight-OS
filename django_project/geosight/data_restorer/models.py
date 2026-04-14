@@ -19,11 +19,7 @@ from typing import List
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
-from geosight.data.models import (
-    BasemapLayer, Indicator, Dashboard, ContextLayer, RelatedTable, Style
-)
 
 
 class FixtureObjectInfo:
@@ -69,39 +65,20 @@ class FixtureTypeObject:
 
 fixtures_types = (
     FixtureTypeObject(
-        name='Default',
+        name='Country demo data',
         description=(
-            'This is the default data that just restored some core data.'
+            'The country demo dataset includes a single indicator with data '
+            'available for all countries on '
+            '2000-01-01, 2010-01-01, and 2020-01-01.'
         ),
         info=[
-            FixtureObjectInfo(name='Basemap', count=3),
-            FixtureObjectInfo(name='Color palette', count=8),
-            FixtureObjectInfo(name='Code list', count=3),
-            FixtureObjectInfo(name='Style', count=1),
-        ],
-        command_name='load_default_data'
-    ),
-    FixtureTypeObject(
-        name='Demo',
-        description=(
-            'Restore demo data focusing on Somalia and Kenya.'
-        ),
-        info=[
-            FixtureObjectInfo(name='Basemap', count=3),
-            FixtureObjectInfo(name='Color palette', count=8),
-            FixtureObjectInfo(name='Code list', count=3),
-            FixtureObjectInfo(name='Indicator', count=3),
-            FixtureObjectInfo(name='Indicator data', count=1054),
+            FixtureObjectInfo(name='Indicator', count=1),
+            FixtureObjectInfo(name='Indicator data', count=528),
             FixtureObjectInfo(name='Project', count=1),
-            FixtureObjectInfo(name='Context layer', count=3),
-            FixtureObjectInfo(name='Related tabel', count=1),
-            FixtureObjectInfo(name='Related tabel data', count=296),
-            FixtureObjectInfo(name='Reference Datasets', count=3),
-            FixtureObjectInfo(name='User', count=3),
-            FixtureObjectInfo(name='Style', count=1),
+            FixtureObjectInfo(name='Reference Datasets', count=1),
         ],
-        command_name='load_demo_data'
-    )
+        command_name='load_demo_country_data'
+    ),
 )
 
 
@@ -112,6 +89,12 @@ class Preferences(SingletonModel):
     - enable_request
     """
 
+    is_kartoza_data_restored = models.BooleanField(
+        default=False,
+        help_text=_(
+            'Indicates whether default data has been restored.'
+        )
+    )
     enable_request = models.BooleanField(
         default=True,
         help_text=_(
@@ -132,20 +115,12 @@ class Preferences(SingletonModel):
             and no active restore request is running.
         :rtype: bool
         """
-        if any(
-                model.objects.exists()
-                for model in [
-                    ColorPalette, BasemapLayer,
-                    Indicator, Dashboard, ContextLayer, RelatedTable, Style,
-                ]
-        ):
-            return False
-        if RequestRestoreData.objects.exclude(
-                state__in=[
-                    RequestRestoreData.State.CREATED.value,
-                    RequestRestoreData.State.FAILED.value,
-                ]
-        ).count():
+        finished = set(
+            RequestRestoreData.objects.filter(
+                state=RequestRestoreData.State.FINISH
+            ).values_list('data_type', flat=True)
+        )
+        if all(f.name in finished for f in fixtures_types):
             return False
         return self.enable_request
 

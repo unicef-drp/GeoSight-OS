@@ -173,8 +173,10 @@
       box-shadow: var(--box-shadow);
       background-color: var(--white);
       margin-top: 0.5rem;
-      margin-left: 20px;
-      width: 637px;
+      margin-left: 10px;
+      max-width: 650px;
+      text-align: left;
+      padding: 2px !important;
     }
 
     .ContentLine {

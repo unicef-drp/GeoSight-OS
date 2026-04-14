@@ -14,7 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import re
+
 from django.db import models
+from django.db.models import Q
 
 from docs.models.block import Block
 
@@ -51,7 +54,12 @@ class Page(models.Model):
 
     title = models.CharField(
         max_length=512,
-        help_text='Title that will be used on the page help center.'
+        null=True,
+        blank=True,
+        help_text=(
+            'If no title is provided, it will use the title of the anchor '
+            'on documentation page.'
+        )
     )
 
     intro = models.TextField(
@@ -63,8 +71,16 @@ class Page(models.Model):
         )
     )
 
+    autogenerate_block = models.BooleanField(
+        default=True,
+        help_text=(
+            'Autogenerate blocks from the documentation. '
+            'If unchecked, it will use blocks child of this page.'
+        )
+    )
+
     def __str__(self):
-        """String of object."""
+        """Return string of object."""
         return self.name
 
     @property
@@ -72,6 +88,32 @@ class Page(models.Model):
         """String of object."""
         from docs.models.preferences import Preferences
         return Preferences.preferences().documentation_base_url + self.url
+
+    @staticmethod
+    def get_page(relative_url: str):
+        """Return page based on relative url."""
+        # Strip language prefix e.g. /en-us/admin/ -> /admin/
+        relative_url = re.sub(r'^/[a-z]{2}(-[a-z]{2})?/', '/', relative_url)
+        root = Page.objects.filter(
+            Q(relative_url='') | Q(relative_url__isnull=True)
+        ).first()
+        page = root
+        if relative_url:
+            urls = []
+            if relative_url[0] == '/':
+                relative_url = relative_url[1:]
+            relative_urls = relative_url.split('/')
+            for idx, url in enumerate(relative_urls):
+                urls.append(relative_urls[:(idx + 1)])
+            urls_query = ['/'.join(url) for url in urls]
+            urls_query += ['/'.join(url + ['']) for url in urls]
+            urls_query += ['/'.join([''] + url) for url in urls]
+            urls_query += ['/'.join([''] + url + ['']) for url in urls]
+            page = Page.objects.filter(relative_url__in=urls_query).order_by(
+                '-relative_url').first()
+            if not page:
+                page = root
+        return page
 
 
 class PageBlock(models.Model):

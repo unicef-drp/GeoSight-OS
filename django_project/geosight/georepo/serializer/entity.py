@@ -75,6 +75,8 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
         :rtype: list[str]
         """
         parents = obj.parents
+        if not parents:
+            return []
         parents.reverse()
         return list(parents)
 
@@ -91,6 +93,9 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
         """
         pcs = []
         parents = obj.parents
+        if not parents:
+            return []
+
         parents.reverse()
         for parent in parents:
             try:

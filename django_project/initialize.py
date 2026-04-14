@@ -14,10 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import django
 import os
-import shutil
 import time
+
+import django
 
 from core.utils import create_superuser
 
@@ -150,16 +150,28 @@ except Exception as e:
     print(f'{e}')
     pass
 
-
 #########################################################
 # 9. Pruning old static file versions
 #########################################################
 
 print("-----------------------------------------------------")
 try:
+    print("9. Pruning old static file versions")
     call_command('prune_static_versions')
 except Exception as e:
     print(f'{e}')
     pass
-print("Old static file versions pruned")
-print("-----------------------------------------------------")
+
+#########################################################
+# 10. Initialize kartoza data
+#########################################################
+initial_kartoza_data = os.getenv('INITIAL_KARTOZA_DATA', 'False')
+plugins = os.getenv('PLUGINS', '')
+if initial_kartoza_data.lower() == 'true' and 'data_restorer' in plugins:
+    try:
+        print("-----------------------------------------------------")
+        print("10. Initialize kartoza data")
+        call_command('load_kartoza_default')
+    except Exception as e:
+        print(f'{e}')
+        pass

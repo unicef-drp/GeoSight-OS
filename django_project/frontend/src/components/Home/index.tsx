@@ -27,7 +27,7 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch,
 } from "../../components/Input/SelectWithSearch";
-import { SortAscIcon, SortDescIcon } from "../../components/Icons";
+import { ProjectActiveIcon, SortAscIcon, SortDescIcon } from "../../components/Icons";
 import { Project } from "../../types/Project";
 
 import "./style.scss";
@@ -151,6 +151,7 @@ export default function ProjectList({
   setParentLoading,
   title,
 }: ProjectListProps) {
+  const { t } = useTranslation();
   // TODO: combine all filters into 1 veriable
   const [searchProject, setSearchProject] = useState<string>("");
   const [typedProject, setTypedProject] = useState<string>("");
@@ -293,17 +294,28 @@ export default function ProjectList({
           />
         </Grid>
       </Grid>
-      <ProjectGrid projects={projects} isLoading={isLoading} />
-      <br />
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <Pagination
-          count={totalPage}
-          page={currentPage}
-          onChange={(event, page) => setCurrentPage(page)}
-          variant="outlined"
-          shape="rounded"
-        />
-      </Box>
+      {!isLoading && projects.length === 0 ? (
+        <div className="ProjectEmpty">
+          <ProjectActiveIcon />
+          {t("No featured projects available")}.
+        </div>
+      ) : (
+        <ProjectGrid projects={projects} isLoading={isLoading} />
+      )}
+      {projects.length > 0 && (
+        <>
+          <br />
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <Pagination
+              count={totalPage}
+              page={currentPage}
+              onChange={(event, page) => setCurrentPage(page)}
+              variant="outlined"
+              shape="rounded"
+            />
+          </Box>
+        </>
+      )}
       <br />
       <br />
       <br />

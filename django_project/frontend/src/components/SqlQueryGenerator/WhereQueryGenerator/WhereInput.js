@@ -64,10 +64,10 @@ export function WhereInputValue({
   let betweenMin = defaultMin;
   let betweenMax = defaultMax;
   if (operator === IS_BETWEEN) {
-    if (!isNaN(parseFloat(value[0]))) {
+    if (value && !isNaN(parseFloat(value[0]))) {
       betweenMin = parseFloat(value[0]);
     }
-    if (!isNaN(parseFloat(value[1]))) {
+    if (value && !isNaN(parseFloat(value[1]))) {
       betweenMax = parseFloat(value[1]);
     }
   }
@@ -364,7 +364,7 @@ export function WhereInputValue({
             value={[initBetweenMin, initBetweenMax]}
             step={max >= 5 ? 1 : max <= 1 ? 0.01 : 0.1}
             min={min ? min : 0}
-            max={max ? max : 0}
+            max={max ? max : 100}
             onChange={(event) => {
               setInitBetweenMin(event.target.value[0]);
               setInitBetweenMax(event.target.value[1]);

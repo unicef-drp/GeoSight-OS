@@ -127,8 +127,7 @@ export default function DataRestorerModal() {
   const handleConfirm = (dataType: string) => {
     openConfirmDialog({
       header: `Restore ${dataType} data?`,
-      children: `This will restore the ${dataType} dataset. Any existing data will be overwritten and cannot be recovered. Are you sure you want to continue?`,
-      theme: "Error",
+      children: `This will restore the ${dataType} dataset. Are you sure you want to continue?`,
       onConfirmed: () => doRestore(dataType),
     });
   };
@@ -206,11 +205,11 @@ export default function DataRestorerModal() {
               yet. Choose a dataset below to restore and get started quickly, or
               skip if you prefer to set things up manually.
             </p>
-            <div className="DataRestorerModal__warning">
-              <strong>Warning:</strong> Restoring data will overwrite any
-              existing data currently in the system. This action cannot be
-              undone.
-            </div>
+            {/*<div className="DataRestorerModal__warning">*/}
+            {/*  <strong>Warning:</strong> Restoring data will overwrite any*/}
+            {/*  existing data currently in the system. This action cannot be*/}
+            {/*  undone.*/}
+            {/*</div>*/}
             <div className="DataRestorerModal__options">
               {fixtureTypes.map((opt) => {
                 const totalCount = opt.info.reduce((s, i) => s + i.count, 0);
