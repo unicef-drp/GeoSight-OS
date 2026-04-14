@@ -32,11 +32,11 @@ test.describe('Restore data', () => {
     // Check the data
     await page.goto('/admin/basemap/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Basemaps');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–3 of 3');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
 
     await page.goto('/admin/indicators/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Indicators');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
 
     await page.goto('/admin/context-layer/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Context Layers');
@@ -44,7 +44,7 @@ test.describe('Restore data', () => {
 
     await page.goto('/admin/project/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Projects');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
 
     await page.goto('/admin/style/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Styles');
@@ -53,5 +53,9 @@ test.describe('Restore data', () => {
     await page.goto('/admin/related-table/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Related Tables');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
+
+    await page.goto('/admin/dataset/dataset/');
+    await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Data Browser');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–25 of 176');
   });
 });
