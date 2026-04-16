@@ -14,9 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '02/04/2026'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from rest_framework.authentication import (
-    SessionAuthentication
-)
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,6 +32,7 @@ class FixtureTypesAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
+    @swagger_auto_schema(auto_schema=None)
     def get(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
         """
         Return list of available fixture types.
@@ -60,6 +60,7 @@ class RequestRestoreDataAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
+    @swagger_auto_schema(auto_schema=None)
     def post(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
         """
         Create a restore request and dispatch the task.
@@ -90,6 +91,7 @@ class RequestRestoreDataDetailAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
+    @swagger_auto_schema(auto_schema=None)
     def get(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
         """
         Return the last RequestRestoreData.
@@ -116,6 +118,7 @@ class PreferencesAPI(APIView):
     permission_classes = [IsAdminUser]
     authentication_classes = [SessionAuthentication]
 
+    @swagger_auto_schema(auto_schema=None)
     def post(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
         """
         Disable data restoration.

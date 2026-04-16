@@ -20,6 +20,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from geosight.data.models.indicator import Indicator, IndicatorGroup
+from geosight.data.models.indicator.indicator_type import IndicatorType
+from geosight.data.models.style.base import StyleType
+from geosight.data.models.style.indicator_style import IndicatorStyleType
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -58,7 +61,8 @@ class IndicatorPermissionTest(BasePermissionTest.TestCase):
             user=self.resource_creator,
             name='Name C',
             group=IndicatorGroup.objects.create(name='Group 3'),
-            description='Resource 3'
+            description='Resource 3',
+            shortcode='Resource_C',
         )
         self.resource_3.permission.update_user_permission(
             self.creator, PERMISSIONS.LIST
@@ -234,6 +238,253 @@ class IndicatorPermissionTest(BasePermissionTest.TestCase):
         self.assertEqual(response.json()['name'], self.resource_3.name)
         self.assertEqual(
             response.json()['created_by'], self.resource_3.creator.username
+        )
+
+    def test_create_api(self):
+        """Test POST API."""
+        url = reverse('indicators-list') + '?fields=__all__'
+        self.assertRequestPostView(url, 403, data={})
+        self.assertRequestPostView(url, 403, user=self.viewer, data={})
+        # Missing shortcode must be rejected
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New Indicator',
+                "category": 'New Category'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Missing category must be rejected
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New Indicator',
+                "shortcode": 'new_indicator'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Invalid type must be rejected
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New Indicator',
+                "shortcode": 'new_indicator',
+                "category": 'New Category',
+                "type": 'InvalidType'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Invalid style_type must be rejected
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'New Indicator',
+                "shortcode": 'new_indicator',
+                "category": 'New Category',
+                "style_type": 'InvalidStyleType'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestPostView(
+            url, 201,
+            user=self.creator,
+            data={
+                "name": 'New Indicator',
+                "shortcode": 'new_indicator',
+                "category": 'New Category',
+                "type": IndicatorType.INTEGER,
+                "style_type": StyleType.PREDEFINED
+            },
+            content_type=self.JSON_CONTENT
+        )
+        obj = Indicator.objects.get(id=response.json()['id'])
+        self.assertEqual(obj.name, 'New Indicator')
+        self.assertEqual(response.json()['name'], 'New Indicator')
+        self.assertEqual(obj.shortcode, 'new_indicator')
+        self.assertEqual(obj.group.name, 'New Category')
+        self.assertEqual(response.json()['category'], 'New Category')
+        self.assertEqual(obj.type, IndicatorType.INTEGER)
+        self.assertEqual(response.json()['type'], IndicatorType.INTEGER)
+        self.assertEqual(obj.style_type, StyleType.PREDEFINED)
+        self.assertEqual(response.json()['style_type'], StyleType.PREDEFINED)
+        self.assertEqual(obj.creator, self.creator)
+        self.assertEqual(response.json()['created_by'], self.creator.username)
+
+        # Duplicate shortcode must be rejected
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'Another Indicator',
+                "shortcode": 'new_indicator',
+                "category": 'New Category'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Existing shortcode from setUp must also be rejected
+        self.assertRequestPostView(
+            url, 400,
+            user=self.creator,
+            data={
+                "name": 'Yet Another Indicator',
+                "shortcode": 'Name_B',
+                "category": 'New Category'
+            },
+            content_type=self.JSON_CONTENT
+        )
+
+    def test_update_api(self):
+        """Test PUT API."""
+        url = reverse('indicators-detail', args=[0])
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 404, user=self.creator, data={})
+        self.assertRequestPutView(url, 404, user=self.admin, data={})
+
+        url = reverse(
+            'indicators-detail', kwargs={'id': self.resource_3.id}
+        )
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 403, user=self.creator, data={})
+        # Missing shortcode must be rejected
+        self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "category": 'Updated Category'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Missing category must be rejected
+        self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "shortcode": 'updated_shortcode'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Invalid type must be rejected
+        self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "shortcode": 'updated_shortcode',
+                "category": 'Updated Category',
+                "type": 'InvalidType'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Invalid style_type must be rejected
+        self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "shortcode": 'updated_shortcode',
+                "category": 'Updated Category',
+                "style_type": 'InvalidStyleType'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        # Duplicate shortcode (already used by resource_2) must be rejected
+        self.assertRequestPutView(
+            url, 400,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "shortcode": 'Name_B',
+                "category": 'Updated Category'
+            },
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestPutView(
+            url, 200,
+            user=self.creator_in_group,
+            data={
+                "name": self.resource_3.name,
+                "shortcode": 'updated_shortcode',
+                "category": 'Updated Category',
+                "type": IndicatorType.FLOAT,
+                "style_type": IndicatorStyleType.LIBRARY
+            },
+            content_type=self.JSON_CONTENT
+        )
+        obj = Indicator.objects.get(id=self.resource_3.id)
+        self.assertEqual(obj.name, 'Name C')
+        self.assertEqual(obj.shortcode, 'updated_shortcode')
+        self.assertEqual(obj.group.name, 'Updated Category')
+        self.assertEqual(response.json()['category'], 'Updated Category')
+        self.assertEqual(obj.type, IndicatorType.FLOAT)
+        self.assertEqual(response.json()['type'], IndicatorType.FLOAT)
+        self.assertEqual(obj.style_type, IndicatorStyleType.LIBRARY)
+        self.assertEqual(response.json()['style_type'],
+                         IndicatorStyleType.LIBRARY)
+        self.assertEqual(obj.description, '')
+
+    def test_partial_update_api(self):
+        """Test PATCH API."""
+        url = reverse('indicators-detail', args=[0])
+        self.assertRequestPatchView(url, 403, data={})
+        self.assertRequestPatchView(url, 403, user=self.viewer, data={})
+        self.assertRequestPatchView(url, 404, user=self.creator, data={})
+        self.assertRequestPatchView(url, 404, user=self.admin, data={})
+
+        url = reverse(
+            'indicators-detail', kwargs={'id': self.resource_3.id}
+        )
+        self.assertRequestPatchView(url, 403, data={})
+        self.assertRequestPatchView(url, 403, user=self.viewer, data={})
+        self.assertRequestPatchView(url, 403, user=self.creator, data={})
+        # Invalid type must be rejected
+        self.assertRequestPatchView(
+            url, 400,
+            user=self.creator_in_group,
+            data={"type": 'InvalidType'},
+            content_type=self.JSON_CONTENT
+        )
+        # Invalid style_type must be rejected
+        self.assertRequestPatchView(
+            url, 400,
+            user=self.creator_in_group,
+            data={"style_type": 'InvalidStyleType'},
+            content_type=self.JSON_CONTENT
+        )
+        # Duplicate shortcode (already used by resource_2) must be rejected
+        self.assertRequestPatchView(
+            url, 400,
+            user=self.creator_in_group,
+            data={"shortcode": 'Name_B'},
+            content_type=self.JSON_CONTENT
+        )
+        response = self.assertRequestPatchView(
+            url, 200,
+            user=self.creator_in_group,
+            data={
+                "description": "Updated description",
+                "type": IndicatorType.STRING,
+                "style_type": StyleType.DYNAMIC_QUANTITATIVE
+            },
+            content_type=self.JSON_CONTENT
+        )
+        obj = Indicator.objects.get(id=self.resource_3.id)
+        self.assertEqual(obj.name, 'Name C')
+        self.assertEqual(obj.group.name, 'Group 3')
+        self.assertEqual(obj.description, 'Updated description')
+        self.assertEqual(response.json()['description'], 'Updated description')
+        self.assertEqual(obj.type, IndicatorType.STRING)
+        self.assertEqual(response.json()['type'], IndicatorType.STRING)
+        self.assertEqual(obj.style_type, StyleType.DYNAMIC_QUANTITATIVE)
+        self.assertEqual(
+            response.json()['style_type'], StyleType.DYNAMIC_QUANTITATIVE
         )
 
     def test_destroy_api(self):

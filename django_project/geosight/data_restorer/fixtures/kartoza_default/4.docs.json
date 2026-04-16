@@ -1,0 +1,93 @@
+[
+  {
+    "model": "docs.preferences",
+    "pk": 1,
+    "fields": {
+      "documentation_base_url": "https://kartoza.github.io/GeoHosting-Documentation"
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 1,
+    "fields": {
+      "name": "Global",
+      "relative_url": null,
+      "url": "/products/geosight/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 2,
+    "fields": {
+      "name": "Project",
+      "relative_url": "/admin/project/",
+      "url": "/products/geosight/manual/projects/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 3,
+    "fields": {
+      "name": "Indicators",
+      "relative_url": "/admin/indicators/",
+      "url": "/products/geosight/manual/indicators/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 4,
+    "fields": {
+      "name": "Context Layer",
+      "relative_url": "/admin/context-layer/",
+      "url": "/products/geosight/manual/context_layers/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 5,
+    "fields": {
+      "name": "Basemap",
+      "relative_url": "/admin/basemap/",
+      "url": "/products/geosight/manual/basemaps/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 6,
+    "fields": {
+      "name": "Style",
+      "relative_url": "/admin/style/",
+      "url": "/products/geosight/manual/styles/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 7,
+    "fields": {
+      "name": "Import Data",
+      "relative_url": "/admin/importer/data-management",
+      "url": "/products/geosight/manual/import_data/",
+      "title": null,
+      "intro": "",
+      "autogenerate_block": true
+    }
+  }
+]

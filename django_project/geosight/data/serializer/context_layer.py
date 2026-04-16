@@ -209,7 +209,7 @@ class ContextLayerSerializer(ResourceSerializer):
                     title='Type',
                     type=openapi.TYPE_STRING,
                     description=(
-                        f'The choices are {[TYPES]}'
+                        f'The choices are {TYPES}'
                     )
                 ),
                 'styles': openapi.Schema(

@@ -22,8 +22,10 @@ from core.models.profile import ROLES
 from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 from geosight.data_restorer.models import (
-    Preferences, RequestRestoreData
+    Preferences, RequestRestoreData, fixtures_types
 )
+
+FIXTURE_NAME = fixtures_types[0].name
 
 URL_REQUEST = reverse('data-restorer-request')
 URL_STATUS = reverse('data-restorer-request-status')
@@ -83,13 +85,13 @@ class RequestRestoreDataAPITest(BaseDataRestorerAPITest):
             mock_task.delay.side_effect = run_synchronously
 
             self.assertRequestPostView(
-                URL_REQUEST, 201, {'data_type': 'Default'},
+                URL_REQUEST, 201, {'data_type': FIXTURE_NAME},
                 user=self.admin, content_type=self.JSON_CONTENT
             )
 
         self.assertTrue(RequestRestoreData.objects.exists())
         obj = RequestRestoreData.objects.first()
-        self.assertEqual(obj.data_type, 'Default')
+        self.assertEqual(obj.data_type, FIXTURE_NAME)
         self.assertEqual(obj.state, RequestRestoreData.State.FINISH)
 
         preferences = Preferences.load()
@@ -97,7 +99,7 @@ class RequestRestoreDataAPITest(BaseDataRestorerAPITest):
 
         response = self.assertRequestGetView(URL_STATUS, 200, user=self.admin)
         data = response.json()
-        self.assertEqual(data['data_type'], 'Default')
+        self.assertEqual(data['data_type'], FIXTURE_NAME)
         self.assertEqual(data['state'], RequestRestoreData.State.FINISH)
 
 

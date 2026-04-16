@@ -67,7 +67,7 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
 
     site_url = models.CharField(
         max_length=512,
-        default=''
+        blank=True, null=True
     )
 
     site_type = models.CharField(
@@ -104,18 +104,18 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
     # -----------------------------------------------
     georepo_url = models.CharField(
         max_length=512,
-        default=''
+        blank=True, null=True
     )
     georepo_api_key_level_1 = models.CharField(
         max_length=512,
-        default=''
+        blank=True, null=True
     )
     georepo_api_key_level_1_email = models.EmailField(
         blank=True, null=True
     )
     georepo_api_key_level_4 = models.CharField(
         max_length=512,
-        default=''
+        blank=True, null=True
     )
     georepo_api_key_level_4_email = models.EmailField(
         blank=True, null=True

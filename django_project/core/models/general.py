@@ -123,7 +123,7 @@ class AbstractEditData(models.Model):
         max_length=255,
         null=True, blank=True
     )
-    modified_at = models.DateTimeField(auto_now=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:  # noqa: D106
         abstract = True

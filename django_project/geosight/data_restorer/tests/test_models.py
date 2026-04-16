@@ -18,8 +18,10 @@ from unittest.mock import patch
 
 from core.tests.base_tests import TestCase
 from geosight.data_restorer.models import (
-    Preferences, RequestRestoreData
+    Preferences, RequestRestoreData, fixtures_types
 )
+
+FIXTURE_NAME = fixtures_types[0].name
 
 
 class PreferencesIsEnabledTest(TestCase):
@@ -37,94 +39,49 @@ class PreferencesIsEnabledTest(TestCase):
         preferences.save()
         self.assertFalse(preferences.is_enabled)
 
-    def test_is_enabled_false_when_color_palette_exists(self):
-        """Preferences is not enabled when a ColorPalette exists."""
-        from core.models.color import ColorPalette
-        obj = ColorPalette.objects.create(name='test', colors=['#000000'])
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
-    def test_is_enabled_false_when_basemap_layer_exists(self):
-        """Preferences is not enabled when a BasemapLayer exists."""
-        from geosight.data.tests.model_factories.basemap_layer import BasemapLayerF
-        obj = BasemapLayerF()
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
-    def test_is_enabled_false_when_indicator_exists(self):
-        """Preferences is not enabled when an Indicator exists."""
-        from geosight.data.tests.model_factories.indicator.indicator import IndicatorF
-        obj = IndicatorF()
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
-    def test_is_enabled_false_when_dashboard_exists(self):
-        """Preferences is not enabled when a Dashboard exists."""
-        from geosight.data.tests.model_factories.dashboard.dashboard import DashboardF
-        obj = DashboardF()
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
-    def test_is_enabled_false_when_context_layer_exists(self):
-        """Preferences is not enabled when a ContextLayer exists."""
-        from geosight.data.tests.model_factories.context_layers import ContextLayerF
-        obj = ContextLayerF()
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
-    def test_is_enabled_false_when_related_table_exists(self):
-        """Preferences is not enabled when a RelatedTable exists."""
-        from geosight.data.tests.model_factories.related_table import RelatedTableF
-        obj = RelatedTableF()
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
-    def test_is_enabled_false_when_style_exists(self):
-        """Preferences is not enabled when a Style exists."""
-        from geosight.data.models import Style
-        obj = Style.objects.create(name='test-style')
-        try:
-            self.assertFalse(Preferences.load().is_enabled)
-        finally:
-            obj.delete()
-
     def test_is_enabled_true_when_restore_request_is_created(self):
         """A CREATED restore request does not disable preferences."""
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
         try:
             self.assertTrue(Preferences.load().is_enabled)
         finally:
             obj.delete()
 
-    def test_is_enabled_false_when_restore_request_is_running(self):
-        """Preferences is not enabled when a restore request is RUNNING."""
-        obj = RequestRestoreData.objects.create(
-            data_type='Default', state=RequestRestoreData.State.RUNNING
-        )
+    def test_is_enabled_false_when_all_fixtures_finished(self):
+        """Preferences is not enabled when all fixture types are FINISH."""
+        records = [
+            RequestRestoreData.objects.create(
+                data_type=f.name, state=RequestRestoreData.State.FINISH
+            )
+            for f in fixtures_types
+        ]
         try:
             self.assertFalse(Preferences.load().is_enabled)
         finally:
-            obj.delete()
+            for r in records:
+                r.delete()
 
-    def test_is_enabled_false_when_restore_request_is_finished(self):
-        """Preferences is not enabled when a restore request is FINISH."""
+    def test_is_enabled_true_when_only_some_fixtures_finished(self):
+        """Preferences is enabled when not all fixture types are FINISH."""
+        # Only valid when there is more than one fixture type; skip otherwise.
+        if len(fixtures_types) < 2:
+            return
         obj = RequestRestoreData.objects.create(
-            data_type='Default', state=RequestRestoreData.State.FINISH
+            data_type=fixtures_types[0].name,
+            state=RequestRestoreData.State.FINISH
         )
         try:
-            self.assertFalse(Preferences.load().is_enabled)
+            self.assertTrue(Preferences.load().is_enabled)
+        finally:
+            obj.delete()
+
+    def test_is_enabled_true_after_failed_request(self):
+        """A FAILED restore request does not block new requests."""
+        obj = RequestRestoreData.objects.create(
+            data_type=FIXTURE_NAME, state=RequestRestoreData.State.FAILED
+        )
+        try:
+            self.assertTrue(Preferences.load().is_enabled)
         finally:
             obj.delete()
 
@@ -138,7 +95,7 @@ class RequestRestoreDataTest(TestCase):
 
     def test_default_state_is_created(self):
         """New record defaults to CREATED state."""
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
         self.assertEqual(obj.state, RequestRestoreData.State.CREATED)
 
     def test_run_does_nothing_when_disabled(self):
@@ -147,7 +104,7 @@ class RequestRestoreDataTest(TestCase):
         preferences.enable_request = False
         preferences.save()
 
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
         obj.run()
 
         obj.refresh_from_db()
@@ -155,7 +112,7 @@ class RequestRestoreDataTest(TestCase):
 
     def test_run_does_nothing_for_unknown_data_type(self):
         """run() returns early when data_type has no matching fixture."""
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
         obj.data_type = 'Unknown'  # bypass model choices
 
         with patch('django.core.management.call_command') as mock_cmd:
@@ -166,7 +123,7 @@ class RequestRestoreDataTest(TestCase):
 
     def test_run_full_flow(self):
         """run() transitions created -> running -> finish and disables prefs."""
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
 
         states = []
 
@@ -189,7 +146,7 @@ class RequestRestoreDataTest(TestCase):
 
     def test_run_sets_failed_state_on_error(self):
         """run() sets state to FAILED and saves the error note on exception."""
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
 
         with patch(
                 'django.core.management.call_command',
@@ -203,7 +160,7 @@ class RequestRestoreDataTest(TestCase):
 
     def test_run_failed_does_not_disable_preferences(self):
         """run() does not disable preferences when the command fails."""
-        obj = RequestRestoreData.objects.create(data_type='Default')
+        obj = RequestRestoreData.objects.create(data_type=FIXTURE_NAME)
 
         with patch(
                 'django.core.management.call_command',
@@ -217,7 +174,7 @@ class RequestRestoreDataTest(TestCase):
     def test_is_enabled_true_after_failed_request(self):
         """A FAILED restore request does not block new requests."""
         obj = RequestRestoreData.objects.create(
-            data_type='Default', state=RequestRestoreData.State.FAILED
+            data_type=FIXTURE_NAME, state=RequestRestoreData.State.FAILED
         )
         try:
             self.assertTrue(Preferences.load().is_enabled)

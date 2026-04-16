@@ -35,9 +35,20 @@ export default function Home() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showBanner, setShowBanner] = useState(true);
+  const [bannerHeight, setBannerHeight] = useState<number | null>(null);
 
   // @ts-ignore
-  const mainImageTs = "{{ preferences.landing_page_banner }}";
+  const mainImageTs = mainImage;
+
+  useEffect(() => {
+    if (!mainImageTs) return;
+    const img = new Image();
+    img.onload = () => {
+      const aspectRatio = img.naturalHeight / img.naturalWidth;
+      setBannerHeight(window.innerWidth * aspectRatio);
+    };
+    img.src = mainImageTs;
+  }, [mainImageTs]);
 
   // @ts-ignore
   const projectsUrl =
@@ -53,13 +64,26 @@ export default function Home() {
       {
         // @ts-ignore
         mainImageTs ? (
-          <div className={showBanner ? "banner" : "banner Hide"}>
-            <div className="BannerContent">
+          <div
+            className={[
+              "banner",
+              !showBanner ? "Hide" : "",
+              // @ts-ignore
+              !preferences.landing_page_banner_text ? "NoHasText" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            <div
+              className="BannerContent"
+              style={{ height: !showBanner ? 0 : (bannerHeight ?? undefined) }}
+            >
               <div className="Separator" />
               {
                 // @ts-ignore
                 preferences.landing_page_banner_text ? (
                   <div
+                    style={{ marginBottom: "7rem" }}
                     dangerouslySetInnerHTML={{
                       // @ts-ignore
                       __html: preferences.landing_page_banner_text,

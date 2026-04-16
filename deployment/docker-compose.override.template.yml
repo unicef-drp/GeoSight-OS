@@ -141,6 +141,7 @@ services:
 
       # PLUGINS
       - PLUGINS=${PLUGINS:-''}
+      - INITIAL_KARTOZA_DATA=${INITIAL_KARTOZA_DATA:-''}
     ports:
       # for django test server
       - "2000:8080"

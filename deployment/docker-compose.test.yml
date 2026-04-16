@@ -94,6 +94,7 @@ services:
       - SENTRY_DSN=
       - SENTRY_ENVIRONMENT=staging
       - PLUGINS=tenants,reference_dataset,cloud_native_gis
+      - INITIAL_KARTOZA_DATA=""
     entrypoint: [ ]
     ports:
       # for django test server
