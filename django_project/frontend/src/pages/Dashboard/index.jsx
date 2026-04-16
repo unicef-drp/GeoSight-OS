@@ -36,6 +36,10 @@ import { Variables } from "../../utils/Variables";
 
 import "./style.scss";
 
+function isToolbarVisible(value) {
+  return value !== false && value !== "false";
+}
+
 export default function Dashboard({ children, dashboardUrlAPI = null }) {
   const dispatch = useDispatch();
   const widgets = useSelector((state) => state.dashboard.data?.widgets);
@@ -50,8 +54,8 @@ export default function Dashboard({ children, dashboardUrlAPI = null }) {
   const user_permission = useSelector(
     (state) => state.dashboard.data?.user_permission,
   );
-  const show_map_toolbar = useSelector(
-    (state) => state.dashboard.data.show_map_toolbar,
+  const show_map_toolbar = useSelector((state) =>
+    isToolbarVisible(state.dashboard.data.show_map_toolbar),
   );
   const entitySearchEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),

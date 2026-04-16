@@ -7,6 +7,10 @@
  *     it under the terms of the GNU Affero General Public License as published by
  *     the Free Software Foundation; either version 3 of the License, or
  *     (at your option) any later version.
+ *
+ * __author__ = 'ishaan.jain@emory.edu'
+ * __date__ = '15/04/2026'
+ * __copyright__ = ('Copyright 2026, Unicef')
  */
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";

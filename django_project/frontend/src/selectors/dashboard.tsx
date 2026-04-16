@@ -1,6 +1,10 @@
 import { DashboardTool } from "../store/dashboard/reducers/dashboardTool";
 import { EmbedConfig } from "../utils/embed";
 
+function isToolbarVisible(value: any): boolean {
+  return value !== false && value !== "false";
+}
+
 export const getDashboardTool =
   (name: string) =>
   (state: any): DashboardTool => {
@@ -16,7 +20,7 @@ export const getDashboardTool =
 export const isDashboardToolEnabled =
   (name: string) =>
   (state: any): boolean => {
-    if (!state.dashboard.data?.show_map_toolbar) {
+    if (!isToolbarVisible(state.dashboard.data?.show_map_toolbar)) {
       return false;
     }
     return (
