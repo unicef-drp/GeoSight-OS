@@ -73,7 +73,7 @@ class DashboardIndicatorSerializer(serializers.ModelSerializer):
         """Return the style library ID for the indicator.
 
         Returns the style ID if the dashboard overrides the style
-        and the style type is LIBRARY, otherwise returns None.
+        and the style type is LIBRARY or returns None.
 
         :param obj: The DashboardIndicator instance.
         :type obj: DashboardIndicator
@@ -185,7 +185,7 @@ class DashboardContextLayerSerializer(DashboardSerializer):
     """Serializer for DashboardContextLayer.
 
     Handles override logic for layer name, description, styles, label,
-    and fields — returning dashboard-level overrides when set, otherwise
+    and fields — returning dashboard-level overrides when set or
     falling back to values from the linked ContextLayer object.
     """
 
@@ -206,11 +206,11 @@ class DashboardContextLayerSerializer(DashboardSerializer):
     label_styles = serializers.SerializerMethodField()
 
     def get_name(self, obj: DashboardContextLayer):
-        """Return layer name, using override if set, otherwise from linked object.
+        """Return layer name, using override if set or from object.
 
         :param obj: The DashboardContextLayer instance.
         :type obj: DashboardContextLayer
-        :returns: Overridden layer name or the linked object's name.
+        :returns: Overridden layer name or the object's name.
         :rtype: str or None
         """
         if obj.override_layer_name:
@@ -218,11 +218,11 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         return obj.object.name
 
     def get_description(self, obj: DashboardContextLayer):
-        """Return layer description, using override if set, otherwise from linked object.
+        """Return layer description, using override if set or from object.
 
         :param obj: The DashboardContextLayer instance.
         :type obj: DashboardContextLayer
-        :returns: Overridden layer description or the linked object's description.
+        :returns: Overridden layer description or the object's description.
         :rtype: str or None
         """
         if obj.override_layer_description:
@@ -230,41 +230,41 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         return obj.object.description
 
     def get_layer_name(self, obj: DashboardContextLayer):
-        """Return layer name, using override if set, otherwise from linked object.
+        """Return layer name, using override if set or from object.
 
         :param obj: The DashboardContextLayer instance.
         :type obj: DashboardContextLayer
-        :returns: Overridden layer name or the linked object's name.
+        :returns: Overridden layer name or the object's name.
         :rtype: str or None
         """
         return obj.layer_name
 
     def get_layer_description(self, obj: DashboardContextLayer):
-        """Return layer description, using override if set, otherwise from linked object.
+        """Return layer description, using override if set or from object.
 
         :param obj: The DashboardContextLayer instance.
         :type obj: DashboardContextLayer
-        :returns: Overridden layer description or the linked object's description.
+        :returns: Overridden layer description or the object's description.
         :rtype: str or None
         """
         return obj.layer_description
 
     def get_object_name(self, obj: DashboardContextLayer):
-        """Return layer name, using override if set, otherwise from linked object.
+        """Return layer name, using override if set or from object.
 
         :param obj: The DashboardContextLayer instance.
         :type obj: DashboardContextLayer
-        :returns: Overridden layer name or the linked object's name.
+        :returns: Overridden layer name or the object's name.
         :rtype: str or None
         """
         return obj.object.name
 
     def get_object_description(self, obj: DashboardContextLayer):
-        """Return layer description, using override if set, otherwise from linked object.
+        """Return layer description, using override if set or from object.
 
         :param obj: The DashboardContextLayer instance.
         :type obj: DashboardContextLayer
-        :returns: Overridden layer description or the linked object's description.
+        :returns: Overridden layer description or the object's description.
         :rtype: str or None
         """
         return obj.object.description

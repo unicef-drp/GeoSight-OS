@@ -68,7 +68,7 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         return None
 
     def get_layer_name(self, obj: DashboardIndicatorLayer):
-        """Return layer name, using override if set, otherwise from linked object.
+        """Return layer name, using override if set or from linked object.
 
         :param obj: Dashboard indicator layer instance.
         :type obj: DashboardIndicatorLayer
@@ -78,7 +78,7 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         return obj.name
 
     def get_layer_description(self, obj: DashboardIndicatorLayer):
-        """Return layer description, using override if set, otherwise from linked object.
+        """Return layer description, using override if set or from object.
 
         :param obj: Dashboard indicator layer instance.
         :type obj: DashboardIndicatorLayer
