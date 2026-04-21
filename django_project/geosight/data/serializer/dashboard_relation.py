@@ -189,9 +189,35 @@ class DashboardContextLayerSerializer(DashboardSerializer):
     styles = serializers.SerializerMethodField()
     label_config = serializers.SerializerMethodField()
     default_styles = serializers.SerializerMethodField()
+    layer_name = serializers.SerializerMethodField()
+    layer_description = serializers.SerializerMethodField()
 
     # TODO: TODO: Deprecated, we need to migrate this
     label_styles = serializers.SerializerMethodField()
+
+    def get_layer_name(self, obj: DashboardContextLayer):
+        """Return layer name, using override if set, otherwise from linked object.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Overridden layer name or the linked object's name.
+        :rtype: str or None
+        """
+        if obj.override_layer_name:
+            return obj.layer_name
+        return obj.object.name if obj.object else None
+
+    def get_layer_description(self, obj: DashboardContextLayer):
+        """Return layer description, using override if set, otherwise from linked object.
+
+        :param obj: The DashboardContextLayer instance.
+        :type obj: DashboardContextLayer
+        :returns: Overridden layer description or the linked object's description.
+        :rtype: str or None
+        """
+        if obj.override_layer_description:
+            return obj.layer_description
+        return obj.object.description if obj.object else None
 
     def get_context_layer_id(self, obj: DashboardContextLayer):
         """Return the ID of the associated context layer.

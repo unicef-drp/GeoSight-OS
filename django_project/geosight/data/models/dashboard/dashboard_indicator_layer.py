@@ -69,9 +69,19 @@ class DashboardIndicatorLayer(
         max_length=512,
         blank=True, null=True
     )
+    override_name = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's name will be used."
+    )
+
     description = models.TextField(
         blank=True, null=True
     )
+    override_description = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's name will be used."
+    )
+
     level_config = models.JSONField(null=True, blank=True, default=dict)
     type = models.CharField(
         max_length=48,
@@ -130,29 +140,31 @@ class DashboardIndicatorLayer(
     @property
     def label(self):
         """Return label data."""
+        if self.override_name:
+            return self.name
+
+        # If this is related table
         related_tables = self.dashboardindicatorlayerrelatedtable_set
         if related_tables.count():
-            return self.name
+            return related_tables.first().related_table.name
 
-        # If it is multi indicator
-        if self.name:
-            return self.name
-
+        # If it is indicator, use first one
         layer_indicator = self.dashboardindicatorlayerindicator_set.first()
         indicator = layer_indicator.indicator if layer_indicator else None
         return indicator.name if indicator else ""
 
     @property
     def desc(self):
-        """Return description data."""
-        related_tables = self.dashboardindicatorlayerrelatedtable_set
-        if related_tables.count():
+        """Return label data."""
+        if self.override_description:
             return self.description
 
-        # If it is multi indicator
-        if self.description:
-            return self.description if self.description else ''
+        # If this is related table
+        related_tables = self.dashboardindicatorlayerrelatedtable_set
+        if related_tables.count():
+            return related_tables.first().related_table.description
 
+        # If it is indicator, use first one
         layer_indicator = self.dashboardindicatorlayerindicator_set.first()
         indicator = layer_indicator.indicator if layer_indicator else None
         return indicator.description if indicator else ""
