@@ -43,7 +43,6 @@ export default function LayerDescription({ layer }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [loadedData, setLoadedData] = useState({});
-  console.log(layer)
 
   /***
    * Set loading if description not in layer.
