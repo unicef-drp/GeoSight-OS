@@ -106,12 +106,15 @@ function receive(data, error = null) {
 
     if (!data.contextLayers) {
       data.contextLayers = data.context_layers.map((layer) => {
-        layer.contextLayerName = layer.name;
-        layer.name = layer.layer_name || layer.contextLayerName;
-
-        layer.contextLayerDescription = layer.description;
-        layer.description =
-          layer.layer_description || layer.contextLayerDescription;
+        if (layer.layer_name && layer.override_layer_name === undefined) {
+          layer.override_layer_name = true;
+        }
+        if (
+          layer.layer_description &&
+          layer.override_layer_description === undefined
+        ) {
+          layer.override_layer_description = true;
+        }
         return layer;
       });
       delete data.context_layers;

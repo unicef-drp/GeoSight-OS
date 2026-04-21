@@ -134,11 +134,11 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
         self.assertEqual(layer.desc, '')
 
     # ------------------------------------------------------------------
-    # DashboardContextLayerSerializer: get_layer_name
+    # DashboardContextLayerSerializer: name / description (resolved)
     # ------------------------------------------------------------------
 
     def test_context_layer_serializer_name_override(self):
-        """Serializer returns layer_name when override_layer_name is True."""
+        """name returns override value when override_layer_name is True."""
         context_layer = ContextLayerF.create(name='Original Name')
         dcl = DashboardContextLayerF.create(
             object=context_layer,
@@ -146,10 +146,10 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
             override_layer_name=True,
         )
         serializer = DashboardContextLayerSerializer(dcl)
-        self.assertEqual(serializer.data['layer_name'], 'Overridden Name')
+        self.assertEqual(serializer.data['name'], 'Overridden Name')
 
     def test_context_layer_serializer_name_fallback(self):
-        """Serializer returns object name when override_layer_name is False."""
+        """name returns linked object name when override_layer_name is False."""
         context_layer = ContextLayerF.create(name='Original Name')
         dcl = DashboardContextLayerF.create(
             object=context_layer,
@@ -157,14 +157,58 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
             override_layer_name=False,
         )
         serializer = DashboardContextLayerSerializer(dcl)
-        self.assertEqual(serializer.data['layer_name'], 'Original Name')
-
-    # ------------------------------------------------------------------
-    # DashboardContextLayerSerializer: get_layer_description
-    # ------------------------------------------------------------------
+        self.assertEqual(serializer.data['name'], 'Original Name')
 
     def test_context_layer_serializer_description_override(self):
-        """Serializer returns layer_description when override_layer_description is True."""  # noqa: E501
+        """description returns override value when override_layer_description is True."""  # noqa: E501
+        context_layer = ContextLayerF.create(description='Original Desc')
+        dcl = DashboardContextLayerF.create(
+            object=context_layer,
+            layer_description='Overridden Desc',
+            override_layer_description=True,
+        )
+        serializer = DashboardContextLayerSerializer(dcl)
+        self.assertEqual(serializer.data['description'], 'Overridden Desc')
+
+    def test_context_layer_serializer_description_fallback(self):
+        """description returns linked object description when override_layer_description is False."""  # noqa: E501
+        context_layer = ContextLayerF.create(description='Original Desc')
+        dcl = DashboardContextLayerF.create(
+            object=context_layer,
+            layer_description='Overridden Desc',
+            override_layer_description=False,
+        )
+        serializer = DashboardContextLayerSerializer(dcl)
+        self.assertEqual(serializer.data['description'], 'Original Desc')
+
+    # ------------------------------------------------------------------
+    # DashboardContextLayerSerializer: raw fields
+    # ------------------------------------------------------------------
+
+    def test_context_layer_serializer_layer_name_raw(self):
+        """layer_name always returns the raw stored override value."""
+        context_layer = ContextLayerF.create(name='Original Name')
+        dcl = DashboardContextLayerF.create(
+            object=context_layer,
+            layer_name='Overridden Name',
+            override_layer_name=False,
+        )
+        serializer = DashboardContextLayerSerializer(dcl)
+        self.assertEqual(serializer.data['layer_name'], 'Overridden Name')
+
+    def test_context_layer_serializer_object_name(self):
+        """object_name always returns the linked ContextLayer name."""
+        context_layer = ContextLayerF.create(name='Original Name')
+        dcl = DashboardContextLayerF.create(
+            object=context_layer,
+            layer_name='Overridden Name',
+            override_layer_name=True,
+        )
+        serializer = DashboardContextLayerSerializer(dcl)
+        self.assertEqual(serializer.data['object_name'], 'Original Name')
+
+    def test_context_layer_serializer_object_description(self):
+        """object_description always returns the linked ContextLayer description."""  # noqa: E501
         context_layer = ContextLayerF.create(description='Original Desc')
         dcl = DashboardContextLayerF.create(
             object=context_layer,
@@ -173,18 +217,5 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
         )
         serializer = DashboardContextLayerSerializer(dcl)
         self.assertEqual(
-            serializer.data['layer_description'], 'Overridden Desc'
-        )
-
-    def test_context_layer_serializer_description_fallback(self):
-        """Serializer returns object description when override_layer_description is False."""  # noqa: E501
-        context_layer = ContextLayerF.create(description='Original Desc')
-        dcl = DashboardContextLayerF.create(
-            object=context_layer,
-            layer_description='Overridden Desc',
-            override_layer_description=False,
-        )
-        serializer = DashboardContextLayerSerializer(dcl)
-        self.assertEqual(
-            serializer.data['layer_description'], 'Original Desc'
+            serializer.data['object_description'], 'Original Desc'
         )

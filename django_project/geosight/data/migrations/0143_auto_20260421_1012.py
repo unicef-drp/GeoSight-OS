@@ -7,14 +7,24 @@ def set_override_fields_true(apps, schema_editor):
     DashboardContextLayer = apps.get_model('geosight_data', 'DashboardContextLayer')
     DashboardIndicatorLayer = apps.get_model('geosight_data', 'DashboardIndicatorLayer')
 
-    DashboardContextLayer.objects.all().update(
-        override_layer_description=True,
-        override_layer_name=True,
-    )
-    DashboardIndicatorLayer.objects.all().update(
-        override_description=True,
-        override_name=True,
-    )
+    DashboardContextLayer.objects.exclude(
+        layer_name__isnull=True
+    ).exclude(layer_name='').update(override_layer_name=True)
+
+    DashboardContextLayer.objects.exclude(
+        layer_description__isnull=True
+    ).exclude(layer_description='').update(override_layer_description=True)
+
+    DashboardIndicatorLayer.objects.exclude(
+        name__isnull=True
+    ).exclude(name='').update(override_name=True)
+
+    DashboardIndicatorLayer.objects.exclude(
+        description__isnull=True
+    ).exclude(description='').update(override_description=True)
+
+    Dashboard = apps.get_model('geosight_data', 'Dashboard')
+    Dashboard.objects.all().update(cache_data=None, cache_data_generated_at=None)
 
 
 class Migration(migrations.Migration):

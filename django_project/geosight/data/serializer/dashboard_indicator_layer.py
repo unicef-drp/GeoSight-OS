@@ -34,6 +34,8 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
 
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
+    layer_name = serializers.SerializerMethodField()
+    layer_description = serializers.SerializerMethodField()
     indicators = serializers.SerializerMethodField()
     related_tables = serializers.SerializerMethodField()
     last_update = serializers.SerializerMethodField()
@@ -64,6 +66,26 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         if len(output):
             return output
         return None
+
+    def get_layer_name(self, obj: DashboardIndicatorLayer):
+        """Return layer name, using override if set, otherwise from linked object.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Resolved layer name.
+        :rtype: str
+        """
+        return obj.name
+
+    def get_layer_description(self, obj: DashboardIndicatorLayer):
+        """Return layer description, using override if set, otherwise from linked object.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Resolved layer description.
+        :rtype: str
+        """
+        return obj.description
 
     def get_name(self, obj: DashboardIndicatorLayer):
         """
@@ -294,7 +316,9 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             'override_label',
             'label_config', 'level_config', 'data_fields',
             'popup_template', 'popup_type', 'multi_indicator_mode',
-            'raw_data_popup_enable', 'raw_data_popup_config'
+            'raw_data_popup_enable', 'raw_data_popup_config',
+            'layer_name', 'layer_description',
+            'override_name', 'override_description',
         )
         fields += DashboardSerializer.Meta.fields
 
