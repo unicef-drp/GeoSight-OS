@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
 import path from "path";
+import { saveProject } from "../../utils/project";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))

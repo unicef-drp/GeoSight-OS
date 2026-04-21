@@ -88,6 +88,12 @@ function receive(data, error = null) {
       data.indicatorLayers = data.indicator_layers;
       const embedConfig = EmbedConfig();
       data.indicatorLayers.map((layer) => {
+        if (layer.name === null) {
+          layer.name = "";
+        }
+        if (layer.description === null) {
+          layer.description = "";
+        }
         if (!layer.data_fields) {
           layer.data_fields = dataFieldsDefault();
         }
@@ -106,6 +112,12 @@ function receive(data, error = null) {
 
     if (!data.contextLayers) {
       data.contextLayers = data.context_layers.map((layer) => {
+        if (layer.name === null) {
+          layer.name = "";
+        }
+        if (layer.description === null) {
+          layer.description = "";
+        }
         if (layer.layer_name && layer.override_layer_name === undefined) {
           layer.override_layer_name = true;
         }

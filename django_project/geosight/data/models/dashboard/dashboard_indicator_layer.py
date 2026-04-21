@@ -48,6 +48,7 @@ POPUP_TYPES = (
     ("Simplified", "Simplified"),
     ("Custom", "Custom")
 )
+TYPE_FLOAT_INDICATOR = 'float'
 TYPE_SINGLE_INDICATOR = 'Single Indicator'
 TYPE_MULTI_INDICATOR = 'Multi Indicator'
 TYPE_DYNAMIC_INDICATOR = 'Dynamic Indicator'
@@ -140,6 +141,12 @@ class DashboardIndicatorLayer(
     @property
     def label(self):
         """Return label data."""
+        if (
+                self.type != TYPE_SINGLE_INDICATOR and
+                self.type.lower() != TYPE_FLOAT_INDICATOR
+        ):
+            return self.name
+
         if self.override_name:
             return self.name
 
@@ -155,7 +162,13 @@ class DashboardIndicatorLayer(
 
     @property
     def desc(self):
-        """Return label data."""
+        """Return description data."""
+        if (
+                self.type != TYPE_SINGLE_INDICATOR and
+                self.type.lower() != TYPE_FLOAT_INDICATOR
+        ):
+            return self.description
+
         if self.override_description:
             return self.description
 

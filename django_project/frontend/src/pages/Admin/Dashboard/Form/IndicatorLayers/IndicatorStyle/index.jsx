@@ -118,6 +118,7 @@ export const IndicatorStyle = forwardRef(
                         </div>
                         <div>
                           <input
+                            className="IndicatorName"
                             type="text"
                             spellCheck="false"
                             value={indicator.name}
@@ -125,7 +126,11 @@ export const IndicatorStyle = forwardRef(
                           />
                         </div>
                         <br />
-                        <textarea value={indicator.description} disabled />
+                        <textarea
+                          className="IndicatorDescription"
+                          value={indicator.description}
+                          disabled
+                        />
                       </div>
                       <div className="BasicFormSection">
                         <div>
@@ -133,6 +138,7 @@ export const IndicatorStyle = forwardRef(
                         </div>
                         <div style={{ display: "flex" }}>
                           <Checkbox
+                            className="LayerNameInputCheckbox"
                             title={"Override the name of the layer."}
                             onClick={(evt) => {
                               dataLayer.override_name =
@@ -142,6 +148,7 @@ export const IndicatorStyle = forwardRef(
                             checked={dataLayer.override_name}
                           />
                           <input
+                            className="LayerNameInput"
                             type="text"
                             spellCheck="false"
                             disabled={!dataLayer.override_name}
@@ -159,6 +166,7 @@ export const IndicatorStyle = forwardRef(
                         </div>
                         <div style={{ display: "flex" }}>
                           <Checkbox
+                            className="LayerDescriptionInputCheckbox"
                             title={"Override the description of the layer."}
                             onClick={(evt) => {
                               dataLayer.override_description =
@@ -168,6 +176,7 @@ export const IndicatorStyle = forwardRef(
                             checked={dataLayer.override_description}
                           />
                           <textarea
+                            className="LayerDescriptionInput"
                             disabled={!dataLayer.override_description}
                             value={dataLayer.layer_description}
                             onChange={(evt) => {

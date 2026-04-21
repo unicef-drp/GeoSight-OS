@@ -23,6 +23,9 @@ from geosight.data.models.dashboard import Dashboard
 from geosight.data.serializer.dashboard_relation import (
     DashboardContextLayerSerializer
 )
+from geosight.data.models.dashboard.dashboard_indicator_layer import (
+    TYPE_SINGLE_INDICATOR, TYPE_MULTI_INDICATOR, TYPE_FLOAT_INDICATOR
+)
 from geosight.data.tests.model_factories.dashboard.dashboard_indicator_layer import (  # noqa: E501
     DashboardIndicatorLayerF,
     DashboardIndicatorLayerIndicatorF,
@@ -56,16 +59,18 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
     # ------------------------------------------------------------------
 
     def test_indicator_layer_label_override_name(self):
-        """label returns obj.name when override_name is True."""
+        """label returns obj.name when override_name is True (single indicator)."""
         layer = DashboardIndicatorLayerF.create(
-            name='Custom Name', override_name=True
+            name='Custom Name', override_name=True,
+            type=TYPE_SINGLE_INDICATOR,
         )
         self.assertEqual(layer.label, 'Custom Name')
 
     def test_indicator_layer_label_fallback_to_related_table(self):
-        """label returns related table name when override_name is False."""
+        """label returns related table name when override_name is False (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            name='Custom Name', override_name=False
+            name='Custom Name', override_name=False,
+            type=TYPE_SINGLE_INDICATOR,
         )
         related_table = RelatedTableF.create(name='Related Table Name')
         DashboardIndicatorLayerRelatedTableF.create(
@@ -74,9 +79,10 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
         self.assertEqual(layer.label, 'Related Table Name')
 
     def test_indicator_layer_label_fallback_to_indicator(self):
-        """label returns indicator name when override_name is False and no related table."""  # noqa: E501
+        """label returns indicator name when override_name is False and no related table (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            name='Custom Name', override_name=False
+            name='Custom Name', override_name=False,
+            type=TYPE_SINGLE_INDICATOR,
         )
         indicator = IndicatorF.create(name='Indicator Name')
         DashboardIndicatorLayerIndicatorF.create(
@@ -85,27 +91,62 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
         self.assertEqual(layer.label, 'Indicator Name')
 
     def test_indicator_layer_label_fallback_empty(self):
-        """label returns empty string when override_name is False and no linked objects."""  # noqa: E501
+        """label returns empty string when override_name is False and no linked objects (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            name='Custom Name', override_name=False
+            name='Custom Name', override_name=False,
+            type=TYPE_SINGLE_INDICATOR,
         )
         self.assertEqual(layer.label, '')
+
+    def test_indicator_layer_label_non_single_ignores_override(self):
+        """label returns obj.name directly for non-single-indicator types, ignoring override flag."""  # noqa: E501
+        layer = DashboardIndicatorLayerF.create(
+            name='Custom Name', override_name=False,
+            type=TYPE_MULTI_INDICATOR,
+        )
+        indicator = IndicatorF.create(name='Indicator Name')
+        DashboardIndicatorLayerIndicatorF.create(
+            object=layer, indicator=indicator
+        )
+        self.assertEqual(layer.label, 'Custom Name')
+
+    def test_indicator_layer_label_float_uses_override(self):
+        """label uses override logic for TYPE_FLOAT_INDICATOR like single indicator."""
+        layer = DashboardIndicatorLayerF.create(
+            name='Float Name', override_name=True,
+            type=TYPE_FLOAT_INDICATOR,
+        )
+        self.assertEqual(layer.label, 'Float Name')
+
+    def test_indicator_layer_label_float_fallback_to_indicator(self):
+        """label falls back to indicator name for TYPE_FLOAT_INDICATOR when override is False."""  # noqa: E501
+        layer = DashboardIndicatorLayerF.create(
+            name='Float Name', override_name=False,
+            type=TYPE_FLOAT_INDICATOR,
+        )
+        indicator = IndicatorF.create(name='Indicator Name')
+        DashboardIndicatorLayerIndicatorF.create(
+            object=layer, indicator=indicator
+        )
+        self.assertEqual(layer.label, 'Indicator Name')
 
     # ------------------------------------------------------------------
     # DashboardIndicatorLayer: desc property
     # ------------------------------------------------------------------
 
     def test_indicator_layer_desc_override_description(self):
-        """desc returns obj.description when override_description is True."""
+        """desc returns obj.description when override_description is True (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            description='Custom Desc', override_description=True
+            description='Custom Desc', override_description=True,
+            type=TYPE_SINGLE_INDICATOR,
         )
         self.assertEqual(layer.desc, 'Custom Desc')
 
     def test_indicator_layer_desc_fallback_to_related_table(self):
-        """desc returns related table description when override_description is False."""  # noqa: E501
+        """desc returns related table description when override_description is False (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            description='Custom Desc', override_description=False
+            description='Custom Desc', override_description=False,
+            type=TYPE_SINGLE_INDICATOR,
         )
         related_table = RelatedTableF.create(description='Related Table Desc')
         DashboardIndicatorLayerRelatedTableF.create(
@@ -114,9 +155,10 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
         self.assertEqual(layer.desc, 'Related Table Desc')
 
     def test_indicator_layer_desc_fallback_to_indicator(self):
-        """desc returns indicator description when override_description is False and no related table."""  # noqa: E501
+        """desc returns indicator description when override_description is False and no related table (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            description='Custom Desc', override_description=False
+            description='Custom Desc', override_description=False,
+            type=TYPE_SINGLE_INDICATOR,
         )
         indicator = IndicatorF.create(
             name='Indicator', description='Indicator Desc'
@@ -127,11 +169,48 @@ class DashboardLayerTestTest(BasePermissionTest.TestCase):
         self.assertEqual(layer.desc, 'Indicator Desc')
 
     def test_indicator_layer_desc_fallback_empty(self):
-        """desc returns empty string when override_description is False and no linked objects."""  # noqa: E501
+        """desc returns empty string when override_description is False and no linked objects (single indicator)."""  # noqa: E501
         layer = DashboardIndicatorLayerF.create(
-            description='Custom Desc', override_description=False
+            description='Custom Desc', override_description=False,
+            type=TYPE_SINGLE_INDICATOR,
         )
         self.assertEqual(layer.desc, '')
+
+    def test_indicator_layer_desc_non_single_ignores_override(self):
+        """desc returns obj.description directly for non-single-indicator types, ignoring override flag."""  # noqa: E501
+        layer = DashboardIndicatorLayerF.create(
+            description='Custom Desc', override_description=False,
+            type=TYPE_MULTI_INDICATOR,
+        )
+        indicator = IndicatorF.create(
+            name='Indicator', description='Indicator Desc'
+        )
+        DashboardIndicatorLayerIndicatorF.create(
+            object=layer, indicator=indicator
+        )
+        self.assertEqual(layer.desc, 'Custom Desc')
+
+    def test_indicator_layer_desc_float_uses_override(self):
+        """desc uses override logic for TYPE_FLOAT_INDICATOR like single indicator."""
+        layer = DashboardIndicatorLayerF.create(
+            description='Float Desc', override_description=True,
+            type=TYPE_FLOAT_INDICATOR,
+        )
+        self.assertEqual(layer.desc, 'Float Desc')
+
+    def test_indicator_layer_desc_float_fallback_to_indicator(self):
+        """desc falls back to indicator description for TYPE_FLOAT_INDICATOR when override is False."""  # noqa: E501
+        layer = DashboardIndicatorLayerF.create(
+            description='Float Desc', override_description=False,
+            type=TYPE_FLOAT_INDICATOR,
+        )
+        indicator = IndicatorF.create(
+            name='Indicator', description='Indicator Desc'
+        )
+        DashboardIndicatorLayerIndicatorF.create(
+            object=layer, indicator=indicator
+        )
+        self.assertEqual(layer.desc, 'Indicator Desc')
 
     # ------------------------------------------------------------------
     # DashboardContextLayerSerializer: name / description (resolved)

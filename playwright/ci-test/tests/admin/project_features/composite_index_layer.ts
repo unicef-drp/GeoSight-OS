@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   deleteProject,
   saveAsProject,
+  saveProject,
   viewProject
 } from "../../utils/project";
 import { deleteIndicatorByName } from "../../utils/indicator";
@@ -21,8 +22,7 @@ const createIndicator = async (page) => {
   await page.locator('[data-wrapper-name="indicator_type"]').click();
   await page.getByRole('option', { name: 'Category' }).click();
 
-  await page.getByText('Save').isEnabled();
-  await page.getByText('Save').click();
+  await saveProject(page);
 }
 
 test.describe('Composite index layer', () => {
@@ -106,8 +106,7 @@ test.describe('Composite index layer', () => {
     // --------------------------------------------------------------------
     // Save
     // --------------------------------------------------------------------
-    await page.getByText('Save', { exact: true }).isEnabled();
-    await page.getByText('Save', { exact: true }).click();
+    await saveProject(page);
 
     // --------------------------------------------------------------------
     // View the project

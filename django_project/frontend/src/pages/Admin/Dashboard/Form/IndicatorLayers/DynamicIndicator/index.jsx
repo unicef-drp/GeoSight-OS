@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FormGroup } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -21,17 +21,17 @@ import Checkbox from "@mui/material/Checkbox";
 
 import {
   SaveButton,
-  ThemeButton
+  ThemeButton,
 } from "../../../../../../components/Elements/Button";
 import Modal, {
   ModalContent,
-  ModalHeader
+  ModalHeader,
 } from "../../../../../../components/Modal";
 import { AdminForm } from "../../../../Components/AdminForm";
 import PopupConfigForm from "../PopupConfigForm";
 import {
   dataFieldsDefault,
-  DynamicIndicatorType
+  DynamicIndicatorType,
 } from "../../../../../../utils/indicatorLayer";
 import {
   ViewLevelConfiguration
@@ -41,7 +41,7 @@ import LabelForm from "../../../../Indicator/Form/LabelForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
 import { CogIcon } from "../../../../../../components/Icons";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * DynamicIndicatorConfig
@@ -51,16 +51,13 @@ import './style.scss';
  * @param {dict} indicatorLayer Data of layer.
  * @param {Function} onUpdate Function when data updated.
  */
-export default function DynamicIndicatorConfig(
-  {
-    openGlobal,
-    setOpenGlobal,
-    indicators,
-    indicatorLayer,
-    onUpdate
-  }
-) {
-
+export default function DynamicIndicatorConfig({
+  openGlobal,
+  setOpenGlobal,
+  indicators,
+  indicatorLayer,
+  onUpdate,
+}) {
   /** Default data **/
   const defaultData = () => {
     return {
@@ -70,193 +67,213 @@ export default function DynamicIndicatorConfig(
       data_fields: dataFieldsDefault(),
       level_config: {},
       config: {
-        exposedVariables: []
+        exposedVariables: [],
       },
-      type: DynamicIndicatorType
-    }
-  }
+      type: DynamicIndicatorType,
+    };
+  };
 
-  const { referenceLayer } = useSelector(state => state.dashboard.data);
+  const { referenceLayer } = useSelector((state) => state.dashboard.data);
   const [data, setData] = useState(defaultData());
   const [open, setOpen] = useState(false);
 
   /** Update data **/
   const updateData = () => {
-    setData(JSON.parse(JSON.stringify(data)))
-  }
+    setData(JSON.parse(JSON.stringify(data)));
+  };
 
   // Open data selection when the props true
   useEffect(() => {
     if (openGlobal) {
-      setOpen(true)
+      setOpen(true);
     }
     if (!indicatorLayer) {
-      setData(defaultData())
+      setData(defaultData());
     } else {
-      setData(indicatorLayer)
+      setData(indicatorLayer);
     }
-  }, [openGlobal])
+  }, [openGlobal]);
 
   // Open data selection when the props true
   useEffect(() => {
     if (setOpenGlobal) {
-      setOpenGlobal(open)
+      setOpenGlobal(open);
     }
-  }, [open])
+  }, [open]);
 
   /** Apply data **/
   const apply = () => {
     if (setOpenGlobal) {
-      setOpenGlobal(open)
+      setOpenGlobal(open);
     }
-    onUpdate(data)
-    setOpen(false)
-  }
+    onUpdate(data);
+    setOpen(false);
+  };
 
   return (
     <Fragment>
       <Modal
-        className='IndicatorLayerConfig DynamicIndicator MuiBox-Large'
+        className="IndicatorLayerConfig DynamicIndicator MuiBox-Large"
         open={open}
         onClosed={() => {
-          setOpen(false)
+          setOpen(false);
         }}
       >
-        <ModalHeader onClosed={() => {
-          setOpen(false)
-        }}>
-          {
-            !indicatorLayer ?
-              'Create Dynamic Indicator Layer' :
-              'Change Layer ' + indicatorLayer.name
-          }
+        <ModalHeader
+          onClosed={() => {
+            setOpen(false);
+          }}
+        >
+          {!indicatorLayer
+            ? "Create Dynamic Indicator Layer"
+            : "Change Layer " + indicatorLayer.name}
         </ModalHeader>
-        <ModalContent className='Gray'>
-          <div className='SaveButton-Section'>
+        <ModalContent className="Gray">
+          <div className="SaveButton-Section">
             <SaveButton
               variant="primary"
               text={"Apply Changes"}
               disabled={!data.name}
-              onClick={apply}/>
+              onClick={apply}
+            />
           </div>
-          <div className='AdminForm Section'>
+          <div className="AdminForm Section">
             <AdminForm
               selectableInput={false}
               forms={{
-                'General': (
+                General: (
                   <div>
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label required">Name</label>
                       </div>
-                      <div className='ContextLayerConfig-IconSize'>
+                      <div className="ContextLayerConfig-IconSize">
                         <input
-                          type="text" spellCheck="false"
+                          className="LayerNameInput"
+                          type="text"
+                          spellCheck="false"
                           value={data.name}
-                          onChange={evt => {
-                            data.name = evt.target.value
-                            updateData()
-                          }}/>
+                          onChange={(evt) => {
+                            data.name = evt.target.value;
+                            updateData();
+                          }}
+                        />
                       </div>
                     </div>
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label">Description</label>
                       </div>
-                      <div className='ContextLayerConfig-IconSize'>
+                      <div className="ContextLayerConfig-IconSize">
                         <textarea
+                          className="LayerDescriptionInput"
                           value={data.description}
-                          onChange={evt => {
-                            data.description = evt.target.value
-                            updateData()
-                          }}/>
+                          onChange={(evt) => {
+                            data.description = evt.target.value;
+                            updateData();
+                          }}
+                        />
                       </div>
                     </div>
 
                     {/* ADMIN LEVEL CONFIGURATION*/}
-                    <div className='OverrideAdminLevel'>
+                    <div className="OverrideAdminLevel">
                       <FormGroup>
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={!!(data.level_config && Object.keys(data.level_config).length)}
-                              onChange={evt => {
+                              checked={
+                                !!(
+                                  data.level_config &&
+                                  Object.keys(data.level_config).length
+                                )
+                              }
+                              onChange={(evt) => {
                                 if (evt.target.checked) {
                                   data.level_config = {
-                                    default_level: 0
-                                  }
+                                    default_level: 0,
+                                  };
                                 } else {
-                                  data.level_config = {}
+                                  data.level_config = {};
                                 }
-                                updateData()
-                              }}/>
+                                updateData();
+                              }}
+                            />
                           }
-                          label={"Override admin level configuration"}/>
+                          label={"Override admin level configuration"}
+                        />
                       </FormGroup>
-                      {
-                        data.level_config && Object.keys(data.level_config).length ?
-                          <ViewLevelConfiguration
-                            data={data.level_config}
-                            setData={
-                              levelConfig => {
-                                data.level_config = levelConfig
-                                updateData()
-                              }
-                            }
-                            referenceLayer={referenceLayer}
-                            ableToSelectReferenceLayer={true}
-                          /> : null
-                      }
+                      {data.level_config &&
+                      Object.keys(data.level_config).length ? (
+                        <ViewLevelConfiguration
+                          data={data.level_config}
+                          setData={(levelConfig) => {
+                            data.level_config = levelConfig;
+                            updateData();
+                          }}
+                          referenceLayer={referenceLayer}
+                          ableToSelectReferenceLayer={true}
+                        />
+                      ) : null}
                     </div>
                   </div>
                 ),
-                'Expression': <Expression
-                  indicators={indicators}
-                  data={data.config}
-                  setData={config => {
-                    data.config = config
-                    updateData()
-                  }}
-                />,
-                'Style':
+                Expression: (
+                  <Expression
+                    indicators={indicators}
+                    data={data.config}
+                    setData={(config) => {
+                      data.config = config;
+                      updateData();
+                    }}
+                  />
+                ),
+                Style: (
                   <StyleConfig
                     data={data}
-                    setData={newData => {
-                      setData({ ...newData })
-                      updateData()
+                    setData={(newData) => {
+                      setData({ ...newData });
+                      updateData();
                     }}
                     defaultStyleRules={data?.style ? data?.style : []}
-                  />,
-                'Label': <LabelForm
-                  indicator={data}
-                  setIndicator={newData => {
-                    setData({ ...data, label_config: newData.label_config })
-                  }}/>,
-                'Popup': <PopupConfigForm
-                  indicator={data}
-                  setIndicator={newDataLayer => {
-                    data.popup_template = newDataLayer.popup_template
-                    data.popup_type = newDataLayer.popup_type
-                    data.data_fields = newDataLayer.data_fields
-                    updateData()
-                  }}
-                />,
+                  />
+                ),
+                Label: (
+                  <LabelForm
+                    indicator={data}
+                    setIndicator={(newData) => {
+                      setData({ ...data, label_config: newData.label_config });
+                    }}
+                  />
+                ),
+                Popup: (
+                  <PopupConfigForm
+                    indicator={data}
+                    setIndicator={(newDataLayer) => {
+                      data.popup_template = newDataLayer.popup_template;
+                      data.popup_type = newDataLayer.popup_type;
+                      data.data_fields = newDataLayer.data_fields;
+                      updateData();
+                    }}
+                  />
+                ),
               }}
             />
           </div>
         </ModalContent>
       </Modal>
-      {
-        indicatorLayer ?
-          <ThemeButton
-            className='IndicatorStyleButton'
-            onClick={() => {
-              setOpen(true)
-            }}>
-            <CogIcon/> Config
-          </ThemeButton>
-          : ""
-      }
+      {indicatorLayer ? (
+        <ThemeButton
+          className="IndicatorStyleButton"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          <CogIcon /> Config
+        </ThemeButton>
+      ) : (
+        ""
+      )}
     </Fragment>
-  )
+  );
 }

@@ -185,6 +185,7 @@ function ContextLayerStyle({ contextLayer }) {
                       <div style={{ display: "flex" }}>
                         <Checkbox
                           title={"Override the name of the layer."}
+                          className="LayerNameInputCheckbox"
                           onClick={(evt) => {
                             updateData({
                               ...data,
@@ -214,6 +215,7 @@ function ContextLayerStyle({ contextLayer }) {
                       </div>
                       <div style={{ display: "flex" }}>
                         <Checkbox
+                          className="LayerDescriptionInputCheckbox"
                           title={"Override the description of the layer."}
                           onClick={(evt) => {
                             updateData({

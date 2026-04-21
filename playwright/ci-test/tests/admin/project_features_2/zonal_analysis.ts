@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   deleteProject,
   saveAsProject,
+  saveProject,
   viewProject
 } from "../../utils/project";
 
@@ -45,8 +46,8 @@ test.describe('Zonal analysis', () => {
     // --------------------------------------------------------------------
     // Save
     // --------------------------------------------------------------------
-    await page.getByText('Save', { exact: true }).isEnabled();
-    await page.getByText('Save', { exact: true }).click();
+    await saveProject(page);
+
 
     // --------------------------------------------------------------------
     // View the project
