@@ -147,7 +147,7 @@ export default function DynamicIndicatorConfig(
                   <div>
                     <div className="BasicFormSection">
                       <div>
-                        <label className="form-label">Name</label>
+                        <label className="form-label required">Name</label>
                       </div>
                       <div className='ContextLayerConfig-IconSize'>
                         <input

@@ -704,6 +704,10 @@ class Dashboard(
             model.override_layer_description = data.get(
                 'override_layer_description', False
             )
+            model.override_name = data.get('override_name', False)
+            model.override_description = data.get(
+                'override_description', False
+            )
 
             model.override_style = data.get('override_style', False)
             model.override_label = data.get('override_label', False)
