@@ -22,7 +22,8 @@ const createIndicator = async (page) => {
   await page.locator('[data-wrapper-name="indicator_type"]').click();
   await page.getByRole('option', { name: 'Category' }).click();
 
-  await saveProject(page);
+  await page.getByText('Save').isEnabled();
+  await page.getByText('Save').click();
 }
 
 test.describe('Composite index layer', () => {
