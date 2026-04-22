@@ -110,6 +110,7 @@ class Dashboard(
     context_layers_structure = models.JSONField(null=True, blank=True)
     basemaps_layers_structure = models.JSONField(null=True, blank=True)
     widgets_structure = models.JSONField(null=True, blank=True)
+    stories_structure = models.JSONField(null=True, blank=True)
     level_config = models.JSONField(null=True, blank=True, default=dict)
 
     # ------------------------------
@@ -150,6 +151,7 @@ class Dashboard(
         null=True, blank=True, default=True,
         help_text=_('Show map toolbars on the map.')
     )
+    story_map_enabled = models.BooleanField(default=False)
 
     # TransparencySlider
     transparency_config = models.JSONField(
@@ -222,7 +224,7 @@ class Dashboard(
             # If it does not have icon, just save*
             super().save(*args, **kwargs)
 
-    def save_relations(self, data, is_create=False):  # noqa DOC202
+    def save_relations(self, data, files=None, is_create=False):  # noqa DOC202
         """
         Save all related data and relationships for a dashboard instance.
 
@@ -276,6 +278,19 @@ class Dashboard(
         widgets_new = self.save_widgets(data['widgets'])
         widgets_structure = data['widgets_structure']
         self.widgets_new = update_structure(widgets_structure, widgets_new)
+
+        # STORIES
+        stories_new = self.save_stories(
+            data.get('stories', []),
+            files=files,
+            allow_missing_bookmark=is_create
+        )
+        stories_structure = data.get('stories_structure', {'children': []})
+        self.story_ids_new = stories_new
+        self.stories_structure = update_structure(
+            stories_structure, stories_new
+        )
+        self.story_map_enabled = data.get('story_map_enabled', False)
 
         # INDICATORS
         self.save_relation(
@@ -799,6 +814,153 @@ class Dashboard(
             except KeyError:
                 pass
         return ids_new
+
+    def save_stories(
+            self, story_data, files=None, allow_missing_bookmark=False):
+        """
+        Save or update dashboard stories from the provided data.
+
+        Stories are dashboard-owned content like widgets, but can optionally
+        point to a dashboard bookmark to restore a map state.
+
+        :param story_data:
+            A list of dictionaries containing story data.
+        :type story_data: list[dict]
+        :param files:
+            Uploaded files keyed by story-specific field names.
+        :type files: MultiValueDict or dict or None
+        :param allow_missing_bookmark:
+            Allow stories to be saved without their bookmark when the bookmark
+            will be cloned and reattached in a later step, such as dashboard
+            duplication.
+        :type allow_missing_bookmark: bool
+        :return:
+            A mapping of original story IDs (or 0 for new ones)
+            to actual saved story IDs.
+        :rtype: dict[int, int]
+        :raises ValueError:
+            If a referenced bookmark does not belong to this dashboard and
+            missing bookmarks are not allowed.
+        """
+        from .bookmark import DashboardBookmark
+        from .dashboard_story import DashboardStory
+
+        ids = []
+        ids_new = {}
+
+        for data in story_data:
+            if 'id' in data:
+                ids.append(data['id'])
+
+        self.dashboardstory_set.exclude(id__in=ids).delete()
+
+        for data in story_data:
+            try:
+                try:
+                    story = self.dashboardstory_set.get(id=data['id'])
+                except (KeyError, DashboardStory.DoesNotExist):
+                    story = DashboardStory(dashboard=self)
+
+                bookmark_id = data.get('bookmark') or data.get('bookmark_id')
+                bookmark = None
+                if bookmark_id:
+                    try:
+                        bookmark = DashboardBookmark.objects.get(
+                            id=bookmark_id,
+                            dashboard=self
+                        )
+                    except DashboardBookmark.DoesNotExist:
+                        if not allow_missing_bookmark:
+                            raise ValueError(
+                                f"DashboardBookmark with id {bookmark_id} "
+                                f"does not exist for dashboard {self.id}"
+                            )
+
+                story.name = data['name']
+                story.description = data.get('description', '')
+                order = data.get('order', 0)
+                story.order = order if order else 0
+                story.visible_by_default = data.get('visible_by_default', True)
+                story.bookmark = bookmark
+                story.config = data.get('config', None)
+                icon_key = (
+                    f"story_icon_{story.id or data.get('id', 'new')}"
+                )
+                temp_icon_key = f"story_icon_{data.get('id', 'new')}"
+                if files:
+                    story_icon = (
+                        files.get(icon_key) or files.get(temp_icon_key)
+                    )
+                    if story_icon:
+                        story.icon = story_icon
+                story.save()
+                ids_new[data.get('id', 0)] = story.id
+            except KeyError:
+                pass
+        return ids_new
+
+    def clone_story_bookmarks_from(self, origin):
+        """
+        Clone bookmarks referenced by stories from another dashboard.
+
+        This is primarily used during dashboard duplication so that newly
+        created stories reference bookmarks owned by the duplicated dashboard.
+
+        :param origin: Source dashboard to clone story bookmarks from.
+        :type origin: Dashboard
+        """
+        from .dashboard_story import DashboardStory
+
+        story_ids_new = getattr(self, 'story_ids_new', {})
+        cloned_bookmarks = {}
+
+        for origin_story in origin.dashboardstory_set.select_related(
+                'bookmark').all():
+            if not origin_story.bookmark:
+                continue
+
+            origin_bookmark = origin_story.bookmark
+            if origin_bookmark.id not in cloned_bookmarks:
+                bookmark = self.dashboardbookmark_set.create(
+                    name=origin_bookmark.name,
+                    dashboard=self,
+                    creator=self.creator,
+                    extent=origin_bookmark.extent,
+                    filters=origin_bookmark.filters,
+                    selected_basemap=origin_bookmark.selected_basemap,
+                    selected_indicator_layers=
+                    origin_bookmark.selected_indicator_layers,
+                    indicator_layer_show=origin_bookmark.indicator_layer_show,
+                    selected_admin_level=origin_bookmark.selected_admin_level,
+                    is_3d_mode=origin_bookmark.is_3d_mode,
+                    position=origin_bookmark.position,
+                    context_layer_show=origin_bookmark.context_layer_show,
+                    context_layers_config=(
+                        origin_bookmark.context_layers_config
+                    ),
+                    transparency_config=origin_bookmark.transparency_config,
+                )
+                bookmark.selected_context_layers.set(
+                    origin_bookmark.selected_context_layers.all()
+                )
+                cloned_bookmarks[origin_bookmark.id] = bookmark
+
+            story_id = story_ids_new.get(origin_story.id)
+            if story_id:
+                try:
+                    story = self.dashboardstory_set.get(id=story_id)
+                except DashboardStory.DoesNotExist:
+                    story = None
+            else:
+                story = self.dashboardstory_set.filter(
+                    name=origin_story.name, order=origin_story.order
+                ).first()
+
+            if story:
+                story.bookmark = cloned_bookmarks[
+                    origin_bookmark.id
+                ]
+                story.save(update_fields=['bookmark'])
 
     @staticmethod
     def check_data(data, user: User):

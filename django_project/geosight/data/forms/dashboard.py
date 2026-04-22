@@ -181,6 +181,13 @@ class DashboardForm(forms.ModelForm):
             )
         data['widgets'] = other_data['widgets']
         data['widgets_structure'] = other_data['widgets_structure']
+        data['stories'] = other_data.get('stories', [])
+        data['stories_structure'] = other_data.get(
+            'stories_structure', {'children': []}
+        )
+        data['story_map_enabled'] = other_data.get(
+            'story_map_enabled', False
+        )
 
         data['related_tables'] = other_data.get('related_tables', [])
 

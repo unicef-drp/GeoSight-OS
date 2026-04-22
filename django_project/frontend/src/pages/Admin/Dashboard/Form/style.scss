@@ -221,6 +221,12 @@ main {
       }
     }
 
+    &.StoryMap {
+      .StoryMap {
+        display: block;
+      }
+    }
+
     .Share {
       display: block;
       height: 0;
