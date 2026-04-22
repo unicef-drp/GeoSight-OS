@@ -160,27 +160,58 @@ class DashboardContextLayer(DashboardRelationWithLimit):
         ContextLayer,
         on_delete=models.CASCADE
     )
+    # ------------------------------
+    # Layer name
+    # ------------------------------
     layer_name = models.CharField(
         max_length=512,
         blank=True, null=True,
         help_text='Overridden of name of the context layer'
     )
+    override_layer_name = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's name will be used."
+    )
+
+    # ------------------------------
+    # Layer description
+    # ------------------------------
     layer_description = models.TextField(
         blank=True, null=True,
         help_text='Overridden of description of the context layer'
     )
+    override_layer_description = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's description will be used."
+    )
+
+    # ------------------------------
+    # Layer styles
+    # ------------------------------
     styles = models.TextField(
         null=True, blank=True
     )
+    override_style = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's styles will be used."
+    )
+
+    # ------------------------------
+    # Layer label
+    # ------------------------------
     label_config = models.JSONField(
         null=True, blank=True
     )
-    override_style = models.BooleanField(default=False)
-    override_field = models.BooleanField(default=False)
-    override_label = models.BooleanField(default=False)
-    configuration = models.JSONField(
-        null=True, blank=True
+    override_label = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's label will be used."
     )
+
+    override_field = models.BooleanField(
+        default=False,
+        help_text="If set to false, the object's fields will be used."
+    )
+    configuration = models.JSONField(null=True, blank=True)
 
     content_limitation_description = (
         'Limit the number of context layer per project'

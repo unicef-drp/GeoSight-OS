@@ -290,8 +290,10 @@ export function DashboardSaveForm() {
           return {
             id: model.id,
             order: model.order,
-            layer_name: model.name,
-            layer_description: model.description,
+            layer_name: model.layer_name,
+            override_layer_name: model.override_layer_name,
+            layer_description: model.layer_description,
+            override_layer_description: model.override_layer_description,
             visible_by_default: model.visible_by_default,
             data_fields: model.data_fields,
             styles: JSON.stringify(model.styles),

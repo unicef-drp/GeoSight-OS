@@ -180,6 +180,7 @@ load-test-data:
 	@echo "Load demo data for dev"
 	@echo "------------------------------------------------------------------"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py load_demo_data"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py fix_override_fields"
 
 load-test-data-default-dataset:
 	@echo
@@ -187,6 +188,7 @@ load-test-data-default-dataset:
 	@echo "Load demo data for dev"
 	@echo "------------------------------------------------------------------"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py load_demo_data_default_dataset"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py fix_override_fields"
 
 dev-test:
 	@echo

@@ -516,6 +516,10 @@ class Dashboard(
             # This is for indicators
             model.name = layer_data.get('name', '')
             model.description = layer_data.get('description', '')
+            model.override_name = layer_data.get('override_name', False)
+            model.override_description = layer_data.get(
+                'override_description', False
+            )
             model.multi_indicator_mode = layer_data.get(
                 'multi_indicator_mode', 'Chart'
             )
@@ -700,6 +704,15 @@ class Dashboard(
             # Context layer
             model.layer_name = data.get('layer_name', None)
             model.layer_description = data.get('layer_description', None)
+            model.override_layer_name = data.get('override_layer_name', False)
+            model.override_layer_description = data.get(
+                'override_layer_description', False
+            )
+            model.override_name = data.get('override_name', False)
+            model.override_description = data.get(
+                'override_description', False
+            )
+
             model.override_style = data.get('override_style', False)
             model.override_label = data.get('override_label', False)
             model.override_field = data.get('override_field', False)

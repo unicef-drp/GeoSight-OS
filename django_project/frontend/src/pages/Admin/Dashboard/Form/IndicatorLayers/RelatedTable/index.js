@@ -306,6 +306,7 @@ export default function RelatedTableLayerConfig({
                       </div>
                       <div className="ContextLayerConfig-IconSize">
                         <input
+                          className="LayerNameInput"
                           type="text"
                           spellCheck="false"
                           value={data.name}
@@ -322,6 +323,7 @@ export default function RelatedTableLayerConfig({
                       </div>
                       <div className="ContextLayerConfig-IconSize">
                         <textarea
+                          className="LayerDescriptionInput"
                           value={data.description}
                           onChange={(evt) => {
                             data.description = evt.target.value;

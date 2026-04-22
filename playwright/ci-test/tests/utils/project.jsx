@@ -31,6 +31,12 @@ export async function fillProjectName(page, name) {
   await delay(1000)
 }
 
+export async function saveProject(page) {
+  await page.getByText('Save', { exact: true }).isEnabled();
+  await page.getByText('Save', { exact: true }).click();
+  await expect(page.getByText('Configuration has been saved!')).toBeVisible();
+}
+
 export async function deleteProject(page, name) {
   const response = await page.goto(`/admin/project/${nameToSlug(name)}/edit`);
   if (response?.status() === 404) {

@@ -3,6 +3,7 @@ import {
   deleteProject,
   editProject,
   saveAsProject,
+  saveProject,
   viewProject
 } from "../../utils/project";
 
@@ -44,15 +45,25 @@ test.describe('Context layer override', () => {
     await page.getByText('Context Layers (2)').click();
     await page.locator('li').filter({ hasText: oldName }).locator('.OtherActionButton').click();
     await expect(page.locator('.DashboardForm').getByText(oldName, { exact: true })).toBeVisible();
+    await expect(page.locator('.ContextLayerNameInput')).toBeDisabled();
+    await expect(page.locator('.ContextLayerDescriptionInput')).toBeDisabled();
     await expect(page.locator('.ContextLayerNameInput')).toHaveValue(oldName);
     await expect(page.locator('.ContextLayerDescriptionInput')).toHaveValue(oldDescription);
+
+    await expect(page.locator('.LayerNameInput')).toBeDisabled();
+    await page.locator('.LayerNameInputCheckbox').click();
+    await expect(page.locator('.LayerNameInput')).toBeEnabled();
     await page.locator('.LayerNameInput').fill(newName);
+
+    await expect(page.locator('.LayerDescriptionInput')).toBeDisabled();
+    await page.locator('.LayerDescriptionInputCheckbox').click();
+    await expect(page.locator('.LayerDescriptionInput')).toBeEnabled();
     await page.locator('.LayerDescriptionInput').fill(newescription);
+
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await expect(page.locator('.DashboardForm').getByText(newName, { exact: true })).toBeVisible();
     await expect(page.locator('.DashboardForm').getByText(oldName, { exact: true })).toBeHidden();
-    await page.getByText('Save', { exact: true }).isEnabled();
-    await page.getByText('Save', { exact: true }).click();
+    await saveProject(page);
 
     // Check name and description on the view
     await viewProject(page, name);
@@ -69,13 +80,16 @@ test.describe('Context layer override', () => {
     await expect(page.locator('.DashboardForm').getByText(newName, { exact: true })).toBeVisible();
     await expect(page.locator('.ContextLayerNameInput')).toHaveValue(oldName);
     await expect(page.locator('.ContextLayerDescriptionInput')).toHaveValue(oldDescription);
-    await page.locator('.LayerNameInput').fill("");
-    await page.locator('.LayerDescriptionInput').fill("");
+
+    await page.locator('.LayerNameInputCheckbox').click();
+    await expect(page.locator('.LayerNameInput')).toBeDisabled();
+    await page.locator('.LayerDescriptionInputCheckbox').click();
+    await expect(page.locator('.LayerDescriptionInput')).toBeDisabled();
+
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await expect(page.locator('.DashboardForm').getByText(newName, { exact: true })).toBeHidden();
     await expect(page.locator('.DashboardForm').getByText(oldName, { exact: true })).toBeVisible();
-    await page.getByText('Save', { exact: true }).isEnabled();
-    await page.getByText('Save', { exact: true }).click();
+    await saveProject(page);
 
     // Check name and description on the view
     await viewProject(page, name);

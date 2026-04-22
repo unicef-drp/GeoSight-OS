@@ -104,6 +104,13 @@ export default function contextLayersReducer(state = initialState, action, dashb
           if (contextLayer.id === action.payload.id) {
             contextLayer.name = action.payload.name
             contextLayer.description = action.payload.description
+
+            contextLayer.layer_name = action.payload.layer_name
+            contextLayer.override_layer_name = action.payload.override_layer_name
+
+            contextLayer.layer_description = action.payload.layer_description
+            contextLayer.override_layer_description = action.payload.override_layer_description
+
             if (action.payload.data_fields) {
               contextLayer.data_fields = action.payload.data_fields
             }

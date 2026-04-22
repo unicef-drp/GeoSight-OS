@@ -73,11 +73,15 @@ function ContextLayerStyle({ contextLayer }) {
 
   /** Apply the data **/
   const apply = () => {
-    if (!data.name) {
-      data.name = data.contextLayerName;
+    if (data.override_layer_name) {
+      data.name = data.layer_name;
+    } else {
+      data.name = data.object_name;
     }
-    if (!data.description) {
-      data.description = data.contextLayerDescription;
+    if (data.override_layer_description) {
+      data.description = data.layer_description;
+    } else {
+      data.description = data.object_description;
     }
     dispatch(Actions.ContextLayers.updateStyle(data));
     setOpen(false);
@@ -164,47 +168,76 @@ function ContextLayerStyle({ contextLayer }) {
                         className="ContextLayerNameInput"
                         type="text"
                         spellCheck="false"
-                        value={data.contextLayerName}
+                        value={data.object_name}
                         style={{ marginBottom: "15px" }}
                       />
                       <textarea
                         disabled
                         className="ContextLayerDescriptionInput"
                         spellCheck="false"
-                        value={data.contextLayerDescription}
+                        value={data.object_description}
                       />
                     </div>
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label">Name</label>
                       </div>
-                      <input
-                        className="LayerNameInput"
-                        type="text"
-                        spellCheck="false"
-                        value={data.name}
-                        onChange={(evt) => {
-                          updateData({
-                            ...data,
-                            name: evt.target.value,
-                          });
-                        }}
-                      />
+                      <div style={{ display: "flex" }}>
+                        <Checkbox
+                          title={"Override the name of the layer."}
+                          className="LayerNameInputCheckbox"
+                          onClick={(evt) => {
+                            updateData({
+                              ...data,
+                              override_layer_name: !!!data.override_layer_name,
+                            });
+                          }}
+                          checked={data.override_layer_name}
+                        />
+                        <input
+                          className="LayerNameInput"
+                          type="text"
+                          disabled={!data.override_layer_name}
+                          spellCheck="false"
+                          value={data.layer_name}
+                          onChange={(evt) => {
+                            updateData({
+                              ...data,
+                              layer_name: evt.target.value,
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label">Description</label>
                       </div>
-                      <textarea
-                        className="LayerDescriptionInput"
-                        value={data.description}
-                        onChange={(evt) => {
-                          updateData({
-                            ...data,
-                            description: evt.target.value,
-                          });
-                        }}
-                      />
+                      <div style={{ display: "flex" }}>
+                        <Checkbox
+                          className="LayerDescriptionInputCheckbox"
+                          title={"Override the description of the layer."}
+                          onClick={(evt) => {
+                            updateData({
+                              ...data,
+                              override_layer_description:
+                                !!!data.override_layer_description,
+                            });
+                          }}
+                          checked={data.override_layer_description}
+                        />
+                        <textarea
+                          className="LayerDescriptionInput"
+                          disabled={!data.override_layer_description}
+                          value={data.layer_description}
+                          onChange={(evt) => {
+                            updateData({
+                              ...data,
+                              layer_description: evt.target.value,
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   {data.layer_type === "Related Table" && (
