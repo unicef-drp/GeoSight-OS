@@ -156,8 +156,8 @@ class NonAzureUserForm(AzureUserForm):
     class Meta:  # noqa: D106
         model = User
         fields = (
-            'first_name', 'last_name', 'username',
-            'email', 'role', 'is_staff', 'password'
+            'first_name', 'last_name', 'username', 'password',
+            'email', 'role', 'is_staff',
         )
 
 

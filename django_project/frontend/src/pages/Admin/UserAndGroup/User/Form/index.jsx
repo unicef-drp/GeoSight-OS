@@ -56,6 +56,7 @@ export default function UserForm() {
   const [showAPIKey, setShowAPIKey] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
   const [receiveNotification, setReceiveNotification] = useState(false);
+  const georepoUrl = preferences.georepo_url ? new URL(preferences.georepo_url).origin + '/profile?tab=2' : null;
 
   // Notification
   const notificationRef = useRef(null);
@@ -146,7 +147,7 @@ export default function UserForm() {
         </Fragment> : null
       }
       {
-        ownForm ?
+        ownForm && georepoUrl ?
           <div className='ApiKeySection'>
             {
               preferences.georepo_using_user_api_key ?
@@ -189,7 +190,7 @@ export default function UserForm() {
                             marginRight: "3px"
                           }}>
                           <a
-                            href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
+                            href={georepoUrl}
                             style={{
                               color: "white",
                             }}
@@ -197,7 +198,7 @@ export default function UserForm() {
                             GeoRepo website.
                           </a>
                         </ThemeButton> : <a
-                          href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
+                          href={georepoUrl}
                           target='_blank'> GeoRepo website. </a>
                     }
                     Paste the API key in the field above and click
@@ -229,10 +230,10 @@ export default function UserForm() {
       rightHeader={
         <Fragment>
           {
-            ownForm && preferences.georepo_using_user_api_key && (!user.georepo_api_key || !apiKey) ?
+            georepoUrl && ownForm && preferences.georepo_using_user_api_key && (!user.georepo_api_key || !apiKey) ?
               <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
                 <a
-                  href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
+                  href={georepoUrl}
                   target='_blank'>
                   Generate GeoRepo API Key
                 </a>

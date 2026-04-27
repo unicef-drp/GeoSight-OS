@@ -25,7 +25,6 @@ from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
-
 def string_is_true(string: str):
     """Return is true or false of string contains true like string."""
     return str(string).lower() in ['y', 'yes', 't', 'true', 'ok', 'on', True]
@@ -70,6 +69,7 @@ def create_superuser(
         tenant=None, admin_password=None, admin_email=None
 ):
     """Create superuser."""
+    from core.models.profile import Profile, ROLES
     admin_username = os.getenv('ADMIN_USERNAME')
 
     # Check if tenant not public, random the password
@@ -108,6 +108,9 @@ def create_superuser(
 
         # TODO: Send email to user for password to responder_email of Tenant
     superuser.save()
+    profile, _ = Profile.objects.get_or_create(user=superuser)
+    profile.role = ROLES.SUPER_ADMIN.name
+    profile.save()
 
 
 def child_classes(Class):

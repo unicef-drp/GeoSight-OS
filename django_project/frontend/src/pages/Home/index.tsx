@@ -43,11 +43,18 @@ export default function Home() {
   useEffect(() => {
     if (!mainImageTs) return;
     const img = new Image();
-    img.onload = () => {
+    const calcHeight = () => {
       const aspectRatio = img.naturalHeight / img.naturalWidth;
-      setBannerHeight(window.innerWidth * aspectRatio);
+      let newHeight = window.innerWidth * aspectRatio;
+      if (newHeight > 500) newHeight = 500;
+      setBannerHeight(newHeight);
+    };
+    img.onload = () => {
+      calcHeight();
+      window.addEventListener('resize', calcHeight);
     };
     img.src = mainImageTs;
+    return () => window.removeEventListener('resize', calcHeight);
   }, [mainImageTs]);
 
   // @ts-ignore
