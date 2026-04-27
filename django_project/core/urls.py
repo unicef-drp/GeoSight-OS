@@ -34,7 +34,7 @@ from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.refresh_materialized_view import RefreshMaterializedViewApi
 from core.api.sentry import trigger_error
-from core.api.user import UserApiKey
+from core.api.user import UserApiKey, UserChangePassword
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
@@ -103,6 +103,11 @@ user_api = [
         UserApiKey.as_view(),
         name='user-api-key'
     ),
+    url(
+        r'^(?P<pk>\d+)/change-password',
+        UserChangePassword.as_view(),
+        name='user-change-password'
+    ),
 ]
 # COLOR API
 color_api = [
@@ -135,7 +140,6 @@ request_access_api = [
 api = [
     url(r'^maintenance$', MaintenanceAPI.as_view(), name='maintenance-view'),
     url(r'^color/palette/', include(color_api)),
-    url(r'^user/', include(user_api)),
     url(r'^user/', include(user_api)),
     url(r'^access/', include(request_access_api)),
     url(

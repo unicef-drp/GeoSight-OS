@@ -34,7 +34,12 @@ class AzureAdminForm(forms.ModelForm):
     """Specifically azure admin form."""
 
     def clean_email(self):
-        """Check username."""
+        """Validate and normalise the email field.
+
+        :raises ValidationError: If another user already has the same email.
+        :returns: The cleaned, normalised email address.
+        :rtype: str
+        """
         email = AzureAuthBackend.clean_user_email(
             self.cleaned_data['email']
         )
@@ -47,7 +52,13 @@ class AzureAdminForm(forms.ModelForm):
         return email
 
     def save(self, commit=True):
-        """Save user."""
+        """Save the user instance, syncing username and superuser flag.
+
+        :param commit: Whether to persist the instance to the database.
+        :type commit: bool
+        :returns: The saved user instance.
+        :rtype: django.contrib.auth.models.AbstractUser
+        """
         user = super().save(commit=False)
         if settings.USE_AZURE:
             user.username = user.email
@@ -103,7 +114,12 @@ class AzureUserForm(AzureAdminForm):
     )
 
     def clean_is_staff(self):
-        """Check is_staff."""
+        """Restrict staff flag to Super Admin role only.
+
+        :returns:
+            The ``is_staff`` value if the role is Super Admin, else False.
+        :rtype: bool
+        """
         role = self.cleaned_data['role']
         is_staff = self.cleaned_data.get('is_staff', False)
         if role == ROLES.SUPER_ADMIN.name:
@@ -119,7 +135,14 @@ class AzureUserForm(AzureAdminForm):
 
     @staticmethod
     def model_to_initial(model: User):
-        """Return model data as json."""
+        """Return model fields as a dictionary suitable for form.
+
+        :param model: The user instance to convert.
+        :type model: django.contrib.auth.models.AbstractUser
+        :returns: Dictionary of field values including profile role and
+            notification preference.
+        :rtype: dict
+        """
         initial = model_to_dict(model)
         initial['role'] = model.profile.role
         initial['receive_notification'] = model.profile.receive_notification
@@ -132,7 +155,12 @@ class NonAzureUserForm(AzureUserForm):
     username = forms.HiddenInput()
 
     def clean_username(self):
-        """Check username."""
+        """Validate that the username is unique.
+
+        :raises ValidationError: If another user already has the same username.
+        :returns: The validated username.
+        :rtype: str
+        """
         username = self.cleaned_data['username']
         if User.objects.exclude(
                 id=self.instance.id).filter(username=username).count():
@@ -142,7 +170,12 @@ class NonAzureUserForm(AzureUserForm):
         return username
 
     def clean_is_staff(self):
-        """Check is_staff."""
+        """Restrict staff flag to Super Admin role only.
+
+        :returns:
+            The ``is_staff`` value if the role is Super Admin, else False.
+        :rtype: bool
+        """
         role = self.cleaned_data['role']
         is_staff = self.cleaned_data.get('is_staff', False)
         if role == ROLES.SUPER_ADMIN.name:
@@ -150,14 +183,18 @@ class NonAzureUserForm(AzureUserForm):
         return False
 
     def clean_password(self):
-        """Check password."""
+        """Hash the raw password before saving.
+
+        :returns: The hashed password string.
+        :rtype: str
+        """
         return make_password(self.cleaned_data['password'])
 
     class Meta:  # noqa: D106
         model = User
         fields = (
-            'first_name', 'last_name', 'username',
-            'email', 'role', 'is_staff', 'password'
+            'first_name', 'last_name', 'username', 'password',
+            'email', 'role', 'is_staff',
         )
 
 
@@ -177,8 +214,12 @@ class UserEditForm(AzureUserForm):
             'receive_notification'
         )
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
+    def __init__(self, *args, **kwargs):  # noqa: DOC101, DOC103
+        """Initialise the form, making the email field read-only for Azure.
+
+        :param args: Positional arguments forwarded to the parent.
+        :param kwargs: Keyword arguments forwarded to the parent.
+        """
         super(UserEditForm, self).__init__(*args, **kwargs)
         if settings.USE_AZURE:
             self.fields['email'].widget.attrs['readonly'] = True
@@ -203,8 +244,12 @@ class UserViewerEditForm(AzureAdminForm):
         model = User
         fields = ('first_name', 'last_name', 'email')
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
+    def __init__(self, *args, **kwargs):  # noqa: DOC101, DOC103
+        """Initialise the form, setting email and role fields as read-only.
+
+        :param args: Positional arguments forwarded to the parent.
+        :param kwargs: Keyword arguments forwarded to the parent.
+        """
         super(UserViewerEditForm, self).__init__(*args, **kwargs)
         if settings.USE_AZURE:
             self.fields['email'].widget.attrs['readonly'] = True
@@ -212,7 +257,13 @@ class UserViewerEditForm(AzureAdminForm):
 
     @staticmethod
     def model_to_initial(model: User):
-        """Return model data as json."""
+        """Return model fields as a dictionary suitable for form.
+
+        :param model: The user instance to convert.
+        :type model: django.contrib.auth.models.AbstractUser
+        :returns: Dictionary of field values including the profile role.
+        :rtype: dict
+        """
         initial = model_to_dict(model)
         initial['role'] = model.profile.role
         return initial
