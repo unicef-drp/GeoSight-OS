@@ -13,214 +13,248 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import $ from "jquery";
 import { Checkbox, FormControlLabel, IconButton } from "@mui/material";
 
-import { render } from '../../../../../app';
-import { store } from '../../../../../store/admin';
+import { render } from "../../../../../app";
+import { store } from "../../../../../store/admin";
 import {
   SaveButton,
-  ThemeButton
+  ThemeButton,
 } from "../../../../../components/Elements/Button";
-import Admin, { pageNames } from '../../../index';
-import { AdminForm } from '../../../Components/AdminForm'
+import Admin, { pageNames } from "../../../index";
+import { AdminForm } from "../../../Components/AdminForm";
 import { urlParams } from "../../../../../utils/main";
 import {
   Notification,
-  NotificationStatus
+  NotificationStatus,
 } from "../../../../../components/Notification";
 import { IconTextField } from "../../../../../components/Elements/Input";
 import {
   VisibilityIcon,
-  VisibilityOffIcon
+  VisibilityOffIcon,
 } from "../../../../../components/Icons";
 import DjangoTemplateForm
   from "../../../Components/AdminForm/DjangoTemplateForm";
 import ApiKeyUser from "./ApiKeyUser";
+import ChangePasswordModal from "./ChangePasswordModal";
 import {
   resourceActions
 } from "../../../../../components/AdminList/Contents/User";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * Indicator Form App
  */
 export default function UserForm() {
-  const formRef = useRef(null)
-  const { success } = urlParams()
+  const useAzureLogin = useAzureAuth;
+  const formRef = useRef(null);
+  const { success } = urlParams();
   const [submitted, setSubmitted] = useState(false);
   const [role, setRole] = useState(null);
-  const [apiKey, setApiKey] = useState(user.georepo_api_key ? user.georepo_api_key : '');
+  const [apiKey, setApiKey] = useState(
+    user.georepo_api_key ? user.georepo_api_key : "",
+  );
   const [showAPIKey, setShowAPIKey] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
   const [receiveNotification, setReceiveNotification] = useState(false);
-  const georepoUrl = preferences.georepo_url ? new URL(preferences.georepo_url).origin + '/profile?tab=2' : null;
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const georepoUrl = preferences.georepo_url
+    ? new URL(preferences.georepo_url).origin + "/profile?tab=2"
+    : null;
 
   // Notification
   const notificationRef = useRef(null);
   const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
-    notificationRef?.current?.notify(newMessage, newSeverity)
-  }
+    notificationRef?.current?.notify(newMessage, newSeverity);
+  };
 
   /** Render **/
   const submit = () => {
-    setSubmitted(true)
-    formRef.current.submit()
-  }
+    setSubmitted(true);
+    formRef.current.submit();
+  };
 
   // If role is super admin, show the is_staff
   useEffect(() => {
     if (!user.is_staff) {
-      $('input[name="is_staff"]').closest('.BasicFormSection').remove()
-      $('input[name="receive_notification"]').closest('.BasicFormSection').remove()
-      $('input[name="role"]').closest('.BasicFormSection').find('.ReactSelect__input').prop("disabled", true);
+      $('input[name="is_staff"]').closest(".BasicFormSection").remove();
+      $('input[name="receive_notification"]')
+        .closest(".BasicFormSection")
+        .remove();
+      $('input[name="role"]')
+        .closest(".BasicFormSection")
+        .find(".ReactSelect__input")
+        .prop("disabled", true);
     } else {
       if ($('p[data-field-name="is_staff"]').length) {
-        setIsStaff($('#id_is_staff').is(':checked'))
-        $('p[data-field-name="is_staff"]').remove()
+        setIsStaff($("#id_is_staff").is(":checked"));
+        $('p[data-field-name="is_staff"]').remove();
       }
       if ($('p[data-field-name="receive_notification"]').length) {
-        setReceiveNotification($('#id_receive_notification').is(':checked'))
-        $('p[data-field-name="receive_notification"]').remove()
+        setReceiveNotification($("#id_receive_notification").is(":checked"));
+        $('p[data-field-name="receive_notification"]').remove();
       }
     }
-    $('input[name="is_staff"]').closest('.BasicFormSection').hide()
+    $('input[name="is_staff"]').closest(".BasicFormSection").hide();
     $('input[name="role"]').change(function () {
-      roleOnChange($(this).val())
-    })
-    $('input[name="role"]').trigger('change')
+      roleOnChange($(this).val());
+    });
+    $('input[name="role"]').trigger("change");
     if (success) {
-      notify('Profile is updated', NotificationStatus.SUCCESS)
+      notify("Profile is updated", NotificationStatus.SUCCESS);
     }
-  }, [])
+  }, []);
 
   const roleOnChange = (value) => {
-    setRole(value)
-    if (value === 'Super Admin') {
-      $('input[name="is_staff"]').closest('.BasicFormSection').show()
+    setRole(value);
+    if (value === "Super Admin") {
+      $('input[name="is_staff"]').closest(".BasicFormSection").show();
     } else {
-      $('input[name="is_staff"]').closest('.BasicFormSection').hide()
+      $('input[name="is_staff"]').closest(".BasicFormSection").hide();
     }
-  }
+  };
 
   const forms = {
-    'General': <DjangoTemplateForm
-      onChange={(name, value) => {
-        if (name === 'role') {
-          roleOnChange(value)
-        }
-      }}
-    >
-      {
-        user.is_staff ? <Fragment>
-          <div className="BasicFormSection">
-            <FormControlLabel
-              checked={isStaff}
-              control={<Checkbox/>}
-              name='is_staff'
-              onChange={evt => {
-                setIsStaff(val => !val)
-              }}
-              label={'Backend admin (Django Staff)'}/>
-            <div className="form-helptext">
-              Designates whether the user can access the backend
-              (Django)
-              admin
-              site.
+    General: (
+      <DjangoTemplateForm
+        onChange={(name, value) => {
+          if (name === "role") {
+            roleOnChange(value);
+          }
+        }}
+      >
+        {user.is_staff ? (
+          <Fragment>
+            <div className="BasicFormSection">
+              <FormControlLabel
+                checked={isStaff}
+                control={<Checkbox />}
+                name="is_staff"
+                onChange={(evt) => {
+                  setIsStaff((val) => !val);
+                }}
+                label={"Backend admin (Django Staff)"}
+              />
+              <div className="form-helptext">
+                Designates whether the user can access the backend (Django)
+                admin site.
+              </div>
             </div>
-          </div>
-          <div className="BasicFormSection">
-            <FormControlLabel
-              checked={receiveNotification}
-              control={<Checkbox/>}
-              name='receive_notification'
-              onChange={evt => {
-                setReceiveNotification(val => !val)
-              }}
-              label={'Receive email for admin notification.'}/>
-            <div className="form-helptext">
-              Designates whether the user receive notification.
+            <div className="BasicFormSection">
+              <FormControlLabel
+                checked={receiveNotification}
+                control={<Checkbox />}
+                name="receive_notification"
+                onChange={(evt) => {
+                  setReceiveNotification((val) => !val);
+                }}
+                label={"Receive email for admin notification."}
+              />
+              <div className="form-helptext">
+                Designates whether the user receive notification.
+              </div>
             </div>
-          </div>
-        </Fragment> : null
-      }
-      {
-        ownForm && georepoUrl ?
-          <div className='ApiKeySection'>
-            {
-              preferences.georepo_using_user_api_key ?
-                <div className='BasicFormSection'>
-                  <div>GeoRepo API Key</div>
-                  <div
-                    className={'InputInLine ' + (!user.georepo_api_key || !apiKey ? 'GeorepoApiKeyInput' : '')}
-                  >
-                    <IconTextField
-                      name={'georepo_api_key'}
-                      iconEnd={
-                        <IconButton
-                          onClick={_ => setShowAPIKey(_ => !_)}>
-                          {
-                            showAPIKey ? <VisibilityOffIcon/> :
-                              <VisibilityIcon/>
-                          }
-                        </IconButton>
-                      }
-                      type={showAPIKey ? 'text' : 'password'}
-                      value={apiKey}
-                      onChange={(evt) => {
-                        setApiKey(evt.target.value)
-                      }}
-                    />
-                  </div>
-                  <br/>
-                  <div>
-                    A GeoRepo API Key is required for authorizing
-                    GeoSight to
-                    access GeoRepo data.
-                    <br/>
-                    To generate a GeoRepo API Key, go to
-                    {
-                      !user.georepo_api_key || !apiKey ?
-                        <ThemeButton
-                          variant="Error"
-                          style={{
-                            marginLeft: "3px",
-                            marginRight: "3px"
-                          }}>
-                          <a
-                            href={georepoUrl}
-                            style={{
-                              color: "white",
-                            }}
-                            target='_blank'>
-                            GeoRepo website.
-                          </a>
-                        </ThemeButton> : <a
-                          href={georepoUrl}
-                          target='_blank'> GeoRepo website. </a>
+          </Fragment>
+        ) : null}
+        {ownForm && georepoUrl ? (
+          <div className="ApiKeySection">
+            {preferences.georepo_using_user_api_key ? (
+              <div className="BasicFormSection">
+                <div>GeoRepo API Key</div>
+                <div
+                  className={
+                    "InputInLine " +
+                    (!user.georepo_api_key || !apiKey
+                      ? "GeorepoApiKeyInput"
+                      : "")
+                  }
+                >
+                  <IconTextField
+                    name={"georepo_api_key"}
+                    iconEnd={
+                      <IconButton onClick={(_) => setShowAPIKey((_) => !_)}>
+                        {showAPIKey ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
                     }
-                    Paste the API key in the field above and click
-                    the <b>Save</b> button in the top right corner.
-                    <br/>
-                    If you need more information on how to generate a
-                    GeoRepo
-                    API Key, you can check <a
-                    href='https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key'
-                    target='_blank'>
+                    type={showAPIKey ? "text" : "password"}
+                    value={apiKey}
+                    onChange={(evt) => {
+                      setApiKey(evt.target.value);
+                    }}
+                  />
+                </div>
+                <br />
+                <div>
+                  A GeoRepo API Key is required for authorizing GeoSight to
+                  access GeoRepo data.
+                  <br />
+                  To generate a GeoRepo API Key, go to
+                  {!user.georepo_api_key || !apiKey ? (
+                    <ThemeButton
+                      variant="Error"
+                      style={{
+                        marginLeft: "3px",
+                        marginRight: "3px",
+                      }}
+                    >
+                      <a
+                        href={georepoUrl}
+                        style={{
+                          color: "white",
+                        }}
+                        target="_blank"
+                      >
+                        GeoRepo website.
+                      </a>
+                    </ThemeButton>
+                  ) : (
+                    <a href={georepoUrl} target="_blank">
+                      {" "}
+                      GeoRepo website.{" "}
+                    </a>
+                  )}
+                  Paste the API key in the field above and click the <b>
+                    Save
+                  </b>{" "}
+                  button in the top right corner.
+                  <br />
+                  If you need more information on how to generate a GeoRepo API
+                  Key, you can check{" "}
+                  <a
+                    href="https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key"
+                    target="_blank"
+                  >
                     this page
-                  </a>.
-                  </div>
-                </div> : null
-            }
-          </div> : null
-      }
-    </DjangoTemplateForm>
-  }
+                  </a>
+                  .
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+        {ownForm && !useAzureLogin && (
+          <div className="BasicFormSection">
+            <ThemeButton
+              variant="primary"
+              onClick={() => setShowChangePassword(true)}
+            >
+              Change Password
+            </ThemeButton>
+          </div>
+        )}
+      </DjangoTemplateForm>
+    ),
+  };
 
   if (ownForm) {
-    forms['API Key'] = <ApiKeyUser/>
+    forms["API Key"] = <ApiKeyUser />;
   }
 
   return (
@@ -229,29 +263,27 @@ export default function UserForm() {
       pageName={ownForm ? pageNames.UserProfile : pageNames.UsersAndGroups}
       rightHeader={
         <Fragment>
-          {
-            georepoUrl && ownForm && preferences.georepo_using_user_api_key && (!user.georepo_api_key || !apiKey) ?
-              <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
-                <a
-                  href={georepoUrl}
-                  target='_blank'>
-                  Generate GeoRepo API Key
-                </a>
-              </ThemeButton>
-              : null
-          }
-          {
-            initialData.id ?
-              resourceActions({
+          {georepoUrl &&
+          ownForm &&
+          preferences.georepo_using_user_api_key &&
+          (!user.georepo_api_key || !apiKey) ? (
+            <ThemeButton variant="Error" className="GeorepoApiKeyBtn">
+              <a href={georepoUrl} target="_blank">
+                Generate GeoRepo API Key
+              </a>
+            </ThemeButton>
+          ) : null}
+          {initialData.id
+            ? resourceActions({
                 id: initialData.id,
                 row: {
                   ...initialData,
                   permission: {
-                    delete: (ownForm || user.is_staff)
-                  }
-                }
-              }) : null
-          }
+                    delete: ownForm || user.is_staff,
+                  },
+                },
+              })
+            : null}
           <SaveButton
             variant="primary"
             text="Save"
@@ -259,17 +291,26 @@ export default function UserForm() {
             disabled={submitted || (!ownForm && !role)}
           />
         </Fragment>
-      }>
-
-      <AdminForm
-        ref={formRef}
-        forms={forms}
-      >
-
-      </AdminForm>
-      <Notification ref={notificationRef}/>
+      }
+    >
+      <AdminForm ref={formRef} forms={forms}></AdminForm>
+      <Notification ref={notificationRef} />
+      {ownForm && (
+        <ChangePasswordModal
+          open={showChangePassword}
+          onClosed={(success) => {
+            setShowChangePassword(false);
+            if (success) {
+              notificationRef?.current?.notify(
+                "Password changed successfully.",
+                NotificationStatus.SUCCESS,
+              );
+            }
+          }}
+        />
+      )}
     </Admin>
   );
 }
 
-render(UserForm, store)
+render(UserForm, store);
