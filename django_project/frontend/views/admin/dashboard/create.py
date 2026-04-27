@@ -14,14 +14,14 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.db import transaction
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, reverse
 
 from azure_auth.backends import AzureAuthRequiredMixin
 from frontend.views.dashboard._base import BaseDashboardView
-from geosight.data.forms.dashboard import DashboardForm
-from geosight.data.models.dashboard import Dashboard
+from geosight.data.services.dashboard_create import (
+    create_dashboard_from_payload
+)
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
@@ -40,48 +40,23 @@ class DashboardCreateViewBase:
             otherwise an HTTP bad request response.
         :rtype: HttpResponseRedirect or HttpResponseBadRequest
         """
-        try:
-            data = DashboardForm.update_data(data, user=user)
-            if Dashboard.name_is_exist_of_all(data['slug']):
-                return HttpResponseBadRequest(
-                    f'Dashboard with this url shortcode : {data["slug"]} '
-                    f'is exist. Please choose other url shortcode.'
+        result = create_dashboard_from_payload(data, user, files)
+        if result.dashboard:
+            return redirect(
+                reverse(
+                    'admin-dashboard-edit-view',
+                    args=[result.dashboard.slug]
                 )
-        except (PermissionError, ValueError) as e:
-            return HttpResponseBadRequest(e)
+            )
 
-        # Get origin project
-        origin = None
-        origin_id = data.get('origin_id', None)
-        if origin_id:
-            origin = Dashboard.objects.get(id=origin_id)
-
-        data['creator'] = user
-        data['modified_by'] = user
-        form = DashboardForm(data, files)
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    dashboard = form.save()
-                    if origin:
-                        dashboard.icon = origin.icon
-                        dashboard.save()
-                    dashboard.save_relations(data, is_create=True)
-                    dashboard.increase_version()
-                    return redirect(
-                        reverse(
-                            'admin-dashboard-edit-view',
-                            args=[dashboard.slug]
-                        )
-                    )
-            except Exception as e:
-                return HttpResponseBadRequest(e)
-        else:
+        if result.form_errors:
             errors = [
                 key + ' : ' + ''.join(value) for key, value in
-                form.errors.items()
+                result.form_errors.items()
             ]
             return HttpResponseBadRequest('<br>'.join(errors))
+
+        return HttpResponseBadRequest(result.error)
 
 
 class DashboardCreateView(
