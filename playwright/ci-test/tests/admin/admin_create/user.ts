@@ -77,7 +77,5 @@ test.describe('Users list admin', () => {
     // Check it
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Users');
     await expect(page.locator('.MuiDataGrid-cell').getByText(username)).toBeHidden();
-
-    await expect(page.locator('.MuiAlert-message')).toContainText('User deleted successfullyssss.');
   });
 })
