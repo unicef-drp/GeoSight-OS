@@ -20,6 +20,7 @@ test.describe('Users list admin', () => {
     await page.locator('#Form #id_first_name').fill('user');
     await page.locator('#Form #id_last_name').fill('test');
     await page.locator('#Form input[name="username"]').fill(username);
+    await page.locator('#Form input[name="email"]').fill("user@test.com");
     await page.locator('input[type="password"]').fill(username);
     await page.locator('.ReactSelect__input-container').click();
     await page.getByRole('option', { name: 'Contributor' }).click();
