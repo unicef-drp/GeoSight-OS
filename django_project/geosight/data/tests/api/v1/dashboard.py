@@ -14,11 +14,17 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '08/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+import copy
+import json
 import urllib.parse
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from geosight.data.models.dashboard import Dashboard, DashboardGroup
+from geosight.data.services.dashboard_create import INTERNAL_CREATE_ERROR
+from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -28,9 +34,34 @@ User = get_user_model()
 class DashboardPermissionTest(BasePermissionTest.TestCase):
     """Test for Dashboard API."""
 
+    create_payload_data = {
+        'reference_layer': 'AAAA',
+        'indicator_layers': [],
+        'indicator_layers_structure': {'children': []},
+        'indicators': [],
+        'basemaps_layers': [],
+        'basemaps_layers_structure': {'children': []},
+        'context_layers': [],
+        'context_layers_structure': {'children': []},
+        'extent': [0, 0, 0, 0],
+        'widgets': [],
+        'widgets_structure': {},
+        'filters': {},
+        'permission': {
+            'organization_permission': 'None',
+            'public_permission': 'None',
+            'user_permissions': [],
+            'group_permissions': [],
+        }
+    }
+
     def setUp(self):
         """To setup test."""
         super().setUp()
+        ReferenceLayerView.objects.get_or_create(
+            identifier='AAAA',
+            name='AAAA'
+        )
 
         # Resource layer attribute
         self.resource_1 = Dashboard.permissions.create(
@@ -338,6 +369,149 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             url, 200, user=self.creator_in_group
         )
         self.assertEqual(response.json(), ['Group 3'])
+
+    def test_create_api_invalid_payload_returns_validation_error(self):
+        """Test create API validation message for invalid payload."""
+        url = reverse('dashboards-list')
+        payload = {
+            'name': 'invalid-payload-dashboard',
+            'slug': 'invalid-payload-dashboard',
+            'data': json.dumps({})
+        }
+        response = self.assertRequestPostView(
+            url, 400, payload, user=self.creator
+        )
+        self.assertIn('detail', response.json())
+        self.assertIn('extent', response.json()['detail'])
+
+    def test_create_api_denies_anonymous_user(self):
+        """Ensure anonymous users cannot create dashboards."""
+        url = reverse('dashboards-list')
+        payload_data = copy.deepcopy(self.create_payload_data)
+        payload_data['slug'] = 'anonymous-denied-dashboard'
+        payload = {
+            'name': 'anonymous denied dashboard',
+            'slug': 'anonymous-denied-dashboard',
+            'data': json.dumps(payload_data)
+        }
+
+        response = self.assertRequestPostView(url, 403, payload)
+        self.assertIn('detail', response.json())
+
+    def test_create_api_denies_contributor_user(self):
+        """Ensure contributor users cannot create dashboards."""
+        url = reverse('dashboards-list')
+        payload_data = copy.deepcopy(self.create_payload_data)
+        payload_data['slug'] = 'contributor-denied-dashboard'
+        payload = {
+            'name': 'contributor denied dashboard',
+            'slug': 'contributor-denied-dashboard',
+            'data': json.dumps(payload_data)
+        }
+
+        response = self.assertRequestPostView(
+            url, 403, payload, user=self.contributor
+        )
+        self.assertIn('detail', response.json())
+
+    def test_create_api_returns_response_contract_fields(self):
+        """Ensure create API returns expected v1 serializer contract."""
+        url = reverse('dashboards-list')
+        slug = 'contract-dashboard'
+        payload_data = copy.deepcopy(self.create_payload_data)
+        payload_data['slug'] = slug
+        payload = {
+            'name': 'contract dashboard',
+            'slug': slug,
+            'group': 'Contract Group',
+            'data': json.dumps(payload_data)
+        }
+
+        response = self.assertRequestPostView(
+            url, 201, payload, user=self.creator
+        )
+        body = response.json()
+
+        expected_fields = {
+            'id', 'slug', 'icon', 'thumbnail', 'name',
+            'description', 'group', 'category', 'permission',
+            'reference_layer', 'creator', 'featured',
+            'created_at', 'created_by', 'modified_at', 'modified_by'
+        }
+        self.assertTrue(expected_fields.issubset(set(body.keys())))
+        self.assertEqual(body['id'], slug)
+        self.assertEqual(body['slug'], slug)
+        self.assertEqual(body['name'], 'contract dashboard')
+        self.assertEqual(body['group'], 'Contract Group')
+        self.assertEqual(body['category'], 'Contract Group')
+        self.assertEqual(
+            body['reference_layer'],
+            ReferenceLayerView.objects.get(identifier='AAAA').id
+        )
+        self.assertEqual(body['creator'], self.creator.id)
+        self.assertEqual(body['featured'], False)
+        self.assertEqual(body['created_by'], self.creator.username)
+        self.assertEqual(body['modified_by'], self.creator.username)
+
+        for permission_key in ['list', 'read', 'edit', 'share', 'delete']:
+            self.assertIn(permission_key, body['permission'])
+
+        Dashboard.objects.get(slug=slug).delete()
+
+    def test_create_api_accepts_application_json_payload(self):
+        """Ensure create API accepts application/json payloads."""
+        url = reverse('dashboards-list')
+        slug = 'json-contract-dashboard'
+        payload_data = copy.deepcopy(self.create_payload_data)
+        payload_data['slug'] = slug
+        payload = {
+            'name': 'json contract dashboard',
+            'slug': slug,
+            'group': 'JSON Contract Group',
+            'data': payload_data
+        }
+
+        response = self.assertRequestPostView(
+            url, 201, json.dumps(payload), user=self.creator,
+            content_type=self.JSON_CONTENT
+        )
+        body = response.json()
+
+        self.assertEqual(body['id'], slug)
+        self.assertEqual(body['slug'], slug)
+        self.assertEqual(body['name'], 'json contract dashboard')
+        self.assertEqual(body['group'], 'JSON Contract Group')
+        self.assertEqual(
+            body['reference_layer'],
+            ReferenceLayerView.objects.get(identifier='AAAA').id
+        )
+
+        Dashboard.objects.get(slug=slug).delete()
+
+    def test_create_api_rolls_back_if_save_relations_fails(self):
+        """Ensure dashboard create is transactional across relations."""
+        url = reverse('dashboards-list')
+        slug = 'rollback-dashboard'
+        payload_data = copy.deepcopy(self.create_payload_data)
+        payload_data['slug'] = slug
+        payload = {
+            'name': 'rollback-dashboard',
+            'slug': slug,
+            'data': json.dumps(payload_data)
+        }
+
+        with patch.object(
+            Dashboard,
+            'save_relations',
+            side_effect=RuntimeError('save relations failure')
+        ):
+            response = self.assertRequestPostView(
+                url, 400, payload, user=self.creator
+            )
+
+        self.assertIn('detail', response.json())
+        self.assertEqual(response.json()['detail'], INTERNAL_CREATE_ERROR)
+        self.assertFalse(Dashboard.objects.filter(slug=slug).exists())
 
     def test_feature(self):
         """Test Feature API."""
