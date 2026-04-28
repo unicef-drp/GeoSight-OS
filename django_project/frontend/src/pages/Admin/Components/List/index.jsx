@@ -51,7 +51,7 @@ const DeleteAction = ({
 
   const permission = params.row.permission;
   if (permission && !permission.delete) return null;
-  const item = "" + (params.row.name ?? params.row.id);
+  const item = "" + (params.row.username ?? params.row.name ?? params.row.id);
 
   const disabledConfirm = highDeleteSecurity && confirmedDeletionText !== item;
 
@@ -102,7 +102,7 @@ const DeleteAction = ({
                     <>
                       <div>
                         {t("admin.deleteConfirmationMessage", {
-                          item: params.row.name ?? params.row.id,
+                          item: item,
                         })}
                       </div>
                       {deletionWarningText && (

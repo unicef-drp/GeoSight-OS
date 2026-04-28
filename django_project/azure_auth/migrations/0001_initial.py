@@ -14,6 +14,8 @@ __author__ = 'danang@kartoza.com'
 __date__ = '26/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
+
 import django.db.models.deletion
 from django.contrib.auth.models import Group
 from django.db import migrations, models
@@ -23,13 +25,17 @@ from azure_auth.models import RegisteredDomain
 
 def default_domain(apps, schema_editor):
     """Create default domain."""
-    group, _ = Group.objects.get_or_create(name='unicef')
-    RegisteredDomain.objects.get_or_create(
-        domain='unicef.org',
-        defaults={
-            'group': group
-        }
-    )
+    initial_kartoza_data = os.getenv(
+        'INITIAL_KARTOZA_DATA', 'False'
+    ).lower() == 'true'
+    if not initial_kartoza_data:
+        group, _ = Group.objects.get_or_create(name='unicef')
+        RegisteredDomain.objects.get_or_create(
+            domain='unicef.org',
+            defaults={
+                'group': group
+            }
+        )
 
 
 class Migration(migrations.Migration):

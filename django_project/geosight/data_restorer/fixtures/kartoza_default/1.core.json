@@ -3,9 +3,9 @@
     "model": "core.colorpalette",
     "pk": 1,
     "fields": {
-      "name": "Blue-Violet-Yellow",
+      "name": "Kartoza Color",
       "description": "",
-      "colors": "[\"#481793\",\"#7F1EB4\",\"#B233B9\",\"#E745B5\",\"#FF778D\",\"#FFAE85\",\"#FFFFD1\"]"
+      "colors": "[\"#53a2cc\",\"#E8A331\"]"
     }
   },
   {
@@ -14,7 +14,7 @@
     "fields": {
       "name": "Red-Yellow-Green Diverging",
       "description": "",
-      "colors": "[\"#d73027\", \"#fc8d59\", \"#fee08b\", \"#ffffbf\", \"#d9ef8b\", \"#91cf60\", \"#1a9850\"]"
+      "colors": "[\"#53a2cc\", \"#6da0c2\", \"#879eb8\", \"#a19cad\", \"#bb9aa3\", \"#c99a86\", \"#d59e6b\", \"#dfa14e\", \"#e0a238\", \"#E8A331\"]"
     }
   },
   {

@@ -19,6 +19,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Checkbox from "@mui/material/Checkbox";
 import { IconTextField } from '../../../../components/Elements/Input'
+import { PasswordInput } from '../../../../components/Input/PasswordInput'
 import { urlParams } from "../../../../utils/main";
 import { Creatable, Select } from "../../../../components/Input";
 
@@ -144,8 +145,7 @@ export default function DjangoTemplateForm(
           }}
         />
       } else if (attrName === 'password') {
-        input = <IconTextField
-          type='password'
+        input = <PasswordInput
           name={$input.attr('name')}
           iconStart={<LockIcon/>}
           onKeyDown={onKeyDown}
