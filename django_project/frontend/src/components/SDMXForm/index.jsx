@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { ThemeButton } from "../Elements/Button";
+
 import {
-  updateDsd,
-} from "./dsdFunctions.jsx";
-import '../style.scss';
-import { ThemeButton } from "../../../../../../../components/Elements/Button";
+  fetchAgencies,
+  fetchDataflows,
+  fetchDataflowVersions,
+  fetchDimensions,
+  fetchDsd,
+} from "./requests";
+import DimensionDropdown from "./DimensionDropdown";
+import DropdownSection from "../SDMXForm/DropdownSection";
+import { updateDsd } from "./utilities";
 
-
-import { fetchAgencies, fetchDataflows, fetchDataflowVersions, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
-import DropdownSection from "./DropdownSection.jsx";
-import DimensionDropdown from "./DimensionDropdown.jsx";
+import "./style.scss";
 
 /**
- * DsdForm Component
+ * Index Component
  *
  * @param {Object} props - The properties object.
  * @param {function} props.setRequest - State variable setter function that mutates `request`, the request/response payload state variable.
@@ -19,7 +23,7 @@ import DimensionDropdown from "./DimensionDropdown.jsx";
  *
  * @returns {JSX.Element} A frontend component containing all the selection/input fields.
  */
-const DsdForm = ({ urlChanged, setRequest }) => {
+const SDMXForm = ({ urlChanged, setRequest }) => {
   const [sdmx, setSdmx] = useState(null);
   const sdmxUrls = sdmx?.urls;
 
@@ -54,8 +58,8 @@ const DsdForm = ({ urlChanged, setRequest }) => {
   // Fetch agency options on mount
   useEffect(() => {
     if (!sdmxUrls) return;
-    setAgencyOptions([])
-    setLoading({loading, agency: true})
+    setAgencyOptions([]);
+    setLoading({ loading, agency: true });
     fetchAgencies(sdmxUrls.agencies, setLoading, setAgencyOptions, setError);
   }, [sdmx]);
 
@@ -64,7 +68,13 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     if (!sdmxUrls) return;
     if (!selectedAgency) return;
     setRequest([]);
-    fetchDataflows(sdmxUrls.dataflow, setLoading, setDataflowOptions, setError, selectedAgency);
+    fetchDataflows(
+      sdmxUrls.dataflow,
+      setLoading,
+      setDataflowOptions,
+      setError,
+      selectedAgency,
+    );
   }, [selectedAgency]);
 
   // Fetch dataflow versions on dataflow selection
@@ -72,7 +82,13 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     if (!sdmxUrls) return;
     if (!selectedDataflow) return;
     setRequest([]);
-    fetchDataflowVersions(sdmxUrls.dataflow_versions, setLoading, setDataflowVersionOptions, setError, selectedDataflow);
+    fetchDataflowVersions(
+      sdmxUrls.dataflow_versions,
+      setLoading,
+      setDataflowVersionOptions,
+      setError,
+      selectedDataflow,
+    );
   }, [selectedDataflow]);
 
   // Handle updates when a dataflowVersion is selected
@@ -88,7 +104,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
         setDimensionOptions,
         setDimensionSelections,
         selectedDataflow,
-        selectedDataflowVersion.value
+        selectedDataflowVersion.value,
       );
     }
   }, [selectedDataflowVersion, selectedDataflow]);
@@ -105,48 +121,60 @@ const DsdForm = ({ urlChanged, setRequest }) => {
       setDsdResult,
       setCurrentUrl,
       setError,
-      setLoading);
-
+      setLoading,
+    );
   }, [dimensionSelections, selectedDataflow, selectedDataflowVersion]);
 
   const handleSubmit = async () => {
     try {
       urlChanged(currentUrl);
       setLoadError("");
-    }
-    catch (e) {
+    } catch (e) {
       setLoadError(e);
     }
-  }
+  };
 
   // Handle dimension selection change
   const handleDimensionChange = async (dimensionId, selectedOptions) => {
     if (!sdmxUrls) return;
     const values = selectedOptions?.map(({ value }) => value) || [];
-    const updatedSelections = { ...dimensionSelections, [dimensionId]: values };
+    const updatedSelections = {
+      ...dimensionSelections,
+      [dimensionId]: values,
+    };
 
     setDimensionSelections(updatedSelections);
     setLoading((prev) => ({ ...prev, dimensions: true }));
 
     try {
-      const result = await updateDsd(sdmxUrls.data, selectedDataflow, updatedSelections, selectedDataflowVersion.value);
+      const result = await updateDsd(
+        sdmxUrls.data,
+        selectedDataflow,
+        updatedSelections,
+        selectedDataflowVersion.value,
+      );
 
       if (result.error) throw new Error(result.error);
 
-      const formattedDimensions = Object.entries(result.updatedDimensions).reduce(
+      const formattedDimensions = Object.entries(
+        result.updatedDimensions,
+      ).reduce(
         (acc, [key, options]) => ({
           ...acc,
           [key]: options
             .map(({ id, name }) => ({ value: id, label: name || id }))
             .sort((a, b) => a.label.localeCompare(b.label)),
         }),
-        {}
+        {},
       );
 
       setDimensionOptions(formattedDimensions);
       setError((prev) => ({ ...prev, dimensions: null }));
     } catch (error) {
-      setError((prev) => ({ ...prev, dimensions: "Error updating dimensions." }));
+      setError((prev) => ({
+        ...prev,
+        dimensions: "Error updating dimensions.",
+      }));
     } finally {
       setLoading((prev) => ({ ...prev, dimensions: false }));
     }
@@ -227,7 +255,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
         />
       )}
 
-      {selectedDataflowVersion && Object.keys(dimensionOptions) && (
+      {selectedDataflowVersion && Object.keys(dimensionOptions).length ? (
         <section className="BasicFormSection">
           <div className="DimensionGrid">
             {Object.keys(dimensionOptions).map((dimensionId) => (
@@ -241,21 +269,22 @@ const DsdForm = ({ urlChanged, setRequest }) => {
             ))}
           </div>
         </section>
-      )}
+      ) : null}
       <span>
         <ThemeButton
           variant="primary Basic"
           className="LoadDataButton"
-          disabled={!selectedAgency || !selectedDataflow || !selectedDataflowVersion}
-          onClick={handleSubmit}>
+          disabled={
+            !selectedAgency || !selectedDataflow || !selectedDataflowVersion
+          }
+          onClick={handleSubmit}
+        >
           Load Data
         </ThemeButton>
-        <h2 className="LoadDataError">
-          {loadError}
-        </h2>
+        <h2 className="LoadDataError">{loadError}</h2>
       </span>
     </div>
   );
 };
 
-export default DsdForm;
+export default SDMXForm;

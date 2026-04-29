@@ -84,7 +84,9 @@ const restrictDataflowOptions = async (apiUrl, agencyParam) => {
         dataflowDetailsList.push({
           label: dataflowLabel,
           value: dataflowValue,
-          dsdId: dataflowDsdID,
+          // Using dsdid breaks requests
+          // dsdId: dataflowDsdID,
+          dsdId: dataflowValue,
           dataflowAgency: agencyId,
         });
       }

@@ -20,16 +20,11 @@ import React, {
   useImperativeHandle,
   useState
 } from 'react';
-import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
-import { usePapaParse } from 'react-papaparse';
-
 import { updateDataWithSetState } from "../../utils";
-import { IconTextField } from "../../../../../../components/Elements/Input";
 import { MainDataGrid } from "../../../../../../components/Table";
 import { arrayToOptions, delay } from "../../../../../../utils/main";
-
-import DsdForm from './DsdComponents/DsdForm';
+import { fetchSdmx } from "../../../../../../utils/sdmx";
+import SDMXForm from "../../../../../../components/SDMXForm";
 
 import './style.scss';
 
@@ -51,7 +46,6 @@ export const BaseSDMXForm = forwardRef(
     data, setData, files, setFiles, attributes, setAttributes, children
   }, ref
   ) => {
-    const { readString } = usePapaParse();
     const [url, setUrl] = useState('');
     const [request, setRequest] = useState({
       error: '',
@@ -93,60 +87,27 @@ export const BaseSDMXForm = forwardRef(
     )
 
     /** Read url **/
-    const readUrl = async (url) => {
-      if (!url || url !== sdmxApiInput) {
-        return
-      }
+    const readUrl = (url) => {
+      if (!url || url !== sdmxApiInput) return
       setRequest({ loading: true, error: '', requestData: null })
-      const options = { url }
-      let axiosResponse = await axios(options);
-      try {
-        readString(axiosResponse.data, {
-          header: true,
-          worker: true,
-          complete: async (result) => {
-            if (result.errors.length <= 1) {
-              const json = result.data.map((row, idx) => {
-                row.id = idx
-                return row
-              })
-              const headers = Object.keys(json[0])
-              const array = [headers]
-              json.slice(1).map(_ => {
-                const row = []
-                headers.map(header => {
-                  row.push(_[header])
-                })
-                array.push(row)
-              })
-
-              if (!data.date_time_data_field) {
-                data.date_time_data_field = 'TIME_PERIOD'
-              }
-              if (!data.key_value) {
-                data.key_value = 'OBS_VALUE'
-              }
-              setRequest({ loading: false, error: '', requestData: json })
-              setAttributes(arrayToOptions(array))
-              await delay(500);
-              setData({ ...data })
-            } else {
-              setRequest({
-                loading: false,
-                error: 'The request is not csv format',
-                requestData: null
-              })
-            }
-          },
+      fetchSdmx(url)
+        .then(async (array) => {
+          const headers = array[0]
+          const json = array.slice(1).map((row, idx) => {
+            const obj = { id: idx }
+            headers.forEach((header, i) => { obj[header] = row[i] })
+            return obj
+          })
+          if (!data.date_time_data_field) data.date_time_data_field = 'TIME_PERIOD'
+          if (!data.key_value) data.key_value = 'OBS_VALUE'
+          setRequest({ loading: false, error: '', requestData: json })
+          setAttributes(arrayToOptions(array))
+          await delay(500)
+          setData({ ...data })
         })
-      } catch (error) {
-        setRequest({
-          loading: false,
-          error: 'The request is not csv format',
-          requestData: null
+        .catch(() => {
+          setRequest({ loading: false, error: 'The request is not csv format', requestData: null })
         })
-
-      }
     }
 
     const urlChanged = (newUrl, force = false) => {
@@ -169,7 +130,7 @@ export const BaseSDMXForm = forwardRef(
       }, 500);
     }
     return <Fragment>
-      <DsdForm urlChanged={urlChanged} setRequest={setRequest} />
+      <SDMXForm urlChanged={urlChanged} setRequest={setRequest} />
       {children}
       <div className='RetrievedData'>
         <label className="form-label" htmlFor="group">

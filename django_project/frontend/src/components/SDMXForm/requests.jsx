@@ -1,4 +1,4 @@
-import { propagateAgencyOptions, restrictDataflowOptions, propagateDataflowVersions, updateDimensions, updateDsd } from "./dsdFunctions";
+import { propagateAgencyOptions, restrictDataflowOptions, propagateDataflowVersions, updateDimensions, updateDsd } from "./utilities";
 
 /**
  * fetchAgencies Function

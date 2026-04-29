@@ -1,9 +1,8 @@
 // File: DropdownSection.jsx
 import React from "react";
-import '../style.scss';
 
 import FormControl from "@mui/material/FormControl";
-import { Select } from "../../../../../../../components/Input/index";
+import { Select } from "../Input/index";
 
 /**
  * DropdownSection component renders a section with a title and a dropdown select element.
@@ -16,7 +15,6 @@ import { Select } from "../../../../../../../components/Input/index";
  * @param {function} props.onChange - The function to call when the selected option changes.
  * @param {boolean} props.loading - Indicates if the data is currently loading.
  * @param {string} props.error - The error message to display if an error occurs.
- * @param {Object} props.customStyles - Custom styles for the dropdown select.
  *
  * @returns {JSX.Element} The rendered DropdownSection component.
  */
@@ -29,7 +27,6 @@ const DropdownSection = ({
   error,
   classNamePrefix,
 }) => {
-
   return (
     <section className="BasicFormSection">
       <label className="form-label required" id={title}>
@@ -41,25 +38,25 @@ const DropdownSection = ({
       ) : error ? (
         <p className="Error">{error}</p>
       ) : (
-        <FormControl className='InputControl'>
+        <FormControl className="InputControl">
           <Select
-            menuPlacement={'auto'}
+            menuPlacement={"auto"}
             options={options}
             value={selectedOption}
             getOptionLabel={(option) => {
-              if (option.value === option.label) return option.label
-              return `${option.label} [${option.value}]`
+              if (option.value === option.label) return option.label;
+              return `${option.label} [${option.value}]`;
             }}
             getOptionValue={(option) => option.value}
             classNamePrefix={classNamePrefix}
             styles={{
               control: (provided) => ({
                 ...provided,
-                backgroundColor: 'none',
+                backgroundColor: "none",
               }),
             }}
             onChange={onChange}
-            placeholder="Select..."
+            placeholder={options.length ? "Select..." : "No options available"}
             aria-labelledby={title}
           />
         </FormControl>
@@ -67,7 +64,5 @@ const DropdownSection = ({
     </section>
   );
 };
-
-
 
 export default DropdownSection;

@@ -3,9 +3,7 @@ import React from "react";
 
 import FormControl from "@mui/material/FormControl";
 import Select from "react-select";
-import { ArrowDownwardIcon } from "../../../../../../../components/Icons";
-
-import '../style.scss';
+import { ArrowDownwardIcon } from "../Icons";
 
 
 /**
