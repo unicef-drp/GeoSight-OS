@@ -8,7 +8,7 @@ import {
   fetchDsd,
 } from "./requests";
 import DimensionDropdown from "./DimensionDropdown";
-import DropdownSection from "../SDMXForm/DropdownSection";
+import DropdownSection from "./DropdownSection";
 import { updateDsd } from "./utilities";
 
 import "./style.scss";
