@@ -35,8 +35,6 @@ import { HelpCenter } from "../HelpCenter";
  * User dropdown.
  **/
 export default function User({ ...props }) {
-  const currentLanguageId = getCurrentLanguage();
-  const helpPageRef = useRef(null);
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -149,7 +147,6 @@ export default function User({ ...props }) {
             <a href={logoutUrl}>{t("logout")}</a>
           </MenuItem>
         </Menu>
-        <HelpCenter ref={helpPageRef} />
       </Fragment>
     );
   } else {

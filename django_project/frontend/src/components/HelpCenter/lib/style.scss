@@ -68,7 +68,7 @@
     flex-direction: column;
     height: 100%;
     margin-left: auto;
-    margin-right: -600px;
+    margin-right: -100%;
     transition: margin-right linear 0.1s;
     text-align: left;
     width: 600px;
@@ -102,7 +102,7 @@
       .DocsCrawler-Block {
         background-color: white;
         box-sizing: border-box;
-        right: -600px;
+        right: -100%;
         padding: 2rem;
         padding-top: 0;
         height: 100%;

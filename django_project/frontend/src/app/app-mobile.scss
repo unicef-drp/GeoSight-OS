@@ -392,6 +392,16 @@
       padding-left: 9px !important;
     }
   }
+
+  .DocsCrawler {
+    height: 100vh;
+    width: 100vw;
+
+    .DocsCrawler-Content {
+      width: 100%;
+      margin-right: -100%;
+    }
+  }
 }
 
 .maplibregl-popup {
