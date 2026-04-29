@@ -90,7 +90,6 @@ export default function Home() {
                 // @ts-ignore
                 preferences.landing_page_banner_text ? (
                   <div
-                    style={{ marginBottom: "7rem" }}
                     dangerouslySetInnerHTML={{
                       // @ts-ignore
                       __html: preferences.landing_page_banner_text,

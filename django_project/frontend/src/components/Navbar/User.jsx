@@ -145,30 +145,6 @@ export default function User({ ...props }) {
           <MenuItem className="MenuItem-Header">
             <a href="/api/v1/docs">{t("navbar.apiDocumentation")}</a>
           </MenuItem>
-
-          {/* Language selector */}
-          <LanguageSelector>
-            <MenuItem className="MenuItem-Header Mobile">
-              <a>
-                {languages[currentLanguageId].flag}{" "}
-                {languages[currentLanguageId].name}
-              </a>
-            </MenuItem>
-          </LanguageSelector>
-          <MenuItem className="MenuItem-Header Mobile">
-            <a
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-              onClick={(_) => {
-                helpPageRef?.current.open();
-              }}
-            >
-              <HelpIcon /> Help
-            </a>
-          </MenuItem>
           <MenuItem className="MenuItem-Header">
             <a href={logoutUrl}>{t("logout")}</a>
           </MenuItem>

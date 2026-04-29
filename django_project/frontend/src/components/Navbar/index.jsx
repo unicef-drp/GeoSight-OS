@@ -185,13 +185,13 @@ export default function NavBar({ minified }) {
           )}
           <LanguageSelector>
             <div
-              className="AdminLinkButton LanguageSelector Fullscreen"
+              className="AdminLinkButton LanguageSelector"
               style={{ marginRight: "1rem", cursor: "pointer" }}
             >
               <GlobeIcon />
             </div>
           </LanguageSelector>
-          <div className="HelpButton .SvgButton Fullscreen">
+          <div className="HelpButton SvgButton">
             <a
               href="#"
               onClick={(_) => {
