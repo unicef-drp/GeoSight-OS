@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ThemeButton } from "../Elements/Button";
 
 import {
   fetchAgencies,
@@ -14,16 +13,8 @@ import { updateDsd } from "./utilities";
 
 import "./style.scss";
 
-/**
- * Index Component
- *
- * @param {Object} props - The properties object.
- * @param {function} props.setRequest - State variable setter function that mutates `request`, the request/response payload state variable.
- * @param {function} props.urlChanged - Function to read the API URL created based on user inputs.
- *
- * @returns {JSX.Element} A frontend component containing all the selection/input fields.
- */
-const SDMXForm = ({ urlChanged, setRequest }) => {
+/** SMDX Component */
+const SDMXForm = ({ setCurrentUrl }) => {
   const [sdmx, setSdmx] = useState(null);
   const sdmxUrls = sdmx?.urls;
 
@@ -41,8 +32,6 @@ const SDMXForm = ({ urlChanged, setRequest }) => {
   const [dimensionOptions, setDimensionOptions] = useState({});
 
   const [dsdResult, setDsdResult] = useState(null);
-
-  const [currentUrl, setCurrentUrl] = useState(null);
 
   const [loading, setLoading] = useState({
     agency: false,
@@ -67,7 +56,7 @@ const SDMXForm = ({ urlChanged, setRequest }) => {
   useEffect(() => {
     if (!sdmxUrls) return;
     if (!selectedAgency) return;
-    setRequest([]);
+    setCurrentUrl("");
     fetchDataflows(
       sdmxUrls.dataflow,
       setLoading,
@@ -81,7 +70,7 @@ const SDMXForm = ({ urlChanged, setRequest }) => {
   useEffect(() => {
     if (!sdmxUrls) return;
     if (!selectedDataflow) return;
-    setRequest([]);
+    setCurrentUrl("");
     fetchDataflowVersions(
       sdmxUrls.dataflow_versions,
       setLoading,
@@ -94,6 +83,7 @@ const SDMXForm = ({ urlChanged, setRequest }) => {
   // Handle updates when a dataflowVersion is selected
   useEffect(() => {
     if (!sdmxUrls) return;
+    setCurrentUrl("");
     if (selectedDataflowVersion && selectedDataflow) {
       // Fetch dimensions for the updated dataflow
       fetchDimensions(
@@ -124,15 +114,6 @@ const SDMXForm = ({ urlChanged, setRequest }) => {
       setLoading,
     );
   }, [dimensionSelections, selectedDataflow, selectedDataflowVersion]);
-
-  const handleSubmit = async () => {
-    try {
-      urlChanged(currentUrl);
-      setLoadError("");
-    } catch (e) {
-      setLoadError(e);
-    }
-  };
 
   // Handle dimension selection change
   const handleDimensionChange = async (dimensionId, selectedOptions) => {
@@ -270,19 +251,6 @@ const SDMXForm = ({ urlChanged, setRequest }) => {
           </div>
         </section>
       ) : null}
-      <span>
-        <ThemeButton
-          variant="primary Basic"
-          className="LoadDataButton"
-          disabled={
-            !selectedAgency || !selectedDataflow || !selectedDataflowVersion
-          }
-          onClick={handleSubmit}
-        >
-          Load Data
-        </ThemeButton>
-        <h2 className="LoadDataError">{loadError}</h2>
-      </span>
     </div>
   );
 };

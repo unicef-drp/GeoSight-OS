@@ -10,7 +10,7 @@ import axios from "axios";
  */
 const propagateAgencyOptions = async (apiUrl) => {
   const agencyList = [];
- 
+
   try {
     const response = await axios.get(apiUrl);
     const data = response.data;
@@ -21,13 +21,15 @@ const propagateAgencyOptions = async (apiUrl) => {
       if (scheme.items && Array.isArray(scheme.items)) {
         scheme.items.forEach((agency) => {
           const agencyID = agency.id;
-          const agencyName = agency.names?.find(name => name.locale === "en")?.value || agencyID;
+          const agencyName =
+            agency.names?.find((name) => name.locale === "en")?.value ||
+            agencyID;
           agencyList.push({ id: agencyID, name: agencyName });
         });
       }
     });
   } catch (error) {
-    return { error: "An error has occurred" }
+    return { error: "An error has occurred" };
   }
 
   return agencyList; // Return as a list of agency objects
@@ -75,8 +77,11 @@ const restrictDataflowOptions = async (apiUrl, agencyParam) => {
         const dataflowLabel = nameNode ? nameNode.textContent : "Unnamed";
 
         // Extract structure information
-        const structureNode = dataflowNode.getElementsByTagName("str:Structure")[0];
-        const refNode = structureNode ? structureNode.getElementsByTagName("Ref")[0] : null;
+        const structureNode =
+          dataflowNode.getElementsByTagName("str:Structure")[0];
+        const refNode = structureNode
+          ? structureNode.getElementsByTagName("Ref")[0]
+          : null;
 
         const dataflowDsdID = refNode ? refNode.getAttribute("id") : null;
 
@@ -84,9 +89,7 @@ const restrictDataflowOptions = async (apiUrl, agencyParam) => {
         dataflowDetailsList.push({
           label: dataflowLabel,
           value: dataflowValue,
-          // Using dsdid breaks requests
-          // dsdId: dataflowDsdID,
-          dsdId: dataflowValue,
+          dsdId: dataflowDsdID,
           dataflowAgency: agencyId,
         });
       }
@@ -110,17 +113,19 @@ const restrictDataflowOptions = async (apiUrl, agencyParam) => {
  */
 
 const propagateDataflowVersions = async (apiUrl, dataflow) => {
-  apiUrl = apiUrl.replaceAll("<agency>", dataflow.dataflowAgency).replaceAll("<dataflow>", dataflow.value);
-  const dataflowVersions = []
+  apiUrl = apiUrl
+    .replaceAll("<agency>", dataflow.dataflowAgency)
+    .replaceAll("<dataflow>", dataflow.value);
+  const dataflowVersions = [];
 
   try {
     // Fetch data from API using axios
     const response = await axios.get(apiUrl);
-    const xmlString = response.data
+    const xmlString = response.data;
 
     // Parse the XML response using DOMParser
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, "application/xml")
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
 
     // Extract dataflow elements
     const dataflowNodes = xmlDoc.getElementsByTagName("str:Dataflow");
@@ -137,7 +142,7 @@ const propagateDataflowVersions = async (apiUrl, dataflow) => {
   }
 
   return dataflowVersions;
-}
+};
 
 // Function to update dimension selections for a dataflow
 /**
@@ -155,8 +160,16 @@ const propagateDataflowVersions = async (apiUrl, dataflow) => {
  *   @property {Object} updatedDimensions - A mapping of dimension IDs to their available values, updated from the API response.
  *   If an error occurs, an object with an error property is returned.
  */
-const updateDimensions = async (apiUrl,apiDataUrl, dataflow, dataflowVersion) => {
-  apiUrl = apiUrl.replaceAll("<agency>", dataflow.dataflowAgency).replaceAll("<dataflow>", dataflow.dsdId).replaceAll("<dataflow_version>", dataflowVersion);
+const updateDimensions = async (
+  apiUrl,
+  apiDataUrl,
+  dataflow,
+  dataflowVersion,
+) => {
+  apiUrl = apiUrl
+    .replaceAll("<agency>", dataflow.dataflowAgency)
+    .replaceAll("<dataflow>", dataflow.dsdId)
+    .replaceAll("<dataflow_version>", dataflowVersion);
   const dimensionSelections = {};
 
   try {
@@ -173,7 +186,9 @@ const updateDimensions = async (apiUrl,apiDataUrl, dataflow, dataflowVersion) =>
 
     // Iterate through Dimension elements and extract ConceptIdentity
     Array.from(dimensionNodes).forEach((dimension) => {
-      const conceptIdentityNode = dimension.getElementsByTagName("str:ConceptIdentity")[0];
+      const conceptIdentityNode = dimension.getElementsByTagName(
+        "str:ConceptIdentity",
+      )[0];
       if (conceptIdentityNode) {
         const refNode = conceptIdentityNode.getElementsByTagName("Ref")[0];
         if (refNode) {
@@ -186,7 +201,12 @@ const updateDimensions = async (apiUrl,apiDataUrl, dataflow, dataflowVersion) =>
     return { error: "An error has occurred" };
   }
 
-  const { updatedDimensions, apiResponse } = await updateDsd(apiDataUrl, dataflow, dimensionSelections, dataflowVersion);
+  const { updatedDimensions, apiResponse } = await updateDsd(
+    apiDataUrl,
+    dataflow,
+    dimensionSelections,
+    dataflowVersion,
+  );
 
   return { dimensionSelections, updatedDimensions, apiResponse };
 };
@@ -216,17 +236,22 @@ const updateDsd = async (apiUrl, dataflow, dimensions, dataflowVersion) => {
       .map(([key, values]) => values.join("+"))
       .join(".");
 
-    apiUrl = apiUrl.replaceAll("<agency>", dataflow.dataflowAgency).replaceAll("<dataflow>", dataflow.dsdId).replaceAll("<dataflow_version>", dataflowVersion).replaceAll("<dimensions>", urlSection);
+    apiUrl = apiUrl
+      .replaceAll("<agency>", dataflow.dataflowAgency)
+      .replaceAll("<dataflow>", dataflow.value)
+      .replaceAll("<dataflow_version>", dataflowVersion)
+      .replaceAll("<dimensions>", urlSection);
 
     // Fetch the data from the API
     const response = await axios.get(apiUrl);
     const apiResponse = response.data;
 
     // Map updated dimensions to their values
-    const updatedDimensions = apiResponse.structure.dimensions.observation.reduce((map, dimension) => {
-      map[dimension.id] = dimension.values;
-      return map;
-    }, {});
+    const updatedDimensions =
+      apiResponse.structure.dimensions.observation.reduce((map, dimension) => {
+        map[dimension.id] = dimension.values;
+        return map;
+      }, {});
 
     const sdmxImplementation = ["implementation 1"];
 
@@ -236,4 +261,10 @@ const updateDsd = async (apiUrl, dataflow, dimensions, dataflowVersion) => {
   }
 };
 
-export { propagateAgencyOptions, restrictDataflowOptions, propagateDataflowVersions, updateDimensions, updateDsd };
+export {
+  propagateAgencyOptions,
+  restrictDataflowOptions,
+  propagateDataflowVersions,
+  updateDimensions,
+  updateDsd,
+};
