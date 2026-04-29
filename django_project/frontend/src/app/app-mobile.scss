@@ -28,9 +28,7 @@
       }
     }
   }
-}
 
-@media (max-width: 1300px) {
   .DashboardMap {
     .Toolbar {
       .Toolbar-Middle {
@@ -347,7 +345,6 @@
   }
 
   .BannerContent {
-    padding: 0 3rem !important;
     height: fit-content !important;
   }
   .input-container {
@@ -379,6 +376,30 @@
           max-width: 150px;
         }
       }
+    }
+  }
+  .AdminContentHeader {
+    .AdminContentHeader-Left {
+      margin-right: 2rem;
+    }
+
+    .MuiButtonBase-root {
+      justify-content: left;
+      white-space: nowrap;
+      text-align: left;
+      width: 33px;
+      min-width: 23px;
+      padding-left: 9px !important;
+    }
+  }
+
+  .DocsCrawler {
+    height: 100vh;
+    width: 100vw;
+
+    .DocsCrawler-Content {
+      width: 100%;
+      margin-right: -100%;
     }
   }
 }
