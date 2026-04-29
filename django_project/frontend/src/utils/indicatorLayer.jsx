@@ -26,6 +26,7 @@ export const MultiIndicatorType = "Multi Indicator";
 export const DynamicIndicatorType = "Dynamic Indicator";
 export const RelatedTableLayerType = "Related Table";
 export const CompositeIndexLayerType = "Composite Index Layer";
+export const SDMXIndicatorLayerType = "SDMX Indicator Layer";
 
 export const defaultFields = [
   "indicator.name",

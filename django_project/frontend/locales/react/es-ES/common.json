@@ -83,7 +83,13 @@
         "accessRequestPermissionDetail": "Detalle de solicitud de permisos",
         "userProfile": "Perfil de usuario",
         "referenceLayerView": "Conjunto de datos de referencia",
-        "referenceDatasetImporter": "Importador de conjunto de datos de referencia"
+        "referenceDatasetImporter": "Importador de conjunto de datos de referencia",
+        "User": "Usuario",
+        "Users": "Usuario",
+        "Group": "Grupo",
+        "Groups": "Grupo",
+        "permissionRequests": "Solicitud de Permiso",
+        "newUsers": "Nuevo Usuario"
       },
       "plural": {
         "dashboard": "Proyectos",
@@ -235,5 +241,8 @@
   "Remove from featured": "Quitar de destacados",
   "Feature it": "Destacar",
   "featured projects": "Proyectos Destacados",
-  "No featured projects available": "No hay proyectos destacados disponibles"
+  "No featured projects available": "No hay proyectos destacados disponibles",
+  "SDMX Indicators Layer Configurations": "Configuraciones de Capas de Indicadores SDMX",
+  "Config": "Configuración",
+  "Apply Changes": "Aplicar cambios"
 }

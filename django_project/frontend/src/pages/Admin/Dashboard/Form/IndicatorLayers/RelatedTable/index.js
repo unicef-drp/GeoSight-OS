@@ -48,9 +48,7 @@ import {
 import { fetchPagination } from "../../../../../../Requests";
 import { queryData } from "../../../../../../utils/queryExtraction";
 import { AdminForm } from "../../../../Components/AdminForm";
-import {
-  ViewLevelConfiguration
-} from "../../../../Components/Input/ReferenceLayerLevelConfiguration";
+import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
@@ -62,6 +60,7 @@ import { getCountryGeomIds } from "../../../../../../utils/Dataset";
 
 import "./style.scss";
 import FieldConfig from "../../../../../../components/FieldConfig";
+import LayerNameDescription from "../LayerNameDescription";
 
 /**
  * MultiIndicatorConfig
@@ -300,100 +299,51 @@ export default function RelatedTableLayerConfig({
                         Style is not configured.
                       </span>
                     ) : null}
-                    <div className="BasicFormSection">
-                      <div>
-                        <label className="form-label required">Name</label>
-                      </div>
-                      <div className="ContextLayerConfig-IconSize">
-                        <input
-                          className="LayerNameInput"
-                          type="text"
-                          spellCheck="false"
-                          value={data.name}
-                          onChange={(evt) => {
-                            data.name = evt.target.value;
-                            updateData();
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="BasicFormSection">
-                      <div>
-                        <label className="form-label">Description</label>
-                      </div>
-                      <div className="ContextLayerConfig-IconSize">
-                        <textarea
-                          className="LayerDescriptionInput"
-                          value={data.description}
-                          onChange={(evt) => {
-                            data.description = evt.target.value;
-                            updateData();
-                          }}
-                        />
-                      </div>
-                      <span className="form-helptext">
-                        {
-                          "Put any text here. You can put markup {<Variable Name>}."
-                        }
-                        {"The variable name that can be used are:"}
-                        <br />
-                        {'"aggr-method-name" = Name of the aggregation method defined in the ' +
-                          "Related Table Layer config"}
-                        <br />
-                        {'"aggr-field-name" = Name of the field selected for aggregation in the ' +
-                          "Related Table Layer config"}
-                        <br />
-                        {'"related-table-name" = Names\ of the Related Table'}
-                        <br />
-                        {'"sql-field-names" = Names of fields used for the SQL Filter in the Related Table config ' +
-                          "(Related Tables tab of the Project config)"}
-                        <br />
-                        {
-                          '"sql-query" = Full SQL syntax as text, used for the SQL Filter in the Related Table config'
-                        }
-                        <br />
-                      </span>
-                    </div>
-                    {/* ADMIN LEVEL CONFIGURATION*/}
-                    <div className="OverrideAdminLevel">
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={
-                                !!(
-                                  data.level_config &&
-                                  Object.keys(data.level_config).length
-                                )
-                              }
-                              onChange={(evt) => {
-                                if (evt.target.checked) {
-                                  data.level_config = {
-                                    default_level: 0,
-                                  };
-                                } else {
-                                  data.level_config = {};
-                                }
-                                updateData();
-                              }}
-                            />
+                    <LayerNameDescription
+                      name={data.name}
+                      description={data.description}
+                      onChangeName={(name) => {
+                        data.name = name;
+                        updateData();
+                      }}
+                      onChangeDescription={(description) => {
+                        data.description = description;
+                        updateData();
+                      }}
+                      descriptionHelp={
+                        <span className="form-helptext">
+                          {
+                            "Put any text here. You can put markup {<Variable Name>}."
                           }
-                          label={"Override admin level configuration"}
-                        />
-                      </FormGroup>
-                      {data.level_config &&
-                      Object.keys(data.level_config).length ? (
-                        <ViewLevelConfiguration
-                          data={data.level_config}
-                          setData={(levelConfig) => {
-                            data.level_config = levelConfig;
-                            updateData();
-                          }}
-                          referenceLayer={referenceLayer}
-                          ableToSelectReferenceLayer={true}
-                        />
-                      ) : null}
-                    </div>
+                          {"The variable name that can be used are:"}
+                          <br />
+                          {'"aggr-method-name" = Name of the aggregation method defined in the ' +
+                            "Related Table Layer config"}
+                          <br />
+                          {'"aggr-field-name" = Name of the field selected for aggregation in the ' +
+                            "Related Table Layer config"}
+                          <br />
+                          {'"related-table-name" = Names\ of the Related Table'}
+                          <br />
+                          {'"sql-field-names" = Names of fields used for the SQL Filter in the Related Table config ' +
+                            "(Related Tables tab of the Project config)"}
+                          <br />
+                          {
+                            '"sql-query" = Full SQL syntax as text, used for the SQL Filter in the Related Table config'
+                          }
+                          <br />
+                        </span>
+                      }
+                    />
+                    {/* ADMIN LEVEL CONFIGURATION*/}
+                    <OverrideAdminLevelConfiguration
+                      levelConfig={data.level_config}
+                      onChange={(levelConfig) => {
+                        data.level_config = levelConfig;
+                        updateData();
+                      }}
+                      referenceLayer={referenceLayer}
+                    />
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label required">
