@@ -12,32 +12,11 @@
  * __date__ = '29/04/2026'
  * __copyright__ = ('Copyright 2026, Unicef')
  */
+import { SelectOption } from "../../types/Input";
 
-export interface Option {
-  label: string;
-  value: string;
-}
-
-export interface DataflowOption extends Option {
+export interface DataflowOption extends SelectOption {
   dataflowAgency: string;
   dsdId: string | null;
 }
 
-export interface LoadingState {
-  agency: boolean;
-  dataflow: boolean;
-  dataflowVersion: boolean;
-  dimensions: boolean;
-  dsd: boolean;
-}
-
-export interface ErrorState {
-  agency: string | null;
-  dataflow: string | null;
-  dataflowVersion: string | null;
-  dimensions: string | null;
-  dsd: string | null;
-}
-
-export type DimensionOptions = Record<string, Option[]>;
-export type DimensionSelections = Record<string, string[]>;
+export type DimensionOptions = Record<string, SelectOption[]>;

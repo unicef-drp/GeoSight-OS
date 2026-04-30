@@ -62,7 +62,7 @@ export const SDMXPreview = ({ url, setAttributes }: Props) => {
         <ThemeButton
           variant="primary Basic"
           className="LoadDataButton"
-          disabled={!url}
+          disabled={!url || loading}
           onClick={readUrl}
           style={{ width: "100px" }}
         >
@@ -76,11 +76,12 @@ export const SDMXPreview = ({ url, setAttributes }: Props) => {
           rows={loading ? [] : requestData ? requestData : []}
           columns={
             requestData
-              ? Object.keys(requestData[0]).map((key) => {
+              ? Object.keys(
+                  requestData && requestData[0] ? requestData[0] : {},
+                ).map((key) => {
                   return {
                     field: key,
                     headerName: key,
-                    hide: key === "id" ? true : false,
                     flex: 1,
                     minWidth: 200,
                   };

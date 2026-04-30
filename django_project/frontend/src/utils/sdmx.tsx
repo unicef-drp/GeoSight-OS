@@ -20,28 +20,38 @@ export const fetchSdmx = async (url: string): Promise<any[][]> => {
   if (urls[1]) {
     url = [urls[0], "format=csv"].join("?");
   }
-  const response = await axios.get(url);
   return new Promise((resolve, reject) => {
-    Papa.parse(response.data, {
-      header: true,
-      worker: false,
-      complete: (result) => {
-        if (result.errors.length > 1) {
-          reject(result.errors);
+    axios
+      .get(url)
+      .then((response) => {
+        Papa.parse(response.data, {
+          header: true,
+          worker: false,
+          complete: (result) => {
+            if (result.errors.length > 1) {
+              reject(result.errors);
+              return;
+            }
+            const json = result.data.map((row: any, idx: number) => {
+              row.id = idx;
+              return row;
+            });
+            const headers = Object.keys(json[0]);
+            const array: any[][] = [headers];
+            json.slice(1).forEach((row: any) => {
+              array.push(headers.map((header) => row[header]));
+            });
+            resolve(array);
+          },
+          error: (error: Error) => reject(error),
+        });
+      })
+      .catch((error: any) => {
+        if (error?.response?.status === 404) {
+          resolve([]);
           return;
         }
-        const json = result.data.map((row: any, idx: number) => {
-          row.id = idx;
-          return row;
-        });
-        const headers = Object.keys(json[0]);
-        const array: any[][] = [headers];
-        json.slice(1).forEach((row: any) => {
-          array.push(headers.map((header) => row[header]));
-        });
-        resolve(array);
-      },
-      error: (error: Error) => reject(error),
-    });
+        reject(error);
+      });
   });
 };

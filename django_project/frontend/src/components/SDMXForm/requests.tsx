@@ -12,175 +12,147 @@
  * __date__ = '29/04/2026'
  * __copyright__ = ('Copyright 2026, Unicef')
  */
-import {
-  propagateAgencyOptions,
-  propagateDataflowVersions,
-  restrictDataflowOptions,
-  updateDimensions,
-  updateDsd,
-} from "./utilities";
-import {
-  DataflowOption,
-  DimensionOptions,
-  DimensionSelections,
-  ErrorState,
-  LoadingState,
-  Option,
-} from "./types";
-
-type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+import axios from "axios";
+import { constructSDMXUrl } from "./utilities";
+import { DataflowOption, DimensionOptions } from "./types";
+import { Agency } from "../../types/SDMX";
+import { SelectOption } from "../../types/Input";
 
 export const fetchAgencies = async (
   apiUrl: string,
-  setLoading: SetState<LoadingState>,
-  setAgencyOptions: SetState<Option[]>,
-  setError: SetState<ErrorState>,
-): Promise<void> => {
-  setLoading((prev) => ({ ...prev, agency: true }));
-  try {
-    const agencies = await propagateAgencyOptions(apiUrl);
-    if ("error" in agencies) throw new Error(agencies.error);
-    setAgencyOptions(
-      agencies.map(({ id, name }: { id: string; name: string }) => ({
-        value: id,
-        label: name,
-      })),
-    );
-    setError((prev) => ({ ...prev, agency: null }));
-  } catch {
-    setError((prev) => ({ ...prev, agency: "Error fetching agencies." }));
-  } finally {
-    setLoading((prev) => ({ ...prev, agency: false }));
-  }
+  signal?: AbortSignal,
+): Promise<Agency[]> => {
+  const response = await axios.get(apiUrl, { signal });
+  const agencySchemes = response.data?.AgencyScheme || [];
+  const agencies: Agency[] = [];
+  agencySchemes.forEach((scheme: any) => {
+    if (scheme.items && Array.isArray(scheme.items)) {
+      scheme.items.forEach((agency: any) => {
+        const agencyID = agency.id;
+        const agencyName =
+          agency.names?.find((name: any) => name.locale === "en")?.value ||
+          agencyID;
+        agencies.push({ id: agencyID, name: agencyName });
+      });
+    }
+  });
+  return agencies;
 };
 
 export const fetchDataflows = async (
   apiUrl: string,
-  setLoading: SetState<LoadingState>,
-  setDataflowOptions: SetState<DataflowOption[]>,
-  setError: SetState<ErrorState>,
-  selectedAgency: Option,
-): Promise<void> => {
-  setLoading((prev) => ({ ...prev, dataflow: true }));
-  try {
-    const dataflows = await restrictDataflowOptions(
-      apiUrl,
-      selectedAgency.value,
-    );
-    if ("error" in dataflows) throw new Error(dataflows.error);
-    setDataflowOptions(dataflows);
-    setError((prev) => ({ ...prev, dataflow: null }));
-  } catch {
-    setError((prev) => ({ ...prev, dataflow: "Error fetching dataflows." }));
-  } finally {
-    setLoading((prev) => ({ ...prev, dataflow: false }));
-  }
+  signal?: AbortSignal,
+): Promise<DataflowOption[]> => {
+  const response = await axios.get(apiUrl, { signal });
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(response.data, "application/xml");
+  const dataflows = xmlDoc.getElementsByTagName("str:Dataflow");
+  const dataflowDetailsList: DataflowOption[] = [];
+
+  Array.from(dataflows).forEach((dataflowNode) => {
+    const agencyId = dataflowNode.getAttribute("agencyID");
+    const dataflowValue = dataflowNode.getAttribute("id");
+    const nameNode = dataflowNode.getElementsByTagName("com:Name")[0];
+    const dataflowLabel = nameNode
+      ? (nameNode.textContent ?? "Unnamed")
+      : "Unnamed";
+    const structureNode = dataflowNode.getElementsByTagName("str:Structure")[0];
+    const refNode = structureNode
+      ? structureNode.getElementsByTagName("Ref")[0]
+      : null;
+    const dataflowDsdID = refNode ? refNode.getAttribute("id") : null;
+    dataflowDetailsList.push({
+      label: dataflowLabel,
+      value: dataflowValue ?? "",
+      dsdId: dataflowDsdID,
+      dataflowAgency: agencyId,
+    });
+  });
+  return dataflowDetailsList;
 };
 
 export const fetchDataflowVersions = async (
   apiUrl: string,
-  setLoading: SetState<LoadingState>,
-  setDataflowVersionOptions: SetState<Option[]>,
-  setError: SetState<ErrorState>,
-  selectedDataflow: DataflowOption,
-): Promise<void> => {
-  setLoading((prev) => ({ ...prev, dataflowVersion: true }));
-  try {
-    const dataflowVersions = await propagateDataflowVersions(
-      apiUrl,
-      selectedDataflow,
-    );
-    if ("error" in dataflowVersions) throw new Error(dataflowVersions.error);
-    setDataflowVersionOptions(
-      dataflowVersions.map((version: string) => ({
-        value: version,
-        label: `Version ${version}`,
-      })),
-    );
-    setError((prev) => ({ ...prev, dataflowVersion: null }));
-  } catch {
-    setError((prev) => ({
-      ...prev,
-      dataflowVersion: "Error fetching dataflow versions.",
-    }));
-  } finally {
-    setLoading((prev) => ({ ...prev, dataflowVersion: false }));
-  }
+  agencyId: string,
+  dataFlowId: string,
+  signal?: AbortSignal,
+): Promise<SelectOption[]> => {
+  apiUrl = apiUrl
+    .replaceAll("<agency>", agencyId)
+    .replaceAll("<dataflow>", dataFlowId);
+  const response = await axios.get(apiUrl, { signal });
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(response.data, "application/xml");
+  const dataflowNodes = xmlDoc.getElementsByTagName("str:Dataflow");
+  const versions: string[] = [];
+  Array.from(dataflowNodes).forEach((dataflowNode) => {
+    const version = dataflowNode.getAttribute("version");
+    if (version) versions.push(version);
+  });
+  return versions.map((version) => ({
+    value: version,
+    label: `Version ${version}`,
+  }));
 };
 
 export const fetchDimensions = async (
   apiUrl: string,
-  apiDataUrl: string,
-  setLoading: SetState<LoadingState>,
-  setError: SetState<ErrorState>,
-  setDimensionOptions: SetState<DimensionOptions>,
-  setDimensionSelections: SetState<DimensionSelections>,
-  selectedDataflow: DataflowOption,
-  selectedDataflowVersion: string,
-): Promise<void> => {
-  setLoading((prev) => ({ ...prev, dimensions: true }));
-  try {
-    const result = await updateDimensions(
-      apiUrl,
-      apiDataUrl,
-      selectedDataflow,
-      selectedDataflowVersion,
-    );
-    if ("error" in result) throw new Error(result.error);
-
-    const formattedOptions: DimensionOptions = Object.fromEntries(
-      Object.entries(result.updatedDimensions).map(
-        ([key, values]: [string, any[]]) => [
-          key,
-          values
-            .map(({ id, name }: { id: string; name: string }) => ({
-              value: id,
-              label: name || id,
-            }))
-            .sort((a: Option, b: Option) => a.label.localeCompare(b.label)),
-        ],
-      ),
-    );
-
-    setDimensionSelections(result.dimensionSelections);
-    setDimensionOptions(formattedOptions);
-    setError((prev) => ({ ...prev, dimensions: null }));
-  } catch {
-    setError((prev) => ({
-      ...prev,
-      dimensions: "Error fetching dimensions.",
-    }));
-  } finally {
-    setLoading((prev) => ({ ...prev, dimensions: false }));
-  }
+  agencyId: string,
+  dataFlowId: string,
+  dataFlowVersionId: string,
+  signal?: AbortSignal,
+): Promise<{
+  dimensionSelections: DimensionOptions;
+  dimensionKeys: string[];
+}> => {
+  apiUrl = apiUrl
+    .replaceAll("<agency>", agencyId)
+    .replaceAll("<dataflow>", dataFlowId)
+    .replaceAll("<dataflow_version>", dataFlowVersionId);
+  const response = await axios.get(apiUrl, { signal });
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(response.data, "application/xml");
+  const dimensionNodes = xmlDoc.getElementsByTagName("str:Dimension");
+  const dimensionSelections: DimensionOptions = {};
+  const dimensionKeys: string[] = [];
+  Array.from(dimensionNodes).forEach((dimension) => {
+    const conceptIdentityNode = dimension.getElementsByTagName(
+      "str:ConceptIdentity",
+    )[0];
+    if (conceptIdentityNode) {
+      const refNode = conceptIdentityNode.getElementsByTagName("Ref")[0];
+      if (refNode) {
+        const id = refNode.getAttribute("id");
+        if (id) {
+          dimensionSelections[id] = [];
+          dimensionKeys.push(id);
+        }
+      }
+    }
+  });
+  return { dimensionSelections, dimensionKeys };
 };
 
-export const fetchDsd = async (
+export const fetchStructure = async (
   apiUrl: string,
-  selectedDataflow: DataflowOption,
-  selectedDataflowVersion: string,
-  dimensionSelections: DimensionSelections,
-  setDsdResult: SetState<any>,
-  setCurrentUrl: SetState<string>,
-  setError: SetState<ErrorState>,
-  setLoading: SetState<LoadingState>,
-): Promise<void> => {
-  setLoading((prev) => ({ ...prev, dsd: true }));
-  try {
-    const result = await updateDsd(
-      apiUrl,
-      selectedDataflow,
-      dimensionSelections,
-      selectedDataflowVersion,
-    );
-    if ("error" in result) throw new Error(result.error);
-
-    setDsdResult(result);
-    setCurrentUrl(result.apiUrl.split("?")[0] + "?format=csv");
-    setError((prev) => ({ ...prev, dsd: null }));
-  } catch {
-    setError((prev) => ({ ...prev, dsd: "Error fetching DSD." }));
-  } finally {
-    setLoading((prev) => ({ ...prev, dsd: false }));
-  }
+  agencyId: string,
+  dataFlowId: string,
+  dataFlowVersionId: string,
+  dimensions: DimensionOptions,
+  signal?: AbortSignal,
+): Promise<DimensionOptions> => {
+  const url = constructSDMXUrl(apiUrl, agencyId, dataFlowId, dataFlowVersionId);
+  const response = await axios.get(url, { signal });
+  const apiResponse = response.data;
+  apiResponse.structure.dimensions.observation.reduce(
+    (map: Record<string, any[]>, dimension: any) => {
+      dimensions[dimension.id] = dimension.values.map((value: any) => ({
+        value: value.id,
+        label: value.name,
+      }));
+      return map;
+    },
+    {},
+  );
+  return dimensions;
 };

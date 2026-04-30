@@ -14,15 +14,15 @@
  */
 import React from "react";
 import FormControl from "@mui/material/FormControl";
-import Select, { MultiValue, StylesConfig } from "react-select";
+import Select, { StylesConfig } from "react-select";
 import { ArrowDownwardIcon } from "../Icons";
-import { Option } from "./types";
+import { SelectOption } from "../../types/Input";
 
 interface Props {
   dimensionId: string;
-  options: Option[];
+  options: SelectOption[];
   selectedValues: string[];
-  onChange: (dimensionId: string, selectedOptions: MultiValue<Option>) => void;
+  onChange: (values: string[]) => void;
 }
 
 const DimensionDropdown = ({
@@ -30,42 +30,46 @@ const DimensionDropdown = ({
   options,
   selectedValues,
   onChange,
-}: Props) => (
-  <div className="DimensionContainer">
-    <label className="form-label" id={dimensionId}>
-      {dimensionId}
-    </label>
+}: Props) => {
+  return (
+    <div className="DimensionContainer">
+      <label className="form-label" id={dimensionId}>
+        {dimensionId}
+      </label>
 
-    <FormControl className="InputControl">
-      <Select
-        isMulti
-        options={options}
-        value={options.filter((option) =>
-          selectedValues.includes(option.value),
-        )}
-        onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
-        placeholder={`Select ${dimensionId}`}
-        className="DimensionDropdown"
-        classNamePrefix="DimensionDropdown"
-        formatOptionLabel={(option: Option) =>
-          `${option.label} [${option.value}]`
-        }
-        styles={
-          {
-            control: (provided) => ({ ...provided }),
-          } as StylesConfig<Option, true>
-        }
-        components={{
-          IndicatorSeparator: () => null,
-          DropdownIndicator: () => (
-            <div className="DropdownIndicator">
-              <ArrowDownwardIcon />
-            </div>
-          ),
-        }}
-      />
-    </FormControl>
-  </div>
-);
+      <FormControl className="InputControl">
+        <Select
+          isMulti
+          options={[...options].sort((a, b) => a.value.localeCompare(b.value))}
+          value={options.filter((option) =>
+            selectedValues.includes(option.value),
+          )}
+          onChange={(selectedOptions) => {
+            onChange(selectedOptions.map((option) => option.value));
+          }}
+          formatOptionLabel={(option: SelectOption) =>
+            `${option.value} (${option.label})`
+          }
+          placeholder={`Select ${dimensionId}`}
+          className="DimensionDropdown"
+          classNamePrefix="DimensionDropdown"
+          styles={
+            {
+              control: (provided) => ({ ...provided }),
+            } as StylesConfig<SelectOption, true>
+          }
+          components={{
+            IndicatorSeparator: () => null,
+            DropdownIndicator: () => (
+              <div className="DropdownIndicator">
+                <ArrowDownwardIcon />
+              </div>
+            ),
+          }}
+        />
+      </FormControl>
+    </div>
+  );
+};
 
 export default DimensionDropdown;

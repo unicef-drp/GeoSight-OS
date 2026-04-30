@@ -145,12 +145,9 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
             {"value": group.name, "label": group.name} for group in
             RelatedTableGroup.objects.all()
         ]
-        context['sdmx_data'] = [
-            {"name": _["name"], "url": _["url"], "urls": _["urls"]} for _ in
-            SDMXConfigSerializer(
-                SDMXConfig.objects.all(), many=True
-            ).data
-        ]
+        context['sdmx_data'] = json.dumps(SDMXConfigSerializer(
+            SDMXConfig.objects.all(), many=True
+        ).data)
         return context
 
 

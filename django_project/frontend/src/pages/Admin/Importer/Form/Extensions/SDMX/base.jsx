@@ -27,7 +27,6 @@ import { SDMXPreview } from "../../../../../../components/SDMXForm/Preview";
 
 import "./style.scss";
 
-let sdmxApiInput = null;
 /**
  * Base Excel Form.
  * @param {dict} data .
@@ -42,7 +41,6 @@ let sdmxApiInput = null;
 export const BaseSDMXForm = forwardRef(
   ({ data, setData, setAttributes, children }, ref) => {
     const [url, setUrl] = useState("");
-    console.log(data);
 
     // Ready check
     useImperativeHandle(ref, () => ({
@@ -85,7 +83,7 @@ export const BaseSDMXForm = forwardRef(
 
     return (
       <Fragment>
-        <SDMXForm setCurrentUrl={setUrl} />
+        <SDMXForm urlChanged={setUrl} />
         {children}
         <SDMXPreview
           url={url}

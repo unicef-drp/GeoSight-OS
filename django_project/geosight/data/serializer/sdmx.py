@@ -24,4 +24,4 @@ class SDMXConfigSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = SDMXConfig
-        fields = ("name", "description", "url", "urls")
+        fields = ("id", "name", "description", "url", "urls")
