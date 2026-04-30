@@ -40,6 +40,7 @@ const DimensionDropdown = ({
       <FormControl className="InputControl">
         <Select
           isMulti
+          menuPlacement={"top"}
           options={[...options].sort((a, b) => a.value.localeCompare(b.value))}
           value={options.filter((option) =>
             selectedValues.includes(option.value),

@@ -43,6 +43,8 @@ import StyleConfig from "../../../../Style/Form/StyleConfig";
 import LayerNameDescription from "../LayerNameDescription";
 import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
 import { useSelector } from "react-redux";
+import SDMXForm from "../../../../../../components/SDMXForm";
+import SDMXPreview from "../../../../../../components/SDMXForm/Preview";
 
 export interface SDMXLayerConfigProps {
   indicatorLayer?: IndicatorLayer;
@@ -159,8 +161,47 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                         }}
                         referenceLayer={referenceLayer}
                       />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 0px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            flexGrow: 0.5,
+                            height: "1px",
+                            borderBottom: "1px solid var(--border-gray)",
+                          }}
+                        />
+                        <div
+                          style={{
+                            width: "100px",
+                            textAlign: "center",
+                            opacity: 0.5,
+                          }}
+                        >
+                          SDMX Config
+                        </div>
+                        <div
+                          style={{
+                            flexGrow: 0.5,
+                            height: "1px",
+                            borderBottom: "1px solid var(--border-gray)",
+                          }}
+                        />
+                      </div>
+                      <SDMXForm
+                        dataChanged={(config) => {
+                          data.config = config;
+                          updateData();
+                        }}
+                      />
                     </div>
                   ),
+                  Data: <SDMXPreview url={data.config?.url} autoFetch={true} />,
                   Style: (
                     <StyleConfig
                       data={data}

@@ -72,7 +72,7 @@ export const DropdownInput = ({
       <FormControl className="InputControl">
         <Select
           disabled={disabled}
-          menuPlacement={"auto"}
+          menuPlacement={"top"}
           options={[...options].sort((a, b) => a.label.localeCompare(b.label))}
           value={value}
           getOptionLabel={(option: SelectOption) => {

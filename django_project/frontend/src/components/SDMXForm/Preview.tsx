@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormControl } from "@mui/material";
 import { MainDataGrid } from "../Table";
 import { fetchSdmx } from "../../utils/sdmx";
@@ -8,10 +8,11 @@ import "./style.scss";
 
 export interface Props {
   url: string;
+  autoFetch?: boolean;
 }
 
 /** SDMX Preview Component */
-export const SDMXPreview = ({ url }: Props) => {
+export const SDMXPreview = ({ url, autoFetch }: Props) => {
   const [request, setRequest] = useState({
     error: "",
     loading: false,
@@ -21,6 +22,7 @@ export const SDMXPreview = ({ url }: Props) => {
 
   /** Read url **/
   const readUrl = () => {
+    if (!url) return;
     setRequest({ loading: true, error: "", requestData: null });
     fetchSdmx(url)
       .then(async (array) => {
@@ -42,6 +44,13 @@ export const SDMXPreview = ({ url }: Props) => {
         });
       });
   };
+
+  // Set default data
+  useEffect(() => {
+    if (autoFetch) {
+      readUrl();
+    }
+  }, [url]);
 
   // Render
   return (
