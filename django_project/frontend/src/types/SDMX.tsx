@@ -13,6 +13,25 @@
  * __copyright__ = ('Copyright 2026, Unicef')
  */
 
+export const SDMX_MODE_CONFIG = "config" as const;
+export const SDMX_MODE_URL = "url" as const;
+export const SDMX_MODES = [SDMX_MODE_CONFIG, SDMX_MODE_URL] as const;
+
+export interface SDMXDataForm {
+  url?: string;
+  mode?: string;
+
+  // Using config
+  smdxConfigId?: string;
+  agencyId?: string;
+  dataflowId?: string;
+  dataflowDsdId?: string;
+  dataflowVersionId?: string;
+  dimensions?: Dimensions;
+  dimensionKeys?: string[];
+  attributeKeys?: string[];
+}
+
 export interface SDMXConfigUrls {
   agencies: string;
   data: string;
@@ -34,16 +53,3 @@ export interface Agency {
 }
 
 export type Dimensions = Record<string, string[]>;
-
-export interface SDMXDataForm {
-  url?: string;
-
-  // Using config
-  smdxConfigId?: string;
-  agencyId?: string;
-  dataflowId?: string;
-  dataflowDsdId?: string;
-  dataflowVersionId?: string;
-  dimensions?: Dimensions;
-  dimensionKeys?: string[];
-}

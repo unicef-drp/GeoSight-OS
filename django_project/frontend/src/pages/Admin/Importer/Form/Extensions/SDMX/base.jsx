@@ -21,7 +21,6 @@ import React, {
   useState,
 } from "react";
 import { updateDataWithSetState } from "../../utils";
-import { delay } from "../../../../../../utils/main";
 import SDMXForm from "../../../../../../components/SDMXForm";
 import { SDMXPreview } from "../../../../../../components/SDMXForm/Preview";
 
@@ -83,16 +82,22 @@ export const BaseSDMXForm = forwardRef(
 
     return (
       <Fragment>
-        <SDMXForm urlChanged={setUrl} />
-        {children}
-        <SDMXPreview
-          url={url}
-          setAttributes={async (options) => {
-            setAttributes(options);
-            await delay(500);
-            setData({ ...data });
+        <SDMXForm
+          dataChanged={(sdmxData) => {
+            if (sdmxData.url !== url) setUrl(sdmxData.url);
+
+            const newOptions = sdmxData.attributeKeys;
+            if (!newOptions) return;
+            setAttributes(
+              newOptions.map((option) => ({
+                label: option,
+                value: option,
+              })),
+            );
           }}
         />
+        {children}
+        <SDMXPreview url={url} />
       </Fragment>
     );
   },

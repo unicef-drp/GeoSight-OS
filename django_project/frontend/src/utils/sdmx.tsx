@@ -17,9 +17,7 @@ import Papa from "papaparse";
 
 export const fetchSdmx = async (url: string): Promise<any[][]> => {
   const urls = url.split("?");
-  if (urls[1]) {
-    url = [urls[0], "format=csv"].join("?");
-  }
+  url = [urls[0], "format=csv"].join("?");
   return new Promise((resolve, reject) => {
     axios
       .get(url)

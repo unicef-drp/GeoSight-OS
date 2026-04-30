@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import { FormControl } from "@mui/material";
 import { MainDataGrid } from "../Table";
 import { fetchSdmx } from "../../utils/sdmx";
-import { arrayToOptions } from "../../utils/main";
 import { ThemeButton } from "../Elements/Button";
 
 import "./style.scss";
 
 export interface Props {
   url: string;
-  setAttributes: (attributes: any) => void;
 }
 
 /** SDMX Preview Component */
-export const SDMXPreview = ({ url, setAttributes }: Props) => {
+export const SDMXPreview = ({ url }: Props) => {
   const [request, setRequest] = useState({
     error: "",
     loading: false,
@@ -35,7 +33,6 @@ export const SDMXPreview = ({ url, setAttributes }: Props) => {
           return obj;
         });
         setRequest({ loading: false, error: "", requestData: json });
-        setAttributes(arrayToOptions(array));
       })
       .catch(() => {
         setRequest({
