@@ -11,19 +11,5 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '20/08/2024'
-__copyright__ = ('Copyright 2023, Unicef')
-
-PROJECT_APPS = [
-    # Project specified
-    'azure_auth',
-    'core',
-    'docs',
-    'geosight.data',
-    'geosight.georepo',
-    'geosight.permission',
-    'geosight.importer',
-    'geosight.log',
-    'geosight.example',
-    'frontend',
-]
+__date__ = '01/05/2026'
+__copyright__ = ('Copyright 2026, Unicef')

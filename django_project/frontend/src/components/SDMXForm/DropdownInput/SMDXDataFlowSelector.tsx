@@ -52,6 +52,10 @@ export const SMDXDataFlowSelector = ({
         setDataFlows(dataflows);
       })
       .catch((error: any) => {
+        if (error.toString().includes("404")) {
+          setError("No data found");
+          return;
+        }
         if (axios.isCancel(error)) return;
         setError(error.message || "Failed to fetch dataflow");
       })

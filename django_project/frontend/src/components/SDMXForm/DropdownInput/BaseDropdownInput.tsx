@@ -85,6 +85,10 @@ export const DropdownInput = ({
               ...provided,
               backgroundColor: "none",
             }),
+            menuList: (provided: any) => ({
+              ...provided,
+              maxHeight: "200px",
+            }),
           }}
           onChange={setValue}
           placeholder={
@@ -96,7 +100,7 @@ export const DropdownInput = ({
           }
           aria-labelledby={title}
         />
-        {error && <span className="form-helptext error">error</span>}
+        {error && <span className="form-helptext error">{error}</span>}
       </FormControl>
     </section>
   );

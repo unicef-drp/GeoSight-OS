@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mes:Structure
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xml="http://www.w3.org/XML/1998/namespace"
+        xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+        xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"
+        xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+        xsi:schemaLocation="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message https://registry.sdmx.org/schemas/v2_1/SDMXMessage.xsd">
+    <mes:Header>
+        <mes:ID>IREF147495</mes:ID>
+        <mes:Test>false</mes:Test>
+        <mes:Prepared>2026-05-01T05:52:21Z</mes:Prepared>
+        <mes:Sender id="UNICEF"/>
+        <mes:Receiver id="not_supplied"/>
+    </mes:Header>
+    <mes:Structures>
+        <str:Dataflows>
+            <str:Dataflow
+                    urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=EXAMPLE_SOMALIA_CO:DATA_1(1.0)"
+                    isExternalReference="false" agencyID="EXAMPLE_SOMALIA_CO"
+                    id="DATA_1" isFinal="false" version="1.0">
+                <com:Name xml:lang="en">Data 1</com:Name>
+                <str:Structure>
+                    <Ref package="datastructure" agencyID="EXAMPLE_SOMALIA_CO"
+                         id="DSD_DATA_1" version="1.0"
+                         class="DataStructure"/>
+                </str:Structure>
+            </str:Dataflow>
+            <str:Dataflow
+                    urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=EXAMPLE_SOMALIA_CO:DATA_2(1.0)"
+                    isExternalReference="false" agencyID="EXAMPLE_SOMALIA_CO"
+                    id="DATA_2" isFinal="false" version="1.0">
+                <com:Name xml:lang="en">Data 2</com:Name>
+                <str:Structure>
+                    <Ref package="datastructure" agencyID="EXAMPLE_SOMALIA_CO"
+                         id="DSD_DATA_2" version="1.0"
+                         class="DataStructure"/>
+                </str:Structure>
+            </str:Dataflow>
+        </str:Dataflows>
+    </mes:Structures>
+</mes:Structure>

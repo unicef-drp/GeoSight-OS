@@ -1,0 +1,11 @@
+[
+  {
+    "model": "geosight_data.sdmxconfig",
+    "pk": 1,
+    "fields": {
+      "name": "Example SDMX",
+      "description": null,
+      "url": "http://localhost:2000/api/example/sdmx/"
+    }
+  }
+]

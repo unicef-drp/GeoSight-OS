@@ -17,7 +17,11 @@ import Papa from "papaparse";
 
 export const fetchSdmx = async (url: string): Promise<any[][]> => {
   const urls = url.split("?");
-  url = [urls[0], "format=csv"].join("?");
+  const isLocalhost = /^https?:\/\/localhost(:\d+)?/i.test(urls[0]);
+  const cleanPath = isLocalhost
+    ? urls[0].replace(/\/(%2E%2E|\.\.)/gi, "")
+    : urls[0];
+  url = [cleanPath, "format=csv"].join("?");
   return new Promise((resolve, reject) => {
     axios
       .get(url)
@@ -30,13 +34,17 @@ export const fetchSdmx = async (url: string): Promise<any[][]> => {
               reject(result.errors);
               return;
             }
-            const json = result.data.map((row: any, idx: number) => {
-              row.id = idx;
-              return row;
-            });
-            const headers = Object.keys(json[0]);
+            const rows = (result.data as any[]).filter(
+              (row) => Object.values(row).some((v) => v !== "")
+            );
+            if (!rows.length) {
+              resolve([]);
+              return;
+            }
+            const headers = Object.keys(rows[0]);
             const array: any[][] = [headers];
-            json.slice(1).forEach((row: any) => {
+            rows.forEach((row: any, idx: number) => {
+              row.id = idx;
               array.push(headers.map((header) => row[header]));
             });
             resolve(array);

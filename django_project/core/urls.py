@@ -157,6 +157,10 @@ if settings.TENANTS_ENABLED:
 urlpatterns += (
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
+    url(
+        r'^api/example/',
+        include('geosight.example.urls', namespace='geosight-example')
+    ),
     url(r'^api/v1/', include('core.urls_v1')),
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),

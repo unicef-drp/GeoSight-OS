@@ -3,11 +3,13 @@
 from django.db import migrations, models
 
 def run(apps, schema_editor):
-    SDMXConfig = apps.get_model("geosight_data", "SDMXConfig")
-    SDMXConfig.objects.get_or_create(
-        name="Unicef SDMX Default",
-        url="https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/"
-    )
+    # TODO: We remove this as we make it manual
+    # SDMXConfig = apps.get_model("geosight_data", "SDMXConfig")
+    # SDMXConfig.objects.get_or_create(
+    #     name="Unicef SDMX Default",
+    #     url="https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/"
+    # )
+    return
 
 class Migration(migrations.Migration):
 

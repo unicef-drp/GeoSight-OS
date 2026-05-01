@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mes:Structure
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xml="http://www.w3.org/XML/1998/namespace"
+        xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+        xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"
+        xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+        xsi:schemaLocation="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message https://registry.sdmx.org/schemas/v2_1/SDMXMessage.xsd">
+    <mes:Header>
+        <mes:ID>IREF324409</mes:ID>
+        <mes:Test>false</mes:Test>
+        <mes:Prepared>2026-05-01T10:47:20Z</mes:Prepared>
+        <mes:Sender id="EXAMPLE"/>
+        <mes:Receiver id="not_supplied"/>
+    </mes:Header>
+    <mes:Structures>
+        <str:DataStructures>
+            <str:DataStructure
+                    urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataStructure=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0)"
+                    isExternalReference="false"
+                    agencyID="EXAMPLE_SOMALIA_CO"
+                    id="DSD_DATA_1"
+                    isFinal="false"
+                    version="1.0">
+                <com:Name xml:lang="en">DSD Example Somalia CO - Data 1</com:Name>
+                <str:DataStructureComponents>
+                    <str:DimensionList
+                            urn="urn:sdmx:org.sdmx.infomodel.datastructure.DimensionDescriptor=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).DimensionDescriptor"
+                            id="DimensionDescriptor">
+                        <str:Dimension
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).GEO_CODE"
+                                id="GEO_CODE"
+                                position="1">
+                            <str:ConceptIdentity>
+                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
+                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                     id="GEO_CODE" class="Concept"/>
+                            </str:ConceptIdentity>
+                            <str:LocalRepresentation>
+                                <str:Enumeration>
+                                    <Ref package="codelist" agencyID="EXAMPLE_SOMALIA_CO"
+                                         id="CL_GEO_CODE" version="1.0" class="Codelist"/>
+                                </str:Enumeration>
+                                <str:EnumerationFormat textType="String"/>
+                            </str:LocalRepresentation>
+                        </str:Dimension>
+                        <str:Dimension
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).LEVEL"
+                                id="LEVEL"
+                                position="2">
+                            <str:ConceptIdentity>
+                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
+                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                     id="LEVEL" class="Concept"/>
+                            </str:ConceptIdentity>
+                            <str:LocalRepresentation>
+                                <str:Enumeration>
+                                    <Ref package="codelist" agencyID="EXAMPLE_SOMALIA_CO"
+                                         id="CL_LEVEL" version="1.0" class="Codelist"/>
+                                </str:Enumeration>
+                                <str:EnumerationFormat textType="String"/>
+                            </str:LocalRepresentation>
+                        </str:Dimension>
+                        <str:Dimension
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).INDICATOR"
+                                id="INDICATOR"
+                                position="3">
+                            <str:ConceptIdentity>
+                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
+                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                     id="INDICATOR" class="Concept"/>
+                            </str:ConceptIdentity>
+                            <str:LocalRepresentation>
+                                <str:Enumeration>
+                                    <Ref package="codelist" agencyID="EXAMPLE_SOMALIA_CO"
+                                         id="CL_INDICATORS" version="1.0" class="Codelist"/>
+                                </str:Enumeration>
+                                <str:EnumerationFormat textType="String"/>
+                            </str:LocalRepresentation>
+                        </str:Dimension>
+                        <str:TimeDimension
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.TimeDimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).TIME_PERIOD"
+                                id="TIME_PERIOD"
+                                position="4">
+                            <str:ConceptIdentity>
+                                <Ref maintainableParentID="CS_SDG" package="conceptscheme"
+                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                     id="TIME_PERIOD" class="Concept"/>
+                            </str:ConceptIdentity>
+                            <str:LocalRepresentation>
+                                <str:TextFormat textType="ObservationalTimePeriod"/>
+                            </str:LocalRepresentation>
+                        </str:TimeDimension>
+                    </str:DimensionList>
+                    <str:AttributeList
+                            urn="urn:sdmx:org.sdmx.infomodel.datastructure.AttributeDescriptor=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).AttributeDescriptor"
+                            id="AttributeDescriptor">
+                        <str:Attribute
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).UNIT_MEASURE"
+                                assignmentStatus="Conditional"
+                                id="UNIT_MEASURE">
+                            <str:ConceptIdentity>
+                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
+                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                     id="UNIT_MEASURE" class="Concept"/>
+                            </str:ConceptIdentity>
+                            <str:LocalRepresentation>
+                                <str:Enumeration>
+                                    <Ref package="codelist" agencyID="UNICEF"
+                                         id="CL_UNIT_MEASURE" version="1.0" class="Codelist"/>
+                                </str:Enumeration>
+                            </str:LocalRepresentation>
+                            <str:AttributeRelationship>
+                                <str:Dimension>
+                                    <Ref id="INDICATOR"/>
+                                </str:Dimension>
+                            </str:AttributeRelationship>
+                        </str:Attribute>
+                    </str:AttributeList>
+                    <str:MeasureList
+                            urn="urn:sdmx:org.sdmx.infomodel.datastructure.MeasureDescriptor=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).MeasureDescriptor"
+                            id="MeasureDescriptor">
+                        <str:PrimaryMeasure
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.PrimaryMeasure=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).OBS_VALUE"
+                                id="OBS_VALUE">
+                            <str:ConceptIdentity>
+                                <Ref maintainableParentID="CS_SDG" package="conceptscheme"
+                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                     id="OBS_VALUE" class="Concept"/>
+                            </str:ConceptIdentity>
+                        </str:PrimaryMeasure>
+                    </str:MeasureList>
+                </str:DataStructureComponents>
+            </str:DataStructure>
+        </str:DataStructures>
+    </mes:Structures>
+</mes:Structure>
