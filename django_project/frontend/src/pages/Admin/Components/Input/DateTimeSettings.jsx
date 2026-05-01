@@ -37,7 +37,7 @@ import { optionsToList } from "../../../../utils/main";
 /**
  * Date time formats, value is format on python
  */
-const dateTimeFormats = [
+export const dateTimeFormats = [
   { label: 'Timestamp', value: 'timestamp' },
   { label: 'Date Time (YYYY-MM-DDTHH:MM:SS)', value: '%Y-%m-%dT%H:%M:%S' },
   { label: 'Year (YYYY) - will be translated into YYYY-01-01', value: '%Y' },

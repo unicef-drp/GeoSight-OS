@@ -27,7 +27,9 @@ import { AdminForm } from "../../../../Components/AdminForm";
 import { CogIcon } from "../../../../../../components/Icons";
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import { IndicatorLayer } from "../../../../../../types/IndicatorLayer";
-import { SDMXIndicatorLayerType } from "../../../../../../utils/indicatorLayer";
+import {
+  SDMXIndicatorLayerType
+} from "../../../../../../utils/indicatorLayer";
 import Modal, {
   ModalContent,
   ModalHeader,
@@ -41,10 +43,23 @@ import "./style.scss";
 import { useTranslation } from "react-i18next";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
 import LayerNameDescription from "../LayerNameDescription";
-import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
+import OverrideAdminLevelConfiguration
+  from "../OverrideAdminLevelConfiguration";
 import { useSelector } from "react-redux";
 import SDMXForm from "../../../../../../components/SDMXForm";
 import SDMXPreview from "../../../../../../components/SDMXForm/Preview";
+import Grid from "@mui/material/Grid";
+import {
+  SelectWithList
+} from "../../../../../../components/Input/SelectWithList";
+import Separator from "../../../../../../components/Admin/Separator";
+import {
+  dateTimeFormats
+} from "../../../../Components/Input/DateTimeSettings";
+import { FormControl } from "@mui/material";
+import {
+  TYPES
+} from "../../../../../../components/SqlQueryGenerator/Aggregation";
 
 export interface SDMXLayerConfigProps {
   indicatorLayer?: IndicatorLayer;
@@ -161,47 +176,108 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                         }}
                         referenceLayer={referenceLayer}
                       />
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "10px 0px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            flexGrow: 0.5,
-                            height: "1px",
-                            borderBottom: "1px solid var(--border-gray)",
-                          }}
-                        />
-                        <div
-                          style={{
-                            width: "100px",
-                            textAlign: "center",
-                            opacity: 0.5,
-                          }}
-                        >
-                          SDMX Config
-                        </div>
-                        <div
-                          style={{
-                            flexGrow: 0.5,
-                            height: "1px",
-                            borderBottom: "1px solid var(--border-gray)",
-                          }}
-                        />
-                      </div>
+                      <Separator>SDMX Config</Separator>
                       <SDMXForm
                         dataChanged={(config) => {
                           data.config = config;
                           updateData();
                         }}
                       />
+                      <Separator>Data Config</Separator>
+                      <FormControl className="BasicFormSection">
+                        <label className="form-label required">
+                          Column Geograph Code
+                        </label>
+                        {
+                          <SelectWithList
+                            list={data?.config?.attributeKeys || []}
+                            value={data?.config?.geomCodeField}
+                            onChange={(evt: any) => {
+                              data.config.geomCodeField = evt.value;
+                              updateData();
+                            }}
+                          />
+                        }
+                      </FormControl>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <FormControl className="BasicFormSection">
+                            <label className="form-label required">
+                              Value Column
+                            </label>
+                            <SelectWithList
+                              list={data?.config?.attributeKeys || []}
+                              value={data?.config?.valueField}
+                              onChange={(evt: any) => {
+                                data.config.valueField = evt.value;
+                                updateData();
+                              }}
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <FormControl className="BasicFormSection">
+                            <label className={"form-label required"}>
+                              Aggregation
+                            </label>
+                            <SelectWithList
+                              list={Object.keys(TYPES)}
+                              value={data?.config?.aggregationType}
+                              onChange={(evt: any) => {
+                                data.config.aggregationType = evt.value;
+                                updateData();
+                              }}
+                            />
+                          </FormControl>
+                        </Grid>
+                      </Grid>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <label
+                            className="form-label required"
+                            htmlFor="group"
+                          >
+                            Date Time Column/Field
+                          </label>
+                          {
+                            <SelectWithList
+                              placeholder={"Date Time Column/Field"}
+                              list={data?.config?.attributeKeys || []}
+                              value={data?.config?.dateTimeField}
+                              showFloatingLabel={true}
+                              onChange={(evt: any) => {
+                                data.config.dateTimeField = evt.value;
+                                updateData();
+                              }}
+                            />
+                          }
+                        </Grid>
+                        <Grid item xs={6}>
+                          <label
+                            className="form-label required"
+                            htmlFor="group"
+                          >
+                            Date Time Format
+                          </label>
+                          <SelectWithList
+                            list={dateTimeFormats}
+                            value={data?.config?.dateTimeFormat}
+                            showFloatingLabel={true}
+                            onChange={(evt: any) => {
+                              data.config.dateTimeFormat = evt.value;
+                              updateData();
+                            }}
+                          />
+                          <span className="form-helptext">
+                            Specify input date/time format (e.g: YYYY-MM-DD or
+                            YYYY-MM). Excel usually converts time to timestamp
+                            format.
+                          </span>
+                        </Grid>
+                      </Grid>
                     </div>
                   ),
-                  Data: <SDMXPreview url={data.config?.url} autoFetch={true} />,
+                  Data: <SDMXPreview url={data.config?.url} autoFetch={true}/>,
                   Style: (
                     <StyleConfig
                       data={data}
@@ -249,7 +325,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
               setOpen(true);
             }}
           >
-            <CogIcon /> {t("Config")}
+            <CogIcon/> {t("Config")}
           </ThemeButton>
         )}
       </Fragment>
