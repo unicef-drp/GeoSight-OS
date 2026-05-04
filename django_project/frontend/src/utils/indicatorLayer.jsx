@@ -49,7 +49,7 @@ export function indicatorLayerId(indicatorLayer) {
  * Return indicator layers that has behaviour like indicator data
  */
 export function isIndicatorLayerLikeIndicator(indicatorLayer) {
-  return [DynamicIndicatorType, CompositeIndexLayerType].includes(
+  return [DynamicIndicatorType, CompositeIndexLayerType, SDMXIndicatorLayerType].includes(
     indicatorLayer?.type,
   );
 }

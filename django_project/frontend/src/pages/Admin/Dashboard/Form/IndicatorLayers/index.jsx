@@ -36,9 +36,9 @@ import {
   SDMXIndicatorLayerType,
   SingleIndicatorType,
 } from "../../../../../utils/indicatorLayer";
+import SDMXLayerConfig from "./SDMXLayer";
 
 import "./style.scss";
-import SDMXLayerConfig from "./SDMXLayer";
 
 /**
  * Indicator Layer Type Selection
@@ -254,7 +254,6 @@ export default function IndicatorLayersForm() {
   const removeLayer = (layer) => {
     removeLayerFromProject(dispatch, layer, indicatorLayersStructure);
   };
-
   return (
     <Fragment>
       <ListForm
@@ -449,7 +448,9 @@ export default function IndicatorLayersForm() {
       <SDMXLayerConfig
         onUpdate={(layer) => {
           layer.group = groupName;
-          dispatch(Actions.IndicatorLayers.update(layer));
+          dispatch(
+            Actions.IndicatorLayers.add(JSON.parse(JSON.stringify(layer))),
+          );
         }}
         ref={sdmxConfigRef}
       />

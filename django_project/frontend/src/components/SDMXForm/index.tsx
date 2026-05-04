@@ -23,15 +23,18 @@ import { fetchSdmx } from "../../utils/sdmx";
 import "./style.scss";
 
 interface Props {
+  initialData?: SDMXDataForm;
   dataChanged?: (data: SDMXDataForm) => void;
 }
 
 /** SMDX Form Component */
-const SDMXForm = ({ dataChanged }: Props) => {
+const SDMXForm = ({ initialData, dataChanged }: Props) => {
   // @ts-ignore
   const sdmxConfigList: SDMXConfig[] = sdmxData;
 
-  const [data, setData] = useState<SDMXDataForm>({ mode: "config" });
+  const [data, setData] = useState<SDMXDataForm>(
+    initialData ? initialData : { mode: "config" },
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mode = data.mode ?? SDMX_MODE_CONFIG;
@@ -65,7 +68,9 @@ const SDMXForm = ({ dataChanged }: Props) => {
   };
   // When url changed, fetch dimensions
   useEffect(() => {
-    checkUrl(url);
+    if (initialData?.url !== url) {
+      checkUrl(url);
+    }
   }, [url]);
 
   // When data changed
@@ -134,10 +139,10 @@ const SDMXForm = ({ dataChanged }: Props) => {
             value={url ?? ""}
             placeholder="https://..."
             onChange={(e) =>
-              setData((prev) => ({
-                ...prev,
+              setData({
+                ...data,
                 url: e.target.value,
-              }))
+              })
             }
           />
           <Button
@@ -164,8 +169,10 @@ const SDMXForm = ({ dataChanged }: Props) => {
           <SMDXConfigSelector
             selectedValue={data.smdxConfigId}
             onChangeValue={(value) => {
-              setData((prev) => ({
-                ...prev,
+              if (value === null) return;
+              if (value === data.smdxConfigId) return;
+              setData({
+                ...data,
                 url: null,
                 agencyId: null,
                 dataflowId: null,
@@ -173,63 +180,70 @@ const SDMXForm = ({ dataChanged }: Props) => {
                 dataflowVersionId: null,
 
                 smdxConfigId: value,
-              }));
+              });
             }}
           />
-          {data.smdxConfigId && (
+          {sdmxConfig && data.smdxConfigId && (
             <SMDXAgencySelector
               sdmxConfig={sdmxConfig}
               selectedValue={data.agencyId}
               onChangeValue={(value) => {
-                setData((prev) => ({
-                  ...prev,
+                if (value === null) return;
+                if (value === data.agencyId) return;
+                setData({
+                  ...data,
                   url: null,
                   agencyId: value,
                   dataflowId: null,
                   dataflowDsdId: null,
                   dataflowVersionId: null,
-                }));
+                });
               }}
             />
           )}
-          {data.agencyId && (
+          {sdmxConfig && data.agencyId && (
             <SMDXDataFlowSelector
               sdmxDataForm={data}
               sdmxConfig={sdmxConfig}
               selectedValue={data.dataflowId}
               onChangeValue={(value) => {}}
               onChangeDataFlow={(value, dsdId) => {
-                setData((prev) => ({
-                  ...prev,
+                if (value === null) return;
+                if (value === data.dataflowId) return;
+                setData({
+                  ...data,
                   url: null,
                   dataflowId: value,
                   dataflowDsdId: dsdId,
                   dataflowVersionId: null,
-                }));
+                });
               }}
             />
           )}
-          {data.dataflowId && (
+          {sdmxConfig && data.dataflowId && (
             <SMDXDataFlowVersionSelector
               sdmxDataForm={data}
               sdmxConfig={sdmxConfig}
               selectedValue={data.dataflowVersionId}
               onChangeValue={(value) => {
-                setData((prev) => ({
-                  ...prev,
+                if (value === null) return;
+                if (value === data.dataflowVersionId) return;
+                setData({
+                  ...data,
                   url: null,
                   dataflowVersionId: value,
-                }));
+                });
               }}
             />
           )}
-          {data.dataflowVersionId && (
+          {sdmxConfig && data.dataflowVersionId && (
             <SMDXDimensions
               sdmxDataForm={data}
               sdmxConfig={sdmxConfig}
               selectedValue={data.dataflowVersionId}
               onChangeValue={() => {}}
               onChange={() => {
+                if (data.dimensions === null) return;
                 setData({ ...data, dimensions: data.dimensions });
               }}
             />

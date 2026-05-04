@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { deleteProject, saveAsProject } from "../../utils/project";
+import { deleteProject, saveAsProject, editProject } from "../../utils/project";
+import { BASE_URL } from "../../variables";
 
 test.describe('SDMX Indicator Layer', () => {
   test('SDMX Indicator Layer', async ({ page }, testInfo) => {
@@ -80,6 +81,67 @@ test.describe('SDMX Indicator Layer', () => {
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(2)).toHaveText("B");
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toHaveText("2020-01-01");
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(4)).toHaveText("35.4");
+
+    // Update other config
+    await expect(page.getByText('Apply Changes')).toBeDisabled()
+    await page.getByText('General').nth(1).click();
+    await page.locator('.LayerNameInput').fill('SMDX Indicator Layer');
+
+    await page.locator('div:nth-child(7) > .MuiFormControl-root > .ReactSelect > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').click();
+    await page.getByRole('option', { name: 'GEO_CODE' }).click();
+    await page.locator('div:nth-child(8) > div > div > .MuiFormControl-root > .ReactSelect > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').first().click();
+    await page.getByRole('option', { name: 'VALUE' }).click();
+    await page.locator('div:nth-child(8) > div:nth-child(2) > div > .MuiFormControl-root > .ReactSelect > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').click();
+    await page.getByRole('option', { name: 'SUM' }).click();
+    await page.locator('.MuiGrid-root > .MuiFormControl-root > .ReactSelect > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').first().click();
+    await page.getByRole('option', { name: 'DATE' }).click();
+    await page.locator('div:nth-child(2) > .MuiFormControl-root > .ReactSelect > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').click();
+    await page.getByRole('option', { name: 'Year (YYYY) - will be' }).click();
+
+    await expect(page.getByText('Apply Changes')).toBeEnabled()
+    await page.locator('.SaveButton-Section button').click()
+    await expect(page.locator('.SortableTree li').last()).toHaveText('SMDX Indicator LayerSDMX Config');
+    await expect(page.locator('.SortableTree li').last().locator('.OtherActionIndicator')).toHaveText('SDMX');
+
+    // Check the edit one
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(page.getByText('Configuration has been saved!')).toBeVisible();
+
+    // Preview
+    await page.goto(`/admin/project/`);
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
+    await expect(page.locator('.AdminContentHeader-Left')).toHaveText('Projects');
+
+    // Preview
+    await page.goto(`/admin/project/`);
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
+    await expect(page.locator('.AdminContentHeader-Left')).toHaveText('Projects');
+
+    await editProject(page, name);
+    await page.getByText('Indicator Layers (11)').click();
+    await page.locator('span').filter({ hasText: 'SDMX Config' }).getByRole('button').click();
+    await page.getByText('Data', { exact: true }).click();
+    await expect(page.getByText('1–2 of 2')).toBeVisible();
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(0)).toHaveText("SOM_0001_V1");
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toHaveText("Awdal");
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(2)).toHaveText("B");
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toHaveText("2020-01-01");
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(4)).toHaveText("35.4");
+
+    await page.getByText('General').nth(1).click();
+    await expect(page.locator('.LayerNameInput')).toHaveValue('SMDX Indicator Layer');
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').first().locator('.ReactSelect__single-value')).toHaveText("Example SDMX [1]");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(1).locator('.ReactSelect__single-value')).toHaveText("Example Somalia Country Office [EXAMPLE_SOMALIA_CO]");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(2).locator('.ReactSelect__single-value')).toHaveText("Data 1 [DATA_1]");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(3).locator('.ReactSelect__single-value')).toHaveText("Version 1.0 [1.0]");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .DimensionDropdown').nth(0).locator('.DimensionDropdown__multi-value__label')).toHaveText("SOM_0001_V1 (Awdal)");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .DimensionDropdown').nth(1).locator('.DimensionDropdown__multi-value__label')).toHaveText("1 (Level 1)");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .DimensionDropdown').nth(2).locator('.DimensionDropdown__multi-value__label')).toHaveText("B (Indicator B)");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(4).locator('.ReactSelect__single-value')).toHaveText("GEO_CODE");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(5).locator('.ReactSelect__single-value')).toHaveText("VALUE");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(6).locator('.ReactSelect__single-value')).toHaveText("SUM");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(7).locator('.ReactSelect__single-value')).toHaveText("DATE");
+    await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(8).locator('.ReactSelect__single-value')).toHaveText("Year (YYYY) - will be translated into YYYY-01-01");
 
     // --------------------------------------------------------------------
     // Delete project

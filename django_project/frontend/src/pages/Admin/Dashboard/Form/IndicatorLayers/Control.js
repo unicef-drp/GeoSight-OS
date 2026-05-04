@@ -20,7 +20,7 @@ import {
   removeChildInGroupInStructure
 } from "../../../../../components/SortableTreeForm/utilities";
 import {
-  isIndicatorLayerLikeIndicator
+  isIndicatorLayerLikeIndicator, SDMXIndicatorLayerType
 } from "../../../../../utils/indicatorLayer";
 
 /** Indicator Layers control that control id indicator or related table being deleted */
@@ -38,6 +38,12 @@ export default function IndicatorLayersControl() {
     const indicatorIds = dashboardIndicators.map(indicator => indicator.id)
     const relatedTableIds = dashboardRelatedTables.map(rt => rt.id)
     indicatorLayers.map(layer => {
+      // If it is customize indicator layer, just update it
+      if ([SDMXIndicatorLayerType].includes(layer.type)) {
+        dispatch(Actions.IndicatorLayers.update(layer));
+        return;
+      }
+
       const indicators = layer.indicators.filter(
         indicator => indicatorIds.includes(indicator.id)
       )
