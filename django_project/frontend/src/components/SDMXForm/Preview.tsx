@@ -27,8 +27,12 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
     fetchSdmx(url)
       .then(async (array) => {
         const headers = array[0];
-        const json = array.slice(1).map((row, idx) => {
-          const obj: any = { id: idx };
+        const hasId = headers.includes("id");
+        const json = array.slice(1).map((row: any, idx) => {
+          const obj: any = {};
+          if (!hasId) {
+            obj.id = idx + 1;
+          }
           headers.forEach((header, i) => {
             obj[header] = row[i];
           });
@@ -51,6 +55,19 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
       readUrl();
     }
   }, [url]);
+
+  const columns = requestData
+    ? Object.keys(requestData && requestData[0] ? requestData[0] : {}).map(
+        (key) => {
+          return {
+            field: key,
+            headerName: key,
+            flex: 1,
+            minWidth: 200,
+          };
+        },
+      )
+    : [];
 
   // Render
   return (
@@ -80,20 +97,10 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
         <MainDataGrid
           style={{ height: "500px" }}
           rows={loading ? [] : requestData ? requestData : []}
-          columns={
-            requestData
-              ? Object.keys(
-                  requestData && requestData[0] ? requestData[0] : {},
-                ).map((key) => {
-                  return {
-                    field: key,
-                    headerName: key,
-                    flex: 1,
-                    minWidth: 200,
-                  };
-                })
-              : []
-          }
+          columns={columns}
+          columnVisibilityModel={{
+            id: false,
+          }}
           pageSize={20}
           rowsPerPageOptions={[20]}
           disableSelectionOnClick
