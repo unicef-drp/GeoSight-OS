@@ -58,9 +58,9 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
     setLoading(true);
     setError(null);
     fetchSdmx(requestedUrl)
-      .then(async (array) => {
+      .then(async (array: Record<string, any>[]) => {
         if (requestedUrl !== url) return;
-        const headers = array[0];
+        const headers = Object.keys(array[0]);
         setData((prev) => ({ ...prev, attributeKeys: headers }));
       })
       .catch((err) => setError(err?.message || "Failed to fetch URL"))

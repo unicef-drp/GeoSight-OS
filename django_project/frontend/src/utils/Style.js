@@ -91,6 +91,7 @@ export const indicatorLayerStyle = (
   filteredGeometries,
   initConfig,
   referenceLayer,
+  indicatorLayersData,
 ) => {
   // Get rules
   let config = returnLayerStyleConfig(layer, indicators);
@@ -108,6 +109,7 @@ export const indicatorLayerStyle = (
       config?.style_config?.sync_filter ? filteredGeometries : null,
       referenceLayer,
       admin_level,
+      indicatorLayersData,
     );
     style = createDynamicStyle(
       data[0]?.data,

@@ -234,7 +234,7 @@ class DashboardIndicatorLayer(
         """If using obj style."""
         return (
                 self.is_single and self.override_style
-        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+        ) or self.type == TYPE_DYNAMIC_INDICATOR or self.type == TYPE_SDMX \
             or self.dashboardindicatorlayerrelatedtable_set.first()
 
     @property
@@ -242,7 +242,7 @@ class DashboardIndicatorLayer(
         """If using obj style."""
         return (
                 self.is_single and self.override_label
-        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+        ) or self.type == TYPE_DYNAMIC_INDICATOR or self.type == TYPE_SDMX \
             or self.dashboardindicatorlayerrelatedtable_set.first()
 
     @property

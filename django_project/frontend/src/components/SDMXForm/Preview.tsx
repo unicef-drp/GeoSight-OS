@@ -25,20 +25,8 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
     if (!url) return;
     setRequest({ loading: true, error: "", requestData: null });
     fetchSdmx(url)
-      .then(async (array) => {
-        const headers = array[0];
-        const hasId = headers.includes("id");
-        const json = array.slice(1).map((row: any, idx) => {
-          const obj: any = {};
-          if (!hasId) {
-            obj.id = idx + 1;
-          }
-          headers.forEach((header, i) => {
-            obj[header] = row[i];
-          });
-          return obj;
-        });
-        setRequest({ loading: false, error: "", requestData: json });
+      .then(async (array: Record<string, any>[]) => {
+        setRequest({ loading: false, error: "", requestData: array });
       })
       .catch(() => {
         setRequest({

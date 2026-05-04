@@ -18,58 +18,95 @@ import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 import { extractCode, GeorepoUrls } from "./georepo";
 import {
   indicatorLayerId,
-  isIndicatorLayerLikeIndicator
+  isIndicatorLayerLikeIndicator,
+  SDMXIndicatorLayerType,
 } from "./indicatorLayer";
 import { dynamicStyleTypes, returnLayerStyleConfig } from "./Style";
 import { dictDeepCopy } from "./main";
 import { InternalReferenceDatasets } from "./urls";
-import {
-  FILL_LAYER_ID_KEY
-} from "../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
+import { FILL_LAYER_ID_KEY } from "../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
 import { union } from "@turf/turf";
+import { getCleanedSdmxData } from "./sdmx";
 
-const temporary = {}
+const temporary = {};
 
 /**
  * Return value by geometry
  */
 export function returnValueByGeometry(
-  layer, indicators, indicatorsData, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries, referenceLayer, selectedAdminLevel
+  layer,
+  indicators,
+  indicatorsData,
+  relatedTableData,
+  selectedGlobalTime,
+  geoField,
+  filteredGeometries,
+  referenceLayer,
+  selectedAdminLevel,
+  indicatorLayersData,
 ) {
-  let identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
+  let identifier =
+    JSON.stringify(layer) +
+    JSON.stringify(indicators) +
+    JSON.stringify(indicatorsData) +
+    JSON.stringify(relatedTableData) +
+    JSON.stringify(selectedGlobalTime) +
+    JSON.stringify(geoField) +
+    JSON.stringify(filteredGeometries) +
+    JSON.stringify(indicatorLayersData);
   if (selectedAdminLevel) {
-    identifier += selectedAdminLevel
+    identifier += selectedAdminLevel;
   }
-  const temp = temporary[identifier]
+  const temp = temporary[identifier];
   if (temp) {
-    return temp
+    return temp;
   }
-  indicatorsData = dictDeepCopy(indicatorsData)
-  relatedTableData = dictDeepCopy(relatedTableData)
+  indicatorsData = dictDeepCopy(indicatorsData);
+  relatedTableData = dictDeepCopy(relatedTableData);
 
-  let allData = []
+  let allData = [];
   if (Object.keys(layer).length) {
-    const id = indicatorLayerId(layer)
+    const id = indicatorLayerId(layer);
     // This is for non indicators
     if (indicatorsData[id]?.fetched) {
       indicatorsData[id]?.data?.forEach(function (data) {
-        data.indicatorLayer = layer
+        data.indicatorLayer = layer;
         allData.push(data);
-      })
+      });
+    }
+
+    if (layer.type === SDMXIndicatorLayerType) {
+      const { rows } = getCleanedSdmxData(
+        indicatorLayersData[layer.id]?.data,
+        selectedGlobalTime,
+        selectedAdminLevel,
+      );
+      if (rows) {
+        const data = UpdateStyleData(rows, layer);
+        data.forEach(function (rowData) {
+          allData.push(rowData);
+        });
+      }
     }
     // This is for indicators
-    if (layer.indicators.length) {
-      layer.indicators.map(indicatorLayer => {
-        const indicator = indicators.find(indicator => indicatorLayer.id === indicator.id)
-        const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, layer, referenceLayer)
+    else if (layer.indicators.length) {
+      layer.indicators.map((indicatorLayer) => {
+        const indicator = indicators.find(
+          (indicator) => indicatorLayer.id === indicator.id,
+        );
+        const indicatorData = getIndicatorDataByLayer(
+          indicator.id,
+          indicatorsData,
+          layer,
+          referenceLayer,
+        );
         if (indicator && indicatorData?.fetched && indicatorData?.data) {
           indicatorData?.data.forEach(function (data) {
-            data.indicator = indicator
+            data.indicator = indicator;
             allData.push(data);
-          })
+          });
         }
-      })
+      });
     } else if (layer.related_tables.length) {
       const { rows } = getRelatedTableData(
         relatedTableData[layer.related_tables[0].id]?.data,
@@ -77,52 +114,58 @@ export function returnValueByGeometry(
         selectedGlobalTime,
         geoField,
         true,
-        selectedAdminLevel
-      )
+        selectedAdminLevel,
+      );
       if (rows) {
-        const data = UpdateStyleData(rows, layer)
+        const data = UpdateStyleData(rows, layer);
         data.forEach(function (rowData) {
-          rowData.related_table = layer.related_tables[0]
+          rowData.related_table = layer.related_tables[0];
           allData.push(rowData);
-        })
+        });
       }
     }
   }
 
-  let config = returnLayerStyleConfig(layer, indicators)
+  let config = returnLayerStyleConfig(layer, indicators);
   if (dynamicStyleTypes.includes(config.style_type)) {
     if (config?.style_config?.sync_filter && filteredGeometries) {
-      allData = allData.filter(row => filteredGeometries.includes(row.concept_uuid))
+      allData = allData.filter((row) =>
+        filteredGeometries.includes(row.concept_uuid),
+      );
     }
-    allData = UpdateStyleData(allData, config)
+    allData = UpdateStyleData(allData, config);
   } else if (layer.override_style) {
-    allData = UpdateStyleData(allData, layer)
+    allData = UpdateStyleData(allData, layer);
   }
 
-  const byGeometry = {}
+  const byGeometry = {};
   allData.forEach(function (rowData) {
-    const code = extractCode(rowData, geoField)
+    const code = extractCode(rowData, geoField);
     if (!byGeometry[code]) {
-      byGeometry[code] = []
+      byGeometry[code] = [];
     }
     byGeometry[code].push(rowData);
-  })
+  });
 
   // Save to temporary
-  temporary[identifier] = byGeometry
-  return byGeometry
+  temporary[identifier] = byGeometry;
+  return byGeometry;
 }
 
 /**
  * Return style
  */
 export function returnStyle(layer, values, noDataStyle) {
-  let style = null
-  if (layer?.indicators?.length === 1 || layer?.related_tables?.length === 1 || isIndicatorLayerLikeIndicator(layer)) {
+  let style = null;
+  if (
+    layer?.indicators?.length === 1 ||
+    layer?.related_tables?.length === 1 ||
+    isIndicatorLayerLikeIndicator(layer)
+  ) {
     if (values) {
       const indicatorData = values[0];
       if (indicatorData) {
-        style = indicatorData.style ? indicatorData.style : { hide: true }
+        style = indicatorData.style ? indicatorData.style : { hide: true };
       } else {
         style = noDataStyle;
       }
@@ -130,37 +173,38 @@ export function returnStyle(layer, values, noDataStyle) {
       style = noDataStyle;
     }
   }
-  return style
+  return style;
 }
 
 export const RefererenceLayerUrls = {
   ViewDetail: function (referenceLayerDetail) {
-    const identifier = referenceLayerDetail.identifier
+    const identifier = referenceLayerDetail.identifier;
     if (referenceLayerDetail.is_local) {
-      return InternalReferenceDatasets.detail(identifier)
+      return InternalReferenceDatasets.detail(identifier);
     } else {
-      return GeorepoUrls.ViewDetail(identifier)
+      return GeorepoUrls.ViewDetail(identifier);
     }
-  }
-}
+  },
+};
 /**
  * Get Feature by concept UUID
  */
 export const getFeatureByConceptUUID = (map, conceptUUID) => {
-  const visibleLayerIds = map.getStyle().layers.filter(
-    layer => layer.id.includes(FILL_LAYER_ID_KEY)
-  ).map(layer => layer.id)
+  const visibleLayerIds = map
+    .getStyle()
+    .layers.filter((layer) => layer.id.includes(FILL_LAYER_ID_KEY))
+    .map((layer) => layer.id);
   const features = map.queryRenderedFeatures({
     layers: visibleLayerIds,
-    filter: ['==', ['get', 'concept_uuid'], conceptUUID]
-  })
+    filter: ["==", ["get", "concept_uuid"], conceptUUID],
+  });
   if (!features.length) {
-    return null
+    return null;
   }
   let mergedPolygon = features[0];
   for (let i = 1; i < features.length; i++) {
     mergedPolygon = union(mergedPolygon, features[i]);
   }
-  mergedPolygon.properties = features[0].properties
-  return mergedPolygon
-}
+  mergedPolygon.properties = features[0].properties;
+  return mergedPolygon;
+};

@@ -14,8 +14,12 @@
  */
 import axios from "axios";
 import Papa from "papaparse";
+import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
+import { alasqlQuery } from "./alasql";
 
-export const fetchSdmx = async (url: string): Promise<any[][]> => {
+export const fetchSdmx = async (
+  url: string,
+): Promise<Record<string, any>[]> => {
   const urls = url.split("?");
   const isLocalhost = /^https?:\/\/localhost(:\d+)?/i.test(urls[0]);
   const cleanPath = isLocalhost
@@ -34,20 +38,15 @@ export const fetchSdmx = async (url: string): Promise<any[][]> => {
               reject(result.errors);
               return;
             }
-            const rows = (result.data as any[]).filter(
-              (row) => Object.values(row).some((v) => v !== "")
+            const rows = (result.data as any[]).filter((row) =>
+              Object.values(row).some((v) => v !== ""),
             );
-            if (!rows.length) {
-              resolve([]);
-              return;
-            }
-            const headers = Object.keys(rows[0]);
-            const array: any[][] = [headers];
-            rows.forEach((row: any, idx: number) => {
-              row.id = idx;
-              array.push(headers.map((header) => row[header]));
-            });
-            resolve(array);
+            resolve(
+              rows.map((row: any, idx: number) => ({
+                ...row,
+                id: idx,
+              })),
+            );
           },
           error: (error: Error) => reject(error),
         });
@@ -60,4 +59,117 @@ export const fetchSdmx = async (url: string): Promise<any[][]> => {
         reject(error);
       });
   });
+};
+
+/**
+ * Get sdmx data
+ */
+export const getSdmxData = (
+  data: Record<string, any>[],
+  config: any,
+  geoField: string,
+): Record<string, any>[] => {
+  if (!data?.length) return [];
+  const whereClause = "";
+  data = alasqlQuery(
+    `SELECT *
+     FROM ? as data ${whereClause}
+     ORDER BY data.[date] ASC`,
+    [data],
+  );
+  const latestDates: Record<string, any> = {};
+  alasqlQuery(
+    `SELECT ucode, MAX([date]) as max_date
+     FROM ? as data
+     GROUP BY ucode`,
+    [data],
+  ).forEach((row: any) => {
+    latestDates[row.ucode] = row.max_date;
+  });
+  data = data.filter((row) => row.date === latestDates[row.ucode]);
+
+  if (config.aggregationType && config.valueField) {
+    data = data.map((row) => ({
+      ...row,
+      [config.valueField]: Number(row[config.valueField]),
+    }));
+    if (["MAJORITY", "MINORITY"].includes(config.aggregationType)) {
+      data = alasqlQuery(
+        `SELECT MAX(data.ucode)                    as _ucode,
+                MAX(data.concept_uuid)             as _concept_uuid,
+                data.[${config.valueField}]        as _value,
+                MAX(data.date)                     as _date,
+                MAX(data.admin_level)              as _admin_level,
+                COUNT(data.[${config.valueField}]) as _occurrence
+         FROM ? as data
+         GROUP BY data.ucode, data.[${config.valueField}]
+         ORDER BY data.ucode DESC,
+                  _occurrence
+                  ${config.aggregationType === "MAJORITY" ? "DESC" : "ASC"}`,
+        [data],
+      );
+    } else {
+      const aggExpr =
+        config.aggregationType === COUNT_UNIQUE
+          ? `COUNT(DISTINCT data.[${config.valueField}])`
+          : `${config.aggregationType}(data.[${config.valueField}])`;
+      data = alasqlQuery(
+        `SELECT MAX(data.ucode)        as _ucode,
+                MAX(data.concept_uuid) as _concept_uuid,
+                ${aggExpr}             as _value,
+                MAX(data.date)         as _date,
+                MAX(data.admin_level)  as _admin_level
+         FROM ? as data
+         GROUP BY data.ucode
+         ORDER BY data.ucode DESC`,
+        [data],
+      );
+    }
+  }
+  return data.map((result, idx) => {
+    const geometry_code =
+      geoField === "concept_uuid" ? result._concept_uuid : result._ucode;
+    return {
+      id: idx,
+      admin_level: result._admin_level,
+      geometry_code,
+      concept_uuid: result._concept_uuid,
+      ucode: result._ucode,
+      date: result._date,
+      value: result._value,
+    };
+  });
+};
+
+/**
+ * Return cleaned data
+ */
+export const getCleanedSdmxData = (
+  data: Record<string, any>[],
+  selectedGlobalTime: any,
+  adminLevels: any,
+): { rows: any[] } => {
+  if (!data?.length) return { rows: [] };
+  const timeConditions: string[] = [];
+  if (selectedGlobalTime?.min) {
+    timeConditions.push(`data.[date] >= "${selectedGlobalTime.min}"`);
+  }
+  if (selectedGlobalTime?.max) {
+    timeConditions.push(`data.[date] <= "${selectedGlobalTime.max}"`);
+  }
+  const whereClause = timeConditions.length
+    ? `WHERE ${timeConditions.join(" AND ")}`
+    : "";
+  data = alasqlQuery(
+    `SELECT *
+     FROM ? as data ${whereClause}
+     ORDER BY data.[date] ASC`,
+    [data],
+  );
+  if (adminLevels !== null) {
+    data = data.filter((row) =>
+      ("" + adminLevels).split(",").includes("" + row.admin_level),
+    );
+  }
+  return { rows: data };
 };

@@ -17,7 +17,7 @@ import { returnValueByGeometry } from "./referenceLayer";
 import {
   createDynamicStyle,
   dynamicStyleTypes,
-  STYLE_FORM_LIBRARY
+  STYLE_FORM_LIBRARY,
 } from "./Style";
 import { dictDeepCopy } from "./main";
 import { referenceLayerIndicatorLayer } from "./indicatorLayer";
@@ -29,97 +29,137 @@ import { referenceLayerIndicatorLayer } from "./indicatorLayer";
  */
 export function UpdateStyleData(inputData, config) {
   // Update the style and label
-  let otherDataRule = null
-  let styleRules = []
-  inputData = dictDeepCopy(inputData)
+  let otherDataRule = null;
+  let styleRules = [];
+  inputData = dictDeepCopy(inputData);
 
   // If from style from library
   if (config.style_type === STYLE_FORM_LIBRARY && config.style_data) {
-    config = config.style_data
+    config = config.style_data;
   }
   if (dynamicStyleTypes.includes(config?.style_type)) {
-    const styles = createDynamicStyle(inputData, config.style_type, config.style_config, config.style_data)
-    const stylesInStr = {}
+    const styles = createDynamicStyle(
+      inputData,
+      config.style_type,
+      config.style_config,
+      config.style_data,
+    );
+    const stylesInStr = {};
     for (const [key, value] of Object.entries(styles)) {
-      stylesInStr[key] = JSON.stringify(value)
+      stylesInStr[key] = JSON.stringify(value);
     }
     inputData.forEach(function (data) {
-      styleRules = styles[data.admin_level]
+      styleRules = styles[data.admin_level];
       if (styleRules) {
         if (stylesInStr[data.admin_level] === data.styles) {
-          return
+          return;
         }
-        const filteredRules = styleRules.filter(rule => {
-          let ruleStr = rule.rule.replaceAll('x', data.value).replaceAll('and', '&&').replaceAll('or', '||')
-          if (rule?.rule?.includes('includes')) {
-            ruleStr = rule.rule.replaceAll('"x"', `"${data.value}"`).replaceAll('and', '&&').replaceAll('or', '||')
+        const filteredRules = styleRules.filter((rule) => {
+          let ruleStr = rule.rule
+            .replaceAll("x", data.value)
+            .replaceAll("and", "&&")
+            .replaceAll("or", "||");
+          if (rule?.rule?.includes("includes")) {
+            ruleStr = rule.rule
+              .replaceAll('"x"', `"${data.value}"`)
+              .replaceAll("and", "&&")
+              .replaceAll("or", "||");
           }
           try {
-            return eval(ruleStr)
+            return eval(ruleStr);
           } catch (err) {
-            return false
+            return false;
           }
-        })
-        data.style = filteredRules[0] ? filteredRules[0] : otherDataRule
-        data.styles = JSON.stringify(styleRules)
-        data.label = data.style?.name
+        });
+        data.style = filteredRules[0] ? filteredRules[0] : otherDataRule;
+        data.styles = JSON.stringify(styleRules);
+        data.label = data.style?.name;
       }
-    })
-    return inputData
+    });
+    return inputData;
   } else {
-    let style = config.style
+    let style = config.style;
     if (style) {
-      styleRules = style
-      otherDataRule = style.filter(
-        rule => rule.active
-      ).find(rule => rule.rule.toLowerCase() === 'other data')
+      styleRules = style;
+      otherDataRule = style
+        .filter((rule) => rule.active)
+        .find((rule) => rule.rule.toLowerCase() === "other data");
     }
     inputData?.forEach(function (data) {
-      const filteredRules = styleRules.filter(rule => {
-        let ruleStr = rule.rule.replaceAll('x', data.value).replaceAll('and', '&&').replaceAll('or', '||')
-        if (rule?.rule?.includes('includes')) {
-          ruleStr = rule.rule.replaceAll('"x"', `"${data.value}"`).replaceAll('and', '&&').replaceAll('or', '||')
+      const filteredRules = styleRules.filter((rule) => {
+        let ruleStr = rule.rule
+          .replaceAll("x", data.value)
+          .replaceAll("and", "&&")
+          .replaceAll("or", "||");
+        if (rule?.rule?.includes("includes")) {
+          ruleStr = rule.rule
+            .replaceAll('"x"', `"${data.value}"`)
+            .replaceAll("and", "&&")
+            .replaceAll("or", "||");
         }
         try {
-          return eval(ruleStr)
+          return eval(ruleStr);
         } catch (err) {
-          return false
+          return false;
         }
-      })
-      data.style = filteredRules[0] ? filteredRules[0] : otherDataRule
-      data.styles = filteredRules[0] ? filteredRules[0] : otherDataRule
-      data.label = data.style?.name
-    })
-    return inputData
+      });
+      data.style = filteredRules[0] ? filteredRules[0] : otherDataRule;
+      data.styles = filteredRules[0] ? filteredRules[0] : otherDataRule;
+      data.label = data.style?.name;
+    });
+    return inputData;
   }
 }
 
 /**
  * Update indicator layer with geography code for related table
  */
-const updateIndicatorLayerWithGeographyCode = (indicatorLayer, relatedTables) => {
+const updateIndicatorLayerWithGeographyCode = (
+  indicatorLayer,
+  relatedTables,
+) => {
   // Check if current indicator layer is the related table
   if (indicatorLayer?.related_tables?.length) {
-    const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0].id)
+    const relatedTable = relatedTables.find(
+      (rt) => rt.id === indicatorLayer.related_tables[0].id,
+    );
     if (relatedTable) {
-      indicatorLayer.config.geography_code_field_name = relatedTable.geography_code_field_name
+      indicatorLayer.config.geography_code_field_name =
+        relatedTable.geography_code_field_name;
     }
   }
-}
+};
 
 /**
  * Update indicator layer with geography code for related table
  */
 export const getIndicatorValueByGeometry = (
-  indicatorLayer, indicators, indicatorsData, relatedTables, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries, referenceLayer, selectedAdminLevel
+  indicatorLayer,
+  indicators,
+  indicatorsData,
+  relatedTables,
+  relatedTableData,
+  selectedGlobalTime,
+  geoField,
+  filteredGeometries,
+  referenceLayer,
+  selectedAdminLevel,
+  indicatorLayersData,
 ) => {
-  updateIndicatorLayerWithGeographyCode(indicatorLayer, relatedTables)
+  updateIndicatorLayerWithGeographyCode(indicatorLayer, relatedTables);
   return returnValueByGeometry(
-    indicatorLayer, indicators, indicatorsData, relatedTableData,
-    selectedGlobalTime, geoField, filteredGeometries, referenceLayer, selectedAdminLevel
-  )
-}
+    indicatorLayer,
+    indicators,
+    indicatorsData,
+    relatedTableData,
+    selectedGlobalTime,
+    geoField,
+    filteredGeometries,
+    referenceLayer,
+    selectedAdminLevel,
+    indicatorLayersData,
+  );
+};
 
 /**
  * Return Indicator Data Id
@@ -128,12 +168,18 @@ export const getIndicatorValueByGeometry = (
  * @param referenceLayerOfIndicatorIdentifier
  * @returns {*|string}
  */
-export const getIndicatorDataId = (id, referenceLayerIdentifier, referenceLayerOfIndicatorIdentifier) => {
+export const getIndicatorDataId = (
+  id,
+  referenceLayerIdentifier,
+  referenceLayerOfIndicatorIdentifier,
+) => {
   if (!referenceLayerOfIndicatorIdentifier) {
-    return id
+    return id;
   }
-  return referenceLayerOfIndicatorIdentifier === referenceLayerIdentifier ? id : id + '-' + referenceLayerOfIndicatorIdentifier
-}
+  return referenceLayerOfIndicatorIdentifier === referenceLayerIdentifier
+    ? id
+    : id + "-" + referenceLayerOfIndicatorIdentifier;
+};
 
 /**
  * Return Indicator Data by Dataset
@@ -143,8 +189,21 @@ export const getIndicatorDataId = (id, referenceLayerIdentifier, referenceLayerO
  * @param referenceLayer
  * @returns {*|string}
  */
-export const getIndicatorDataByLayer = (id, indicatorsData, layer, referenceLayer) => {
-  const referenceLayerOfIndicator = referenceLayerIndicatorLayer(referenceLayer, layer)
-  const _id = getIndicatorDataId(id, referenceLayer.identifier, referenceLayerOfIndicator.identifier)
-  return indicatorsData[_id]
-}
+export const getIndicatorDataByLayer = (
+  id,
+  indicatorsData,
+  layer,
+  referenceLayer,
+) => {
+  const referenceLayerOfIndicator = referenceLayerIndicatorLayer(
+    referenceLayer,
+    layer,
+  );
+  const _id = getIndicatorDataId(
+    id,
+    referenceLayer.identifier,
+    referenceLayerOfIndicator.identifier,
+  );
+  if (!indicatorsData) return null;
+  return indicatorsData[_id];
+};

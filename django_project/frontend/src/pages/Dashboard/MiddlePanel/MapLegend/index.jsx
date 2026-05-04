@@ -88,6 +88,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   const indicatorsData = useSelector((state) => state.indicatorsData);
   const relatedTableData = useSelector((state) => state.relatedTableData);
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
 
   if (layer.multi_indicator_mode === "Pin") {
     return layer.indicators.map((indicator) => {
@@ -128,6 +129,8 @@ const RenderIndicatorLegend = ({ layer, name }) => {
     relatedTableData,
     layer,
     referenceLayer,
+    false,
+    indicatorLayersData,
   );
   const hasData = allDataIsReady(layerData);
   let rules = null;
@@ -143,6 +146,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
       filteredGeometries,
       null,
       referenceLayer,
+      indicatorLayersData,
     );
   }
   return <RenderIndicatorLegendSection rules={rules} name={name} />;

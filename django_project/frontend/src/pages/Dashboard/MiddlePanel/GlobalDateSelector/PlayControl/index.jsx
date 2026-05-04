@@ -47,6 +47,7 @@ export default function PlayControl(
   const relatedTableData = useSelector(state => state.relatedTableData)
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
+  const indicatorLayersData = useSelector((state) => state.indicatorLayersData)
 
   // Speed it 2 second for 0%
   const minSpeed = 10; // second
@@ -92,7 +93,7 @@ export default function PlayControl(
         layers = indicatorLayers
       }
       const ready = allLayerDataIsReady(
-        indicatorsData, relatedTableData, layers, referenceLayer
+        indicatorsData, relatedTableData, layers, referenceLayer, indicatorLayersData
       )
       if (ready) {
         stopTimeout()

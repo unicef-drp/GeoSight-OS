@@ -225,13 +225,12 @@ export default function ReferenceLayerCentroid({ map }) {
       const usedIndicatorsData = {};
       const usedIndicatorsProperties = {};
       indicatorLayer.indicators.map((indicator) => {
-        const indicatorData = getIndicatorDataByLayer(
+        usedIndicatorsData[indicator.id] = getIndicatorDataByLayer(
           indicator.id,
           indicatorsData,
           indicatorLayer,
           referenceLayer,
         );
-        usedIndicatorsData[indicator.id] = indicatorData;
         const data = {};
         for (const [key, value] of Object.entries(indicator)) {
           if (!key.includes("style")) {

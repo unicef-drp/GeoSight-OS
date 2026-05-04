@@ -144,6 +144,25 @@ export default function DatasetGeometryData() {
               },
               false
             )
+
+            ExecuteWebWorker(
+              worker,
+              {
+                domain: window.location.origin,
+                centroids,
+                identifier: identifier + "_by-ucode",
+                geoField: "ucode"
+              },
+              (response) => {
+                const { identifier: _identifier, data } = response;
+                dispatch(
+                  Actions.DatasetGeometries.replaceData(
+                    _identifier, data
+                  )
+                )
+              },
+              false
+            )
           })
         }
       }
