@@ -23,6 +23,7 @@ interface Props {
   options: SelectOption[];
   selectedValues: string[];
   onChange: (values: string[]) => void;
+  menuPlacement?: "top" | "bottom" | "auto";
 }
 
 const DimensionDropdown = ({
@@ -30,6 +31,7 @@ const DimensionDropdown = ({
   options,
   selectedValues,
   onChange,
+  menuPlacement = "top",
 }: Props) => {
   return (
     <div className="DimensionContainer">
@@ -40,7 +42,7 @@ const DimensionDropdown = ({
       <FormControl className="InputControl">
         <Select
           isMulti
-          menuPlacement={"top"}
+          menuPlacement={menuPlacement}
           options={[...options].sort((a, b) => a.value.localeCompare(b.value))}
           value={options.filter((option) =>
             selectedValues.includes(option.value),

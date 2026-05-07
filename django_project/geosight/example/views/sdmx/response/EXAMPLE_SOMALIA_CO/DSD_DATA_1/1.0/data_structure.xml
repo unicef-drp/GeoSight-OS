@@ -22,41 +22,50 @@
                     id="DSD_DATA_1"
                     isFinal="false"
                     version="1.0">
-                <com:Name xml:lang="en">DSD Example Somalia CO - Data 1</com:Name>
+                <com:Name xml:lang="en">DSD Example Somalia CO - Data 1
+                </com:Name>
                 <str:DataStructureComponents>
                     <str:DimensionList
                             urn="urn:sdmx:org.sdmx.infomodel.datastructure.DimensionDescriptor=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).DimensionDescriptor"
                             id="DimensionDescriptor">
                         <str:Dimension
-                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).GEO_CODE"
-                                id="GEO_CODE"
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).REF_AREA"
+                                id="REF_AREA"
                                 position="1">
                             <str:ConceptIdentity>
-                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
-                                     maintainableParentVersion="1.0" agencyID="UNICEF"
-                                     id="GEO_CODE" class="Concept"/>
+                                <Ref maintainableParentID="UNICEF_CONCEPTS"
+                                     package="conceptscheme"
+                                     maintainableParentVersion="1.0"
+                                     agencyID="UNICEF"
+                                     id="REF_AREA" class="Concept"/>
                             </str:ConceptIdentity>
                             <str:LocalRepresentation>
                                 <str:Enumeration>
-                                    <Ref package="codelist" agencyID="EXAMPLE_SOMALIA_CO"
-                                         id="CL_GEO_CODE" version="1.0" class="Codelist"/>
+                                    <Ref package="codelist"
+                                         agencyID="EXAMPLE_SOMALIA_CO"
+                                         id="CL_REF_AREA" version="1.0"
+                                         class="Codelist"/>
                                 </str:Enumeration>
                                 <str:EnumerationFormat textType="String"/>
                             </str:LocalRepresentation>
                         </str:Dimension>
                         <str:Dimension
-                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).LEVEL"
-                                id="LEVEL"
+                                urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).REF_LEVEL"
+                                id="REF_LEVEL"
                                 position="2">
                             <str:ConceptIdentity>
-                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
-                                     maintainableParentVersion="1.0" agencyID="UNICEF"
-                                     id="LEVEL" class="Concept"/>
+                                <Ref maintainableParentID="UNICEF_CONCEPTS"
+                                     package="conceptscheme"
+                                     maintainableParentVersion="1.0"
+                                     agencyID="UNICEF"
+                                     id="REF_LEVEL" class="Concept"/>
                             </str:ConceptIdentity>
                             <str:LocalRepresentation>
                                 <str:Enumeration>
-                                    <Ref package="codelist" agencyID="EXAMPLE_SOMALIA_CO"
-                                         id="CL_LEVEL" version="1.0" class="Codelist"/>
+                                    <Ref package="codelist"
+                                         agencyID="EXAMPLE_SOMALIA_CO"
+                                         id="CL_REF_LEVEL" version="1.0"
+                                         class="Codelist"/>
                                 </str:Enumeration>
                                 <str:EnumerationFormat textType="String"/>
                             </str:LocalRepresentation>
@@ -66,14 +75,18 @@
                                 id="INDICATOR"
                                 position="3">
                             <str:ConceptIdentity>
-                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
-                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                <Ref maintainableParentID="UNICEF_CONCEPTS"
+                                     package="conceptscheme"
+                                     maintainableParentVersion="1.0"
+                                     agencyID="UNICEF"
                                      id="INDICATOR" class="Concept"/>
                             </str:ConceptIdentity>
                             <str:LocalRepresentation>
                                 <str:Enumeration>
-                                    <Ref package="codelist" agencyID="EXAMPLE_SOMALIA_CO"
-                                         id="CL_INDICATORS" version="1.0" class="Codelist"/>
+                                    <Ref package="codelist"
+                                         agencyID="EXAMPLE_SOMALIA_CO"
+                                         id="CL_INDICATORS" version="1.0"
+                                         class="Codelist"/>
                                 </str:Enumeration>
                                 <str:EnumerationFormat textType="String"/>
                             </str:LocalRepresentation>
@@ -83,12 +96,15 @@
                                 id="TIME_PERIOD"
                                 position="4">
                             <str:ConceptIdentity>
-                                <Ref maintainableParentID="CS_SDG" package="conceptscheme"
-                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                <Ref maintainableParentID="CS_SDG"
+                                     package="conceptscheme"
+                                     maintainableParentVersion="1.0"
+                                     agencyID="UNICEF"
                                      id="TIME_PERIOD" class="Concept"/>
                             </str:ConceptIdentity>
                             <str:LocalRepresentation>
-                                <str:TextFormat textType="ObservationalTimePeriod"/>
+                                <str:TextFormat
+                                        textType="ObservationalTimePeriod"/>
                             </str:LocalRepresentation>
                         </str:TimeDimension>
                     </str:DimensionList>
@@ -100,14 +116,17 @@
                                 assignmentStatus="Conditional"
                                 id="UNIT_MEASURE">
                             <str:ConceptIdentity>
-                                <Ref maintainableParentID="UNICEF_CONCEPTS" package="conceptscheme"
-                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                <Ref maintainableParentID="UNICEF_CONCEPTS"
+                                     package="conceptscheme"
+                                     maintainableParentVersion="1.0"
+                                     agencyID="UNICEF"
                                      id="UNIT_MEASURE" class="Concept"/>
                             </str:ConceptIdentity>
                             <str:LocalRepresentation>
                                 <str:Enumeration>
                                     <Ref package="codelist" agencyID="UNICEF"
-                                         id="CL_UNIT_MEASURE" version="1.0" class="Codelist"/>
+                                         id="CL_UNIT_MEASURE" version="1.0"
+                                         class="Codelist"/>
                                 </str:Enumeration>
                             </str:LocalRepresentation>
                             <str:AttributeRelationship>
@@ -124,8 +143,10 @@
                                 urn="urn:sdmx:org.sdmx.infomodel.datastructure.PrimaryMeasure=EXAMPLE_SOMALIA_CO:DSD_DATA_1(1.0).OBS_VALUE"
                                 id="OBS_VALUE">
                             <str:ConceptIdentity>
-                                <Ref maintainableParentID="CS_SDG" package="conceptscheme"
-                                     maintainableParentVersion="1.0" agencyID="UNICEF"
+                                <Ref maintainableParentID="CS_SDG"
+                                     package="conceptscheme"
+                                     maintainableParentVersion="1.0"
+                                     agencyID="UNICEF"
                                      id="OBS_VALUE" class="Concept"/>
                             </str:ConceptIdentity>
                         </str:PrimaryMeasure>

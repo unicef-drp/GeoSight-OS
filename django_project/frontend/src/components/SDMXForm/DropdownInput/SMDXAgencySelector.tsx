@@ -72,7 +72,6 @@ export const SMDXAgencySelector = ({
       selectedValue={selectedValue}
       onChangeValue={(value: string) => {
         const agency = options.find((option) => option.value === value);
-        console.log(agency);
         if (!agency) return;
         if (agency) {
           onChangeAgency(agency.value, agency.label);

@@ -15,11 +15,13 @@ import {
   SDMX_MODE_CONFIG,
   SDMX_MODE_URL,
   SDMX_MODES,
+  SDMXConfig,
   SDMXDataForm,
 } from "../../types/SDMX";
 import { constructSDMXUrl } from "./utilities";
 import { fetchSdmx } from "../../utils/sdmx";
 import Separator from "../Admin/Separator";
+import SDMXConfigUpdateButton from "./SDMXConfigUpdateButton";
 
 import "./style.scss";
 
@@ -30,18 +32,14 @@ interface Props {
 
 /** SMDX Form Component */
 const SDMXForm = ({ initialData, dataChanged }: Props) => {
-  // @ts-ignore
-  const sdmxConfigList: SDMXConfig[] = sdmxData;
-
   const [data, setData] = useState<SDMXDataForm>(
     initialData ? initialData : { mode: "config" },
   );
+  const [sdmxConfig, setSdmxConfig] = useState<SDMXConfig>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mode = data.mode ?? SDMX_MODE_CONFIG;
   const { url } = data;
-
-  const sdmxConfig = sdmxConfigList.find((_) => _.id === data.smdxConfigId);
 
   // When data changed
   useEffect(() => {
@@ -175,19 +173,19 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
             <Separator>SDMX Config</Separator>
             <SMDXConfigSelector
               selectedValue={data.smdxConfigId}
-              onChangeValue={(value) => {
-                if (value === null) return;
-                if (value === data.smdxConfigId) return;
+              onChangeValue={(value) => {}}
+              onChangeConfig={(value) => {
+                setSdmxConfig(value);
                 setData({
                   ...data,
                   url: null,
-                  agencyId: null,
-                  agencyName: null,
-                  dataflowId: null,
-                  dataflowDsdId: null,
-                  dataflowVersionId: null,
+                  agencyId: value.config?.agencyId,
+                  agencyName: value.config?.agencyName,
+                  dataflowId: value.config?.dataflowId,
+                  dataflowDsdId: value.config?.dataflowDsdId,
+                  dataflowVersionId: value.config?.dataflowVersionId,
 
-                  smdxConfigId: value,
+                  smdxConfigId: "" + value.id,
                 });
               }}
             />
@@ -196,7 +194,6 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
               selectedValue={data.agencyId}
               onChangeValue={(value) => {}}
               onChangeAgency={(value, name) => {
-                console.log(value, name);
                 if (value === null) return;
                 if (value === data.agencyId) return;
                 setData({
@@ -246,6 +243,7 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
               }}
               disabled={!(sdmxConfig && data.dataflowId)}
             />
+            <SDMXConfigUpdateButton sdmxConfig={sdmxConfig} data={data} />
           </>
         )}
       </div>

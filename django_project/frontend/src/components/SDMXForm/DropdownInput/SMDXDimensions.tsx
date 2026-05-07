@@ -103,11 +103,12 @@ export const SMDXDimensions = ({
       {error && <span className="form-helptext error">error</span>}
       {!loading && (
         <div className="DimensionGrid">
-          {Object.keys(dimensions).map((dimensionId) => (
+          {Object.keys(dimensions).map((dimensionId, index) => (
             <DimensionDropdown
               key={dimensionId}
               dimensionId={dimensionId}
               options={dimensions[dimensionId]}
+              menuPlacement={"bottom"}
               selectedValues={
                 (sdmxDataForm.dimensions &&
                   sdmxDataForm.dimensions[dimensionId]) ??

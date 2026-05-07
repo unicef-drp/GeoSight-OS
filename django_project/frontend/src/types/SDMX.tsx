@@ -47,6 +47,7 @@ export interface SDMXConfig {
   name: string;
   url: string;
   urls: SDMXConfigUrls;
+  config?: SDMXDataForm;
 }
 
 export interface Agency {

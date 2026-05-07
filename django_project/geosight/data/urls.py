@@ -62,6 +62,7 @@ from geosight.data.api.raster import GetRasterClassificationAPI
 from geosight.data.api.related_table import (
     RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI
 )
+from geosight.data.api.sdmx import SDMXConfigListAPI, SDMXConfigDetailAPI
 from geosight.data.api.sharepoint import (
     SharepointConfigListAPI, SharepointInformationAPI
 )
@@ -259,6 +260,18 @@ sharepoint_api = [
     ),
 ]
 # ------------------------------------------------------
+# SDMX API
+sdmx_api = [
+    url(
+        r'^list',
+        SDMXConfigListAPI.as_view(), name='sdmx-config-list-api'
+    ),
+    url(
+        r'^(?P<pk>\d+)',
+        SDMXConfigDetailAPI.as_view(), name='sdmx-config-detail-api'
+    ),
+]
+# ------------------------------------------------------
 # ARCGIS API
 arcgis_api = [
     url(
@@ -278,6 +291,7 @@ api = [
     url(r'^related-table/', include(related_table_api)),
     url(r'^sharepoint/', include(sharepoint_api)),
     url(r'^arcgis/', include(arcgis_api)),
+    url(r'^sdmx/', include(sdmx_api)),
 ]
 
 download = [

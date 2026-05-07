@@ -12,29 +12,69 @@
  * __date__ = '30/04/2026'
  * __copyright__ = ('Copyright 2026, Unicef')
  */
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+
 import { MainDropdownInputProps } from "./types";
 import { DropdownInput } from "./BaseDropdownInput";
 import { SDMXConfig } from "../../../types/SDMX";
+import { SelectOption } from "../../../types/Input";
 
-/** Dropdown pre-populated with all available SDMX configs from the global sdmxData list. */
+interface Props extends MainDropdownInputProps {
+  onChangeConfig?: (config: SDMXConfig) => void;
+}
+
+/** Dropdown that fetches available SDMX configs from the GeoSight API. */
 export const SMDXConfigSelector = ({
   selectedValue,
   onChangeValue,
-}: MainDropdownInputProps) => {
-  // @ts-ignore
-  const sdmxConfigList: SDMXConfig[] = sdmxData;
+  onChangeConfig,
+}: Props) => {
+  const [options, setOptions] = useState<SelectOption[]>([]);
+  const [configs, setConfigs] = useState<SDMXConfig[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+
+    setLoading(true);
+    setError(null);
+    axios
+      .get("/api/sdmx/list", { signal: abortRef.current.signal })
+      .then(({ data }) => {
+        setConfigs(data);
+        setOptions(
+          data.map((c: SDMXConfig) => ({
+            value: String(c.id),
+            label: c.name,
+          })),
+        );
+      })
+      .catch((err: any) => {
+        if (axios.isCancel(err)) return;
+        setError(err.message || "Failed to fetch SDMX configs");
+      })
+      .finally(() => setLoading(false));
+
+    return () => abortRef.current?.abort();
+  }, []);
 
   return (
     <DropdownInput
       title={"SDMX Config"}
-      options={sdmxConfigList.map((config) => {
-        return { value: config.id, label: config.name };
-      })}
-      loading={false}
-      error={null}
+      options={options}
+      loading={loading}
+      error={error}
       selectedValue={selectedValue}
-      onChangeValue={onChangeValue}
+      onChangeValue={(value: string) => {
+        if (onChangeConfig) {
+          const config = configs.find((c) => String(c.id) === value);
+          if (config) onChangeConfig(config);
+        }
+      }}
     />
   );
 };
