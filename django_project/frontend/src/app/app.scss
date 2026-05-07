@@ -700,3 +700,7 @@ header {
     }
   }
 }
+
+.ReactSelect__control--is-disabled {
+  background-color: hsl(0, 0%, 95%);
+}

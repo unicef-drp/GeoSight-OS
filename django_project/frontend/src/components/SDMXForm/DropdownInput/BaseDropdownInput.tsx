@@ -71,7 +71,7 @@ export const DropdownInput = ({
       <label className="form-label required">{title}</label>
       <FormControl className="InputControl">
         <Select
-          disabled={disabled}
+          isDisabled={disabled}
           menuPlacement={"top"}
           options={[...options].sort((a, b) => a.label.localeCompare(b.label))}
           value={value}
@@ -93,7 +93,7 @@ export const DropdownInput = ({
           onChange={setValue}
           placeholder={
             disabled
-              ? "Disabled"
+              ? "Please select an option on previous step"
               : loading
                 ? "Loading..."
                 : !options.length

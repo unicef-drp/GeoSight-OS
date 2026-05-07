@@ -19,6 +19,7 @@ import {
 } from "../../types/SDMX";
 import { constructSDMXUrl } from "./utilities";
 import { fetchSdmx } from "../../utils/sdmx";
+import Separator from "../Admin/Separator";
 
 import "./style.scss";
 
@@ -171,6 +172,7 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
         </section>
         {mode !== SDMX_MODE_URL && (
           <>
+            <Separator>SDMX Config</Separator>
             <SMDXConfigSelector
               selectedValue={data.smdxConfigId}
               onChangeValue={(value) => {
