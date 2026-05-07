@@ -77,7 +77,7 @@ export const AdminForm = forwardRef(
     if (!Object.keys(forms).includes(defaultTab)) {
       defaultTab = Object.keys(forms)[0]
     }
-    const [tab, setTab] = useState(defaultTab);
+    const [tab, setTab] = useState(props.defaultTab ? props.defaultTab : defaultTab);
 
     /** When tab changes **/
     useEffect(() => {
@@ -119,7 +119,7 @@ export const AdminForm = forwardRef(
           (disabled ? 'Disabled' : '')
         }
       >
-        {tabName}
+        {tabName.replaceAll('-', ' ')}
       </div>
     }
 

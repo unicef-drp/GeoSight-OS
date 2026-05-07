@@ -35,4 +35,5 @@ interface MainDropdownProps extends MainDropdownInputProps {
 interface MainDropdownInputSDMXProps extends MainDropdownInputProps {
   sdmxConfig: SDMXConfig;
   sdmxDataForm?: SDMXDataForm;
+  disabled?: boolean;
 }

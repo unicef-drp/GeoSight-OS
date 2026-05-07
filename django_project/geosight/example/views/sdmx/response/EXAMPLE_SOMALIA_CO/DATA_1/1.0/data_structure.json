@@ -17,7 +17,7 @@
     "dimensions": {
       "observation": [
         {
-          "id": "GEO_CODE",
+          "id": "REF_AREA",
           "name": "Geographic Code",
           "keyPosition": 1,
           "role": null,
@@ -150,7 +150,7 @@
           ]
         },
         {
-          "id": "LEVEL",
+          "id": "REF_LEVEL",
           "name": "Level",
           "keyPosition": 2,
           "role": null,

@@ -92,11 +92,13 @@ export const DropdownInput = ({
           }}
           onChange={setValue}
           placeholder={
-            loading
-              ? "Loading..."
-              : !options.length
-                ? "No options available"
-                : "Select..."
+            disabled
+              ? "Disabled"
+              : loading
+                ? "Loading..."
+                : !options.length
+                  ? "No options available"
+                  : "Select..."
           }
           aria-labelledby={title}
         />

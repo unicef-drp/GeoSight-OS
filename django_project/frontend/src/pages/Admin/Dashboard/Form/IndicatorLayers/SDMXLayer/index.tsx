@@ -20,6 +20,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
+import { FormControl } from "@mui/material";
 
 import PopupConfigForm from "../PopupConfigForm";
 import { dictDeepCopy } from "../../../../../../utils/main";
@@ -37,7 +38,6 @@ import {
   ThemeButton,
 } from "../../../../../../components/Elements/Button";
 
-import "./style.scss";
 import { useTranslation } from "react-i18next";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
 import LayerNameDescription from "../LayerNameDescription";
@@ -45,12 +45,11 @@ import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration"
 import { useSelector } from "react-redux";
 import SDMXForm from "../../../../../../components/SDMXForm";
 import SDMXPreview from "../../../../../../components/SDMXForm/Preview";
-import Grid from "@mui/material/Grid";
 import { SelectWithList } from "../../../../../../components/Input/SelectWithList";
-import Separator from "../../../../../../components/Admin/Separator";
 import { dateTimeFormats } from "../../../../Components/Input/DateTimeSettings";
-import { FormControl } from "@mui/material";
 import { TYPES } from "../../../../../../components/SqlQueryGenerator/Aggregation";
+
+import "./style.scss";
 
 export interface SDMXLayerConfigProps {
   indicatorLayer?: IndicatorLayer;
@@ -71,6 +70,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
       id: 0,
       name: "",
       description: "",
+      source: "",
       type: SDMXIndicatorLayerType,
       visible_by_default: false,
       last_update: "",
@@ -120,6 +120,75 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
       setOpen(false);
     };
 
+    // Open data selection when the props true
+    useEffect(() => {
+      if (!data?.config) return;
+      const attributesKeys = data.config?.attributeKeys;
+      const example = data.config?.example;
+      let updated = false;
+      if (attributesKeys.length > 0) {
+        if (
+          !data?.config?.geomCodeField &&
+          attributesKeys.includes("REF_AREA")
+        ) {
+          data.config.geomCodeField = "REF_AREA";
+          updated = true;
+        }
+        if (!data?.config?.valueField && attributesKeys.includes("OBS_VALUE")) {
+          data.config.valueField = "OBS_VALUE";
+        }
+        if (
+          !data?.config?.dateTimeField &&
+          attributesKeys.includes("TIME_PERIOD")
+        ) {
+          data.config.dateTimeField = "TIME_PERIOD";
+          updated = true;
+        }
+        const value = example[data.config.dateTimeField];
+        if (value) {
+          const detectFormat = (val: string): string => {
+            if (/^\d+(\.\d+)?$/.test(val)) return "timestamp";
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(val))
+              return "%Y-%m-%dT%H:%M:%S";
+            if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return "%Y-%m-%d";
+            if (/^\d{4}-\d{2}$/.test(val)) return "%Y-%m";
+            if (/^\d{4}$/.test(val)) return "%Y";
+            return null;
+          };
+          const newValue = detectFormat(String(value));
+          if (newValue && newValue !== data.config.dateTimeFormat) {
+            data.config.dateTimeFormat = newValue;
+            updated = true;
+          }
+        }
+        if (!data?.config?.aggregationType) {
+          data.config.aggregationType = "SUM";
+          updated = true;
+        }
+      }
+      if (updated) {
+        updateData();
+      }
+    }, [data?.config?.attributeKeys]);
+
+    // Agency name as source
+    useEffect(() => {
+      if (data.source) return;
+      if (!data?.config?.agencyName) return;
+      if (data.source !== data?.config?.agencyName) {
+        data.source = data?.config?.agencyName;
+      }
+    }, [data?.config?.agencyName]);
+
+    // Agency name as source
+    useEffect(() => {
+      if (data.name) return;
+      if (!data?.config?.dataflowName) return;
+      if (data.name !== data?.config?.dataflowName) {
+        data.name = data?.config?.dataflowName;
+      }
+    }, [data?.config?.dataflowName]);
+
     return (
       <Fragment>
         <Modal
@@ -145,11 +214,13 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                 onClick={apply}
               />
             </div>
-            <div className="AdminForm Section">
+            <div className="AdminForm Section SDMX-Indicator-Layer-Config">
               <AdminForm
                 // @ts-ignore
+                defaultTab={"Layer-Metadata"}
+                // @ts-ignore
                 forms={{
-                  General: (
+                  "Layer-Metadata": (
                     <>
                       {open && (
                         <div>
@@ -165,6 +236,21 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                               updateData();
                             }}
                           />
+                          <div className="BasicFormSection">
+                            <div>
+                              <label className="form-label">Source</label>
+                            </div>
+                            <div className="ContextLayerConfig-IconSize">
+                              <textarea
+                                className="LayerDescriptionInput"
+                                value={data.source}
+                                onChange={(evt) => {
+                                  data.source = evt.target.value;
+                                  updateData();
+                                }}
+                              />
+                            </div>
+                          </div>
 
                           {/* ADMIN LEVEL CONFIGURATION*/}
                           <OverrideAdminLevelConfiguration
@@ -175,111 +261,108 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                             }}
                             referenceLayer={referenceLayer}
                           />
-                          <Separator>SDMX Config</Separator>
-                          <SDMXForm
-                            initialData={data.config}
-                            dataChanged={(config) => {
-                              data.config = config;
-                              updateData();
-                            }}
-                          />
-                          <Separator>Data Config</Separator>
-                          <FormControl className="BasicFormSection">
-                            <label className="form-label required">
-                              Column Geograph Code
-                            </label>
-                            {
-                              <SelectWithList
-                                list={data?.config?.attributeKeys || []}
-                                value={data?.config?.geomCodeField}
-                                onChange={(evt: any) => {
-                                  data.config.geomCodeField = evt.value;
-                                  updateData();
-                                }}
-                              />
-                            }
-                          </FormControl>
-                          <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                              <FormControl className="BasicFormSection">
-                                <label className="form-label required">
-                                  Value Column
-                                </label>
-                                <SelectWithList
-                                  list={data?.config?.attributeKeys || []}
-                                  value={data?.config?.valueField}
-                                  onChange={(evt: any) => {
-                                    data.config.valueField = evt.value;
-                                    updateData();
-                                  }}
-                                />
-                              </FormControl>
-                            </Grid>
-                            <Grid item xs={6}>
-                              <FormControl className="BasicFormSection">
-                                <label className={"form-label required"}>
-                                  Aggregation
-                                </label>
-                                <SelectWithList
-                                  list={Object.keys(TYPES)}
-                                  value={data?.config?.aggregationType}
-                                  onChange={(evt: any) => {
-                                    data.config.aggregationType = evt.value;
-                                    updateData();
-                                  }}
-                                />
-                              </FormControl>
-                            </Grid>
-                          </Grid>
-                          <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                              <label
-                                className="form-label required"
-                                htmlFor="group"
-                              >
-                                Date Time Column/Field
-                              </label>
-                              {
-                                <SelectWithList
-                                  placeholder={"Date Time Column/Field"}
-                                  list={data?.config?.attributeKeys || []}
-                                  value={data?.config?.dateTimeField}
-                                  showFloatingLabel={true}
-                                  onChange={(evt: any) => {
-                                    data.config.dateTimeField = evt.value;
-                                    updateData();
-                                  }}
-                                />
-                              }
-                            </Grid>
-                            <Grid item xs={6}>
-                              <label
-                                className="form-label required"
-                                htmlFor="group"
-                              >
-                                Date Time Format
-                              </label>
-                              <SelectWithList
-                                list={dateTimeFormats}
-                                value={data?.config?.dateTimeFormat}
-                                showFloatingLabel={true}
-                                onChange={(evt: any) => {
-                                  data.config.dateTimeFormat = evt.value;
-                                  updateData();
-                                }}
-                              />
-                              <span className="form-helptext">
-                                Specify input date/time format (e.g: YYYY-MM-DD
-                                or YYYY-MM). Excel usually converts time to
-                                timestamp format.
-                              </span>
-                            </Grid>
-                          </Grid>
                         </div>
                       )}
                     </>
                   ),
-                  Data: <SDMXPreview url={data.config?.url} autoFetch={true} />,
+                  "SDMX-Config": (
+                    <>
+                      <SDMXForm
+                        initialData={data.config}
+                        dataChanged={(config) => {
+                          data.config = config;
+                          updateData();
+                        }}
+                      />
+                    </>
+                  ),
+                  "Filter-Dimensions": <></>,
+                  "Data-Config": (
+                    <div className="BasicForm">
+                      <FormControl className="BasicFormSection">
+                        <label className="form-label required">
+                          Column Geograph Code
+                        </label>
+                        {
+                          <SelectWithList
+                            list={data?.config?.attributeKeys || []}
+                            value={data?.config?.geomCodeField}
+                            onChange={(evt: any) => {
+                              data.config.geomCodeField = evt.value;
+                              updateData();
+                            }}
+                          />
+                        }
+                      </FormControl>
+                      <FormControl className="BasicFormSection">
+                        <label className="form-label required">
+                          Value Column
+                        </label>
+                        <SelectWithList
+                          list={data?.config?.attributeKeys || []}
+                          value={data?.config?.valueField}
+                          onChange={(evt: any) => {
+                            data.config.valueField = evt.value;
+                            updateData();
+                          }}
+                        />
+                      </FormControl>
+                      <FormControl className="BasicFormSection">
+                        <label className={"form-label required"}>
+                          Aggregation
+                        </label>
+                        <SelectWithList
+                          list={Object.keys(TYPES)}
+                          value={data?.config?.aggregationType}
+                          onChange={(evt: any) => {
+                            data.config.aggregationType = evt.value;
+                            updateData();
+                          }}
+                        />
+                      </FormControl>
+                      <FormControl className="BasicFormSection">
+                        <label className="form-label required" htmlFor="group">
+                          Date Time Column/Field
+                        </label>
+                        {
+                          <SelectWithList
+                            menuPlacement={"top"}
+                            placeholder={"Date Time Column/Field"}
+                            list={data?.config?.attributeKeys || []}
+                            value={data?.config?.dateTimeField}
+                            showFloatingLabel={true}
+                            onChange={(evt: any) => {
+                              data.config.dateTimeField = evt.value;
+                              updateData();
+                            }}
+                          />
+                        }
+                      </FormControl>
+                      <FormControl className="BasicFormSection">
+                        <label className="form-label required" htmlFor="group">
+                          Date Time Format
+                        </label>
+                        <SelectWithList
+                          menuPlacement={"top"}
+                          list={dateTimeFormats}
+                          value={data?.config?.dateTimeFormat}
+                          showFloatingLabel={true}
+                          onChange={(evt: any) => {
+                            data.config.dateTimeFormat = evt.value;
+                            updateData();
+                          }}
+                        />
+                        <span className="form-helptext">
+                          Specify input date/time format (e.g: YYYY-MM-DD or
+                          YYYY-MM). Excel usually converts time to timestamp
+                          format.
+                        </span>
+                      </FormControl>
+                    </div>
+                  ),
+                  "Data Preview": (
+                    <SDMXPreview url={data.config?.url} autoFetch={true} />
+                  ),
                   Style: (
                     <StyleConfig
                       data={data}

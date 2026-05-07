@@ -26,3 +26,42 @@
     opacity: 0;
   }
 }
+
+.SDMX-Indicator-Layer-Config {
+  #Form {
+    &.SDMX-Config {
+      > .SDMX-Config {
+        display: block !important;
+
+        .Filter-Dimensions {
+          display: none;
+        }
+      }
+    }
+
+    &.Filter-Dimensions {
+      > .SDMX-Config {
+        display: block !important;;
+
+        .FormAttribute {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .DimensionSection {
+    > div {
+      > label {
+        display: none;
+      }
+    }
+
+    .DimensionGrid {
+      padding: 0;
+      border: none;
+      flex-direction: column;
+      gap: 2rem;
+    }
+  }
+}

@@ -26,6 +26,7 @@ export const SMDXDataFlowVersionSelector = ({
   sdmxDataForm,
   selectedValue,
   onChangeValue,
+  disabled,
 }: MainDropdownInputSDMXProps) => {
   const [options, setOptions] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,6 +34,7 @@ export const SMDXDataFlowVersionSelector = ({
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (disabled) return;
     abortRef.current?.abort();
     abortRef.current = new AbortController();
 
@@ -59,7 +61,7 @@ export const SMDXDataFlowVersionSelector = ({
       .finally(() => setLoading(false));
 
     return () => abortRef.current?.abort();
-  }, [sdmxConfig, sdmxDataForm.agencyId, sdmxDataForm.dataflowId]);
+  }, [sdmxConfig, sdmxDataForm.agencyId, sdmxDataForm.dataflowId, disabled]);
 
   return (
     <DropdownInput
@@ -69,6 +71,7 @@ export const SMDXDataFlowVersionSelector = ({
       error={error}
       selectedValue={selectedValue}
       onChangeValue={onChangeValue}
+      disabled={disabled}
     />
   );
 };

@@ -32,6 +32,9 @@ class SDMXConfig(AbstractTerm):
     """SDMX config model."""
 
     url = models.URLField()
+    config = models.JSONField(
+        null=True, blank=True
+    )
 
     def full_name(self):
         """Return full name.

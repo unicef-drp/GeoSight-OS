@@ -84,6 +84,9 @@ class DashboardIndicatorLayer(
         default=False,
         help_text="If set to false, the object's name will be used."
     )
+    source = models.TextField(
+        blank=True, null=True
+    )
 
     level_config = models.JSONField(null=True, blank=True, default=dict)
     type = models.CharField(

@@ -517,6 +517,7 @@ class Dashboard(
             model.name = layer_data.get('name', '')
             model.description = layer_data.get('description', '')
             model.override_name = layer_data.get('override_name', False)
+            model.source = layer_data.get('source', False)
             model.override_description = layer_data.get(
                 'override_description', False
             )

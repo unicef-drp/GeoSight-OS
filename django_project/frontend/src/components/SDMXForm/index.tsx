@@ -61,7 +61,11 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
       .then(async (array: Record<string, any>[]) => {
         if (requestedUrl !== url) return;
         const headers = Object.keys(array[0]);
-        setData((prev) => ({ ...prev, attributeKeys: headers }));
+        setData((prev) => ({
+          ...prev,
+          attributeKeys: headers,
+          example: array[0],
+        }));
       })
       .catch((err) => setError(err?.message || "Failed to fetch URL"))
       .finally(() => setLoading(false));
@@ -105,109 +109,113 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
 
   // Render
   return (
-    <div className="FormAttribute">
-      <section className="BasicFormSection">
-        <label className="form-label required">SDMX Mode</label>
-        <RadioGroup
-          row
-          className="TypeSelector"
-          value={mode}
-          onChange={(evt) => {
-            setData({ ...data, mode: evt.target.value });
-          }}
-        >
-          {SDMX_MODES.map((opt) => (
-            <FormControlLabel
-              style={{ marginLeft: 0 }}
-              value={opt}
-              control={<Radio />}
-              label={opt}
-            />
-          ))}
-        </RadioGroup>
-      </section>
-
-      {/* SDMX URL */}
-      <section className="BasicFormSection">
-        <label className="form-label required">SDMX URL</label>
-        <div style={{ display: "flex" }}>
-          <input
-            style={{ flexGrow: 1, width: "unset" }}
-            type="text"
-            disabled={mode === SDMX_MODE_CONFIG}
-            className="form-control"
-            value={url ?? ""}
-            placeholder="https://..."
-            onChange={(e) =>
-              setData({
-                ...data,
-                url: e.target.value,
-              })
-            }
-          />
-          <Button
-            // @ts-ignore
-            variant="primary"
-            disabled={!url || loading}
-            onClick={() => checkUrl(url)}
-          >
-            {loading ? (
-              <CircularProgress size="1rem" />
-            ) : data.attributeKeys?.length ? (
-              <>
-                <span>Check</span> <CheckIcon fontSize="small" />
-              </>
-            ) : (
-              "Check"
-            )}
-          </Button>
-        </div>
-        {error && <span className="form-helptext error">{error}</span>}
-      </section>
-      {mode !== SDMX_MODE_URL && (
-        <>
-          <SMDXConfigSelector
-            selectedValue={data.smdxConfigId}
-            onChangeValue={(value) => {
-              if (value === null) return;
-              if (value === data.smdxConfigId) return;
-              setData({
-                ...data,
-                url: null,
-                agencyId: null,
-                dataflowId: null,
-                dataflowDsdId: null,
-                dataflowVersionId: null,
-
-                smdxConfigId: value,
-              });
+    <>
+      <div className="FormAttribute SDMX-Config">
+        <section className="BasicFormSection">
+          <label className="form-label required">SDMX Mode</label>
+          <RadioGroup
+            row
+            className="TypeSelector"
+            value={mode}
+            onChange={(evt) => {
+              setData({ ...data, mode: evt.target.value });
             }}
-          />
-          {sdmxConfig && data.smdxConfigId && (
+          >
+            {SDMX_MODES.map((opt) => (
+              <FormControlLabel
+                style={{ marginLeft: 0 }}
+                value={opt}
+                control={<Radio />}
+                label={opt}
+              />
+            ))}
+          </RadioGroup>
+        </section>
+
+        {/* SDMX URL */}
+        <section className="BasicFormSection">
+          <label className="form-label required">SDMX URL</label>
+          <div style={{ display: "flex" }}>
+            <input
+              style={{ flexGrow: 1, width: "unset" }}
+              type="text"
+              disabled={mode === SDMX_MODE_CONFIG}
+              className="form-control"
+              value={url ?? ""}
+              placeholder="https://..."
+              onChange={(e) =>
+                setData({
+                  ...data,
+                  url: e.target.value,
+                })
+              }
+            />
+            <Button
+              // @ts-ignore
+              variant="primary"
+              disabled={!url || loading}
+              onClick={() => checkUrl(url)}
+            >
+              {loading ? (
+                <CircularProgress size="1rem" />
+              ) : data.attributeKeys?.length ? (
+                <>
+                  <span>Check</span> <CheckIcon fontSize="small" />
+                </>
+              ) : (
+                "Check"
+              )}
+            </Button>
+          </div>
+          {error && <span className="form-helptext error">{error}</span>}
+        </section>
+        {mode !== SDMX_MODE_URL && (
+          <>
+            <SMDXConfigSelector
+              selectedValue={data.smdxConfigId}
+              onChangeValue={(value) => {
+                if (value === null) return;
+                if (value === data.smdxConfigId) return;
+                setData({
+                  ...data,
+                  url: null,
+                  agencyId: null,
+                  agencyName: null,
+                  dataflowId: null,
+                  dataflowDsdId: null,
+                  dataflowVersionId: null,
+
+                  smdxConfigId: value,
+                });
+              }}
+            />
             <SMDXAgencySelector
               sdmxConfig={sdmxConfig}
               selectedValue={data.agencyId}
-              onChangeValue={(value) => {
+              onChangeValue={(value) => {}}
+              onChangeAgency={(value, name) => {
+                console.log(value, name);
                 if (value === null) return;
                 if (value === data.agencyId) return;
                 setData({
                   ...data,
                   url: null,
                   agencyId: value,
+                  agencyName: name,
                   dataflowId: null,
                   dataflowDsdId: null,
+                  dataflowName: null,
                   dataflowVersionId: null,
                 });
               }}
+              disabled={!(sdmxConfig && data.smdxConfigId)}
             />
-          )}
-          {sdmxConfig && data.agencyId && (
             <SMDXDataFlowSelector
               sdmxDataForm={data}
               sdmxConfig={sdmxConfig}
               selectedValue={data.dataflowId}
               onChangeValue={(value) => {}}
-              onChangeDataFlow={(value, dsdId) => {
+              onChangeDataFlow={(value, dsdId, name) => {
                 if (value === null) return;
                 if (value === data.dataflowId) return;
                 setData({
@@ -215,12 +223,12 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
                   url: null,
                   dataflowId: value,
                   dataflowDsdId: dsdId,
+                  dataflowName: name,
                   dataflowVersionId: null,
                 });
               }}
+              disabled={!(sdmxConfig && data.agencyId)}
             />
-          )}
-          {sdmxConfig && data.dataflowId && (
             <SMDXDataFlowVersionSelector
               sdmxDataForm={data}
               sdmxConfig={sdmxConfig}
@@ -234,23 +242,26 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
                   dataflowVersionId: value,
                 });
               }}
+              disabled={!(sdmxConfig && data.dataflowId)}
             />
-          )}
-          {sdmxConfig && data.dataflowVersionId && (
-            <SMDXDimensions
-              sdmxDataForm={data}
-              sdmxConfig={sdmxConfig}
-              selectedValue={data.dataflowVersionId}
-              onChangeValue={() => {}}
-              onChange={() => {
-                if (data.dimensions === null) return;
-                setData({ ...data, dimensions: data.dimensions });
-              }}
-            />
-          )}
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+      <div className="Filter-Dimensions">
+        {sdmxConfig && data.dataflowVersionId && (
+          <SMDXDimensions
+            sdmxDataForm={data}
+            sdmxConfig={sdmxConfig}
+            selectedValue={data.dataflowVersionId}
+            onChangeValue={() => {}}
+            onChange={() => {
+              if (data.dimensions === null) return;
+              setData({ ...data, dimensions: data.dimensions });
+            }}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

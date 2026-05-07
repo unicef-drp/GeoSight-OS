@@ -99,7 +99,8 @@ class SDMXDataView(View):
                 filters[dimension_ids[i]] = set(part.split('+'))
         return filters
 
-    def get(self, request, agency_id, dataflow_id, version, key='', *args, **kwargs):
+    def get(self, request, agency_id, dataflow_id, version, key='', *args,
+            **kwargs):
         fmt = request.GET.get('format')
         base_path = os.path.join(RESPONSE_DIR, agency_id, dataflow_id, version)
 
@@ -134,7 +135,8 @@ class SDMXDataView(View):
             output = io.StringIO()
             writer = csv.DictWriter(
                 output, fieldnames=[
-                    'GEO_CODE', 'GEO_NAME', 'INDICATOR', 'DATE', 'VALUE'
+                    'REF_AREA', 'REF_NAME', 'INDICATOR',
+                    'TIME_PERIOD', 'OBS_VALUE'
                 ]
             )
             writer.writeheader()

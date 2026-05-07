@@ -20,18 +20,25 @@ import { DropdownInput } from "./BaseDropdownInput";
 import { fetchAgencies } from "../requests";
 import { SelectOption } from "../../../types/Input";
 
+/** Props for dropdowns that require an SDMX config to resolve their URL. */
+interface Props extends MainDropdownInputSDMXProps {
+  onChangeAgency?: (agencyId: string, agencyName: string) => void;
+}
+
 /** Dropdown that fetches agency options from the SDMX config's agency endpoint. */
 export const SMDXAgencySelector = ({
   sdmxConfig,
   selectedValue,
-  onChangeValue,
-}: MainDropdownInputSDMXProps) => {
+  onChangeAgency,
+  disabled,
+}: Props) => {
   const [options, setOptions] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (disabled) return;
     abortRef.current?.abort();
     abortRef.current = new AbortController();
 
@@ -54,7 +61,7 @@ export const SMDXAgencySelector = ({
       .finally(() => setLoading(false));
 
     return () => abortRef.current?.abort();
-  }, [sdmxConfig]);
+  }, [sdmxConfig, disabled]);
 
   return (
     <DropdownInput
@@ -63,7 +70,15 @@ export const SMDXAgencySelector = ({
       loading={loading}
       error={error}
       selectedValue={selectedValue}
-      onChangeValue={onChangeValue}
+      onChangeValue={(value: string) => {
+        const agency = options.find((option) => option.value === value);
+        console.log(agency);
+        if (!agency) return;
+        if (agency) {
+          onChangeAgency(agency.value, agency.label);
+        }
+      }}
+      disabled={disabled}
     />
   );
 };

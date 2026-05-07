@@ -19,11 +19,10 @@ import { MainDropdownInputSDMXProps } from "./types";
 import { DropdownInput } from "./BaseDropdownInput";
 import { fetchDataflows } from "../requests";
 import { DataflowOption } from "../types";
-import { SelectOption } from "../../../types/Input";
 
 /** Props for dropdowns that require an SDMX config to resolve their URL. */
 interface Props extends MainDropdownInputSDMXProps {
-  onChangeDataFlow: (value: string, dsdId: string) => void;
+  onChangeDataFlow: (value: string, dsdId: string, name: string) => void;
 }
 
 /** Dropdown that fetches agency options from the SDMX config's agency endpoint. */
@@ -33,14 +32,16 @@ export const SMDXDataFlowSelector = ({
   selectedValue,
   onChangeValue,
   onChangeDataFlow,
+  disabled,
 }: Props) => {
   const [dataFlows, setDataFlows] = useState<DataflowOption[]>([]);
-  const [options, setOptions] = useState<SelectOption[]>([]);
+  const [options, setOptions] = useState<DataflowOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (disabled) return;
     abortRef.current?.abort();
     abortRef.current = new AbortController();
 
@@ -62,7 +63,7 @@ export const SMDXDataFlowSelector = ({
       .finally(() => setLoading(false));
 
     return () => abortRef.current?.abort();
-  }, [sdmxConfig]);
+  }, [sdmxConfig, disabled]);
 
   // Fetch dataflows options on agency selection
   useEffect(() => {
@@ -79,11 +80,11 @@ export const SMDXDataFlowSelector = ({
       error={error}
       selectedValue={selectedValue}
       onChangeValue={(value: string) => {
-        onChangeDataFlow(
-          value,
-          dataFlows.find((df) => df.value === value)?.dsdId ?? "",
-        );
+        const dataflow = options.find((option) => option.value === value);
+        if (!dataflow) return;
+        onChangeDataFlow(value, dataflow.dsdId ?? "", dataflow.label ?? "");
       }}
+      disabled={disabled}
     />
   );
 };

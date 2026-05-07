@@ -24,7 +24,9 @@ export interface SDMXDataForm {
   // Using config
   smdxConfigId?: string;
   agencyId?: string;
+  agencyName?: string;
   dataflowId?: string;
+  dataflowName?: string;
   dataflowDsdId?: string;
   dataflowVersionId?: string;
   dimensions?: Dimensions;

@@ -31,6 +31,7 @@ export const SMDXDimensions = ({
   sdmxConfig,
   sdmxDataForm,
   onChange,
+  disabled,
 }: Props) => {
   const [dimensions, setDimensions] = useState<DimensionOptions>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,6 +39,7 @@ export const SMDXDimensions = ({
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (disabled) return;
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -83,6 +85,7 @@ export const SMDXDimensions = ({
     sdmxDataForm.agencyId,
     sdmxDataForm.dataflowDsdId,
     sdmxDataForm.dataflowVersionId,
+    disabled,
   ]);
 
   return (
