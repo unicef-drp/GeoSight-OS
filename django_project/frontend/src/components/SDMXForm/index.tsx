@@ -4,13 +4,7 @@ import { Button, Radio } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import CircularProgress from "@mui/material/CircularProgress";
 import CheckIcon from "@mui/icons-material/Check";
-import {
-  SMDXAgencySelector,
-  SMDXConfigSelector,
-  SMDXDataFlowSelector,
-  SMDXDataFlowVersionSelector,
-  SMDXDimensions,
-} from "./DropdownInput";
+import { SMDXConfigSelector, SMDXDimensions } from "./DropdownInput";
 import {
   SDMX_MODE_CONFIG,
   SDMX_MODE_URL,
@@ -22,6 +16,7 @@ import { constructSDMXUrl } from "./utilities";
 import { fetchSdmx } from "../../utils/sdmx";
 import Separator from "../Admin/Separator";
 import SDMXConfigUpdateButton from "./SDMXConfigUpdateButton";
+import SDMXConfigFields from "./SDMXConfigFields";
 
 import "./style.scss";
 
@@ -191,74 +186,10 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
                 });
               }}
             />
-            <section className="BasicFormSection">
-              <label className="form-label required">SDMX Base Url</label>
-              <div style={{ display: "flex" }}>
-                <input
-                  style={{ flexGrow: 1, width: "unset" }}
-                  type="text"
-                  disabled={true}
-                  className="form-control"
-                  value={sdmxConfig?.url ? sdmxConfig?.url : ""}
-                  placeholder="https://..."
-                  onChange={(e) => {}}
-                />
-              </div>
-              {error && <span className="form-helptext error">{error}</span>}
-            </section>
-            <SMDXAgencySelector
+            <SDMXConfigFields
               sdmxConfig={sdmxConfig}
-              selectedValue={data.agencyId}
-              onChangeValue={(value) => {}}
-              onChangeAgency={(value, name) => {
-                if (value === null) return;
-                if (value === data.agencyId) return;
-                setData({
-                  ...data,
-                  url: null,
-                  agencyId: value,
-                  agencyName: name,
-                  dataflowId: null,
-                  dataflowDsdId: null,
-                  dataflowName: null,
-                  dataflowVersionId: null,
-                });
-              }}
-              disabled={!(sdmxConfig && data.smdxConfigId)}
-            />
-            <SMDXDataFlowSelector
-              sdmxDataForm={data}
-              sdmxConfig={sdmxConfig}
-              selectedValue={data.dataflowId}
-              onChangeValue={(value) => {}}
-              onChangeDataFlow={(value, dsdId, name) => {
-                if (value === null) return;
-                if (value === data.dataflowId) return;
-                setData({
-                  ...data,
-                  url: null,
-                  dataflowId: value,
-                  dataflowDsdId: dsdId,
-                  dataflowName: name,
-                  dataflowVersionId: null,
-                });
-              }}
-              disabled={!(sdmxConfig && data.agencyId)}
-            />
-            <SMDXDataFlowVersionSelector
-              sdmxDataForm={data}
-              sdmxConfig={sdmxConfig}
-              selectedValue={data.dataflowVersionId}
-              onChangeValue={(value) => {
-                if (value === null) return;
-                if (value === data.dataflowVersionId) return;
-                setData({
-                  ...data,
-                  url: null,
-                  dataflowVersionId: value,
-                });
-              }}
-              disabled={!(sdmxConfig && data.dataflowId)}
+              data={data}
+              onChange={setData}
             />
             <SDMXConfigUpdateButton
               sdmxConfig={sdmxConfig}
