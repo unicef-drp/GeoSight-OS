@@ -126,7 +126,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
       const attributesKeys = data.config?.attributeKeys;
       const example = data.config?.example;
       let updated = false;
-      if (attributesKeys.length > 0) {
+      if (attributesKeys?.length > 0) {
         if (
           !data?.config?.geomCodeField &&
           attributesKeys.includes("REF_AREA")

@@ -22,6 +22,7 @@ import { SelectOption } from "../../../types/Input";
 
 interface Props extends MainDropdownInputProps {
   onChangeConfig?: (config: SDMXConfig) => void;
+  refreshKey?: number;
 }
 
 /** Dropdown that fetches available SDMX configs from the GeoSight API. */
@@ -29,6 +30,7 @@ export const SMDXConfigSelector = ({
   selectedValue,
   onChangeValue,
   onChangeConfig,
+  refreshKey,
 }: Props) => {
   const [options, setOptions] = useState<SelectOption[]>([]);
   const [configs, setConfigs] = useState<SDMXConfig[]>([]);
@@ -60,7 +62,7 @@ export const SMDXConfigSelector = ({
       .finally(() => setLoading(false));
 
     return () => abortRef.current?.abort();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <DropdownInput

@@ -36,6 +36,7 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
     initialData ? initialData : { mode: "config" },
   );
   const [sdmxConfig, setSdmxConfig] = useState<SDMXConfig>(null);
+  const [configRefreshKey, setConfigRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mode = data.mode ?? SDMX_MODE_CONFIG;
@@ -173,22 +174,38 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
             <Separator>SDMX Config</Separator>
             <SMDXConfigSelector
               selectedValue={data.smdxConfigId}
-              onChangeValue={(value) => {}}
-              onChangeConfig={(value) => {
+              onChangeValue={() => {}}
+              refreshKey={configRefreshKey}
+              onChangeConfig={(value: SDMXConfig) => {
                 setSdmxConfig(value);
                 setData({
                   ...data,
                   url: null,
-                  agencyId: value.config?.agencyId,
-                  agencyName: value.config?.agencyName,
-                  dataflowId: value.config?.dataflowId,
-                  dataflowDsdId: value.config?.dataflowDsdId,
-                  dataflowVersionId: value.config?.dataflowVersionId,
-
                   smdxConfigId: "" + value.id,
+                  agencyId: value.agency_id,
+                  agencyName: value.agency_name,
+                  dataflowId: value.dataflow_id,
+                  dataflowName: value.dataflow_name,
+                  dataflowDsdId: value.dataflow_dsd_id,
+                  dataflowVersionId: value.dataflow_version_id,
                 });
               }}
             />
+            <section className="BasicFormSection">
+              <label className="form-label required">SDMX Base Url</label>
+              <div style={{ display: "flex" }}>
+                <input
+                  style={{ flexGrow: 1, width: "unset" }}
+                  type="text"
+                  disabled={true}
+                  className="form-control"
+                  value={sdmxConfig?.url ? sdmxConfig?.url : ""}
+                  placeholder="https://..."
+                  onChange={(e) => {}}
+                />
+              </div>
+              {error && <span className="form-helptext error">{error}</span>}
+            </section>
             <SMDXAgencySelector
               sdmxConfig={sdmxConfig}
               selectedValue={data.agencyId}
@@ -243,7 +260,24 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
               }}
               disabled={!(sdmxConfig && data.dataflowId)}
             />
-            <SDMXConfigUpdateButton sdmxConfig={sdmxConfig} data={data} />
+            <SDMXConfigUpdateButton
+              sdmxConfig={sdmxConfig}
+              data={data}
+              onSaved={() => {
+                setConfigRefreshKey((k) => k + 1);
+                if (sdmxConfig) {
+                  setSdmxConfig({
+                    ...sdmxConfig,
+                    agency_id: data.agencyId,
+                    agency_name: data.agencyName,
+                    dataflow_id: data.dataflowId,
+                    dataflow_name: data.dataflowName,
+                    dataflow_dsd_id: data.dataflowDsdId,
+                    dataflow_version_id: data.dataflowVersionId,
+                  });
+                }
+              }}
+            />
           </>
         )}
       </div>

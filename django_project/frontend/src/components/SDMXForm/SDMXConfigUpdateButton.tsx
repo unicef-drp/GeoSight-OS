@@ -22,10 +22,11 @@ import { SDMXConfig, SDMXDataForm } from "../../types/SDMX";
 interface Props {
   sdmxConfig: SDMXConfig | null;
   data: SDMXDataForm;
+  onSaved?: () => void;
 }
 
 /** Button that PUTs the current SDMXDataForm selections back to the SDMXConfig. */
-const SDMXConfigUpdateButton = ({ sdmxConfig, data }: Props) => {
+const SDMXConfigUpdateButton = ({ sdmxConfig, data, onSaved }: Props) => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,26 +46,24 @@ const SDMXConfigUpdateButton = ({ sdmxConfig, data }: Props) => {
     setSaved(false);
     setError(null);
 
-    const config: Partial<SDMXDataForm> = {
-      agencyId: data.agencyId,
-      agencyName: data.agencyName,
-      dataflowId: data.dataflowId,
-      dataflowName: data.dataflowName,
-      dataflowDsdId: data.dataflowDsdId,
-      dataflowVersionId: data.dataflowVersionId,
-    };
-
     // @ts-ignore
     const csrfToken = csrfmiddlewaretoken;
     axios
       .patch(
         `/api/sdmx/${sdmxConfig.id}`,
-        { config },
+        {
+          agency_id: data.agencyId,
+          agency_name: data.agencyName,
+          dataflow_id: data.dataflowId,
+          dataflow_name: data.dataflowName,
+          dataflow_dsd_id: data.dataflowDsdId,
+          dataflow_version_id: data.dataflowVersionId,
+        },
         {
           headers: { "X-CSRFToken": csrfToken },
         },
       )
-      .then(() => setSaved(true))
+      .then(() => { setSaved(true); onSaved?.(); })
       .catch((err) =>
         setError(
           err?.response?.data?.detail || err.message || "Failed to save",

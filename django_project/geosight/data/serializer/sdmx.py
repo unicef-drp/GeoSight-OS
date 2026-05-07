@@ -30,5 +30,10 @@ class SDMXConfigSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = SDMXConfig
-        fields = ("id", "name", "description", "url", "config", "urls")
+        fields = (
+            "id", "name", "description", "url", "urls",
+            "agency_id", "agency_name",
+            "dataflow_id", "dataflow_name", "dataflow_dsd_id",
+            "dataflow_version_id",
+        )
         read_only_fields = ("id", "urls")

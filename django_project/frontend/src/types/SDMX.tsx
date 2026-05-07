@@ -47,7 +47,12 @@ export interface SDMXConfig {
   name: string;
   url: string;
   urls: SDMXConfigUrls;
-  config?: SDMXDataForm;
+  agency_id?: string;
+  agency_name?: string;
+  dataflow_id?: string;
+  dataflow_name?: string;
+  dataflow_dsd_id?: string;
+  dataflow_version_id?: string;
 }
 
 export interface Agency {

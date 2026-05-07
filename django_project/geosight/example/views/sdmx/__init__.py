@@ -136,7 +136,7 @@ class SDMXDataView(View):
             writer = csv.DictWriter(
                 output, fieldnames=[
                     'REF_AREA', 'REF_NAME', 'INDICATOR',
-                    'TIME_PERIOD', 'OBS_VALUE'
+                    'TIME_PERIOD', 'OBS_VALUE', 'REF_LEVEL'
                 ]
             )
             writer.writeheader()
