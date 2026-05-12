@@ -14,6 +14,8 @@
  */
 
 /** Selection state reducer */
+import { IndicatorLayer } from "../../../../types/IndicatorLayer";
+
 /** TODO: We need to migrate all selected reducers to this **/
 
 export const SELECTION_STATE = "SELECTION_STATE";
@@ -32,6 +34,10 @@ export const SELECTION_STATE_FILTER_REMOVE_RELATED_TABLE =
 
 export const SELECTION_STATE_COMPOSITE_INDICATOR_LAYERS =
   SELECTION_STATE + "/COMPOSITE/INDICATOR_LAYERS";
+export const SELECTION_STATE_INDICATOR_LAYER_EDITED =
+  SELECTION_STATE + "/INDICATOR_LAYER/INDICATOR_LAYER_EDITED";
+export const SELECTION_STATE_INDICATOR_LAYER_DELETED =
+  SELECTION_STATE + "/INDICATOR_LAYER/INDICATOR_LAYER_DELETED";
 
 export interface Props {
   filter: {
@@ -41,6 +47,10 @@ export interface Props {
   };
   composite: {
     indicatorLayerIds: number[];
+  };
+  indicatorLayerId: {
+    edit: null | IndicatorLayer;
+    delete: null | IndicatorLayer;
   };
 }
 
@@ -58,6 +68,10 @@ const initialState: Props = {
   },
   composite: {
     indicatorLayerIds: [],
+  },
+  indicatorLayerId: {
+    edit: null,
+    delete: null,
   },
 };
 export default function selectedAdminLevelReducer(
@@ -155,6 +169,25 @@ export default function selectedAdminLevelReducer(
           ...state,
           composite: {
             indicatorLayerIds: action.payload,
+          },
+        };
+      }
+      case SELECTION_STATE_INDICATOR_LAYER_EDITED: {
+        return {
+          ...state,
+          indicatorLayerId: {
+            edit: action.payload,
+            // @ts-ignore
+            delete: null,
+          },
+        };
+      }
+      case SELECTION_STATE_INDICATOR_LAYER_DELETED: {
+        return {
+          ...state,
+          indicatorLayerId: {
+            edit: null,
+            delete: action.payload,
           },
         };
       }

@@ -34,7 +34,7 @@ export const SMDXConfigSelector = ({
 }: Props) => {
   const [options, setOptions] = useState<SelectOption[]>([]);
   const [configs, setConfigs] = useState<SDMXConfig[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -70,13 +70,14 @@ export const SMDXConfigSelector = ({
       options={options}
       loading={loading}
       error={error}
-      selectedValue={selectedValue}
+      selectedValue={selectedValue ? String(selectedValue) : selectedValue}
       onChangeValue={(value: string) => {
-        if (onChangeConfig) {
-          const config = configs.find((c) => String(c.id) === value);
+        if (value && onChangeConfig) {
+          const config = configs.find((c) => String(c.id) === String(value));
           if (config) onChangeConfig(config);
         }
       }}
+      loadingByInit={true}
     />
   );
 };

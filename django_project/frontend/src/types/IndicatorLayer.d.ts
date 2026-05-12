@@ -86,6 +86,8 @@ export interface IndicatorLayer extends IndicatorLayerConfig {
   // TODO:
   //  We will remove this
   error: string;
+
+  isLocal?: boolean;
 }
 
 export interface DataField {

@@ -33,11 +33,13 @@ export const DropdownInput = ({
   selectedValue,
   onChangeValue,
   disabled,
+  loadingByInit,
 }: MainDropdownProps) => {
   const [value, setValue] = useState<SelectOption | null>(null);
 
   // When loading, clear selection
   useEffect(() => {
+    if (loadingByInit) return;
     if (loading) {
       setValue(null);
       if (selectedValue !== null) {
@@ -48,20 +50,22 @@ export const DropdownInput = ({
 
   // When selected changed
   useEffect(() => {
+    if (loading) return;
     const option =
       options.find((option) => option.value === selectedValue) ?? null;
-    if (!option && selectedValue) {
-      onChangeValue(null);
-    }
     if (option?.value !== value?.value) {
       setValue(option);
+      if (onChangeValue) {
+        onChangeValue(option.value);
+      }
     }
-  }, [options, selectedValue]);
+  }, [options]);
 
   // When value changed
   useEffect(() => {
+    if (loading) return;
     const _value: string | null = !value?.value ? null : value?.value;
-    if (_value !== selectedValue) {
+    if (options.length && _value !== selectedValue) {
       onChangeValue(_value);
     }
   }, [value]);
@@ -90,7 +94,10 @@ export const DropdownInput = ({
               maxHeight: "200px",
             }),
           }}
-          onChange={setValue}
+          onChange={(val: SelectOption) => {
+            if (loading) return;
+            setValue(val);
+          }}
           placeholder={
             disabled
               ? "Please select an option on previous step"

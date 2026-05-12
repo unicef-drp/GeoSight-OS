@@ -33,10 +33,7 @@ class SDMXConfig(AbstractTerm):
 
     url = models.URLField()
     agency_id = models.CharField(max_length=255, null=True, blank=True)
-    agency_name = models.CharField(max_length=512, null=True, blank=True)
     dataflow_id = models.CharField(max_length=255, null=True, blank=True)
-    dataflow_name = models.CharField(max_length=512, null=True, blank=True)
-    dataflow_dsd_id = models.CharField(max_length=255, null=True, blank=True)
     dataflow_version_id = models.CharField(
         max_length=255, null=True, blank=True
     )

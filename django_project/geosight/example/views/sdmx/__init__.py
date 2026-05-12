@@ -126,7 +126,7 @@ class SDMXDataView(View):
                 rows = [
                     row for row in rows
                     if all(
-                        row.get(dim) in vals
+                        str(row.get(dim)) in [str(v) for v in vals]
                         for dim, vals in filters.items()
                         if dim in row
                     )

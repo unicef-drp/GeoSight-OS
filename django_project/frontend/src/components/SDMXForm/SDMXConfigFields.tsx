@@ -50,7 +50,15 @@ const SDMXConfigFields = ({ sdmxConfig, data, onChange }: Props) => {
         selectedValue={data.agencyId}
         onChangeValue={() => {}}
         onChangeAgency={(value, name) => {
-          if (value === null || value === data.agencyId) return;
+          if (value === null || value === data.agencyId) {
+            if (!data.agencyName) {
+              onChange({
+                ...data,
+                agencyName: name,
+              });
+            }
+            return;
+          }
           onChange({
             ...data,
             url: null,
@@ -71,7 +79,16 @@ const SDMXConfigFields = ({ sdmxConfig, data, onChange }: Props) => {
         selectedValue={data.dataflowId}
         onChangeValue={() => {}}
         onChangeDataFlow={(value, dsdId, name) => {
-          if (value === null || value === data.dataflowId) return;
+          if (value === null || value === data.dataflowId) {
+            if (!data.dataflowName) {
+              onChange({
+                ...data,
+                dataflowDsdId: dsdId,
+                dataflowName: name,
+              });
+            }
+            return;
+          }
           onChange({
             ...data,
             url: null,

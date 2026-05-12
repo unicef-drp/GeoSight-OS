@@ -54,17 +54,22 @@ import "./style.scss";
 export interface SDMXLayerConfigProps {
   indicatorLayer?: IndicatorLayer;
   onUpdate: (indicatorLayer: IndicatorLayer) => void;
+  onClose?: () => void;
 }
 
 export interface SDMXLayerConfigRef {
   open: () => void;
 }
 
+const LayerMetadata = "Layer Metadata";
+const SDMXConfig = "SDMX Config";
+const FilterDimensions = "Filter Dimensions";
+const DataConfig = "Data Config";
 /**
  * SDMXLayer Config
  */
 const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
-  function SDMXLayerConfig({ indicatorLayer, onUpdate }, ref) {
+  function SDMXLayerConfig({ indicatorLayer, onUpdate, onClose }, ref) {
     const { t } = useTranslation();
     const defaultData: IndicatorLayer = {
       id: 0,
@@ -87,10 +92,12 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
 
     const [data, setData] = useState<IndicatorLayer>(defaultData);
     const [open, setOpen] = useState<boolean>(false);
+    const [sdmxTab, setSdmxTab] = useState<string>("Layer Metadata");
 
     useImperativeHandle(ref, () => ({
       open: () => setOpen(true),
     }));
+
     const disabled =
       !data.name ||
       !data.config?.url?.length ||
@@ -118,6 +125,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
     const apply = () => {
       onUpdate(data);
       setOpen(false);
+      if (onClose) onClose();
     };
 
     // Open data selection when the props true
@@ -189,6 +197,15 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
       }
     }, [data?.config?.dataflowName]);
 
+    const Tab = ({ name }: { name: string }) => (
+      <div
+        className={sdmxTab === name ? "Active" : ""}
+        onClick={() => setSdmxTab(name)}
+      >
+        {name}
+      </div>
+    );
+
     return (
       <Fragment>
         <Modal
@@ -196,11 +213,13 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
           open={open}
           onClosed={() => {
             setOpen(false);
+            if (onClose) onClose();
           }}
         >
           <ModalHeader
             onClosed={() => {
               setOpen(false);
+              if (onClose) onClose();
             }}
           >
             {t("SDMX Indicators Layer Configurations")}
@@ -217,148 +236,167 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
             <div className="AdminForm Section SDMX-Indicator-Layer-Config">
               <AdminForm
                 // @ts-ignore
-                defaultTab={"Layer-Metadata"}
+                defaultTab={"General"}
                 // @ts-ignore
                 forms={{
-                  "Layer-Metadata": (
+                  General: (
                     <>
                       {open && (
-                        <div>
-                          <LayerNameDescription
-                            name={data.name}
-                            description={data.description}
-                            onChangeName={(name) => {
-                              data.name = name;
-                              updateData();
-                            }}
-                            onChangeDescription={(description) => {
-                              data.description = description;
-                              updateData();
-                            }}
-                          />
-                          <div className="BasicFormSection">
-                            <div>
-                              <label className="form-label">Source</label>
-                            </div>
-                            <div className="ContextLayerConfig-IconSize">
-                              <textarea
-                                className="LayerDescriptionInput"
-                                value={data.source}
-                                onChange={(evt) => {
-                                  data.source = evt.target.value;
+                        <div
+                          className={
+                            "SDMX-Config-Form " + sdmxTab.replace(" ", "-")
+                          }
+                        >
+                          <div className="SDMX-Tab">
+                            <Tab name={LayerMetadata} />
+                            <Tab name={SDMXConfig} />
+                            <Tab name={FilterDimensions} />
+                            <Tab name={DataConfig} />
+                          </div>
+                          <div className="SDMX-Content">
+                            <div
+                              className={LayerMetadata}
+                              hidden={sdmxTab !== LayerMetadata}
+                            >
+                              <LayerNameDescription
+                                name={data.name}
+                                description={data.description}
+                                onChangeName={(name) => {
+                                  data.name = name;
+                                  updateData();
+                                }}
+                                onChangeDescription={(description) => {
+                                  data.description = description;
                                   updateData();
                                 }}
                               />
+                              <div className="BasicFormSection">
+                                <div>
+                                  <label className="form-label">Source</label>
+                                </div>
+                                <div className="ContextLayerConfig-IconSize">
+                                  <textarea
+                                    className="LayerDescriptionInput"
+                                    value={data.source}
+                                    onChange={(evt) => {
+                                      data.source = evt.target.value;
+                                      updateData();
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* ADMIN LEVEL CONFIGURATION*/}
+                              <OverrideAdminLevelConfiguration
+                                levelConfig={data.level_config}
+                                onChange={(levelConfig) => {
+                                  data.level_config = levelConfig;
+                                  updateData();
+                                }}
+                                referenceLayer={referenceLayer}
+                              />
+                            </div>
+                            <SDMXForm
+                              initialData={data.config}
+                              dataChanged={(config) => {
+                                data.config = config;
+                                updateData();
+                              }}
+                            />
+                            <div
+                              className={DataConfig}
+                              hidden={sdmxTab !== DataConfig}
+                            >
+                              <FormControl className="BasicFormSection">
+                                <label className="form-label required">
+                                  Column Geograph Code
+                                </label>
+                                {
+                                  <SelectWithList
+                                    list={data?.config?.attributeKeys || []}
+                                    value={data?.config?.geomCodeField}
+                                    onChange={(evt: any) => {
+                                      data.config.geomCodeField = evt.value;
+                                      updateData();
+                                    }}
+                                  />
+                                }
+                              </FormControl>
+                              <FormControl className="BasicFormSection">
+                                <label className="form-label required">
+                                  Value Column
+                                </label>
+                                <SelectWithList
+                                  list={data?.config?.attributeKeys || []}
+                                  value={data?.config?.valueField}
+                                  onChange={(evt: any) => {
+                                    data.config.valueField = evt.value;
+                                    updateData();
+                                  }}
+                                />
+                              </FormControl>
+                              <FormControl className="BasicFormSection">
+                                <label className={"form-label required"}>
+                                  Aggregation
+                                </label>
+                                <SelectWithList
+                                  list={Object.keys(TYPES)}
+                                  value={data?.config?.aggregationType}
+                                  onChange={(evt: any) => {
+                                    data.config.aggregationType = evt.value;
+                                    updateData();
+                                  }}
+                                />
+                              </FormControl>
+                              <FormControl className="BasicFormSection">
+                                <label
+                                  className="form-label required"
+                                  htmlFor="group"
+                                >
+                                  Date Time Column/Field
+                                </label>
+                                {
+                                  <SelectWithList
+                                    menuPlacement={"top"}
+                                    placeholder={"Date Time Column/Field"}
+                                    list={data?.config?.attributeKeys || []}
+                                    value={data?.config?.dateTimeField}
+                                    showFloatingLabel={true}
+                                    onChange={(evt: any) => {
+                                      data.config.dateTimeField = evt.value;
+                                      updateData();
+                                    }}
+                                  />
+                                }
+                              </FormControl>
+                              <FormControl className="BasicFormSection">
+                                <label
+                                  className="form-label required"
+                                  htmlFor="group"
+                                >
+                                  Date Time Format
+                                </label>
+                                <SelectWithList
+                                  menuPlacement={"top"}
+                                  list={dateTimeFormats}
+                                  value={data?.config?.dateTimeFormat}
+                                  showFloatingLabel={true}
+                                  onChange={(evt: any) => {
+                                    data.config.dateTimeFormat = evt.value;
+                                    updateData();
+                                  }}
+                                />
+                                <span className="form-helptext">
+                                  Specify input date/time format (e.g:
+                                  YYYY-MM-DD or YYYY-MM). Excel usually converts
+                                  time to timestamp format.
+                                </span>
+                              </FormControl>
                             </div>
                           </div>
-
-                          {/* ADMIN LEVEL CONFIGURATION*/}
-                          <OverrideAdminLevelConfiguration
-                            levelConfig={data.level_config}
-                            onChange={(levelConfig) => {
-                              data.level_config = levelConfig;
-                              updateData();
-                            }}
-                            referenceLayer={referenceLayer}
-                          />
                         </div>
                       )}
                     </>
-                  ),
-                  "SDMX-Config": (
-                    <>
-                      <SDMXForm
-                        initialData={data.config}
-                        dataChanged={(config) => {
-                          data.config = config;
-                          updateData();
-                        }}
-                      />
-                    </>
-                  ),
-                  "Filter-Dimensions": <></>,
-                  "Data-Config": (
-                    <div className="BasicForm">
-                      <FormControl className="BasicFormSection">
-                        <label className="form-label required">
-                          Column Geograph Code
-                        </label>
-                        {
-                          <SelectWithList
-                            list={data?.config?.attributeKeys || []}
-                            value={data?.config?.geomCodeField}
-                            onChange={(evt: any) => {
-                              data.config.geomCodeField = evt.value;
-                              updateData();
-                            }}
-                          />
-                        }
-                      </FormControl>
-                      <FormControl className="BasicFormSection">
-                        <label className="form-label required">
-                          Value Column
-                        </label>
-                        <SelectWithList
-                          list={data?.config?.attributeKeys || []}
-                          value={data?.config?.valueField}
-                          onChange={(evt: any) => {
-                            data.config.valueField = evt.value;
-                            updateData();
-                          }}
-                        />
-                      </FormControl>
-                      <FormControl className="BasicFormSection">
-                        <label className={"form-label required"}>
-                          Aggregation
-                        </label>
-                        <SelectWithList
-                          list={Object.keys(TYPES)}
-                          value={data?.config?.aggregationType}
-                          onChange={(evt: any) => {
-                            data.config.aggregationType = evt.value;
-                            updateData();
-                          }}
-                        />
-                      </FormControl>
-                      <FormControl className="BasicFormSection">
-                        <label className="form-label required" htmlFor="group">
-                          Date Time Column/Field
-                        </label>
-                        {
-                          <SelectWithList
-                            menuPlacement={"top"}
-                            placeholder={"Date Time Column/Field"}
-                            list={data?.config?.attributeKeys || []}
-                            value={data?.config?.dateTimeField}
-                            showFloatingLabel={true}
-                            onChange={(evt: any) => {
-                              data.config.dateTimeField = evt.value;
-                              updateData();
-                            }}
-                          />
-                        }
-                      </FormControl>
-                      <FormControl className="BasicFormSection">
-                        <label className="form-label required" htmlFor="group">
-                          Date Time Format
-                        </label>
-                        <SelectWithList
-                          menuPlacement={"top"}
-                          list={dateTimeFormats}
-                          value={data?.config?.dateTimeFormat}
-                          showFloatingLabel={true}
-                          onChange={(evt: any) => {
-                            data.config.dateTimeFormat = evt.value;
-                            updateData();
-                          }}
-                        />
-                        <span className="form-helptext">
-                          Specify input date/time format (e.g: YYYY-MM-DD or
-                          YYYY-MM). Excel usually converts time to timestamp
-                          format.
-                        </span>
-                      </FormControl>
-                    </div>
                   ),
                   "Data Preview": (
                     <SDMXPreview url={data.config?.url} autoFetch={true} />

@@ -53,9 +53,7 @@ const SDMXConfigUpdateButton = ({ sdmxConfig, data, onSaved }: Props) => {
         `/api/sdmx/${sdmxConfig.id}`,
         {
           agency_id: data.agencyId,
-          agency_name: data.agencyName,
           dataflow_id: data.dataflowId,
-          dataflow_name: data.dataflowName,
           dataflow_dsd_id: data.dataflowDsdId,
           dataflow_version_id: data.dataflowVersionId,
         },
@@ -63,7 +61,10 @@ const SDMXConfigUpdateButton = ({ sdmxConfig, data, onSaved }: Props) => {
           headers: { "X-CSRFToken": csrfToken },
         },
       )
-      .then(() => { setSaved(true); onSaved?.(); })
+      .then(() => {
+        setSaved(true);
+        onSaved?.();
+      })
       .catch((err) =>
         setError(
           err?.response?.data?.detail || err.message || "Failed to save",

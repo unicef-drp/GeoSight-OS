@@ -32,8 +32,6 @@ class SDMXConfigSerializer(serializers.ModelSerializer):
         model = SDMXConfig
         fields = (
             "id", "name", "description", "url", "urls",
-            "agency_id", "agency_name",
-            "dataflow_id", "dataflow_name", "dataflow_dsd_id",
-            "dataflow_version_id",
+            "agency_id", "dataflow_id", "dataflow_version_id",
         )
         read_only_fields = ("id", "urls")

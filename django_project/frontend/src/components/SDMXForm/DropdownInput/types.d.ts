@@ -29,6 +29,8 @@ interface MainDropdownProps extends MainDropdownInputProps {
   loading?: boolean;
   disabled?: boolean;
   error?: string;
+
+  loadingByInit?: boolean;
 }
 
 /** Props for dropdowns that require an SDMX config to resolve their URL. */

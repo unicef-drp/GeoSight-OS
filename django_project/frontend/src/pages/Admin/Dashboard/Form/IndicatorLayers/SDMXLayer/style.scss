@@ -21,32 +21,34 @@
   .MuiButton-primary {
     margin: 1rem;
   }
+}
 
-  .form-label {
-    opacity: 0;
+.SDMX-Content {
+  .SDMX-Config,
+  .Filter-Dimensions {
+    display: none;
   }
 }
 
-.SDMX-Indicator-Layer-Config {
-  #Form {
-    &.SDMX-Config {
-      > .SDMX-Config {
-        display: block !important;
 
-        .Filter-Dimensions {
-          display: none;
-        }
-      }
+.SDMX-Config-Form {
+  &.SDMX-Config {
+    .SDMX-Config {
+      display: block !important;
     }
 
-    &.Filter-Dimensions {
-      > .SDMX-Config {
-        display: block !important;;
+    .Filter-Dimensions {
+      display: none;
+    }
+  }
 
-        .FormAttribute {
-          display: none;
-        }
-      }
+  &.Filter-Dimensions {
+    .SDMX-Config {
+      display: none;
+    }
+
+    .Filter-Dimensions {
+      display: block;
     }
   }
 
@@ -68,4 +70,51 @@
   .Filter-Dimensions {
     min-height: 400px;
   }
+}
+
+
+.IndicatorLayerConfig {
+  .AdminForm {
+    overflow: visible;
+  }
+
+  .Section {
+    background-color: unset !important;
+    position: relative;
+  }
+
+  .SaveButton-Section {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .OverrideAdminLevel {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.SDMX-Tab {
+  display: flex;
+  flex-grow: 1;
+
+  div {
+    border: 1px solid var(--gray-300);
+    padding: 1rem;
+    cursor: pointer;
+
+    &.Active {
+      background-color: var(--primary-color);
+      color: white;
+      border: 1px solid var(--primary-color);
+      border-bottom: 1px solid var(--primary-color);
+    }
+  }
+}
+
+.SDMX-Content {
+  padding: 1rem;
+  border: 1px solid var(--gray-300);
+  margin-top: -1px;
 }

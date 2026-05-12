@@ -23,7 +23,7 @@ export const fetchSdmx = async (
   const urls = url.split("?");
   const isLocalhost = /^https?:\/\/localhost(:\d+)?/i.test(urls[0]);
   const cleanPath = isLocalhost
-    ? urls[0].replace(/\/(%2E%2E|\.\.)/gi, "")
+    ? urls[0].replace(/\/(%2E%2E|\.\.)(?=\/|$)/gi, "")
     : urls[0];
   url = [cleanPath, "format=csv"].join("?");
   return new Promise((resolve, reject) => {
