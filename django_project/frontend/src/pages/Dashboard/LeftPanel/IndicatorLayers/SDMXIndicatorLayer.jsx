@@ -60,7 +60,6 @@ export default function SDMXIndicatorLayer({ indicatorLayer }) {
     (async () => {
       const id = indicatorLayer?.id;
       try {
-        if (dates.length > 0) return;
         if (!url || !dateTimeField || !dateTimeFormat || !geomCodeField) {
           throw new Error("SDMX configuration is not configured yet.");
         }
@@ -93,7 +92,7 @@ export default function SDMXIndicatorLayer({ indicatorLayer }) {
         );
       }
     })();
-  }, [url, indicatorLayer]);
+  }, [url]);
 
   /**
    * Update related table dates

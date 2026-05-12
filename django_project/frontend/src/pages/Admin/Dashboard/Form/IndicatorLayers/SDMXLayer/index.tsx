@@ -181,10 +181,10 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
 
     // Agency name as source
     useEffect(() => {
-      if (data.source) return;
       if (!data?.config?.agencyName) return;
       if (data.source !== data?.config?.agencyName) {
         data.source = data?.config?.agencyName;
+        updateData();
       }
     }, [data?.config?.agencyName]);
 
@@ -194,6 +194,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
       if (!data?.config?.dataflowName) return;
       if (data.name !== data?.config?.dataflowName) {
         data.name = data?.config?.dataflowName;
+        updateData();
       }
     }, [data?.config?.dataflowName]);
 

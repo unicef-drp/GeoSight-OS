@@ -46,7 +46,6 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
 
   const checkUrl = (url: string) => {
     if (!url) {
-      setData((prev) => ({ ...prev, attributeKeys: [] }));
       return;
     }
     const requestedUrl = url;

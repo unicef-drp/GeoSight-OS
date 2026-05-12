@@ -73,6 +73,11 @@ const SDMXConfigUpdateButton = ({ sdmxConfig, data, onSaved }: Props) => {
       .finally(() => setSaving(false));
   };
 
+  // @ts-ignore
+  if (!user.is_admin) {
+    return null;
+  }
+
   return (
     <section className="BasicFormSection">
       <SaveButton

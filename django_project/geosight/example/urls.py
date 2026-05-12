@@ -40,12 +40,14 @@ sdmx = [
         name='example-dataflow'
     ),
     url(
-        r'^datastructure/(?P<agency_id>[^/]+)/(?P<dsd_id>[^/]+)/(?P<version>[^/]+)',
+        r'^datastructure/(?P<agency_id>[^/]+)/'
+        r'(?P<dsd_id>[^/]+)/(?P<version>[^/]+)',
         SDMXDataStructureView.as_view(),
         name='example-datastructure'
     ),
     url(
-        r'^data/(?P<agency_id>[^,]+),(?P<dataflow_id>[^,]+),(?P<version>[^/?]+)(?:/(?P<key>[^?/]*))?',
+        r'^data/(?P<agency_id>[^,]+),(?P<dataflow_id>[^,]+),'
+        r'(?P<version>[^/?]+)(?:/(?P<key>[^?/]*))?',
         SDMXDataView.as_view(),
         name='example-data'
     ),

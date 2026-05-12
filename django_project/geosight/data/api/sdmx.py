@@ -28,13 +28,24 @@ class SDMXConfigListAPI(APIView):
     """Return SDMXConfig list."""
 
     def get_permissions(self):
-        """GET requires login; write operations require admin."""
+        """Return permissions based on HTTP method.
+
+        :return: List of permission instances.
+        :rtype: list
+        """
         if self.request.method == 'GET':
             return [IsAuthenticated()]
         return [AdminAuthenticationPermission()]
 
     def get(self, request):
-        """Return SDMXConfig list."""
+        """Return SDMXConfig list.
+
+        :param request: HTTP request.
+        :type request: rest_framework.request.Request
+
+        :return: Serialized list of SDMXConfig objects.
+        :rtype: rest_framework.response.Response
+        """
         return Response(
             SDMXConfigSerializer(
                 SDMXConfig.objects.all().order_by('name'), many=True
@@ -42,7 +53,14 @@ class SDMXConfigListAPI(APIView):
         )
 
     def post(self, request):
-        """Create a new SDMXConfig."""
+        """Create a new SDMXConfig.
+
+        :param request: HTTP request containing SDMXConfig data.
+        :type request: rest_framework.request.Request
+
+        :return: Serialized created SDMXConfig with status 201.
+        :rtype: rest_framework.response.Response
+        """
         serializer = SDMXConfigSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -53,18 +71,40 @@ class SDMXConfigDetailAPI(APIView):
     """API for detail of SDMXConfig."""
 
     def get_permissions(self):
-        """GET requires login; write operations require admin."""
+        """Return permissions based on HTTP method.
+
+        :return: List of permission instances.
+        :rtype: list
+        """
         if self.request.method == 'GET':
             return [IsAuthenticated()]
         return [AdminAuthenticationPermission()]
 
     def get(self, request, pk):
-        """Return SDMXConfig detail."""
+        """Return SDMXConfig detail.
+
+        :param request: HTTP request.
+        :type request: rest_framework.request.Request
+        :param pk: Primary key of the SDMXConfig.
+        :type pk: int
+
+        :return: Serialized SDMXConfig object.
+        :rtype: rest_framework.response.Response
+        """
         obj = get_object_or_404(SDMXConfig, pk=pk)
         return Response(SDMXConfigSerializer(obj).data)
 
     def put(self, request, pk):
-        """Update an SDMXConfig."""
+        """Update an SDMXConfig.
+
+        :param request: HTTP request containing updated data.
+        :type request: rest_framework.request.Request
+        :param pk: Primary key of the SDMXConfig.
+        :type pk: int
+
+        :return: Serialized updated SDMXConfig object.
+        :rtype: rest_framework.response.Response
+        """
         obj = get_object_or_404(SDMXConfig, pk=pk)
         serializer = SDMXConfigSerializer(obj, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -72,7 +112,16 @@ class SDMXConfigDetailAPI(APIView):
         return Response(serializer.data)
 
     def patch(self, request, pk):
-        """Partially update an SDMXConfig."""
+        """Update an SDMXConfig.
+
+        :param request: HTTP request containing partial data.
+        :type request: rest_framework.request.Request
+        :param pk: Primary key of the SDMXConfig.
+        :type pk: int
+
+        :return: Serialized updated SDMXConfig object.
+        :rtype: rest_framework.response.Response
+        """
         obj = get_object_or_404(SDMXConfig, pk=pk)
         serializer = SDMXConfigSerializer(obj, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -80,7 +129,16 @@ class SDMXConfigDetailAPI(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk):
-        """Delete an SDMXConfig."""
+        """Delete an SDMXConfig.
+
+        :param request: HTTP request.
+        :type request: rest_framework.request.Request
+        :param pk: Primary key of the SDMXConfig.
+        :type pk: int
+
+        :return: Empty response with status 204.
+        :rtype: rest_framework.response.Response
+        """
         obj = get_object_or_404(SDMXConfig, pk=pk)
         obj.delete()
         return Response(status=204)
