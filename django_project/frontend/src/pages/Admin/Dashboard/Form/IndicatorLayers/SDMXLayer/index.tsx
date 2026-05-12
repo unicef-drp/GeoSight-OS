@@ -275,8 +275,8 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                                   <label className="form-label">Source</label>
                                 </div>
                                 <div className="ContextLayerConfig-IconSize">
-                                  <textarea
-                                    className="LayerDescriptionInput"
+                                  <input
+                                    className="LayerSourceInput"
                                     value={data.source}
                                     onChange={(evt) => {
                                       data.source = evt.target.value;

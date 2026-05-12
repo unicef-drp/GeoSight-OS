@@ -55,7 +55,7 @@ export const DropdownInput = ({
       options.find((option) => option.value === selectedValue) ?? null;
     if (option?.value !== value?.value) {
       setValue(option);
-      if (onChangeValue) {
+      if (onChangeValue && option?.value) {
         onChangeValue(option.value);
       }
     }
