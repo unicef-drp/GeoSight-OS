@@ -35,7 +35,15 @@ class ReferenceLayerDetailAPI(APIView):
     """Return ReferenceLayer detail data."""
 
     def get(self, request, uuid):
-        """Return BasemapLayer list."""
+        """Return ReferenceDataset detail.
+
+        :param request: HTTP request object.
+        :type request: HttpRequest
+        :param uuid: UUID identifier of the ReferenceDataset.
+        :type uuid: str
+        :return: Serialized ReferenceDataset data.
+        :rtype: Response
+        """
         view = get_object_or_404(
             ReferenceDataset,
             identifier=uuid
@@ -47,7 +55,15 @@ class ReferenceLayerEntityDrilldownAPI(APIView):
     """Return ReferenceLayer drilldown data."""
 
     def get(self, request, concept_uuid):
-        """Return BasemapLayer list."""
+        """Return entity drilldown data for a given concept UUID.
+
+        :param request: HTTP request object.
+        :type request: HttpRequest
+        :param concept_uuid: Concept UUID of the entity to drilldown.
+        :type concept_uuid: str
+        :return: Indicator values for the entity, or empty list if not found.
+        :rtype: Response
+        """
         entity = Entity.objects.filter(concept_uuid=concept_uuid).first()
         if not Entity:
             return Response([])
