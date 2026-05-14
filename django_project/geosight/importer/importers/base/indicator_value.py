@@ -357,6 +357,11 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         """Check codes to georepo."""
         from geosight.georepo.request import GeorepoRequest
         importer = self.importer
+
+        # If the reference layer is local everything is error
+        if not importer.reference_layer.in_georepo:
+            return {}
+
         self._update('Identifying codes from GeoRepo')
         try:
             results = GeorepoRequest().View.identify_codes(
