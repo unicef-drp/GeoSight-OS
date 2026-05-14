@@ -1,0 +1,201 @@
+{
+  "header": {
+    "id": "IREF576618",
+    "prepared": "2026-05-01T10:14:21",
+    "test": false,
+    "reportingBegin": "2020-01-01T00:00:00",
+    "reportingEnd": "2025-01-01T00:00:00",
+    "sender": {
+      "id": "UNICEF"
+    }
+  },
+  "metrics": {
+    "actualSeries": 18
+  },
+  "structure": {
+    "name": "Example Somalia Country Office - Data 1",
+    "dimensions": {
+      "observation": [
+        {
+          "id": "REF_AREA",
+          "name": "Geographic Code",
+          "keyPosition": 1,
+          "role": null,
+          "values": [
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_V1",
+              "name": "Somalia"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0001_V1",
+              "name": "Awdal",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0002_V1",
+              "name": "Bakool",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0003_V1",
+              "name": "Banadir",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0004_V1",
+              "name": "Bari",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0005_V1",
+              "name": "Bay",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0006_V1",
+              "name": "Galgaduud",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0007_V1",
+              "name": "Gedo",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0008_V1",
+              "name": "Hiraan",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0009_V1",
+              "name": "Lower Juba",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0010_V1",
+              "name": "Lower Shabelle",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0011_V1",
+              "name": "Middle Juba",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0012_V1",
+              "name": "Middle Shabelle",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0013_V1",
+              "name": "Mudug",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0014_V1",
+              "name": "Nugaal",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0015_V1",
+              "name": "Sanaag",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0016_V1",
+              "name": "Sool",
+              "parent": "SOM_V1"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "SOM_0017_V1",
+              "name": "Togdheer",
+              "parent": "SOM_V1"
+            }
+          ]
+        },
+        {
+          "id": "REF_LEVEL",
+          "name": "Level",
+          "keyPosition": 2,
+          "role": null,
+          "values": [
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "0",
+              "name": "Level 0"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "1",
+              "name": "Level 1"
+            }
+          ]
+        },
+        {
+          "id": "INDICATOR",
+          "name": "Indicator",
+          "keyPosition": 3,
+          "role": null,
+          "values": [
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "A",
+              "name": "Indicator A"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "B",
+              "name": "Indicator B"
+            },
+            {
+              "actualObs": 1,
+              "inDataset": true,
+              "id": "C",
+              "name": "Indicator C"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

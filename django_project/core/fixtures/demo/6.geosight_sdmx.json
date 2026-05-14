@@ -1,0 +1,14 @@
+[
+  {
+    "model": "geosight_data.sdmxconfig",
+    "pk": 1,
+    "fields": {
+      "name": "Example SDMX",
+      "description": null,
+      "url": "http://localhost:2000/api/example/sdmx/",
+      "agency_id": "EXAMPLE_SOMALIA_CO",
+      "dataflow_id": "DATA_1",
+      "dataflow_version_id": "1.0"
+    }
+  }
+]

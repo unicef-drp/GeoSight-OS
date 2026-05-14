@@ -36,10 +36,14 @@ import RelatedTableLayer, {
 import DynamicIndicatorLayer, {
   DynamicIndicatorLayerConfig,
 } from "./DynamicIndicatorLayer";
-import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
+import {
+  DynamicIndicatorType,
+  SDMXIndicatorLayerType,
+} from "../../../../utils/indicatorLayer";
 import {
   MaxSelectableLayersForCompositeIndexLayer
 } from "../../../../components/IndicatorLayer/CompositeIndexLayer/variable";
+import SDMXIndicatorLayer from "./SDMXIndicatorLayer";
 
 import "./style.scss";
 
@@ -321,7 +325,14 @@ export function IndicatorLayers() {
         placeholder={t("dashboardPage.indicatorSearch")}
       />
       {indicatorLayers.map((indicatorLayer) => {
-        if (indicatorLayer.related_tables?.length) {
+        if (indicatorLayer.type === SDMXIndicatorLayerType) {
+          return (
+            <SDMXIndicatorLayer
+              key={indicatorLayer.id}
+              indicatorLayer={indicatorLayer}
+            />
+          );
+        } else if (indicatorLayer.related_tables?.length) {
           return (
             <RelatedTableLayer
               key={indicatorLayer.id}

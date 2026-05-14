@@ -1,0 +1,126 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '28/04/2026'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   SDMX style
+   ========================================================================== */
+
+#Form .Data {
+  .MuiButton-primary {
+    margin: 1rem;
+  }
+}
+
+.SDMX-Content {
+  .SDMX-Config,
+  .Filter-Dimensions {
+    display: none;
+  }
+}
+
+
+.SDMX-Config-Form {
+  &.SDMX-Config {
+    .SDMX-Config {
+      display: block !important;
+    }
+
+    .Filter-Dimensions {
+      display: none;
+    }
+  }
+
+  &.Filter-Dimensions {
+    .SDMX-Config {
+      display: none;
+    }
+
+    .Filter-Dimensions {
+      display: block;
+    }
+  }
+
+  .DimensionSection {
+    > div {
+      > label {
+        display: none;
+      }
+    }
+
+    .DimensionGrid {
+      padding: 0;
+      border: none;
+      flex-direction: column;
+      gap: 2rem;
+    }
+  }
+
+  .Filter-Dimensions {
+    min-height: 400px;
+  }
+}
+
+
+.IndicatorLayerConfig {
+  .AdminForm {
+    overflow: visible;
+  }
+
+  .Section {
+    background-color: unset !important;
+    position: relative;
+  }
+
+  .SaveButton-Section {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .OverrideAdminLevel {
+    margin-bottom: 0.5rem;
+  }
+
+  .Data.Preview {
+    label {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.SDMX-Tab {
+  display: flex;
+  flex-grow: 1;
+
+  div {
+    border: 1px solid var(--gray-300);
+    padding: 1rem;
+    cursor: pointer;
+
+    &.Active {
+      background-color: var(--primary-color);
+      color: white;
+      border: 1px solid var(--primary-color);
+      border-bottom: 1px solid var(--primary-color);
+    }
+  }
+}
+
+.SDMX-Content {
+  padding: 1rem;
+  border: 1px solid var(--gray-300);
+  margin-top: -1px;
+}

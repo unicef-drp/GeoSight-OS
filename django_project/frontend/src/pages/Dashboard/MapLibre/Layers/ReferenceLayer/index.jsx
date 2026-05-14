@@ -119,6 +119,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
   const selectedGlobalTimeConfig = useSelector(
     (state) => state.selectedGlobalTimeConfig,
   );
+  const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
 
   // TransparencySlider
   const {
@@ -155,12 +156,16 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       relatedTableData,
       currentIndicatorLayer,
       referenceLayerProject,
+      false,
+      indicatorLayersData,
     ).concat(
       getLayerData(
         indicatorsData,
         relatedTableData,
         currentIndicatorSecondLayer,
         referenceLayerProject,
+        false,
+        indicatorLayersData,
       ),
     );
     if (allDataIsReady(data)) {
@@ -195,6 +200,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     relatedTableData,
     geomFieldOnVectorTile,
     currentLevel,
+    indicatorLayersData,
   ]);
 
   // When reference layer, it's data, admin and show/hide changed.
@@ -413,7 +419,6 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           noDataStyleSecondLayer.outline_size,
         );
       }
-
       // Get indicator data per geom
       // This is needed for popup and rendering
       const indicatorValueByGeometry = getIndicatorValueByGeometry(
@@ -427,6 +432,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         filteredGeometries,
         referenceLayerProject,
         currentLevel,
+        indicatorLayersData,
       );
       dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry));
       if (IS_DEBUG) {
@@ -500,6 +506,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           filteredGeometries,
           referenceLayerProject,
           currentLevel,
+          indicatorLayersData,
         );
         // If compare mode
         // Outline is first indicator color
@@ -690,6 +697,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         selectedGlobalTimeConfig,
         selectedGlobalTime,
         referenceLayerData,
+        indicatorLayersData,
       );
 
       // Create deck gl
@@ -759,6 +767,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         filteredGeometries,
         referenceLayerProject,
         currentLevel,
+        indicatorLayersData,
       );
     }
     if (currentIndicatorLayer.indicators?.length > 1) {

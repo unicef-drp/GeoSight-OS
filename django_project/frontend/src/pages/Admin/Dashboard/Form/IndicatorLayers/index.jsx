@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
@@ -33,8 +33,10 @@ import {
   DynamicIndicatorType,
   MultiIndicatorType,
   RelatedTableLayerType,
+  SDMXIndicatorLayerType,
   SingleIndicatorType,
 } from "../../../../../utils/indicatorLayer";
+import SDMXLayerConfig from "./SDMXLayer";
 
 import "./style.scss";
 
@@ -144,6 +146,18 @@ export function IndicatorLayerConfig({
               feedback.
             </div>
           </div>
+          <div
+            className={"ModalSelection-Option Enabled"}
+            onClick={() => {
+              onSelected(SDMXIndicatorLayerType);
+              onClosed();
+            }}
+          >
+            <b className="light">SDMX Indicators Layer</b>
+            <div className="helptext">
+              Create dynamic indicator layer using SDMX dataflow.
+            </div>
+          </div>
         </ModalContent>
       </Modal>
     </Fragment>
@@ -189,6 +203,8 @@ export default function IndicatorLayersForm() {
   const [dynamicIndicatorStyleOpen, setDynamicIndicatorStyleOpen] =
     useState(false);
 
+  const sdmxConfigRef = useRef(null);
+
   // When the indicator layer type selected
   const IndicatorLayerTypeSelection = (type) => {
     switch (type) {
@@ -206,6 +222,10 @@ export default function IndicatorLayersForm() {
       }
       case DynamicIndicatorType: {
         setDynamicIndicatorStyleOpen(true);
+        break;
+      }
+      case SDMXIndicatorLayerType: {
+        sdmxConfigRef.current.open();
         break;
       }
     }
@@ -234,7 +254,6 @@ export default function IndicatorLayersForm() {
   const removeLayer = (layer) => {
     removeLayerFromProject(dispatch, layer, indicatorLayersStructure);
   };
-
   return (
     <Fragment>
       <ListForm
@@ -270,7 +289,23 @@ export default function IndicatorLayersForm() {
         openDataSelection={indicatorDataSelectionOpen}
         setOpenDataSelection={setIndicatorDataSelectionOpen}
         otherActionsFunction={(layer) => {
-          if (layer.type === DynamicIndicatorType) {
+          if (layer.type === SDMXIndicatorLayerType) {
+            return (
+              <>
+                <div className="OtherActionIndicator">
+                  <div className="Separator"></div>
+                  <div className="LayerCountIndicator">SDMX</div>
+                </div>
+                <SDMXLayerConfig
+                  key={layer.id}
+                  indicatorLayer={layer}
+                  onUpdate={(layer) => {
+                    dispatch(Actions.IndicatorLayers.update(layer));
+                  }}
+                />
+              </>
+            );
+          } else if (layer.type === DynamicIndicatorType) {
             return (
               <>
                 <div className="OtherActionIndicator">
@@ -408,6 +443,17 @@ export default function IndicatorLayersForm() {
           }}
         />
       ) : null}
+
+      {/* THIS IS FOR SDMX CONFIG */}
+      <SDMXLayerConfig
+        onUpdate={(layer) => {
+          layer.group = groupName;
+          dispatch(
+            Actions.IndicatorLayers.add(JSON.parse(JSON.stringify(layer))),
+          );
+        }}
+        ref={sdmxConfigRef}
+      />
     </Fragment>
   );
 }

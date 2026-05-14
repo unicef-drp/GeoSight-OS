@@ -15,9 +15,7 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FormGroup } from "@mui/material";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
 
 import {
   SaveButton,
@@ -33,13 +31,11 @@ import {
   dataFieldsDefault,
   DynamicIndicatorType,
 } from "../../../../../../utils/indicatorLayer";
-import {
-  ViewLevelConfiguration
-} from "../../../../Components/Input/ReferenceLayerLevelConfiguration";
 import Expression from "./Expression";
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
 import { CogIcon } from "../../../../../../components/Icons";
+import LayerNameDescription from "../LayerNameDescription";
 
 import "./style.scss";
 
@@ -143,79 +139,28 @@ export default function DynamicIndicatorConfig({
               forms={{
                 General: (
                   <div>
-                    <div className="BasicFormSection">
-                      <div>
-                        <label className="form-label required">Name</label>
-                      </div>
-                      <div className="ContextLayerConfig-IconSize">
-                        <input
-                          className="LayerNameInput"
-                          type="text"
-                          spellCheck="false"
-                          value={data.name}
-                          onChange={(evt) => {
-                            data.name = evt.target.value;
-                            updateData();
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="BasicFormSection">
-                      <div>
-                        <label className="form-label">Description</label>
-                      </div>
-                      <div className="ContextLayerConfig-IconSize">
-                        <textarea
-                          className="LayerDescriptionInput"
-                          value={data.description}
-                          onChange={(evt) => {
-                            data.description = evt.target.value;
-                            updateData();
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <LayerNameDescription
+                      name={data.name}
+                      description={data.description}
+                      onChangeName={(name) => {
+                        data.name = name;
+                        updateData();
+                      }}
+                      onChangeDescription={(description) => {
+                        data.description = description;
+                        updateData();
+                      }}
+                    />
 
                     {/* ADMIN LEVEL CONFIGURATION*/}
-                    <div className="OverrideAdminLevel">
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={
-                                !!(
-                                  data.level_config &&
-                                  Object.keys(data.level_config).length
-                                )
-                              }
-                              onChange={(evt) => {
-                                if (evt.target.checked) {
-                                  data.level_config = {
-                                    default_level: 0,
-                                  };
-                                } else {
-                                  data.level_config = {};
-                                }
-                                updateData();
-                              }}
-                            />
-                          }
-                          label={"Override admin level configuration"}
-                        />
-                      </FormGroup>
-                      {data.level_config &&
-                      Object.keys(data.level_config).length ? (
-                        <ViewLevelConfiguration
-                          data={data.level_config}
-                          setData={(levelConfig) => {
-                            data.level_config = levelConfig;
-                            updateData();
-                          }}
-                          referenceLayer={referenceLayer}
-                          ableToSelectReferenceLayer={true}
-                        />
-                      ) : null}
-                    </div>
+                    <OverrideAdminLevelConfiguration
+                      levelConfig={data.level_config}
+                      onChange={(levelConfig) => {
+                        data.level_config = levelConfig;
+                        updateData();
+                      }}
+                      referenceLayer={referenceLayer}
+                    />
                   </div>
                 ),
                 Expression: (

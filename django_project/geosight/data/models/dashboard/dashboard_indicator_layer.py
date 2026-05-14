@@ -53,11 +53,13 @@ TYPE_SINGLE_INDICATOR = 'Single Indicator'
 TYPE_MULTI_INDICATOR = 'Multi Indicator'
 TYPE_DYNAMIC_INDICATOR = 'Dynamic Indicator'
 TYPE_RELATED_TABLE = 'Related Table'
+TYPE_SDMX = 'SDMX Indicator Layer'
 LAYER_TYPES = (
     (TYPE_SINGLE_INDICATOR, TYPE_SINGLE_INDICATOR),
     (TYPE_MULTI_INDICATOR, TYPE_MULTI_INDICATOR),
     (TYPE_DYNAMIC_INDICATOR, TYPE_DYNAMIC_INDICATOR),
     (TYPE_RELATED_TABLE, TYPE_RELATED_TABLE),
+    (TYPE_SDMX, TYPE_SDMX),
 )
 
 
@@ -81,6 +83,9 @@ class DashboardIndicatorLayer(
     override_description = models.BooleanField(
         default=False,
         help_text="If set to false, the object's name will be used."
+    )
+    source = models.TextField(
+        blank=True, null=True
     )
 
     level_config = models.JSONField(null=True, blank=True, default=dict)
@@ -232,7 +237,7 @@ class DashboardIndicatorLayer(
         """If using obj style."""
         return (
                 self.is_single and self.override_style
-        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+        ) or self.type == TYPE_DYNAMIC_INDICATOR or self.type == TYPE_SDMX \
             or self.dashboardindicatorlayerrelatedtable_set.first()
 
     @property
@@ -240,7 +245,7 @@ class DashboardIndicatorLayer(
         """If using obj style."""
         return (
                 self.is_single and self.override_label
-        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+        ) or self.type == TYPE_DYNAMIC_INDICATOR or self.type == TYPE_SDMX \
             or self.dashboardindicatorlayerrelatedtable_set.first()
 
     @property

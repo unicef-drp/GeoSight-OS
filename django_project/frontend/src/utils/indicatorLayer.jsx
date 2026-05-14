@@ -26,6 +26,7 @@ export const MultiIndicatorType = "Multi Indicator";
 export const DynamicIndicatorType = "Dynamic Indicator";
 export const RelatedTableLayerType = "Related Table";
 export const CompositeIndexLayerType = "Composite Index Layer";
+export const SDMXIndicatorLayerType = "SDMX Indicator Layer";
 
 export const defaultFields = [
   "indicator.name",
@@ -48,9 +49,11 @@ export function indicatorLayerId(indicatorLayer) {
  * Return indicator layers that has behaviour like indicator data
  */
 export function isIndicatorLayerLikeIndicator(indicatorLayer) {
-  return [DynamicIndicatorType, CompositeIndexLayerType].includes(
-    indicatorLayer?.type,
-  );
+  return [
+    DynamicIndicatorType,
+    CompositeIndexLayerType,
+    SDMXIndicatorLayerType,
+  ].includes(indicatorLayer?.type);
 }
 
 /***
@@ -292,6 +295,7 @@ export function getLayerData(
   indicatorLayer,
   referenceLayer,
   ignoreRT,
+  indicatorLayersData,
 ) {
   const data = [];
   indicatorLayer.indicators?.map((indicator) => {
@@ -305,6 +309,15 @@ export function getLayerData(
       data.push(indicatorData);
     }
   });
+  const indicatorData = getIndicatorDataByLayer(
+    indicatorLayer.id,
+    indicatorLayersData,
+    indicatorLayer,
+    referenceLayer,
+  );
+  if (indicatorData) {
+    data.push(indicatorData);
+  }
   if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
     data.push(indicatorsData[indicatorLayerId(indicatorLayer)]);
   }
@@ -341,6 +354,7 @@ export function getLayerDataCleaned(
   filteredGeometries,
   referenceLayer,
   adminLevel,
+  indicatorLayersData,
 ) {
   indicatorsData = dictDeepCopy(indicatorsData);
   relatedTableData = dictDeepCopy(relatedTableData);
@@ -350,6 +364,7 @@ export function getLayerDataCleaned(
     indicatorLayer,
     referenceLayer,
     true,
+    indicatorLayersData,
   );
   indicatorLayer.related_tables?.map((obj) => {
     if (relatedTableData[obj.id]) {
@@ -388,6 +403,7 @@ export function allLayerDataIsReady(
   relatedTableData,
   indicatorLayers,
   referenceLayer,
+  indicatorLayersData
 ) {
   let done = true;
   indicatorLayers.map((indicatorLayer) => {
@@ -396,6 +412,8 @@ export function allLayerDataIsReady(
       relatedTableData,
       indicatorLayer,
       referenceLayer,
+      false,
+      indicatorLayersData
     ).map((data) => {
       if (data?.fetching) {
         done = false;

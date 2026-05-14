@@ -50,7 +50,8 @@ export default () => {
     let {
       domain,
       centroids,
-      identifier
+      identifier,
+      geoField = 'concept_uuid'
     } = e.data;
     const currGeometries = {};
     const geometryDataDict = {};
@@ -80,7 +81,7 @@ export default () => {
                 ucode: ucode,
                 geometry: feature.geometry
               }
-              const code = extractCode(properties)
+              const code = extractCode(properties, geoField)
               if (!code) {
                 return
               }

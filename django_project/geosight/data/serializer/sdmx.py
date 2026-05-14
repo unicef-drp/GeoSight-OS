@@ -22,6 +22,23 @@ from geosight.data.models.sdmx import SDMXConfig
 class SDMXConfigSerializer(serializers.ModelSerializer):
     """Serializer for SDMXConfig."""
 
+    urls = serializers.SerializerMethodField(read_only=True)
+
+    def get_urls(self, obj):
+        """Return urls.
+
+        :param obj: SDMXConfig instance.
+        :type obj: SDMXConfig
+
+        :return: URL dictionary for the SDMX config.
+        :rtype: dict
+        """
+        return obj.urls
+
     class Meta:  # noqa: D106
         model = SDMXConfig
-        fields = ("name", "description", "url", "urls")
+        fields = (
+            "id", "name", "description", "url", "urls",
+            "agency_id", "dataflow_id", "dataflow_version_id",
+        )
+        read_only_fields = ("id", "urls")

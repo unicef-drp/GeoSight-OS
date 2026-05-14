@@ -23,6 +23,8 @@ from geosight.data.models.dashboard.dashboard_widget import LayerUsed
 from geosight.data.models.indicator import (
     IndicatorTypeChoices
 )
+from geosight.data.models.sdmx import SDMXConfig
+from geosight.data.serializer.sdmx import SDMXConfigSerializer
 
 
 class BaseDashboardView(ABC, BaseView):
@@ -52,7 +54,9 @@ class BaseDashboardView(ABC, BaseView):
         :rtype: dict
         """
         context = super().get_context_data(**kwargs)
-
+        context['sdmx_data'] = json.dumps(SDMXConfigSerializer(
+            SDMXConfig.objects.all(), many=True
+        ).data)
         context['definition'] = {
             'WidgetLayerUsed': {
                 name: value for name, value in vars(LayerUsed).items() if

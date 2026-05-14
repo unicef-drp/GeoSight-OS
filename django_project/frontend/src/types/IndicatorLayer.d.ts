@@ -72,6 +72,7 @@ export interface IndicatorLayer extends IndicatorLayerConfig {
   id: number;
   description: string;
   name: string;
+  source?: string;
   level_config?: LevelConfig;
   visible_by_default: boolean;
   last_update: string;
@@ -85,6 +86,8 @@ export interface IndicatorLayer extends IndicatorLayerConfig {
   // TODO:
   //  We will remove this
   error: string;
+
+  isLocal?: boolean;
 }
 
 export interface DataField {

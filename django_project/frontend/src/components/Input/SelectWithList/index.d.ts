@@ -15,13 +15,13 @@
 
 // Define the component props
 export interface SelectWithListProps {
-  list?: string[];
+  list?: string[] | { label: string; value: string }[];
   value?: string | number | (string | number)[]; // The selected value(s)
   showFloatingLabel?: boolean; // Whether to show a floating label
   createable?: boolean; // Whether the select is creatable
   keepData?: boolean; // Whether to keep additional data
   isMulti?: boolean; // Whether it's a multi-select
-  menuPlacement?: 'auto' | 'top' | 'bottom'; // Menu placement option
+  menuPlacement?: "auto" | "top" | "bottom"; // Menu placement option
   placeholder?: string; // Placeholder text
   required?: boolean; // Whether the field is required
   ClassName?: string; // Custom CSS class name

@@ -32,7 +32,8 @@ class Command(BaseCommand):
         'core/fixtures/demo/3.geosight_georepo.json',
         'core/fixtures/demo/3.geosight_georepo_levels.json',
         'core/fixtures/demo/4.geosight_data.json',
-        'core/fixtures/demo/5.geosight_permission.json'
+        'core/fixtures/demo/5.geosight_permission.json',
+        'core/fixtures/demo/6.geosight_sdmx.json'
     ]
 
     def handle(self, *args, **options):

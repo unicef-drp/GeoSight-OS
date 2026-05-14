@@ -26,7 +26,7 @@ import Modal, {
   ModalContent,
   ModalHeader,
 } from "../../../../../../components/Modal";
-import { ViewLevelConfiguration } from "../../../../Components/Input/ReferenceLayerLevelConfiguration";
+import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import { AdminForm } from "../../../../Components/AdminForm";
 import { dictDeepCopy } from "../../../../../../utils/main";
@@ -188,45 +188,14 @@ export const IndicatorStyle = forwardRef(
                       </div>
 
                       {/* ADMIN LEVEL CONFIGURATION*/}
-                      <div className="OverrideAdminLevel">
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={
-                                  !!(
-                                    dataLayer.level_config &&
-                                    Object.keys(dataLayer.level_config).length
-                                  )
-                                }
-                                onChange={(evt) => {
-                                  if (evt.target.checked) {
-                                    dataLayer.level_config = {
-                                      default_level: 0,
-                                    };
-                                  } else {
-                                    dataLayer.level_config = {};
-                                  }
-                                  updateData();
-                                }}
-                              />
-                            }
-                            label={"Override admin level configuration"}
-                          />
-                        </FormGroup>
-                        {dataLayer.level_config &&
-                        Object.keys(dataLayer.level_config).length ? (
-                          <ViewLevelConfiguration
-                            data={dataLayer.level_config}
-                            setData={(levelConfig) => {
-                              dataLayer.level_config = levelConfig;
-                              updateData();
-                            }}
-                            referenceLayer={referenceLayer}
-                            ableToSelectReferenceLayer={true}
-                          />
-                        ) : null}
-                      </div>
+                      <OverrideAdminLevelConfiguration
+                        levelConfig={dataLayer.level_config}
+                        onChange={(levelConfig) => {
+                          dataLayer.level_config = levelConfig;
+                          updateData();
+                        }}
+                        referenceLayer={referenceLayer}
+                      />
                     </div>
                   ),
                   Style: (

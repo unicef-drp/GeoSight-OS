@@ -28,6 +28,7 @@ import CompositeIndexLayerToolbar
   from "../../../../components/IndicatorLayer/CompositeIndexLayer/Toolbar";
 
 import "./style.scss";
+import { SDMXLayerCreation } from "../SDMXLayerCreation";
 
 interface Props {
   map: maplibregl.Map;
@@ -65,11 +66,15 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
   const compositeIndexLayerEnabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER),
   );
+  const sdmxLayerCreationEnabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION),
+  );
 
   if (
     !measurementEnabled &&
     !zonalAnalysisEnabled &&
-    !compositeIndexLayerEnabled
+    !compositeIndexLayerEnabled &&
+    !sdmxLayerCreationEnabled
   ) {
     return null;
   }
@@ -97,6 +102,7 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
         />
       )}
       {compositeIndexLayerEnabled && <CompositeIndexLayerToolbar />}
+      {sdmxLayerCreationEnabled && <SDMXLayerCreation />}
     </>
   );
 });

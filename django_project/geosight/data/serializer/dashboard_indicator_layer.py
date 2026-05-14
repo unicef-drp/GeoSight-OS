@@ -199,6 +199,11 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         """
         output = {}
         for config in obj.dashboardindicatorlayerconfig_set.all():
+            if obj.type == 'SDMX Indicator Layer' and config.name not in [
+                'attributeKeys', 'dimensionKeys', 'smdxConfigId', "dimensions"
+            ]:
+                output[config.name] = config.value
+                continue
             try:
                 output[config.name] = ast.literal_eval(config.value)
             except Exception:

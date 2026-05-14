@@ -24,5 +24,6 @@ PROJECT_APPS = [
     'geosight.permission',
     'geosight.importer',
     'geosight.log',
-    'frontend'
+    'geosight.example',
+    'frontend',
 ]

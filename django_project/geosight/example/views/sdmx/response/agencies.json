@@ -1,0 +1,40 @@
+{
+  "AgencyScheme": [
+    {
+      "id": "AGENCIES",
+      "urn": "urn:sdmx:org.sdmx.infomodel.base.AgencyScheme=SDMX:AGENCIES(1.0)",
+      "names": [
+        {
+          "locale": "en",
+          "value": "SDMX Agency Scheme"
+        }
+      ],
+      "agencyId": "SDMX",
+      "version": "1.0",
+      "isFinal": false,
+      "isPartial": false,
+      "items": [
+        {
+          "id": "EXAMPLE_SOMALIA_CO",
+          "urn": "urn:sdmx:org.sdmx.infomodel.base.Agency=EXAMPLE_SOMALIA_CO",
+          "names": [
+            {
+              "locale": "en",
+              "value": "Example Somalia Country Office"
+            }
+          ]
+        },
+        {
+          "id": "EXAMPLE_KENYA_CO",
+          "urn": "urn:sdmx:org.sdmx.infomodel.base.Agency=EXAMPLE_KENYA_CO",
+          "names": [
+            {
+              "locale": "en",
+              "value": "Example Kenya Country Office"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

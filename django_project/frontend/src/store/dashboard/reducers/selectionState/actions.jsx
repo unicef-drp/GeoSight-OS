@@ -22,6 +22,8 @@ import {
   SELECTION_STATE_FILTER_REMOVE_INDICATOR,
   SELECTION_STATE_FILTER_REMOVE_INDICATOR_LAYER,
   SELECTION_STATE_FILTER_REMOVE_RELATED_TABLE,
+  SELECTION_STATE_INDICATOR_LAYER_DELETED,
+  SELECTION_STATE_INDICATOR_LAYER_EDITED,
 } from "./index";
 
 /** Add indicator of filter.
@@ -100,6 +102,26 @@ export function updateCompositeIndicatorLayer(payload) {
   };
 }
 
+/** Edit indicator layer
+ */
+export function editIndicatorLayer(payload) {
+  return {
+    name: SELECTION_STATE,
+    type: SELECTION_STATE_INDICATOR_LAYER_EDITED,
+    payload: payload,
+  };
+}
+
+/** Delete indicator layer
+ */
+export function deleteIndicatorLayer(payload) {
+  return {
+    name: SELECTION_STATE,
+    type: SELECTION_STATE_INDICATOR_LAYER_DELETED,
+    payload: payload,
+  };
+}
+
 export default {
   filterAddIndicator,
   filterRemoveIndicator,
@@ -108,4 +130,6 @@ export default {
   filterAddRelatedTable,
   filterRemoveRelatedTable,
   updateCompositeIndicatorLayer,
+  editIndicatorLayer,
+  deleteIndicatorLayer,
 };

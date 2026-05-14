@@ -18,23 +18,14 @@ import React, {
   Fragment,
   useEffect,
   useImperativeHandle,
-  useState
-} from 'react';
-import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
-import { usePapaParse } from 'react-papaparse';
-
+  useState,
+} from "react";
 import { updateDataWithSetState } from "../../utils";
-import { IconTextField } from "../../../../../../components/Elements/Input";
-import { MainDataGrid } from "../../../../../../components/Table";
-import { arrayToOptions, delay } from "../../../../../../utils/main";
+import SDMXForm from "../../../../../../components/SDMXForm";
+import { SDMXPreview } from "../../../../../../components/SDMXForm/Preview";
 
-import DsdForm from './DsdComponents/DsdForm';
+import "./style.scss";
 
-import './style.scss';
-
-
-let sdmxApiInput = null;
 /**
  * Base Excel Form.
  * @param {dict} data .
@@ -47,152 +38,67 @@ let sdmxApiInput = null;
  * @param {Function} setAttributes Set data attribute.
  */
 export const BaseSDMXForm = forwardRef(
-  ({
-    data, setData, files, setFiles, attributes, setAttributes, children
-  }, ref
-  ) => {
-    const { readString } = usePapaParse();
-    const [url, setUrl] = useState('');
-    const [request, setRequest] = useState({
-      error: '',
-      loading: false,
-      requestData: null
-    });
-    const { error, loading, requestData } = request
+  ({ data, setData, setAttributes, children }, ref) => {
+    const [url, setUrl] = useState("");
 
     // Ready check
     useImperativeHandle(ref, () => ({
       isReady(data) {
-        return !!(data.url && requestData)
-      }
+        return !!data.url;
+      },
     }));
 
     // Set default data
-    useEffect(
-      () => {
-        updateDataWithSetState(data, setData, {
-          'row_number_for_header': 1,
-          'sheet_name': '',
-          'url': '',
-        })
-        if (data.url) {
-          urlChanged(data.url, true)
-        }
-      }, []
-    )
+    useEffect(() => {
+      updateDataWithSetState(data, setData, {
+        row_number_for_header: 1,
+        sheet_name: "",
+        url: "",
+      });
+    }, []);
 
     // Set default data
-    useEffect(
-      () => {
-        if (!data.row_number_for_header) {
-          updateDataWithSetState(data, setData, {
-            'row_number_for_header': 1
-          })
-        }
-      }, [data]
-    )
-
-    /** Read url **/
-    const readUrl = async (url) => {
-      if (!url || url !== sdmxApiInput) {
-        return
+    useEffect(() => {
+      if (!data.row_number_for_header) {
+        updateDataWithSetState(data, setData, {
+          row_number_for_header: 1,
+        });
       }
-      setRequest({ loading: true, error: '', requestData: null })
-      const options = { url }
-      let axiosResponse = await axios(options);
-      try {
-        readString(axiosResponse.data, {
-          header: true,
-          worker: true,
-          complete: async (result) => {
-            if (result.errors.length <= 1) {
-              const json = result.data.map((row, idx) => {
-                row.id = idx
-                return row
-              })
-              const headers = Object.keys(json[0])
-              const array = [headers]
-              json.slice(1).map(_ => {
-                const row = []
-                headers.map(header => {
-                  row.push(_[header])
-                })
-                array.push(row)
-              })
+    }, [data]);
 
-              if (!data.date_time_data_field) {
-                data.date_time_data_field = 'TIME_PERIOD'
-              }
-              if (!data.key_value) {
-                data.key_value = 'OBS_VALUE'
-              }
-              setRequest({ loading: false, error: '', requestData: json })
-              setAttributes(arrayToOptions(array))
-              await delay(500);
-              setData({ ...data })
-            } else {
-              setRequest({
-                loading: false,
-                error: 'The request is not csv format',
-                requestData: null
-              })
-            }
-          },
-        })
-      } catch (error) {
-        setRequest({
-          loading: false,
-          error: 'The request is not csv format',
-          requestData: null
-        })
-
+    // Set data when url changed
+    useEffect(() => {
+      data.url = url;
+      if (url) {
+        if (!data.date_time_data_field)
+          data.date_time_data_field = "TIME_PERIOD";
+        if (!data.key_value) data.key_value = "OBS_VALUE";
+      } else {
+        delete data.date_time_data_field;
+        delete data.key_value;
       }
-    }
+      setData({ ...data });
+    }, [url]);
 
-    const urlChanged = (newUrl, force = false) => {
-      setUrl(newUrl)
-      sdmxApiInput = newUrl
-      setTimeout(function () {
-        if (force || newUrl === sdmxApiInput) {
-          const urls = newUrl.split('?')
-          if (urls[1]) {
-            newUrl = [urls[0], 'format=csv'].join('?')
-          }
-          sdmxApiInput = newUrl
-          if (force || data.url !== newUrl) {
-            data.url = newUrl
-            setData({ ...data })
-            readUrl(newUrl)
-          }
-          setUrl(newUrl)
-        }
-      }, 500);
-    }
-    return <Fragment>
-      <DsdForm urlChanged={urlChanged} setRequest={setRequest} />
-      {children}
-      <div className='RetrievedData'>
-        <label className="form-label" htmlFor="group">
-          Retrieved data
-        </label>
-        <MainDataGrid
-          style={{ height: "500px" }}
-          rows={loading ? [] : requestData ? requestData : []}
-          columns={requestData ? Object.keys(requestData[0]).map(key => {
-            return {
-              field: key,
-              headerName: key,
-              hide: (key === 'id' ? true : false),
-              flex: 1,
-              minWidth: 200
-            }
-          }) : []}
-          pageSize={20}
-          rowsPerPageOptions={[20]}
-          disableSelectionOnClick
-          loading={loading}
+    return (
+      <Fragment>
+        <SDMXForm
+          dataChanged={(sdmxData) => {
+            if (sdmxData.url !== url) setUrl(sdmxData.url);
+
+            const newOptions = sdmxData.attributeKeys;
+            if (!newOptions) return;
+            setAttributes(
+              newOptions.map((option) => ({
+                label: option,
+                value: option,
+              })),
+            );
+          }}
         />
-      </div>
-    </Fragment>
-  }
-)
+        {children}
+        <SDMXPreview url={url} />
+      </Fragment>
+    );
+  },
+);

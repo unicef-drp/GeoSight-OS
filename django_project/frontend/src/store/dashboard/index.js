@@ -34,6 +34,7 @@ import Indicators from "./reducers/indicators/actions";
 import IndicatorsData from "./reducers/indicatorsData/actions";
 import IndicatorsMetadata from "./reducers/indicatorsMetadata/actions";
 import IndicatorLayerMetadata from "./reducers/indicatorLayerMetadata/actions";
+import IndicatorLayersData from "./reducers/indicatorLayersData/actions";
 import Map from "./reducers/map/actions";
 import MapGeometryValue from "./reducers/mapGeometryValue/actions";
 import MapMode from "./reducers/mapMode/actions";
@@ -70,6 +71,7 @@ const Actions = {
   IndicatorsData,
   IndicatorsMetadata,
   IndicatorLayerMetadata,
+  IndicatorLayersData,
   Map,
   MapMode,
   MapGeometryValue,

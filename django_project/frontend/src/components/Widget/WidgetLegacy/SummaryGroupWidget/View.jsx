@@ -26,8 +26,8 @@ import SummaryWidget from "../View/Summary";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
-  isPropertiesInFilteredGeometries,
   isIndicatorLayerLikeIndicator,
+  isPropertiesInFilteredGeometries,
 } from "../../../../utils/indicatorLayer";
 import { Session } from "../../../../utils/Sessions";
 import { Indicator } from "../../../../class/Indicator";
@@ -185,6 +185,9 @@ export default function SummaryGroupWidgetView({ data }) {
           const indicatorLayer = indicatorLayers.find((layer) => {
             return layer.id === layer_id;
           });
+          if (!indicatorLayer) {
+            return;
+          }
           if (!isIndicatorLayerLikeIndicator(indicatorLayer)) {
             const indicator = indicators.find((indicator) => {
               return indicator.id === indicatorLayer.indicators[0].id;

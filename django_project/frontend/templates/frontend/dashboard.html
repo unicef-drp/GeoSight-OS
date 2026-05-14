@@ -34,5 +34,6 @@
       urls.contextLayerDownload = '{% url 'context_layers_data-download' 0 %}'
 
       const embedConfig = {% if embed_config %}{{ embed_config|safe }}{% else %}null{% endif %};
+      const sdmxData = {{ sdmx_data|safe }};
     </script>
 {% endblock %}

@@ -14,7 +14,7 @@
  */
 
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import { Checkbox } from "@mui/material";
@@ -32,6 +32,9 @@ import {
 import { DynamicIndicatorLayerConfig } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
 import { Checker, RelatedTableChecker } from "./Checker";
 import { isEligibleForCompositeLayer } from "../../../IndicatorLayer/CompositeIndexLayer/utilities";
+import EditIcon from "@mui/icons-material/Edit";
+import { Actions } from "../../../../store/dashboard";
+import { DeleteIcon } from "../../../Icons";
 
 export interface Props {
   layer?: IndicatorLayer;
@@ -59,6 +62,7 @@ export default function IndicatorLayer({
   maxSelect,
   otherElement = null,
 }: Props) {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const disabled = !!(error ? error : layer.error);
@@ -158,6 +162,30 @@ export default function IndicatorLayer({
             )}
             {!isDisabled && <>{OtherData()}</>}
             {otherElement}
+            {layer.isLocal && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                }}
+              >
+                <EditIcon
+                  style={{ height: "1rem" }}
+                  onClick={() => {
+                    dispatch(Actions.SelectionState.editIndicatorLayer(layer));
+                  }}
+                />
+                <DeleteIcon
+                  style={{ height: "1rem", color: "red" }}
+                  onClick={() => {
+                    dispatch(
+                      Actions.SelectionState.deleteIndicatorLayer(layer),
+                    );
+                  }}
+                />
+              </div>
+            )}
           </span>
         }
       />
