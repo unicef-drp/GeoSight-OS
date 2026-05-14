@@ -15,7 +15,6 @@ import {
 import { constructSDMXUrl } from "./utilities";
 import { fetchSdmx } from "../../utils/sdmx";
 import Separator from "../Admin/Separator";
-import SDMXConfigUpdateButton from "./SDMXConfigUpdateButton";
 import SDMXConfigFields from "./SDMXConfigFields";
 
 import "./style.scss";
@@ -77,7 +76,7 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
 
     if (
       sdmxConfig?.urls &&
-      data.smdxConfigId &&
+      data.sdmxConfigId &&
       data.agencyId &&
       data.dataflowId &&
       data.dataflowVersionId
@@ -167,46 +166,42 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
           <>
             <Separator>SDMX Config</Separator>
             <SMDXConfigSelector
-              selectedValue={data.smdxConfigId}
+              selectedValue={data.sdmxConfigId}
               onChangeValue={() => {}}
               refreshKey={configRefreshKey}
               onChangeConfig={(value: SDMXConfig) => {
                 setSdmxConfig(value);
-                setData({
+                const newValue = {
                   ...data,
+                  // @ts-ignore
                   url: null,
-                  smdxConfigId: "" + value.id,
-                  agencyId: value.agency_id,
-                  agencyName: value.agency_name,
-                  dataflowId: value.dataflow_id,
-                  dataflowName: value.dataflow_name,
-                  dataflowDsdId: value.dataflow_dsd_id,
-                  dataflowVersionId: value.dataflow_version_id,
-                });
+                  sdmxConfigId: "" + value.id,
+                };
+                if (value.agency_id) {
+                  newValue.agencyId = value.agency_id;
+                }
+                if (value.agency_name) {
+                  newValue.agencyName = value.agency_name;
+                }
+                if (value.dataflow_id) {
+                  newValue.dataflowId = value.dataflow_id;
+                }
+                if (value.dataflow_name) {
+                  newValue.dataflowName = value.dataflow_name;
+                }
+                if (value.dataflow_dsd_id) {
+                  newValue.dataflowDsdId = value.dataflow_dsd_id;
+                }
+                if (value.dataflow_version_id) {
+                  newValue.dataflowVersionId = value.dataflow_version_id;
+                }
+                setData(newValue);
               }}
             />
             <SDMXConfigFields
               sdmxConfig={sdmxConfig}
               data={data}
               onChange={setData}
-            />
-            <SDMXConfigUpdateButton
-              sdmxConfig={sdmxConfig}
-              data={data}
-              onSaved={() => {
-                setConfigRefreshKey((k) => k + 1);
-                if (sdmxConfig) {
-                  setSdmxConfig({
-                    ...sdmxConfig,
-                    agency_id: data.agencyId,
-                    agency_name: data.agencyName,
-                    dataflow_id: data.dataflowId,
-                    dataflow_name: data.dataflowName,
-                    dataflow_dsd_id: data.dataflowDsdId,
-                    dataflow_version_id: data.dataflowVersionId,
-                  });
-                }
-              }}
             />
           </>
         )}

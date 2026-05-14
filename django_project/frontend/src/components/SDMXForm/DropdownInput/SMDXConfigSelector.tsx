@@ -63,7 +63,7 @@ export const SMDXConfigSelector = ({
 
     return () => abortRef.current?.abort();
   }, [refreshKey]);
-
+  
   return (
     <DropdownInput
       title={"SDMX Config"}

@@ -70,7 +70,7 @@ const SDMXConfigFields = ({ sdmxConfig, data, onChange }: Props) => {
             dataflowVersionId: null,
           });
         }}
-        disabled={!(sdmxConfig && data.smdxConfigId)}
+        disabled={!(sdmxConfig && data.sdmxConfigId)}
       />
 
       <SMDXDataFlowSelector

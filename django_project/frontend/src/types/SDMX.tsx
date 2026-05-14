@@ -22,7 +22,7 @@ export interface SDMXDataForm {
   mode?: string;
 
   // Using config
-  smdxConfigId?: string;
+  sdmxConfigId?: string;
   agencyId?: string;
   agencyName?: string;
   dataflowId?: string;
