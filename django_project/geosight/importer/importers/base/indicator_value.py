@@ -75,7 +75,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
 
     @staticmethod
     def attributes_definition(**kwargs) -> List[ImporterAttribute]:
-        """Return attributes of the importer."""
+        """Return attributes of the importer.
+
+        :param **kwargs: Additional keyword arguments passed by subclasses.
+        :type **kwargs: dict
+        :return: List of importer attribute definitions.
+        :rtype: List[ImporterAttribute]
+        """
         from geosight.importer.attribute import ImporterAttributeInputType
         return [
             ImporterAttribute(
@@ -198,7 +204,10 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         ]
 
     def check_attributes(self):
-        """Check attributes definition."""
+        """Check attributes definition.
+
+        :raises ImporterError: If required date/time attributes are missing.
+        """
         super().check_attributes()
         date_time_data_type = self.get_attribute('date_time_data_type')
         if date_time_data_type == ImporterTimeDataType.BY_VALUE:
@@ -211,7 +220,16 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                     raise ImporterError('Date information is not provided')
 
     def get_date_time(self, data):
-        """Return date of data."""
+        """Return date of data.
+
+        :param data: Record data containing date/time fields.
+        :type data: dict
+        :return:
+            Tuple of (datetime, error_message);
+            error_message is None on success.
+        :rtype: tuple
+        :raises ImporterError: If date/time field or format is invalid.
+        """
         date_time = None
         date_time_value = None
         try:
@@ -259,7 +277,15 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return date_time, None
 
     def get_admin_level_from_data(self, data: dict):
-        """Get admin level."""
+        """Get admin level.
+
+        :param data: Record data containing admin level field.
+        :type data: dict
+        :return: Admin level as integer, or None for any-level type.
+        :rtype: int or None
+        :raises ValueError:
+            If admin level value cannot be converted to integer.
+        """
         admin_level_type = self.get_attribute('admin_level_type')
         if admin_level_type == AdminLevelType.BY_VALUE:
             return int(self.attributes['admin_level_value'])
@@ -279,7 +305,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return None
 
     def get_indicator_by_id(self, _id: int) -> Indicator:
-        """Return indicator."""
+        """Return indicator by primary key.
+
+        :param _id: Indicator primary key.
+        :type _id: int
+        :return: Indicator instance.
+        :rtype: Indicator
+        """
         try:
             return self.objects[_id]
         except KeyError:
@@ -287,7 +319,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             return self.objects[_id]
 
     def get_indicator_by_shortcode(self, shortcode: str) -> Indicator:
-        """Return indicator."""
+        """Return indicator by shortcode.
+
+        :param shortcode: Indicator shortcode string.
+        :type shortcode: str
+        :return: Indicator instance.
+        :rtype: Indicator
+        """
         try:
             return self.objects[shortcode]
         except KeyError:
@@ -297,7 +335,14 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             return self.objects[shortcode]
 
     def get_indicator(self, data: dict) -> Indicator:
-        """Get indicator."""
+        """Get indicator from record data.
+
+        :param data:
+            Record data containing indicator_id or indicator_shortcode.
+        :type data: dict
+        :return: Indicator instance, or None if not found.
+        :rtype: Indicator or None
+        """
         indicator = None
         if data.get('indicator_id', None):
             indicator = self.get_indicator_by_id(data['indicator_id'])
@@ -312,7 +357,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return indicator
 
     def check_indicator_and_data(self, data: dict):
-        """Check indicator and data."""
+        """Check indicator and data.
+
+        :param data: Record data to validate against the indicator.
+        :type data: dict
+        :return: Indicator instance, or None if not found.
+        :rtype: Indicator or None
+        """
         indicator = self.get_indicator(data)
         if indicator:
             data['value'], comment = indicator.validate(data['value'])
@@ -326,7 +377,19 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
     def get_entity(
             self, data, original_id_type: str, auto_fetch: bool = True
     ):
-        """Get entity of data."""
+        """Get entity of data.
+
+        :param data:
+            Record data containing geo_code, admin_level, and date_time.
+        :type data: dict
+        :param original_id_type: ID type used for GeoRepo entity lookup.
+        :type original_id_type: str
+        :param auto_fetch: Whether to auto-fetch from GeoRepo if not cached.
+        :type auto_fetch: bool
+        :return:
+            Tuple of (entity, error_message); error_message is None on success.
+        :rtype: tuple
+        """
         from geosight.georepo.models.entity import Entity
         from geosight.georepo.request import (
             GeorepoEntityDoesNotExist, MultipleObjectsReturned,
@@ -354,9 +417,21 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             return None, 'This code does not exist because of error time.'
 
     def check_codes(self, codes: list):
-        """Check codes to georepo."""
+        """Check codes against GeoRepo.
+
+        :param codes: List of geographic codes to identify.
+        :type codes: list
+        :return: Dictionary mapping codes to their GeoRepo lookup results.
+        :rtype: dict
+        :raises ImporterError: If the GeoRepo request times out.
+        """
         from geosight.georepo.request import GeorepoRequest
         importer = self.importer
+
+        # If the reference layer is local everything is error
+        if not importer.reference_layer.in_georepo:
+            return {}
+
         self._update('Identifying codes from GeoRepo')
         try:
             results = GeorepoRequest().View.identify_codes(
@@ -380,7 +455,8 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         :type note: dict
         :param note: Note for each data
 
-        :rtype (data, note): (dict, dict)
+        :return: Tuple of (data, note) with date_time converted to timestamp.
+        :rtype: tuple
         """
         try:
             data['date_time'] = datetime.timestamp(data['date_time'])
@@ -389,7 +465,12 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return data, note
 
     def _save_log_data_to_model(self, log_data: ImporterLogData):
-        """Save data from log to actual model."""
+        """Save data from log to actual model.
+
+        :param log_data: Log data record to the indicator value model.
+        :type log_data: ImporterLogData
+        :return: None
+        """
         # If there is note, don't save
         if log_data.status not in ['Review', 'Warning']:
             return
@@ -442,12 +523,20 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
     def process_data_from_records(self) -> (List, List, List, bool):
         """Process data from records.
 
-        Returning clean records, notes, comments, is_success
+        :return: Tuple of (records, notes, comments, is_success).
+        :rtype: tuple
+        :raises NotImplemented: Must be implemented by subclasses.
         """
         raise NotImplemented()
 
     def group_records_by_indicator(self, records):
-        """Group record by indicator."""
+        """Group record by indicator.
+
+        :param records: List of import records to group.
+        :type records: list
+        :return: Dictionary mapping indicator_id to list of records.
+        :rtype: dict
+        """
         records_by_indicator = {}
         for record in records:
             if record['value'] in [None, '']:
@@ -462,7 +551,15 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return records_by_indicator
 
     def get_parents_records(self, record, entity: Entity):
-        """Return parents from record."""
+        """Return parents from record.
+
+        :param record: The data record to generate parent-level records from.
+        :type record: dict
+        :param entity: The entity whose parent hierarchy is traversed.
+        :type entity: Entity
+        :return: List of parent-level records.
+        :rtype: list
+        """
         aggregate_upper_level_up_to = self.get_attribute(
             'aggregate_upper_level_up_to'
         )
@@ -495,7 +592,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return records
 
     def get_indicator_fields(self, indicator):
-        """Return indicator fields."""
+        """Return indicator fields.
+
+        :param indicator: The indicator to generate field definitions for.
+        :type indicator: Indicator
+        :return: List of field definition dicts with 'name' and 'type' keys.
+        :rtype: list
+        """
         default_fields = [
             {'name': 'indicator_id', 'type': 'INTEGER'},
             {'name': 'date_time', 'type': 'NUMBER'},
@@ -517,7 +620,12 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         return fields
 
     def _process_data(self):
-        """Run the harvester process."""
+        """Run the harvester process.
+
+        :return: Tuple of (success, additional_notes).
+        :rtype: tuple
+        :raises ImporterError: If aggregation configuration is invalid.
+        """
         records, notes, success = self.process_data_from_records()
 
         # --------------------------------------------------

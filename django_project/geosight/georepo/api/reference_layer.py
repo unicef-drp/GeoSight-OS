@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -24,13 +25,45 @@ from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer_indicator_value import (
     reference_layer_indicator_values
 )
+from geosight.reference_dataset.models import ReferenceDataset
+from geosight.reference_dataset.serializer.reference_dataset import (
+    ReferenceDatasetSerializer
+)
+
+
+class ReferenceLayerDetailAPI(APIView):
+    """Return ReferenceLayer detail data."""
+
+    def get(self, request, uuid):
+        """Return ReferenceDataset detail.
+
+        :param request: HTTP request object.
+        :type request: HttpRequest
+        :param uuid: UUID identifier of the ReferenceDataset.
+        :type uuid: str
+        :return: Serialized ReferenceDataset data.
+        :rtype: Response
+        """
+        view = get_object_or_404(
+            ReferenceDataset,
+            identifier=uuid
+        )
+        return Response(ReferenceDatasetSerializer(view).data)
 
 
 class ReferenceLayerEntityDrilldownAPI(APIView):
     """Return ReferenceLayer drilldown data."""
 
     def get(self, request, concept_uuid):
-        """Return BasemapLayer list."""
+        """Return entity drilldown data for a given concept UUID.
+
+        :param request: HTTP request object.
+        :type request: HttpRequest
+        :param concept_uuid: Concept UUID of the entity to drilldown.
+        :type concept_uuid: str
+        :return: Indicator values for the entity, or empty list if not found.
+        :rtype: Response
+        """
         entity = Entity.objects.filter(concept_uuid=concept_uuid).first()
         if not Entity:
             return Response([])

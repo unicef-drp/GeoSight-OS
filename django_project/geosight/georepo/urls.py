@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 
 from geosight.georepo.api import (
-    ReferenceLayerEntityDrilldownAPI
+    ReferenceLayerEntityDrilldownAPI, ReferenceLayerDetailAPI
 )
 
 urlpatterns = [
@@ -25,5 +25,10 @@ urlpatterns = [
         r'^entity/(?P<concept_uuid>[^/]+)/drilldown',
         ReferenceLayerEntityDrilldownAPI.as_view(),
         name='entity-drilldown-api'
+    ),
+    url(
+        r'^search/view/(?P<uuid>[^/]+)',
+        ReferenceLayerDetailAPI.as_view(),
+        name='reference-layer-detail-api'
     )
 ]
