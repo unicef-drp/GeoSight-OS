@@ -1,0 +1,4 @@
+images:
+  - name: geosight
+    dockerfile: deployment/docker/Dockerfile
+    buildPath: .
