@@ -12,7 +12,6 @@
  * __date__ = '29/04/2026'
  * __copyright__ = ('Copyright 2026, Unicef')
  */
-import axios from "axios";
 import Papa from "papaparse";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 import { alasqlQuery } from "./alasql";
@@ -27,37 +26,27 @@ export const fetchSdmx = async (
     : urls[0];
   url = [cleanPath, "format=csv"].join("?");
   return new Promise((resolve, reject) => {
-    axios
-      .get(url)
-      .then((response) => {
-        Papa.parse(response.data, {
-          header: true,
-          worker: false,
-          complete: (result) => {
-            if (result.errors.length > 1) {
-              reject(result.errors);
-              return;
-            }
-            const rows = (result.data as any[]).filter((row) =>
-              Object.values(row).some((v) => v !== ""),
-            );
-            resolve(
-              rows.map((row: any, idx: number) => ({
-                ...row,
-                id: idx,
-              })),
-            );
-          },
-          error: (error: Error) => reject(error),
-        });
-      })
-      .catch((error: any) => {
-        if (error?.response?.status === 404) {
+    const rows: Record<string, any>[] = [];
+    let idx = 0;
+    Papa.parse(url, {
+      download: true,
+      header: true,
+      step: (result) => {
+        if (result.errors.length > 0) return;
+        const row = result.data as Record<string, any>;
+        if (Object.values(row).some((v) => v !== "")) {
+          rows.push({ ...row, id: idx++ });
+        }
+      },
+      complete: () => resolve(rows),
+      error: (error: Error & { status?: number }) => {
+        if (error?.status === 404) {
           resolve([]);
           return;
         }
         reject(error);
-      });
+      },
+    });
   });
 };
 
