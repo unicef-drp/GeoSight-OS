@@ -41,9 +41,9 @@ EMAIL_USE_TLS = ast.literal_eval(os.environ.get('EMAIL_USE_TLS', 'False'))
 EMAIL_USE_SSL = ast.literal_eval(os.environ.get('EMAIL_USE_SSL', 'False'))
 EMAIL_SUBJECT_PREFIX = os.environ.get('EMAIL_SUBJECT_PREFIX', '')
 
-SERVER_EMAIL = os.environ.get('ADMIN_EMAIL', 'noreply@kartoza.com')
+SERVER_EMAIL = os.environ.get('ADMIN_EMAIL', 'noreply@unicef.org')
 DEFAULT_FROM_EMAIL = os.environ.get(
-    'DEFAULT_FROM_EMAIL', 'noreply@kartoza.com')
+    'DEFAULT_FROM_EMAIL', 'noreply@unicef.org')
 
 LOGGING = {
     'version': 1,
@@ -93,7 +93,13 @@ if SENTRY_DSN and SENTRY_DSN != "''":
 
 
     def before_send(event, hint):
-        """Before send to sentry."""
+        """Before send to sentry.
+
+        :param dict event: Sentry event dict.
+        :param dict hint: Hint dict containing exception info.
+        :return: The event to send, or None to drop it.
+        :rtype: dict or None
+        """
         if 'exc_info' in hint:
             errors_to_ignore = (
                 NotAuthenticated,

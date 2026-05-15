@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='preferences',
-            name='is_kartoza_data_restored',
+            name='is_default_data_restored',
             field=models.BooleanField(default=False, help_text='Indicates whether default data has been restored.'),
         ),
     ]

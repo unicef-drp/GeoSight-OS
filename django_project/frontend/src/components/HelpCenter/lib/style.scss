@@ -42,6 +42,7 @@
   &.Open {
     background-color: rgba(0, 0, 0, .38);
     pointer-events: auto;
+    z-index: 9999;
 
     .DocsCrawler-Content {
       margin-right: 0;

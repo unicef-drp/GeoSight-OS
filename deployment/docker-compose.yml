@@ -25,7 +25,7 @@ volumes:
 
 x-common-django:
   &default-common-django
-  image: kartoza/geosight:${DJANGO_TAG}
+  image: unicef/geosight:${DJANGO_TAG}
   environment:
     # editable in .env
     - DATABASE_NAME=${DATABASE_NAME:-django}
@@ -61,7 +61,7 @@ x-common-django:
     - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
     - EMAIL_USE_TLS=${EMAIL_USE_TLS:-False}
     - EMAIL_USE_SSL=${EMAIL_USE_SSL:-False}
-    - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@kartoza.com}
+    - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@unicef.org}
 
     # PLUGINS
     - PLUGINS=${PLUGINS:-''}
@@ -151,7 +151,7 @@ services:
       - redis
 
   nginx:
-    image: kartoza/geosight_nginx:${NGINX_TAG:-0.0.1}
+    image: unicef/geosight_nginx:${NGINX_TAG:-0.0.1}
     container_name: "geosight_nginx"
     hostname: nginx
     volumes:

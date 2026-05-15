@@ -25,10 +25,10 @@ from azure_auth.models import RegisteredDomain
 
 def default_domain(apps, schema_editor):
     """Create default domain."""
-    initial_kartoza_data = os.getenv(
-        'INITIAL_KARTOZA_DATA', 'False'
+    initial_default_data = os.getenv(
+        'INITIAL_DEFAULT_DATA', 'False'
     ).lower() == 'true'
-    if not initial_kartoza_data:
+    if not initial_default_data:
         group, _ = Group.objects.get_or_create(name='unicef')
         RegisteredDomain.objects.get_or_create(
             domain='unicef.org',
