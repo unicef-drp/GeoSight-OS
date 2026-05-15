@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geosight_data_restorer', '0003_preferences_is_kartoza_data_restored'),
+        ('geosight_data_restorer', '0003_preferences_is_default_data_restored'),
     ]
 
     operations = [

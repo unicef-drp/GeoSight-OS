@@ -25,7 +25,7 @@ from .contrib import *  # noqa
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ['*']
 ADMINS = (
-    ('Irwan Fathurrahman', 'irwam@kartoza.com'),
+    ('Irwan Fathurrahman', 'irwan@kartoza.com'),
 )
 
 TEMP_SCHEMA_NAME = 'temp_upload'

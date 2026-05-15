@@ -163,15 +163,15 @@ except Exception as e:
     pass
 
 #########################################################
-# 10. Initialize kartoza data
+# 10. Initialize default data
 #########################################################
-initial_kartoza_data = os.getenv('INITIAL_KARTOZA_DATA', 'False')
+initial_default_data = os.getenv('INITIAL_DEFAULT_DATA', 'False')
 plugins = os.getenv('PLUGINS', '')
-if initial_kartoza_data.lower() == 'true' and 'data_restorer' in plugins:
+if initial_default_data.lower() == 'true' and 'data_restorer' in plugins:
     try:
         print("-----------------------------------------------------")
-        print("10. Initialize kartoza data")
-        call_command('load_kartoza_default')
+        print("10. Initialize default data")
+        call_command('load_default_data')
     except Exception as e:
         print(f'{e}')
         pass

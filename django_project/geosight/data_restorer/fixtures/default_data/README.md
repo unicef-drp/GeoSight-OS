@@ -1,17 +1,17 @@
-# Kartoza Default Fixtures
+# Default Data Fixtures
 
 This directory contains the default data fixtures loaded when
-`INITIAL_KARTOZA_DATA=True` is set in the environment.
+`INITIAL_DEFAULT_DATA=True` is set in the environment.
 
 ## Usage
 
 Set the environment variable before starting the application:
 
 ```env
-INITIAL_KARTOZA_DATA=True
+INITIAL_DEFAULT_DATA=True
 ```
 
-During initialization (`initialize.py`), the `load_kartoza_default` management
+During initialization (`initialize.py`), the `load_default_data` management
 command will load these fixtures in order.
 
 ## Fixtures
@@ -28,14 +28,12 @@ command will load these fixtures in order.
 The `icons/` subdirectory contains basemap thumbnail images copied to
 `MEDIA_ROOT/icons/` during fixture loading:
 
-| File                   | Description              |
-|------------------------|--------------------------|
-| `basemap-osm.png`      | OSM basemap thumbnail    |
-| `basemap-opentopo.png` | Open Topo Map thumbnail  |
+| File                   | Description             |
+|------------------------|-------------------------|
+| `basemap-osm.png`      | OSM basemap thumbnail   |
+| `basemap-opentopo.png` | Open Topo Map thumbnail |
 
 ## Notes
 
 - Fixtures are loaded in numerical order.
 - Fields not present in a fixture will use the model's default value.
-- This data is intended for Kartoza-specific deployments and is not loaded by
-  default.

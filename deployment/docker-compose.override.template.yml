@@ -76,7 +76,7 @@ services:
       dockerfile: deployment/docker/Dockerfile
       target: dev
     container_name: "geosight_webpack"
-    image: kartoza/geosight:${DJANGO_TAG}-dev
+    image: unicef/geosight:${DJANGO_TAG}-dev
     volumes:
       - ../django_project:/home/web/django_project
       - ./volumes/static:/home/web/static
@@ -101,7 +101,7 @@ services:
       context: ../
       dockerfile: deployment/docker/Dockerfile
       target: dev
-    image: kartoza/geosight:${DJANGO_TAG:-0.3.0}-dev
+    image: unicef/geosight:${DJANGO_TAG:-0.3.0}-dev
     container_name: "geosight_dev"
     volumes:
       - ../:/home/web/project
@@ -141,7 +141,7 @@ services:
 
       # PLUGINS
       - PLUGINS=${PLUGINS:-''}
-      - INITIAL_KARTOZA_DATA=${INITIAL_KARTOZA_DATA:-''}
+      - INITIAL_DEFAULT_DATA=${INITIAL_DEFAULT_DATA:-''}
     ports:
       # for django test server
       - "2000:8080"

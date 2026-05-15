@@ -1,0 +1,177 @@
+[
+  {
+    "model": "docs.preferences",
+    "pk": 1,
+    "fields": {
+      "documentation_base_url": "https://unicef-drp.github.io/GeoSight-OS-Documentation"
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 1,
+    "fields": {
+      "name": "Landing Page",
+      "relative_url": null,
+      "url": "/user/manual/home/",
+      "title": "GeoSight Help Center",
+      "intro": "Documentation for GeoSight.",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 2,
+    "fields": {
+      "name": "Dashboard Page",
+      "relative_url": "/project/",
+      "url": "/user/manual/dashboard/",
+      "title": "Dashboard Page",
+      "intro": "This section describes key features of the Dashboard page.",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 3,
+    "fields": {
+      "name": "Admin Page",
+      "relative_url": "/admin/",
+      "url": "/administrator-page/",
+      "title": "Admin Page",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 4,
+    "fields": {
+      "name": "Importer Page",
+      "relative_url": "/admin/importer/",
+      "url": "/user/manual/data-importer/",
+      "title": "Data Importer",
+      "intro": "This section describes key features of the Importer page",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 5,
+    "fields": {
+      "name": "Context Layers Page",
+      "relative_url": "/admin/context-layer/",
+      "url": "/user/manual/context-layer-edit-page/",
+      "title": "Context Layers",
+      "intro": "This section describes key features of the Context Layers page",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 6,
+    "fields": {
+      "name": "Basemaps Page",
+      "relative_url": "/admin/basemap/",
+      "url": "/user/manual/basemaps-edit-page/",
+      "title": "Basemaps Page",
+      "intro": "This section describes key features of the Basemaps page",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 7,
+    "fields": {
+      "name": "Styles Page",
+      "relative_url": "/admin/style/",
+      "url": "/user/manual/creating-styles-page/",
+      "title": "Styles Page",
+      "intro": "This section describes key features of the Styles page",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 8,
+    "fields": {
+      "name": "Indicator Page",
+      "relative_url": "/admin/indicators/",
+      "url": "/user/manual/indicator-edit-page/",
+      "title": "Indicator Page",
+      "intro": "This section describes key features of the Indicator Page",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 9,
+    "fields": {
+      "name": "Projects Page",
+      "relative_url": "/admin/project/",
+      "url": "/user/manual/project-page/",
+      "title": "Project Page",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 10,
+    "fields": {
+      "name": "Related Tables Page",
+      "relative_url": "/admin/related-table/",
+      "url": "/user/guide/related-tables/",
+      "title": "Related Tables Page",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 11,
+    "fields": {
+      "name": "Data Browser",
+      "relative_url": "/admin/dataset/",
+      "url": "/user/manual/data-browser/",
+      "title": "Data Browser Page",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 12,
+    "fields": {
+      "name": "Data Access",
+      "relative_url": "/admin/datset/data-access#users",
+      "url": "/user/manual/data-access",
+      "title": "Data Access Page",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 13,
+    "fields": {
+      "name": "Users and Groups Page",
+      "relative_url": "/admin/user-and-group/",
+      "url": "/user/manual/users-and-groups/",
+      "title": "Users and Groups",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  },
+  {
+    "model": "docs.page",
+    "pk": 14,
+    "fields": {
+      "name": "Access Requests",
+      "relative_url": "/admin/access/",
+      "url": "/user/guide/access-request-guide/",
+      "title": "Access Requests",
+      "intro": "",
+      "autogenerate_block": true
+    }
+  }
+]

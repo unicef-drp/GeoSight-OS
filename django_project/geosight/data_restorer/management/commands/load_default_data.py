@@ -24,14 +24,14 @@ from core.settings.utils import ABS_PATH
 
 
 class Command(BaseCommand):
-    """Load kartoza default data for geosight."""
+    """Load default data for geosight."""
 
     fixtures = [
-        'kartoza_default/0.preferences.json',
-        'kartoza_default/1.core.json',
-        'kartoza_default/2.geosight_data.json',
-        'kartoza_default/3.geosight_permission.json',
-        'kartoza_default/4.docs.json'
+        'default_data/0.preferences.json',
+        'default_data/1.core.json',
+        'default_data/2.geosight_data.json',
+        'default_data/3.geosight_permission.json',
+        'default_data/4.docs.json'
     ]
 
     # Mapping of BasemapLayer pk to icon filename
@@ -44,9 +44,9 @@ class Command(BaseCommand):
         """Command handler."""
         from geosight.data_restorer.models import Preferences
         preferences = Preferences.load()
-        if preferences.is_kartoza_data_restored:
+        if preferences.is_default_data_restored:
             print(
-                'Kartoza default data already restored, skipping.'
+                'Default data already restored, skipping.'
             )
             return
 
@@ -57,7 +57,7 @@ class Command(BaseCommand):
         self.load_icons()
         self.load_site_preferences_icons()
 
-        preferences.is_kartoza_data_restored = True
+        preferences.is_default_data_restored = True
         preferences.save()
 
     def load_icons(self):
@@ -65,7 +65,7 @@ class Command(BaseCommand):
         from geosight.data.models.basemap_layer import BasemapLayer
 
         icons_dir = ABS_PATH(
-            'geosight', 'data_restorer', 'fixtures', 'kartoza_default', 'icons'
+            'geosight', 'data_restorer', 'fixtures', 'default_data', 'icons'
         )
         for pk, filename in self.basemap_icons.items():
             filepath = os.path.join(icons_dir, filename)
@@ -84,23 +84,23 @@ class Command(BaseCommand):
         from core.models.preferences import SitePreferences
 
         icons_dir = ABS_PATH(
-            'geosight', 'data_restorer', 'fixtures', 'kartoza_default', 'icons'
+            'geosight', 'data_restorer', 'fixtures', 'default_data', 'icons'
         )
         preferences = SitePreferences.load()
 
         favicon_path = os.path.join(icons_dir, 'favicon.svg')
-        if os.path.isfile(favicon_path):
+        if os.path.exists(favicon_path) and os.path.isfile(favicon_path):
             with open(favicon_path, 'rb') as f:
                 preferences.favicon.save('favicon.svg', File(f), save=False)
 
         white_icon_path = os.path.join(icons_dir, 'white-icon.svg')
-        if os.path.isfile(white_icon_path):
+        if os.path.exists(white_icon_path) and os.path.isfile(white_icon_path):
             for field in (preferences.icon, preferences.small_icon):
                 with open(white_icon_path, 'rb') as f:
                     field.save('white-icon.svg', File(f), save=False)
 
         banner_path = os.path.join(icons_dir, 'banner.png')
-        if os.path.isfile(banner_path):
+        if os.path.exists(banner_path) and os.path.isfile(banner_path):
             with open(banner_path, 'rb') as f:
                 preferences.landing_page_banner.save(
                     'banner.png', File(f), save=False
