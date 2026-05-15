@@ -14,8 +14,28 @@ __author__ = 'danang@kartoza.com'
 __date__ = '26/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
+
 import django.db.models.deletion
+from django.contrib.auth.models import Group
 from django.db import migrations, models
+
+from azure_auth.models import RegisteredDomain
+
+
+def default_domain(apps, schema_editor):
+    """Create default domain."""
+    initial_default_data = os.getenv(
+        'INITIAL_DEFAULT_DATA', 'False'
+    ).lower() == 'true'
+    if not initial_default_data:
+        group, _ = Group.objects.get_or_create(name='unicef')
+        RegisteredDomain.objects.get_or_create(
+            domain='unicef.org',
+            defaults={
+                'group': group
+            }
+        )
 
 
 class Migration(migrations.Migration):
@@ -29,26 +49,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RegisteredDomain',
             fields=[
-                (
-                    'id',
-                    models.BigAutoField(
-                        auto_created=True, primary_key=True,
-                        serialize=False,
-                        verbose_name='ID'
-                    )
-                ),
-                (
-                    'domain', models.CharField(max_length=256, unique=True)
-                ),
-                (
-                    'group', models.ForeignKey(
-                    blank=True,
-                    help_text='Autoassign user under the domain to the group.',
-                    null=True,
-                    on_delete=django.db.models.deletion.SET_NULL,
-                    to='auth.group'
-                )
-                ),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
+                ('domain', models.CharField(max_length=256, unique=True)),
+                ('group', models.ForeignKey(blank=True,
+                                            help_text='Autoassign user under the domain to the group.',
+                                            null=True,
+                                            on_delete=django.db.models.deletion.SET_NULL,
+                                            to='auth.group')),
             ],
         ),
+        migrations.RunPython(default_domain, migrations.RunPython.noop),
     ]
