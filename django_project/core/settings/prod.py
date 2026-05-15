@@ -93,7 +93,13 @@ if SENTRY_DSN and SENTRY_DSN != "''":
 
 
     def before_send(event, hint):
-        """Before send to sentry."""
+        """Before send to sentry.
+
+        :param dict event: Sentry event dict.
+        :param dict hint: Hint dict containing exception info.
+        :return: The event to send, or None to drop it.
+        :rtype: dict or None
+        """
         if 'exc_info' in hint:
             errors_to_ignore = (
                 NotAuthenticated,
