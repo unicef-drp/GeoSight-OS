@@ -29,8 +29,47 @@ class LogFile(models.Model):
     )
 
     def filename(self):
-        """Get the filename from the path."""
+        """Get the filename from the path.
+
+        :return: filename
+        :rtype: str
+        """
         return self.path.split('/')[-1]
 
     def __str__(self):
         return self.filename()
+
+
+class CleanupDirectoryLog(models.Model):
+    """Class that represents logs of cleanup."""
+
+    date_time = models.DateTimeField(
+        auto_now_add=True
+    )
+    storage_path = models.TextField(
+        help_text='The path of the storage that was cleaned up.'
+    )
+    usage_percentage = models.FloatField(
+        null=True,
+        blank=True
+    )
+    critical_threshold = models.FloatField(
+        null=True,
+        blank=True
+    )
+    deleted_files_count = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+    freed_space_bytes = models.PositiveBigIntegerField(
+        null=True,
+        blank=True
+    )
+    deleted_files = models.JSONField(
+        null=True,
+        blank=True,
+        default=list
+    )
+
+    class Meta:  # noqa: D106
+        ordering = ["-date_time"]
