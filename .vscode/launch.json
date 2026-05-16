@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Django: Run server",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/django_project/manage.py",
             "args": [

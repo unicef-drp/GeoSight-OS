@@ -1,0 +1,95 @@
+.StoryMapPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+  &.Empty {
+    color: #666;
+  }
+
+  .StoryMapControls {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #d7d7d7;
+      border-radius: 8px;
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+
+      svg {
+        color: currentColor;
+        font-size: 1.35rem;
+      }
+
+      &:hover {
+        background: #f3f6fb;
+      }
+    }
+  }
+
+  .StoryMapStatus,
+  .StoryMapCounter {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .StoryMapList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .StoryMapItem {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: left;
+    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+    padding: 0.75rem;
+    background: #fff;
+    cursor: pointer;
+    color: #111;
+
+    &.Active {
+      border-color: #2f80ed;
+      box-shadow: 0 0 0 1px #2f80ed;
+    }
+  }
+
+  .StoryMapItemImage {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .StoryMapItemContent {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .StoryMapItemTitle {
+    display: block;
+    color: #111;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-bottom: 0.35rem;
+    white-space: normal;
+  }
+
+  .StoryMapItemDescription {
+    color: #555;
+    font-size: 0.9rem;
+  }
+}

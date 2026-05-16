@@ -8,5 +8,6 @@ export const PAGES = {
   WIDGETS: 'Widgets',
   RELATED_TABLES: 'RelatedTables',
   TOOLS: 'Tools',
+  STORY_MAP: 'Story Map',
   SHARE: 'Share',
 }

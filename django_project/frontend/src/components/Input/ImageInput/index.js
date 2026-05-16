@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeButton } from "../../Elements/Button";
 
 import './style.scss'
@@ -27,6 +27,10 @@ export function ImageInput(
 
   const [iconSrc, setIconSrc] = useState(image);
 
+  useEffect(() => {
+    setIconSrc(image);
+  }, [image]);
+
   /** Image changed */
   const imageChanged = (event) => {
     const [file] = event.target.files
@@ -35,7 +39,7 @@ export function ImageInput(
     } else {
       setIconSrc(image);
     }
-    props.onChange()
+    props.onChange?.(event)
   }
 
   return <div className='ImageInput'>

@@ -630,6 +630,12 @@ const GeneralForm = memo(({}: Props) => {
                       control={<Radio />}
                       label={t("Indicator layers tab only")}
                     />
+                    <FormControlLabel
+                      style={{ marginTop: "1rem" }}
+                      value=""
+                      control={<Radio />}
+                      label={t("Hide both tabs")}
+                    />
                   </RadioGroup>
                 </div>
               </FormControl>
