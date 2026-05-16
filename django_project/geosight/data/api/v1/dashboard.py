@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '08/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
@@ -22,6 +23,9 @@ from rest_framework.response import Response
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.serializer.dashboard import DashboardBasicSerializer
+from geosight.data.services.dashboard_create import (
+    create_dashboard_from_payload
+)
 from geosight.permission.access import ResourcePermissionDenied
 from .base import (
     BaseApiV1ResourceReadOnly,
@@ -39,6 +43,97 @@ class DashboardViewSet(
     serializer_class = DashboardBasicSerializer
     extra_exclude_fields = ['parameters']
     lookup_field = 'slug'
+
+    @swagger_auto_schema(
+        operation_id='dashboard-create',
+        tags=[ApiTag.DASHBOARD],
+        manual_parameters=[],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(type=openapi.TYPE_STRING),
+                'slug': openapi.Schema(type=openapi.TYPE_STRING),
+                'group': openapi.Schema(type=openapi.TYPE_STRING),
+                'geoField': openapi.Schema(type=openapi.TYPE_STRING),
+                'data': openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    description=(
+                        'Dashboard config payload. For multipart/form-data, '
+                        'send this field as a JSON-encoded string.'
+                    )
+                ),
+                'icon': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_BINARY
+                )
+            },
+            required=['name', 'data']
+        ),
+        responses={
+            201: openapi.Response(
+                description='Created dashboard.',
+                schema=DashboardBasicSerializer
+            ),
+            400: openapi.Response(
+                description=(
+                    'Validation error. Response may be a field error map or '
+                    '{ "detail": "<error>" }.'
+                ),
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            ),
+            403: openapi.Response(
+                description='Forbidden for anonymous or non-creator users.',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            )
+        },
+        operation_description=(
+            'Create a dashboard. Supports application/json and '
+            'multipart/form-data payloads. Requires authenticated creator role '
+            'or higher.'
+        )
+    )
+    def create(self, request, *args, **kwargs):  # noqa: DOC103
+        """
+        Create a dashboard using the shared dashboard creation flow.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+        :return: Created dashboard object or validation errors.
+        :rtype: rest_framework.response.Response
+        """
+        request_data = request.data.copy()
+        if hasattr(request_data, 'dict'):
+            payload = request_data.dict()
+        else:
+            payload = dict(request_data)
+
+        result = create_dashboard_from_payload(
+            payload, request.user, request.FILES
+        )
+        if result.dashboard:
+            serializer = self.get_serializer(result.dashboard)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if result.form_errors:
+            return Response(
+                result.form_errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {'detail': result.error},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @swagger_auto_schema(
         operation_id='dashboard-list',
