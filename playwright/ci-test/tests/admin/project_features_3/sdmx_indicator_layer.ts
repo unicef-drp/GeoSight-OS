@@ -202,7 +202,7 @@ test.describe('SDMX Indicator Layer', () => {
     await editProject(page, name);
 
     await page.getByText('Tools').click();
-    await page.getByRole('listitem').filter({ hasText: "Sdmx layer creation" }).getByRole('img').click();
+    await page.getByRole('listitem').filter({ hasText: "Sdmx layer" }).getByRole('img').click();
     await saveProject(page);
 
     await viewProject(page, name);
