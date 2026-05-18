@@ -165,6 +165,13 @@ function receive(data, error = null) {
       data.show_map_toolbar = true;
     }
 
+    try {
+      const tool = data.tools.find(
+        (tool) => tool.name === "SDMX layer creation",
+      );
+      tool.name = Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION;
+    } catch (e) {}
+
     // DASHBOARD TOOLS
     // Adding default tools
     [

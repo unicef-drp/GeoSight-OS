@@ -84,7 +84,7 @@ const sdmxConfig = async (page: any) => {
   // Check auto data
   await page.locator('.IndicatorLayerConfig .TabPrimary').getByText('General').nth(0).click();
   await page.locator('.SDMX-Tab').getByText('Layer Metadata').click();
-  await expect(page.locator('.LayerNameInput')).toHaveValue("Data 1");
+  await expect(page.locator('.LayerNameInput')).toHaveValue("SDMX Layer");
   await expect(page.locator('.LayerSourceInput')).toHaveValue("Example Somalia Country Office");
 
   // Update other config

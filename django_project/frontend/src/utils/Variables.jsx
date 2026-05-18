@@ -56,7 +56,7 @@ export const Variables = {
       SPATIAL_BOOKMARK: "Spatial bookmark",
       BACK_TO_HOME: "Back to Home",
       COMPOSITE_INDEX_LAYER: "Composite index layer",
-      SDMX_LAYER_CREATION: "SDMX layer creation",
+      SDMX_LAYER_CREATION: "SDMX layer",
     },
   },
   FEATURE_TYPE: {
