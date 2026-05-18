@@ -34,6 +34,7 @@ export const DropdownInput = ({
   onChangeValue,
   disabled,
   loadingByInit,
+  menuPlacement = "auto",
 }: MainDropdownProps) => {
   const [value, setValue] = useState<SelectOption | null>(null);
 
@@ -76,7 +77,7 @@ export const DropdownInput = ({
       <FormControl className="InputControl">
         <Select
           isDisabled={disabled}
-          menuPlacement={"top"}
+          menuPlacement={menuPlacement}
           options={[...options].sort((a, b) => a.label.localeCompare(b.label))}
           value={value}
           getOptionLabel={(option: SelectOption) => {
@@ -109,7 +110,11 @@ export const DropdownInput = ({
           }
           aria-labelledby={title}
         />
-        {error && <span className="form-helptext error">{error}</span>}
+        {error && (
+          <span className="form-helptext error" style={{ padding: "1rem" }}>
+            {error}
+          </span>
+        )}
       </FormControl>
     </section>
   );

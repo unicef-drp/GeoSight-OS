@@ -23,7 +23,21 @@ const sdmxConfig = async (page: any) => {
   await page.locator('.SDMX-Content section').nth(4).locator('.ReactSelect__input-container').click();
   await page.getByRole('option', { name: 'Example Somalia Country' }).click();
 
+  // Select Dataflow 2
+  await page.locator('.SDMX-Content section').nth(5).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Data 2 [DATA_2]' }).click();
+  await expect(page.getByText('No dataflow version found', { exact: true })).toBeVisible();
+
+  // Select Dataflow 3
+  await page.locator('.SDMX-Content section').nth(5).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Data 3 [DATA_3]' }).click();
+  await page.locator('.SDMX-Content section').nth(6).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Version 1.0 [1.0]' }).click();
+  await page.locator('.SDMX-Tab').getByText('Filter Dimensions').click();
+  await expect(page.getByText('No dimensions found', { exact: true })).toBeVisible();
+
   // Select Dataflow
+  await page.locator('.SDMX-Tab').getByText('SDMX Config').click();
   await page.locator('.SDMX-Content section').nth(5).locator('.ReactSelect__input-container').click();
   await page.getByRole('option', { name: 'Data 1 [DATA_1]' }).click();
 
