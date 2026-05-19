@@ -28,7 +28,7 @@ class ReferenceLayerViewTest(APITestCase):
 
     def setUp(self):
         """To setup test."""
-        self.reference_layer = ReferenceLayerF()
+        self.reference_layer = ReferenceLayerF(in_georepo=False)
         GeorepoEntity(
             {
                 'name': 'name',
@@ -103,7 +103,7 @@ class ReferenceLayerViewTest(APITestCase):
         ).get_or_create(self.reference_layer)
 
         # Other entities
-        self.reference_layer_2 = ReferenceLayerF()
+        self.reference_layer_2 = ReferenceLayerF(in_georepo=False)
         GeorepoEntity(
             {
                 'name': 'name',
