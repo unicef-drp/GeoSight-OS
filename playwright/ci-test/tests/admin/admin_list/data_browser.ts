@@ -5,6 +5,21 @@ test.describe('Dataset list admin', () => {
 
 
   test('From dataset', async ({ page }) => {
+    // Kenya data
+    await page.goto('/admin/dataset/dataset');
+    await page.getByRole('row', { name: 'Select row Kenya Indicator A Kenya 0,1 2025-01-01 2025-01-01' }).getByRole('link').click();
+    await expect(page.getByRole('grid')).toContainText('1–25 of 49');
+    await page.getByRole('button', { name: 'Go to next page' }).click();
+    await expect(page.locator('.ResourceRow').nth(0).locator('.MuiDataGrid-cell').nth(4)).toContainText('KEN_0026_V1');
+    await expect(page.locator('.ResourceRow').nth(0).locator('.MuiDataGrid-cell').nth(6).locator('input')).toHaveValue('4');
+
+    await page.locator('.MuiDataGrid-virtualScroller').evaluate(el => el.scrollTo(0, el.scrollHeight));
+
+    await expect(page.locator('.ResourceRow').nth(10).locator('.MuiDataGrid-cell').nth(4)).toContainText('KEN_V1');
+    await expect(page.locator('.ResourceRow').nth(10).locator('.MuiDataGrid-cell').nth(6).locator('input')).toHaveValue('1');
+    await expect(page.locator('.ResourceRow').nth(11).locator('.MuiDataGrid-cell').nth(4)).toContainText('KEN_V2');
+    await expect(page.locator('.ResourceRow').nth(11).locator('.MuiDataGrid-cell').nth(6).locator('input')).toHaveValue('10');
+
     await page.goto('/admin/dataset/dataset');
     await page.getByRole('row', { name: 'Select row Sample Indicator A' }).getByRole('link').click();
     await expect(page.getByRole('grid')).toContainText('1–25 of 372');

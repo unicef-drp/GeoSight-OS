@@ -143,7 +143,7 @@ export default function DatasetCountrySelector({
       }}
       // Table properties
       multipleSelection={multipleSelection}
-      rowIdKey={"ucode"}
+      rowIdKey={"concept_uuid"}
       rowIdKeyParameter={"geom_id"}
       topChildren={
         <div className={"DatasetLayerSelector"}>
@@ -196,12 +196,12 @@ export function DatasetCountryFilterSelector({
           ? []
           : data.map((row: any) => {
               return {
-                ucode: row,
+                concept_uuid: row,
               };
             })
       }
       dataSelected={(data) => {
-        setData(data.map((row: any) => row.ucode));
+        setData(data.map((row: any) => row.concept_uuid));
       }}
       multipleSelection={true}
       showSelected={showSelected}

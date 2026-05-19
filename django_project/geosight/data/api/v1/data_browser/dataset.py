@@ -78,6 +78,7 @@ class BaseDatasetApiList:
                 data_count=Count('*'),
                 indicator_name=F('indicator_name'),
                 indicator_shortcode=F('indicator_shortcode'),
+                country_concept_uuid=F('country_concept_uuid'),
                 country_geom_id=F('country_geom_id'),
                 country_name=F('country_name'),
                 start_date=Min('date'),
@@ -112,6 +113,7 @@ class BaseDatasetApiList:
                 data_count=Count('*'),
                 indicator_name=F('indicator_name'),
                 indicator_shortcode=F('indicator_shortcode'),
+                country_concept_uuid=F('country_concept_uuid'),
                 country_geom_id=F('country_geom_id'),
                 country_name=F('country_name'),
                 start_date=Min('date'),
@@ -224,7 +226,10 @@ class DatasetApiList(
         try:
             ids = json.loads(request.data['ids'])
         except TypeError:
-            ids = request.data
+            try:
+                ids = request.data['ids']
+            except KeyError:
+                ids = request.data
         user = request.user
         to_be_deleted = []
         for _id in ids:
@@ -305,7 +310,7 @@ class DatasetApiList(
         :rtype: Response
         """
         indicator_id = 'indicator_id'
-        country_geom_id = 'country_geom_id'
+        country_concept_uuid = 'country_concept_uuid'
         admin_level = 'admin_level'
         return Response({
             'indicators': self.get_queryset().order_by(
@@ -315,9 +320,9 @@ class DatasetApiList(
             ).distinct(),
 
             'datasets': self.get_queryset().order_by(
-                country_geom_id
+                country_concept_uuid
             ).values_list(
-                country_geom_id, flat=True
+                country_concept_uuid, flat=True
             ).distinct(),
 
             'levels': self.get_queryset().order_by(
