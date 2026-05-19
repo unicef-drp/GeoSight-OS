@@ -78,6 +78,7 @@ export const SMDXAgencySelector = ({
         }
       }}
       disabled={disabled}
+      menuPlacement={"bottom"}
     />
   );
 };

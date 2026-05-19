@@ -48,6 +48,7 @@ import SDMXPreview from "../../../../../../components/SDMXForm/Preview";
 import { SelectWithList } from "../../../../../../components/Input/SelectWithList";
 import { dateTimeFormats } from "../../../../Components/Input/DateTimeSettings";
 import { TYPES } from "../../../../../../components/SqlQueryGenerator/Aggregation";
+import { DYNAMIC_QUANTITATIVE } from "../../../../../../utils/Style";
 
 import "./style.scss";
 
@@ -73,7 +74,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
     const { t } = useTranslation();
     const defaultData: IndicatorLayer = {
       id: 0,
-      name: "",
+      name: "SDMX Layer",
       description: "",
       source: "",
       type: SDMXIndicatorLayerType,
@@ -83,6 +84,9 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
       related_tables: [],
       error: "",
       config: undefined,
+
+      // style
+      style_type: DYNAMIC_QUANTITATIVE,
     };
 
     const referenceLayer = useSelector(

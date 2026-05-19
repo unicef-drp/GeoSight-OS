@@ -4,6 +4,7 @@
   "3D view": "Vista 3D",
   "Apply Changes": "Aplicar cambios",
   "Back to home": "Volver a inicio",
+  "Back to Home": "Volver a inicio",
   "Compare layers": "Comparar capas",
   "Config": "Configuración",
   "Context Layers": "Capas de Contexto",
@@ -257,6 +258,7 @@
     "authorizedToGeoRepo": "Autorizado para GeoRepo.",
     "djangoAdmin": "Administrador de Django"
   },
+  "SDMX layer" : "Capa SDMX",
   "seeMapboxDocumentationForMoreDetail": "Consulta la documentación de Mapbox para más detalles.",
   "thereAreSomeInformationToControlTheLegend": "Hay información para controlar la leyenda."
 }

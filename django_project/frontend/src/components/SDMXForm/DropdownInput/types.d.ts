@@ -31,6 +31,7 @@ interface MainDropdownProps extends MainDropdownInputProps {
   error?: string;
 
   loadingByInit?: boolean;
+  menuPlacement?: "top" | "bottom" | "auto";
 }
 
 /** Props for dropdowns that require an SDMX config to resolve their URL. */

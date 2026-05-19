@@ -53,7 +53,7 @@ export const SMDXDataFlowVersionSelector = ({
       .catch((error: any) => {
         if (axios.isCancel(error)) return;
         if (error.response?.status === 404) {
-          setError("No data found");
+          setError("No dataflow version found");
           return;
         }
         setError(error.message || "Failed to fetch dataflow version");

@@ -84,6 +84,7 @@ export function returnValueByGeometry(
       if (rows) {
         const data = UpdateStyleData(rows, layer);
         data.forEach(function (rowData) {
+          rowData.indicatorLayer = layer;
           allData.push(rowData);
         });
       }

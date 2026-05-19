@@ -68,7 +68,7 @@ export const SMDXDimensions = ({
         onChange();
       } catch (error: any) {
         if (error.toString().includes("404")) {
-          setError("No data found");
+          setError("No dimensions found");
           return;
         }
         if (axios.isCancel(error)) return;
@@ -100,9 +100,9 @@ export const SMDXDimensions = ({
           </div>
         )}
       </div>
-      {error && <span className="form-helptext error">error</span>}
       {!loading && (
         <div className="DimensionGrid">
+          {error && <span className="error">{error}</span>}
           {Object.keys(dimensions).map((dimensionId, index) => (
             <DimensionDropdown
               key={dimensionId}

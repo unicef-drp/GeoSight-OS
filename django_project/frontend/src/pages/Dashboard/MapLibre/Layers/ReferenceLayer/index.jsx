@@ -434,6 +434,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         currentLevel,
         indicatorLayersData,
       );
+      console.log(indicatorValueByGeometry)
       dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry));
       if (IS_DEBUG) {
         const geoms = Object.keys(indicatorValueByGeometry);

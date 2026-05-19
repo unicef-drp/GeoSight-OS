@@ -15,7 +15,6 @@
 
 import React, { memo, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from "../../../../store/dashboard";
@@ -69,15 +68,16 @@ export function SDMXLayerCreation() {
           className="Active"
           data-tool={Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION}
         >
-          <PluginChild title={"Create SDMX layer"}>
-            <AddIcon
-              style={{
-                border: "1px solid var(--primary-color)",
-                borderRadius: "50%",
-              }}
-              onClick={() => {
-                sdmxConfigRef.current.open();
-              }}
+          <PluginChild
+            title={"Create SDMX layer"}
+            onClick={() => {
+              sdmxConfigRef.current.open();
+            }}
+          >
+            <img
+              src={staticUrl + "img/SDMX.icon.png"}
+              alt="SDMX"
+              height="100%"
             />
           </PluginChild>
         </div>

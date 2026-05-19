@@ -23,7 +23,21 @@ const sdmxConfig = async (page: any) => {
   await page.locator('.SDMX-Content section').nth(4).locator('.ReactSelect__input-container').click();
   await page.getByRole('option', { name: 'Example Somalia Country' }).click();
 
+  // Select Dataflow 2
+  await page.locator('.SDMX-Content section').nth(5).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Data 2 [DATA_2]' }).click();
+  await expect(page.getByText('No dataflow version found', { exact: true })).toBeVisible();
+
+  // Select Dataflow 3
+  await page.locator('.SDMX-Content section').nth(5).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Data 3 [DATA_3]' }).click();
+  await page.locator('.SDMX-Content section').nth(6).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Version 1.0 [1.0]' }).click();
+  await page.locator('.SDMX-Tab').getByText('Filter Dimensions').click();
+  await expect(page.getByText('No dimensions found', { exact: true })).toBeVisible();
+
   // Select Dataflow
+  await page.locator('.SDMX-Tab').getByText('SDMX Config').click();
   await page.locator('.SDMX-Content section').nth(5).locator('.ReactSelect__input-container').click();
   await page.getByRole('option', { name: 'Data 1 [DATA_1]' }).click();
 
@@ -70,7 +84,7 @@ const sdmxConfig = async (page: any) => {
   // Check auto data
   await page.locator('.IndicatorLayerConfig .TabPrimary').getByText('General').nth(0).click();
   await page.locator('.SDMX-Tab').getByText('Layer Metadata').click();
-  await expect(page.locator('.LayerNameInput')).toHaveValue("Data 1");
+  await expect(page.locator('.LayerNameInput')).toHaveValue("SDMX Layer");
   await expect(page.locator('.LayerSourceInput')).toHaveValue("Example Somalia Country Office");
 
   // Update other config
@@ -120,7 +134,7 @@ test.describe('SDMX Indicator Layer', () => {
     await page.getByText('SDMX Indicators LayerCreate').click();
     await sdmxConfig(page);
 
-    await expect(page.locator('.SortableTree li').last()).toHaveText('Data 1SDMX Config');
+    await expect(page.locator('.SortableTree li').last()).toHaveText('SDMX LayerSDMX Config');
     await expect(page.locator('.SortableTree li').last().locator('.OtherActionIndicator')).toHaveText('SDMX');
 
     // Check the edit one
@@ -162,8 +176,8 @@ test.describe('SDMX Indicator Layer', () => {
     // Preview
     await viewProject(page, name);
     await page.getByRole('button', { name: 'Close' }).click();
-    await page.locator('.layers-tab').getByText('Data 1').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Data 1');
+    await page.locator('.layers-tab').getByText('SDMX Layer').click();
+    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('SDMX Layer');
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('8');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');
 
@@ -188,7 +202,7 @@ test.describe('SDMX Indicator Layer', () => {
     await editProject(page, name);
 
     await page.getByText('Tools').click();
-    await page.getByRole('listitem').filter({ hasText: "Sdmx layer creation" }).getByRole('img').click();
+    await page.getByRole('listitem').filter({ hasText: "Sdmx layer" }).getByRole('img').click();
     await saveProject(page);
 
     await viewProject(page, name);
@@ -197,10 +211,22 @@ test.describe('SDMX Indicator Layer', () => {
     await page.getByTitle('Create SDMX layer').click();
     await sdmxConfig(page);
 
-    await page.locator('.layers-tab').getByText('Data 1').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Data 1');
+    await page.locator('.layers-tab').getByText('SDMX Layer').click();
+    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('SDMX Layer');
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('8');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');
+
+    // Check the on click
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 633,
+        y: 125
+      }
+    });
+    await expect(page.locator('.maplibregl-popup-content tr').nth(0).locator('td').nth(1)).toHaveText("SDMX Layer")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(1).locator('td').nth(1)).toHaveText("8")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(2).locator('td').nth(1)).toHaveText("8")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(3).locator('td').nth(1)).toHaveText("2021-01-01T00:00:00+00:00")
 
     // Remove dimension
     await page.locator('.layers-tab').locator('[data-testid="EditIcon"]').click()
@@ -219,8 +245,8 @@ test.describe('SDMX Indicator Layer', () => {
     await expect(page.locator('.MuiDataGrid-columnHeaders').nth(0).locator('.MuiDataGrid-columnHeader').nth(0)).toHaveText("REF_AREA");
     await page.getByText('Apply Changes').click();
 
-    await page.locator('.layers-tab').getByText('Data 1').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Data 1');
+    await page.locator('.layers-tab').getByText('SDMX Layer').click();
+    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('SDMX Layer');
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('6');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');
 
@@ -232,8 +258,8 @@ test.describe('SDMX Indicator Layer', () => {
     await expect(page.locator('.MuiDataGrid-columnHeaders').nth(0).locator('.MuiDataGrid-columnHeader').nth(0)).toHaveText("REF_AREA");
     await page.getByText('Apply Changes').click();
 
-    await page.locator('.layers-tab').getByText('Data 1').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Data 1');
+    await page.locator('.layers-tab').getByText('SDMX Layer').click();
+    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('SDMX Layer');
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('3');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');
 
@@ -245,8 +271,8 @@ test.describe('SDMX Indicator Layer', () => {
     await expect(page.locator('.MuiDataGrid-columnHeaders').nth(0).locator('.MuiDataGrid-columnHeader').nth(0)).toHaveText("REF_AREA");
     await page.getByText('Apply Changes').click();
 
-    await page.locator('.layers-tab').getByText('Data 1').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Data 1');
+    await page.locator('.layers-tab').getByText('SDMX Layer').click();
+    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('SDMX Layer');
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('1');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');
 
@@ -258,8 +284,8 @@ test.describe('SDMX Indicator Layer', () => {
     await expect(page.locator('.MuiDataGrid-columnHeaders').nth(0).locator('.MuiDataGrid-columnHeader').nth(0)).toHaveText("REF_AREA");
     await page.getByText('Apply Changes').click();
 
-    await page.locator('.layers-tab').getByText('Data 1').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('Data 1');
+    await page.locator('.layers-tab').getByText('SDMX Layer').click();
+    await expect(page.locator('.MapLegendSectionTitle')).toHaveText('SDMX Layer');
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('9');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');
 

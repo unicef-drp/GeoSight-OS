@@ -37,6 +37,17 @@
                          class="DataStructure"/>
                 </str:Structure>
             </str:Dataflow>
+            <str:Dataflow
+                    urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=EXAMPLE_SOMALIA_CO:DATA_3(1.0)"
+                    isExternalReference="false" agencyID="EXAMPLE_SOMALIA_CO"
+                    id="DATA_3" isFinal="false" version="1.0">
+                <com:Name xml:lang="en">Data 3</com:Name>
+                <str:Structure>
+                    <Ref package="datastructure" agencyID="EXAMPLE_SOMALIA_CO"
+                         id="DSD_DATA_3" version="1.0"
+                         class="DataStructure"/>
+                </str:Structure>
+            </str:Dataflow>
         </str:Dataflows>
     </mes:Structures>
 </mes:Structure>
