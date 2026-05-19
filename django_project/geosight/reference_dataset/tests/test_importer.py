@@ -53,7 +53,7 @@ class ImporterTest(TestCase):
     def setUp(self):
         """To setup test."""
         super(ImporterTest, self).setUp()
-        self.reference_layer = ReferenceLayerF()
+        self.reference_layer = ReferenceLayerF(in_georepo=False)
         self.importer = ReferenceDatasetImporter.objects.create(
             reference_layer=self.reference_layer
         )
