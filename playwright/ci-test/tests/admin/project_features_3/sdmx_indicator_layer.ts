@@ -219,14 +219,14 @@ test.describe('SDMX Indicator Layer', () => {
     // Check the on click
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 634,
-        y: 104
+        x: 633,
+        y: 125
       }
     });
-    await expect(page.locator('.maplibregl-popup-content-main .content .tr').nth(0).locator('td').nth(1)).toHaveText("SDMX Layer")
-    await expect(page.locator('.maplibregl-popup-content-main .content .tr').nth(1).locator('td').nth(1)).toHaveText("8")
-    await expect(page.locator('.maplibregl-popup-content-main .content .tr').nth(2).locator('td').nth(1)).toHaveText("8")
-    await expect(page.locator('.maplibregl-popup-content-main .content .tr').nth(3).locator('td').nth(1)).toHaveText("2021-01-01T00:00:00+00:00")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(0).locator('td').nth(1)).toHaveText("SDMX Layer")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(1).locator('td').nth(1)).toHaveText("8")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(2).locator('td').nth(1)).toHaveText("8")
+    await expect(page.locator('.maplibregl-popup-content tr').nth(3).locator('td').nth(1)).toHaveText("2021-01-01T00:00:00+00:00")
 
     // Remove dimension
     await page.locator('.layers-tab').locator('[data-testid="EditIcon"]').click()
