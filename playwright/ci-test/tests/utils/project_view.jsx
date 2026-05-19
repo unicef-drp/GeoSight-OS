@@ -2,6 +2,13 @@ import { expect } from "@playwright/test";
 
 // URL That we need to check
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+/**
+ * Sets up a project configuration before running assertions.
+ * Adds a Country filter, updates the Time Chart and Summary widgets,
+ * configures the popup for Test Indicator C, and saves the project.
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ */
 export const preparing = async (page) => {
   // Update Filter
   await page.locator('.MuiButtonLike').getByText('Filters', { exact: true }).click();
@@ -44,6 +51,18 @@ export const preparing = async (page) => {
   await page.getByText('Configuration has been saved!');
 }
 
+/**
+ * Asserts data correctness across admin levels (0, 1, 2).
+ * Covers geography search, initial layer state, drilldown popups,
+ * label toggle, widget values at each admin level, and filter effects
+ * on labels, zoom, and widget content.
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} url - Project view URL to navigate to
+ * @param {string} countryLastLog - Expected LABEL_GEOM log string at Admin Level 0
+ * @param {string} sumIndicatorAByCountry - Expected widget sum when country filter is applied
+ * @param {string[]} assertLogs - Expected VALUED_GEOM log strings for related table layer slicers
+ */
 export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, assertLogs) => {
   const layer1 = 'Sample Indicator A'
   const layer2 = 'Dynamic Layer based on a list of interventions'
@@ -438,6 +457,19 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await page.getByRole('tab', { name: 'Layers' }).click();
 }
 
+/**
+ * Asserts UI component behavior for advanced layer types and interactions.
+ * Covers multi-reference layers, pie chart and pin layer rendering,
+ * dynamic layer sliders, related table layer slicer and partner filtering,
+ * tool visibility, compare mode, filter input UX, context layer info popover,
+ * and country-filtered widget values at Admin Level 0.
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} url - Project view URL to navigate to
+ * @param {string} countryLastLog - Expected LABEL_GEOM log string at Admin Level 0
+ * @param {string} sumIndicatorAByCountry - Expected widget sum when country filter is applied
+ * @param {string[]} assertLogs - Expected VALUED_GEOM log strings for related table layer slicers
+ */
 export const assert_2 = async (page, url, countryLastLog, sumIndicatorAByCountry, assertLogs) => {
   const layer1 = 'Sample Indicator A'
   const layer2 = 'Dynamic Layer based on a list of interventions'
