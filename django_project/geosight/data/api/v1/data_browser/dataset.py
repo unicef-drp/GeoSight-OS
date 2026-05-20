@@ -228,7 +228,7 @@ class DatasetApiList(
         except TypeError:
             try:
                 ids = request.data['ids']
-            except KeyError:
+            except (KeyError, TypeError):
                 ids = request.data
         user = request.user
         to_be_deleted = []
