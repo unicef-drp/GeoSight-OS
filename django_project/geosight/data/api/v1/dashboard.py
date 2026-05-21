@@ -98,16 +98,17 @@ class DashboardViewSet(
         },
         operation_description=(
             'Create a dashboard. Supports application/json and '
-            'multipart/form-data payloads. Requires authenticated creator role '
-            'or higher.'
+            'multipart/form-data payloads. Requires authenticated creator '
+            'role or higher.'
         )
     )
-    def create(self, request, *args, **kwargs):  # noqa: DOC103
+    def create(self, request, *args, **kwargs):  # noqa: DOC101,DOC103
         """
         Create a dashboard using the shared dashboard creation flow.
 
         :param request: The HTTP request object.
         :type request: rest_framework.request.Request
+
         :return: Created dashboard object or validation errors.
         :rtype: rest_framework.response.Response
         """
