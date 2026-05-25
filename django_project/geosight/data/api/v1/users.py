@@ -15,6 +15,7 @@ __date__ = '15/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.response import Response
@@ -56,7 +57,16 @@ class UserViewSet(
     @property
     def queryset(self):
         """Return queryset."""
-        return self.model_class.objects.all()
+        queryset = self.model_class.objects.all()
+        if self.request.GET.get('q', None):
+            q = self.request.GET['q']
+            queryset = queryset.filter(
+                Q(username__icontains=q) |
+                Q(first_name__icontains=q) |
+                Q(last_name__icontains=q) |
+                Q(email__icontains=q)
+            )
+        return queryset
 
     def get_permissions(self):
         """

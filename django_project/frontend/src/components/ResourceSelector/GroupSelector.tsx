@@ -67,6 +67,7 @@ export default function GroupSelector({
       multipleSelection={multipleSelection}
       defaults={defaults}
       topChildren={topChildren}
+      searchKey={"name__icontains"}
     />
   );
 }
