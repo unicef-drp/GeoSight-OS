@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
-import { fillProjectName } from "../../utils/project";
+import { deleteProject } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -15,6 +15,9 @@ test.describe('Duplicate and save as project', () => {
   // A use case tests scenarios
   test('Save as project', async ({ page }) => {
     const name = 'Test Project Save As';
+    await deleteProject(page, name)
+
+    await page.goto('');
     // --------------------------------------------------------------
     // CREATE PROJECT WITH OVERRIDE CONFIG
     // --------------------------------------------------------------
@@ -42,6 +45,25 @@ test.describe('Duplicate and save as project', () => {
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
+
+    // Check filter indicator layer
+    await expect(page.locator('#indicator-tab-panel').locator('.MuiTreeItem-label')).toHaveCount(16)
+    await page.locator('#indicator-tab-panel').locator('.PanelSearchBox input').fill('Indicator A')
+    await expect(page.locator('#indicator-tab-panel').locator('.MuiTreeItem-label')).toHaveCount(3)
+    await page.locator('#indicator-tab-panel').locator('.PanelSearchBox input').fill('Indicator AA')
+    await expect(page.getByText('No indicators available')).toBeVisible();
+    await page.locator('#indicator-tab-panel').locator('.PanelSearchBox input').fill('')
+    await expect(page.locator('#indicator-tab-panel').locator('.MuiTreeItem-label')).toHaveCount(16)
+
+    // Check filter context layer
+    await page.locator('#simple-tab-context-layer').click()
+    await expect(page.locator('#context-layer-tab-panel').locator('.MuiTreeItem-label')).toHaveCount(2)
+    await page.locator('#context-layer-tab-panel').locator('.PanelSearchBox input').fill('Healthsites')
+    await expect(page.locator('#context-layer-tab-panel').locator('.MuiTreeItem-label')).toHaveCount(1)
+    await page.locator('#context-layer-tab-panel').locator('.PanelSearchBox input').fill('Healthsites AA')
+    await expect(page.getByText('No context layers available')).toBeVisible();
+    await page.locator('#context-layer-tab-panel').locator('.PanelSearchBox input').fill('')
+    await expect(page.locator('#context-layer-tab-panel').locator('.MuiTreeItem-label')).toHaveCount(2)
 
     // ------------------------------------
     // DELETE PROJECT
