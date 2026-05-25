@@ -1,9 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-const _url = '/admin/basemap/'
 
 test.describe('Reference dataset selector admin', () => {
 
@@ -14,6 +11,8 @@ test.describe('Reference dataset selector admin', () => {
     await page.locator('#id_geom_id').fill(name);
     await page.locator('#id_name').fill(name);
     await page.locator('#id_admin_level').fill('0');
+    await page.locator('#id_concept_uuid').fill(crypto.randomUUID());
+
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
