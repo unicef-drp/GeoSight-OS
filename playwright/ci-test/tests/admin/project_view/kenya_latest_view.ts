@@ -26,6 +26,7 @@ test.describe('View kenya latest project', () => {
      */
     const name = "Kenya Test"
     const editUrl = `${BASE_URL}/admin/project/kenya-test/edit`
+    await deleteProject(page, name)
     await page.goto('/admin/project/');
 
     // Create project
@@ -85,9 +86,9 @@ test.describe('View kenya latest project', () => {
 
     // Review map
     await page.goto('/project/kenya-test/');
-    await expect(page.locator('.IndicatorLegendRow')).toHaveCount(2)
-    await expect(page.locator('.IndicatorLegendRow').nth(0)).toHaveText("1")
-    await expect(page.locator('.widget__content')).toHaveText('1');
+    await expect(page.locator('.IndicatorLegendRow')).toHaveCount(3)
+    await expect(page.locator('.IndicatorLegendRow').nth(0)).toHaveText("10")
+    await expect(page.locator('.widget__content')).toHaveText('11');
 
     // --------------------------------
     // Download current dates

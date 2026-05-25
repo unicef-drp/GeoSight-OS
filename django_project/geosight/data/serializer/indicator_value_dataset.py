@@ -99,7 +99,7 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
         return (
             f"{reverse('admin-data-browser-view')}?"
             f"indicators={obj.indicator_id}&"
-            f"countries={obj.country_geom_id}&"
+            f"countries={obj.country_concept_uuid}&"
             f"levels={obj.admin_level}"
         )
 

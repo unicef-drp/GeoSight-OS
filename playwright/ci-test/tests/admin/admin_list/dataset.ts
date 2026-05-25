@@ -16,7 +16,7 @@ test.describe('Dataset list admin', () => {
     await page.getByLabel('Group all admin levels').uncheck();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(12);
     await page.getByLabel('Group all admin levels').check();
-    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(6);
 
     // Check indicator filter
     await page.getByRole('textbox').first().click();
@@ -33,14 +33,14 @@ test.describe('Dataset list admin', () => {
     await page.getByRole('textbox').first().click();
     await page.getByRole('button', { name: 'Clear selection' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
-    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(6);
 
     // Test Filter by level
     await page.getByPlaceholder('Filter by Level(s)').click();
     await page.getByRole('option', { name: '0' }).getByRole('checkbox').check();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(4);
     await page.getByRole('option', { name: '0' }).getByRole('checkbox').uncheck();
-    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(6);
 
     // Test filter by country
     await page.getByRole('textbox').nth(1).click();
@@ -50,7 +50,7 @@ test.describe('Dataset list admin', () => {
     await page.getByRole('textbox').nth(1).click();
     await page.getByRole('button', { name: 'Clear selection' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
-    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(6);
 
     // Test sort
     await page.getByText('Indicator', { exact: true }).click();

@@ -234,9 +234,9 @@ export default function DataBrowserAdmin() {
       delete parameters['indicator_id__in']
     }
     if (filters.countries.length) {
-      parameters['country_geom_id__in'] = filters.countries.join(',')
+      parameters['country_concept_uuid__in'] = filters.countries.join(',')
     } else {
-      delete parameters['country_geom_id__in']
+      delete parameters['country_concept_uuid__in']
     }
     if (filters.levels.length) {
       parameters['admin_level__in'] = filters.levels.join(',')

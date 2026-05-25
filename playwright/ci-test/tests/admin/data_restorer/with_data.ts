@@ -44,7 +44,7 @@ test.describe('Restore data', () => {
 
     await page.goto('/admin/dataset/dataset/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Data Browser');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–5 of 5');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–6 of 6');
 
     // enable on the admin
     await page.goto('/django-admin/geosight_data_restorer/preferences/1/change/');
@@ -86,6 +86,6 @@ test.describe('Restore data', () => {
 
     await page.goto('/admin/dataset/dataset/');
     await expect(page.locator('.AdminContentHeader-Left a')).toContainText('Data Browser');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–25 of 181');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–25 of 182');
   });
 });

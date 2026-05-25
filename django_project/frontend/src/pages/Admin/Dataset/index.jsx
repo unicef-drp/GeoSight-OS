@@ -220,9 +220,9 @@ export default function DatasetAdmin() {
       parameters['group_admin_level'] = false
     }
     if (filters.countries.length) {
-      parameters['country_geom_id__in'] = filters.countries.join(',')
+      parameters['country_concept_uuid__in'] = filters.countries.join(',')
     } else {
-      parameters['country_geom_id__in'] = null
+      parameters['country_concept_uuid__in'] = null
     }
     if (filters.levels.length) {
       parameters['admin_level__in'] = filters.levels.join(',')
