@@ -127,7 +127,7 @@ export function UserList({ ...props }) {
       defaults={{
         sort: [{ field: "username", sort: "asc" }],
       }}
-      searchKey={"username__icontains"}
+      searchKey={"q"}
       highDeleteSecurity={true}
       deletionWarningText={deletionWarningText}
       {...props}
