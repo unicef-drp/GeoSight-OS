@@ -245,9 +245,19 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     def assign_countries(self):
         """Assign all entities from the entity set to the countries field."""
-        self.countries.set(
-            self.entities_set.filter(admin_level=admin_level_country)
-        )
+        from geosight.georepo.models.entity import Entity
+        if self.is_local:
+            self.countries.set(
+                self.entities_set.filter(admin_level=admin_level_country)
+            )
+        else:
+            detail = GeorepoRequest().View.get_detail(self.identifier)
+            country_ucodes = [
+                country['ucode'] for country in detail['countries']
+            ]
+            self.countries.set(
+                Entity.objects.filter(geom_id__in=country_ucodes)
+            )
         self.save()
 
     def assign_country(self, entity, check_entity=True):
