@@ -15,6 +15,7 @@ __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
+from django.urls import include
 
 from geosight.cloud_native_gis.api.cloud_native_gis import (
     CloudNativeGISLayerUploadCreate, CloudNativeGISDownloadFileAPI
@@ -30,5 +31,9 @@ urlpatterns = [
         r'^download/(?P<unique_id>[^/]+)$',
         CloudNativeGISDownloadFileAPI.as_view(),
         name='cloud-native-gis-download-file-data'
-    )
+    ),
+    url(
+        r'^ogc/',
+        include('cloud_native_gis.api.pygeoapi.urls')
+    ),
 ]

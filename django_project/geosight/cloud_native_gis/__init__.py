@@ -26,5 +26,11 @@ class Config(AppConfig):
     name = 'geosight.cloud_native_gis'
     verbose_name = "GeoSight Cloud Native GIS"
 
+    def ready(self):
+        """Apply monkey-patches after all apps are loaded."""
+        from cloud_native_gis.api.pygeoapi import base
+        from geosight.cloud_native_gis.patch import get_queryset
+        base.get_queryset = get_queryset
+
 
 default_app_config = 'geosight.cloud_native_gis.Config'

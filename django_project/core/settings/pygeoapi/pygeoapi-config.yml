@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: 2024 Kartoza <info@kartoza.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# pygeoapi configuration for CloudNativeGIS.
+# Database credentials are read from the same environment variables as Django.
+#
+# After editing this file, regenerate the OpenAPI document:
+#   pygeoapi openapi generate pygeoapi-config.yml > pygeoapi-openapi.yml
+
+server:
+  bind:
+    host: 0.0.0.0
+    port: 5000
+  url: ${PYGEOAPI_SERVER_URL}
+  templates:
+    path: ${PYGEOAPI_TEMPLATES_PATH}
+  mimetype: application/json; charset=UTF-8
+  encoding: utf-8
+  gzip: false
+  languages:
+    - en-US
+  pretty_print: true
+  limit: 10
+  cors: true
+  map:
+    url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+    attribution: '<a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+  logo: https://pygeoapi.io/img/pygeoapi-logo.png
+
+logging:
+  level: ERROR
+
+metadata:
+  identification:
+    title:
+      en: CloudNativeGIS OGC API
+    description:
+      en: OGC API Features for CloudNativeGIS layers
+    keywords:
+      en:
+        - geospatial
+        - cloud
+        - ogc
+    keywords_type: theme
+    terms_of_service: https://creativecommons.org/licenses/by/4.0/
+    url: ${PYGEOAPI_SERVER_URL}
+  license:
+    name: CC-BY 4.0
+    url: https://creativecommons.org/licenses/by/4.0/
+  provider:
+    name: Unicef
+    url: https://geosight.unicef.org/
+  contact:
+    name: Unicef
+    email: geosight-no-reply@unicef.org
+    url: https://geosight.unicef.org/
+
+resources: { }
