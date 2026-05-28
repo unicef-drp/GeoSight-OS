@@ -34,6 +34,8 @@ urlpatterns = [
     ),
     url(
         r'^ogc/',
-        include('cloud_native_gis.api.pygeoapi.urls')
+        include(
+            ('cloud_native_gis.api.pygeoapi.urls', 'ogc'), namespace='ogc'
+        )
     ),
 ]

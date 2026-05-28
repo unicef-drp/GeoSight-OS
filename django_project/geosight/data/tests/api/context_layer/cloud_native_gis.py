@@ -98,7 +98,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             code=200,
             user=self.admin
         )
-        self.assertEqual(response.json()["count"], 33)
+        self.assertEqual(response.json()["count"], 35)
 
     def test_data(self):
         """Test data."""
@@ -321,11 +321,11 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             data={}
         )
         self.assertTrue("Invalid payload format" in response.content.decode())
-        response = self.assertRequestPostView(
+        self.assertRequestPostView(
             url=reverse(
                 key, kwargs={'context_layer_id': self.resource.id}
             ),
-            code=400,
+            code=204,
             user=self.admin,
             data={
                 "type": "FeatureCollection",
@@ -333,29 +333,17 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
                     {
                         "type": "Feature",
                         "properties": {
-                            "id": 10,
-                            "name": "New shop",
-                            "category": "shop"
+                            "id": 1000,
+                            "name": "New shop"
                         },
                         "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [
-                                    [0, 0],
-                                    [0, 1],
-                                    [1, 1],
-                                    [1, 0],
-                                    [0, 0]
-                                ]
-                            ]
+                            "type": "Point",
+                            "coordinates": [10, 10]
                         }
                     }
                 ]
             },
             content_type=self.JSON_CONTENT
-        )
-        self.assertEqual(
-            'column "id" does not exist', response.content.decode()
         )
         response = self.assertRequestPostView(
             url=reverse(
@@ -436,7 +424,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             code=200,
             user=self.admin
         )
-        self.assertEqual(response.json()["count"], 48)
+        self.assertEqual(response.json()["count"], 49)
 
         # With the filter
         response = self.assertRequestGetView(

@@ -60,6 +60,9 @@ REST_KNOX = {
 # ----------------------------------------------------------------------------
 # --------------------------------- PyGeoAPI ---------------------------------
 # ----------------------------------------------------------------------------
+SERVER_URL = os.environ.get(
+    'SERVER_URL', 'http://localhost:2000'
+)
 _pygeoapi_config_path = os.environ.get(
     'PYGEOAPI_CONFIG',
     absolute_path('core', 'settings', 'pygeoapi', 'pygeoapi-config.yml'),
@@ -69,7 +72,7 @@ PYGEOAPI_OPENAPI = os.environ.get(
     absolute_path('core', 'settings', 'pygeoapi', 'pygeoapi-openapi.yml'),
 )
 PYGEOAPI_SERVER_URL = os.environ.get(
-    'PYGEOAPI_SERVER_URL', 'http://localhost:2000/cloud-native-gis/ogc'
+    'PYGEOAPI_SERVER_URL', SERVER_URL + '/cloud-native-gis/ogc'
 )
 os.environ.setdefault('PYGEOAPI_CONFIG', _pygeoapi_config_path)
 os.environ.setdefault('PYGEOAPI_OPENAPI', PYGEOAPI_OPENAPI)

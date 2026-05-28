@@ -202,17 +202,16 @@ components:
       type: object
 info:
   contact:
-    name: Kartoza
-    url: https://kartoza.com
+    name: Unicef
+    url: https://geosight.unicef.org/
     x-ogc-serviceContact:
       addresses: []
       emails:
-      - value: info@kartoza.com
+      - value: geosight-no-reply@unicef.org
       links:
-      - href: https://kartoza.com
+      - href: https://geosight.unicef.org/
         type: text/html
-      name: Kartoza
-      position: GIS Team
+      name: Unicef
   description: OGC API Features for CloudNativeGIS layers
   license:
     name: CC-BY 4.0
@@ -659,11 +658,11 @@ paths:
       - server
 servers:
 - description: OGC API Features for CloudNativeGIS layers
-  url: http://localhost:5000/ogc
+  url: http://localhost:2000/cloud-native-gis/ogc
 tags:
 - name: collections
 - description: OGC API Features for CloudNativeGIS layers
   externalDocs:
     description: information
-    url: http://localhost:5000/ogc
+    url: http://localhost:2000/cloud-native-gis/ogc
   name: server
