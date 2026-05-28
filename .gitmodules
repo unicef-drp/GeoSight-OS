@@ -1,3 +1,0 @@
-[submodule "submodules/CloudNativeGIS"]
-	path = submodules/CloudNativeGIS
-	url = git@github.com:kartoza/CloudNativeGIS.git
