@@ -70,6 +70,8 @@ def get_resources(request: HttpRequest) -> dict:
     for layer in qs:
         resource_id = str(layer.unique_id)
         context_layer = context_layer_map.get(layer.id)
+        if context_layer is None:
+            continue
         editable = context_layer.permission.has_edit_perm(user)
         resource = _layer_to_resource(layer, db_settings)
         resource['title']['en'] = context_layer.name

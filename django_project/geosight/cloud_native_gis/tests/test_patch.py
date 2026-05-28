@@ -118,20 +118,28 @@ class GetResourcesPatchTest(TestCase):
             'metadata': {},
             'resources': {},
         }
+        mock_resource = {
+            'type': 'collection',
+            'title': {'en': ''},
+            'description': {'en': ''},
+            'providers': [{'editable': True}],
+        }
         with patch(
-            'geosight.cloud_native_gis.patch.get_queryset',
-            return_value=[self.mock_layer],
-        ), patch(
+            'geosight.cloud_native_gis.patch.ContextLayer'
+        ) as MockCL, patch(
+            'geosight.cloud_native_gis.patch.Layer'
+        ) as MockLayer, patch(
             'geosight.cloud_native_gis.patch.connection'
         ) as mock_conn, patch(
             'geosight.cloud_native_gis.patch.settings'
         ) as mock_settings, patch(
             'geosight.cloud_native_gis.patch._layer_to_resource',
-            return_value={
-                'type': 'collection',
-                'providers': [{'editable': True}],
-            },
+            return_value=mock_resource,
         ):
+            MockCL.permissions.list.return_value = [self.context_layer]
+            MockLayer.objects.filter.return_value.order_by.return_value = [
+                self.mock_layer
+            ]
             mock_conn.settings_dict = {
                 'HOST': 'localhost', 'PORT': 5432,
                 'NAME': 'db', 'USER': 'u', 'PASSWORD': 'p',
@@ -147,7 +155,7 @@ class GetResourcesPatchTest(TestCase):
             self.creator, PERMISSIONS.WRITE.name
         )
         config = self._call_get_resources(self.creator)
-        resource_id = str(self.mock_layer.unique_id).replace('-', '_')
+        resource_id = str(self.mock_layer.unique_id)
         provider = config['resources'][resource_id]['providers'][0]
         self.assertTrue(provider['editable'])
 
@@ -157,7 +165,7 @@ class GetResourcesPatchTest(TestCase):
             self.viewer, PERMISSIONS.READ.name
         )
         config = self._call_get_resources(self.viewer)
-        resource_id = str(self.mock_layer.unique_id).replace('-', '_')
+        resource_id = str(self.mock_layer.unique_id)
         provider = config['resources'][resource_id]['providers'][0]
         self.assertFalse(provider['editable'])
 
@@ -166,31 +174,41 @@ class GetResourcesPatchTest(TestCase):
         anon = MagicMock()
         anon.is_authenticated = False
         config = self._call_get_resources(anon)
-        resource_id = str(self.mock_layer.unique_id).replace('-', '_')
+        resource_id = str(self.mock_layer.unique_id)
         provider = config['resources'][resource_id]['providers'][0]
         self.assertFalse(provider['editable'])
 
-    def test_layer_without_context_layer_gets_editable_false(self):
-        """A layer not linked to any ContextLayer is never editable."""
+    def test_layer_without_context_layer_not_in_resources(self):
+        """A layer not linked to any visible ContextLayer is excluded from resources."""
         from geosight.cloud_native_gis.patch import get_resources
 
         orphan_layer = _make_layer(layer_id=999)
-        base_config = {'server': {}, 'logging': {}, 'metadata': {}, 'resources': {}}
+        base_config = {
+            'server': {}, 'logging': {}, 'metadata': {}, 'resources': {}
+        }
+        mock_resource = {
+            'type': 'collection',
+            'title': {'en': ''},
+            'description': {'en': ''},
+            'providers': [{'editable': True}],
+        }
 
         with patch(
-            'geosight.cloud_native_gis.patch.get_queryset',
-            return_value=[orphan_layer],
-        ), patch(
+            'geosight.cloud_native_gis.patch.ContextLayer'
+        ) as MockCL, patch(
+            'geosight.cloud_native_gis.patch.Layer'
+        ) as MockLayer, patch(
             'geosight.cloud_native_gis.patch.connection'
         ) as mock_conn, patch(
             'geosight.cloud_native_gis.patch.settings'
         ) as mock_settings, patch(
             'geosight.cloud_native_gis.patch._layer_to_resource',
-            return_value={
-                'type': 'collection',
-                'providers': [{'editable': True}],
-            },
+            return_value=mock_resource,
         ):
+            MockCL.permissions.list.return_value = []
+            MockLayer.objects.filter.return_value.order_by.return_value = [
+                orphan_layer
+            ]
             mock_conn.settings_dict = {
                 'HOST': 'localhost', 'PORT': 5432,
                 'NAME': 'db', 'USER': 'u', 'PASSWORD': 'p',
@@ -200,14 +218,13 @@ class GetResourcesPatchTest(TestCase):
             request = _make_request(self.creator)
             config = get_resources(request)
 
-        resource_id = str(orphan_layer.unique_id).replace('-', '_')
-        provider = config['resources'][resource_id]['providers'][0]
-        self.assertFalse(provider['editable'])
+        resource_id = str(orphan_layer.unique_id)
+        self.assertNotIn(resource_id, config['resources'])
 
     def test_resources_dict_structure(self):
         """get_resources returns a deep copy of PYGEOAPI_CONFIG with resources key."""
         config = self._call_get_resources(self.creator)
         self.assertIn('resources', config)
         self.assertIn('server', config)
-        resource_id = str(self.mock_layer.unique_id).replace('-', '_')
+        resource_id = str(self.mock_layer.unique_id)
         self.assertIn(resource_id, config['resources'])
