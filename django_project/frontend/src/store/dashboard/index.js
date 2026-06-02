@@ -51,6 +51,7 @@ import SelectedGlobalTimeConfig from "./reducers/selectedGlobalTimeConfig/action
 import SelectedRelatedTableLayer from "./reducers/selectedRelatedTableLayer/actions";
 import SelectedDynamicIndicatorLayer from "./reducers/selectedDynamicIndicatorLayer/actions";
 import SelectionState from "./reducers/selectionState/actions";
+import Stories from "./reducers/stories/actions";
 import Widgets from "./reducers/widgets/actions";
 
 const Actions = {
@@ -88,6 +89,7 @@ const Actions = {
   SelectedDynamicIndicatorLayer,
   SelectedRelatedTableLayer,
   SelectionState,
+  Stories,
   Widgets,
 };
 

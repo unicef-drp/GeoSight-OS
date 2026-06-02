@@ -42,6 +42,7 @@ import {
   LabelToggler,
   PopupToolbars,
   SearchGeometryInput,
+  StoryMapToolbar,
   TiltControl,
   ToggleSidePanel,
 } from "../Toolbars";
@@ -77,7 +78,13 @@ let previousLayerIds = [];
 /**
  * MapLibre component.
  */
-export default function MapLibre({ leftPanelProps, rightPanelProps }) {
+export default function MapLibre({
+  leftPanelProps,
+  rightPanelProps,
+  storyMapEnabled,
+  storyMapActive,
+  onToggleStoryPanel,
+}) {
   const dispatch = useDispatch();
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
@@ -375,6 +382,11 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
           <Plugin className="BookmarkControl">
             <Bookmark map={map} />
           </Plugin>
+          <StoryMapToolbar
+            enabled={storyMapEnabled}
+            active={storyMapActive}
+            onToggle={onToggleStoryPanel}
+          />
           {rightPanelProps ? (
             <ToggleSidePanel
               className={rightPanelProps.className}

@@ -25,6 +25,7 @@ import FiltersForm from "./Filters";
 import WidgetForm from "./Widgets";
 import RelatedTableForm from "./RelatedTable";
 import ToolsForm from "./Tools";
+import StoryMapForm from "./StoryMap";
 import ShareForm from "./Share";
 import { PAGES } from "./types.d";
 import IndicatorLayersControl from "./IndicatorLayers/Control";
@@ -57,6 +58,7 @@ export const DashboardFormContent = memo(
                             page == PAGES.RELATED_TABLES ?
                               <RelatedTableForm /> :
                               page == PAGES.TOOLS ? <ToolsForm /> :
+                                page == PAGES.STORY_MAP ? <StoryMapForm /> :
                                 page == PAGES.SHARE && user_permission.share ?
                                   <ShareForm /> : null
 

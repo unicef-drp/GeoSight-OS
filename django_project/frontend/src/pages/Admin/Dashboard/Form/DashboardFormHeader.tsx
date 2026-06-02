@@ -171,6 +171,13 @@ export const DashboardFormHeader = memo(({ page, setPage }: Props) => {
         targetPage={PAGES.TOOLS}
         title={"Tools"}
       />
+      <DashboardFormHeaderButtonWithData
+        page={page}
+        setPage={setPageCallback}
+        targetPage={PAGES.STORY_MAP}
+        title={"Story Map"}
+        dataKey={"stories"}
+      />
       {user_permission?.share && (
         <DashboardFormHeaderButtonWithNoData
           page={page}

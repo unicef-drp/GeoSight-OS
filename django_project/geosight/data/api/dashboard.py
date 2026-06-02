@@ -236,6 +236,7 @@ class DashboardData(APIView):
                     'permission',
                 ).prefetch_related(
                     'dashboardwidget_set',
+                    'dashboardstory_set',
                     'dashboardindicator_set__object',
                     'dashboardindicator_set__object__style',
                     'dashboardindicator_set__object__indicatorrule_set',
