@@ -175,3 +175,15 @@ if initial_default_data.lower() == 'true' and 'data_restorer' in plugins:
     except Exception as e:
         print(f'{e}')
         pass
+
+#########################################################
+# 11. Initialize cloudnative ogc openapi
+#########################################################
+try:
+    print("-----------------------------------------------------")
+    print("11. Initialize cloudnative ogc openapi")
+    call_command('generate_pygeoapi_openapi')
+except Exception as e:
+    print(f'{e}')
+    pass
+

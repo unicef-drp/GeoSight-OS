@@ -48,7 +48,10 @@ msal==1.21.0
 selenium==4.13.0
 webdriver-manager==4.0.1
 
-git+https://github.com/kartoza/CloudNativeGIS.git@0.0.9
+# pygeoapi
+pygeoapi==0.21.0
+jsonpatch==1.33
+git+https://github.com/kartoza/CloudNativeGIS.git@0.1.0
 
 # FEATURE: Multi tenant
 # Comment below for excluding the multi tenants feature

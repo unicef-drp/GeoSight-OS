@@ -113,10 +113,11 @@ test.describe('Context layer create admin', () => {
     // Check field
     await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Fields').click();
     await page.locator('label').filter({ hasText: 'Override field config from' }).click();
-    await expect(page.locator('.DragDropItem ')).toHaveCount(3);
+    await expect(page.locator('.DragDropItem ')).toHaveCount(4);
     await expect(page.locator('.DragDropItem').nth(0).locator('td').nth(1)).toHaveText('CITY_TYPE');
     await expect(page.locator('.DragDropItem').nth(1).locator('td').nth(1)).toHaveText('CITY_NAME');
     await expect(page.locator('.DragDropItem').nth(2).locator('td').nth(1)).toHaveText('COUNTRY');
+    await expect(page.locator('.DragDropItem').nth(3).locator('td').nth(1)).toHaveText('id');
     await page.locator('label').filter({ hasText: 'Override field config from' }).click();
 
     await page.getByText('Save').isEnabled();
@@ -146,8 +147,9 @@ test.describe('Context layer create admin', () => {
     if (!await page.locator('.DragDropItem').first().isVisible()) {
       await page.locator('label').filter({ hasText: 'Override field config from' }).click();
     }
-    await expect(page.locator('.DragDropItem')).toHaveCount(1);
+    await expect(page.locator('.DragDropItem')).toHaveCount(2);
     await expect(page.locator('.DragDropItem').nth(0).locator('td').nth(1)).toHaveText('COUNTRY');
+    await expect(page.locator('.DragDropItem').nth(1).locator('td').nth(1)).toHaveText('id');
     await page.locator('label').filter({ hasText: 'Override field config from' }).click();
 
     // Wait 2 second
