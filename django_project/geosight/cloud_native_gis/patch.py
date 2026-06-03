@@ -80,6 +80,7 @@ def get_resources(request: HttpRequest) -> dict:
         resource['providers'][0]['editable'] = editable
         resources[resource_id] = resource
 
+    # Get pygeoapi config and update resources
     config = copy.deepcopy(settings.PYGEOAPI_CONFIG)
     config['resources'] = resources
     return config
