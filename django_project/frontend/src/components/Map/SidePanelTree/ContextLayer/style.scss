@@ -29,14 +29,6 @@
     li {
       margin-left: -10px;
     }
-
-    > li {
-      border-bottom: 1px solid #0412171A;
-
-      .MuiTreeItem-content {
-        flex-direction: row-reverse;
-      }
-    }
   }
 }
 
@@ -61,13 +53,6 @@
 
   .LayerInfoIcon {
     cursor: pointer;
-  }
-
-  .MuiTreeItem-content {
-    align-items: start;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    box-sizing: border-box;
   }
 
   label {
@@ -119,8 +104,6 @@
 }
 
 .MuiTreeItem-label {
-  padding-left: 1rem !important;
-
   & > span {
     display: block;
   }
@@ -130,10 +113,6 @@
 
     .MuiTypography-root {
       margin-left: 3px;
-
-      .LayerIcon {
-        padding-top: 3px;
-      }
     }
   }
 
@@ -205,12 +184,6 @@
   padding-left: 0 !important;
   background-color: white !important;
 
-  .MuiTreeItem-iconContainer {
-    margin-right: 0;
-    margin-top: 3px;
-    width: auto !important;
-  }
-
   &.Mui-selected {
     background-color: white !important;
   }
@@ -227,21 +200,9 @@
 }
 
 .ContextLayersAccordion {
-  .MuiTreeItem-group {
-    .MuiTreeItem-content {
-      padding-left: 11px !important;
-    }
-  }
-
   .MuiCircularProgress-root {
     left: -1px !important;
   }
-}
-
-.MuiTreeItem-group {
-  margin-left: 0 !important;
-  padding-left: 18px !important;
-  box-sizing: border-box;
 }
 
 .PanelSearchBox {

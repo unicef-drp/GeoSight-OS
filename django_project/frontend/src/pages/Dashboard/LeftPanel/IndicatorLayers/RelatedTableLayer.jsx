@@ -17,11 +17,9 @@
    RELATED TABLE LAYER
    ========================================================================== */
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toUcode } from "../../../../utils/georepo";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import { Actions } from "../../../../store/dashboard";
 import {
   referenceLayerIndicatorLayer
@@ -179,28 +177,5 @@ export function RelatedTableLayerFilter({ relatedTableLayer }) {
     }
   }, [activated]);
 
-  return (
-    <div
-      className="LayerIcon LayerConfig"
-      onClick={(e) => {
-        if (isActive) {
-          dispatch(Actions.SelectedRelatedTableLayer.change(null));
-        } else {
-          dispatch(
-            Actions.SelectedRelatedTableLayer.change(relatedTableLayer.id),
-          );
-        }
-        if (activated) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      }}
-    >
-      {isActive ? (
-        <FilterAltIcon fontSize={"small"} />
-      ) : (
-        <FilterAltOffIcon fontSize={"small"} />
-      )}
-    </div>
-  );
+  return null;
 }

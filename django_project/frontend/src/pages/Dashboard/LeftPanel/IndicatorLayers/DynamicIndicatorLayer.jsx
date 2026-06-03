@@ -17,11 +17,9 @@
    DYNAMIC LAYER
    ========================================================================== */
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import { Actions } from "../../../../store/dashboard";
 import {
   dynamicLayerIndicatorList,
@@ -248,28 +246,5 @@ export function DynamicIndicatorLayerConfig({ indicatorLayer }) {
     return;
   }
 
-  return (
-    <div
-      className="LayerIcon LayerConfig"
-      onClick={(e) => {
-        if (isActive) {
-          dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
-        } else {
-          dispatch(
-            Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
-          );
-        }
-        if (activated) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      }}
-    >
-      {isActive ? (
-        <FilterAltIcon fontSize="small" />
-      ) : (
-        <FilterAltOffIcon fontSize="small" />
-      )}
-    </div>
-  );
+  return null;
 }
