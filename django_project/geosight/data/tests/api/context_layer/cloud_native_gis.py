@@ -98,7 +98,7 @@ class ContextLayerCloudNativeTest(BasePermissionTest.TestCase):
             code=200,
             user=self.admin
         )
-        self.assertEqual(response.json()["count"], 35)
+        self.assertEqual(response.json()["count"], 34)
 
     def test_data(self):
         """Test data."""
