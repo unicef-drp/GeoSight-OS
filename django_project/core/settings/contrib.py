@@ -85,9 +85,9 @@ os.environ.setdefault(
     ),
 )
 
-from pygeoapi.config import get_config
-from pygeoapi.openapi import load_openapi_document
-from pygeoapi.util import get_api_rules
+from pygeoapi.config import get_config  # noqa: E402
+from pygeoapi.openapi import load_openapi_document  # noqa: E402
+from pygeoapi.util import get_api_rules  # noqa: E402
 
 PYGEOAPI_CONFIG = get_config()
 OPENAPI_DOCUMENT = load_openapi_document()

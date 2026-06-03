@@ -47,9 +47,10 @@ def get_queryset(request: HttpRequest):
 
 
 def get_resources(request: HttpRequest) -> dict:
-    """
-    Build a pygeoapi config dict with per-layer editability based on
-    the requesting user's write permission on the associated ContextLayer.
+    """Build a pygeoapi config dict with per-layer editability.
+
+    Based on the requesting user's write permission on the associated
+    ContextLayer.
 
     :param request: the current Django HTTP request
     :type request: HttpRequest

@@ -1,3 +1,4 @@
+"""Middleware utilities for GeoSight."""
 from django.middleware.common import CommonMiddleware
 
 
@@ -9,6 +10,13 @@ class SelectiveAppendSlashMiddleware(CommonMiddleware):
     )
 
     def should_redirect_with_slash(self, request):
+        """Skip slash redirect for excluded path prefixes.
+
+        :param request: the current HTTP request
+        :type request: HttpRequest
+        :returns: whether to redirect with a trailing slash
+        :rtype: bool
+        """
         path = request.path_info
 
         # Skip redirect untuk prefix tertentu
