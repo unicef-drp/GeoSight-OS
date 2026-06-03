@@ -588,9 +588,12 @@
   .item-tree-layer-content {
     padding: 0.5rem;
     padding-left: 1rem;
-    margin-top: 0.5rem;
     margin-left: 4px;
     border-left: 1px solid #ccc;
+    box-sizing: border-box;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
 
 
     .mapboxgl-ctrl-legend {
@@ -600,7 +603,7 @@
     .WhereConfigurationQueryGroup,
     .WhereConfigurationQuery {
       padding: 0 !important;
-      width: 100%;
+      width: 99%;
     }
 
     .WhereConfigurationField div {
@@ -609,6 +612,7 @@
       -webkit-text-fill-color: unset !important;
     }
 
+    .IndicatorLayerMiddleConfig,
     .ContextLayerMiddleConfig {
       box-sizing: border-box;
       max-width: 100%;
@@ -621,7 +625,6 @@
         max-width: 60vw;
         overflow-x: auto;
         overflow-y: hidden;
-        margin-top: 0.5rem;
       }
 
       .WhereConfiguration {
@@ -696,6 +699,7 @@
           height: 25px !important;
           min-height: 25px !important;
           padding: 0 !important;
+          width: 100%;
         }
 
         & > .WhereConfigurationOperatorValue {
@@ -760,7 +764,6 @@
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
-        width: fit-content;
 
         .WhereConfigurationQuery {
           display: block;
