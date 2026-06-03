@@ -17,6 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import urllib.parse
 
+from django.conf import settings
+from django.urls import reverse
 from drf_yasg import openapi
 from rest_framework import serializers
 
@@ -45,6 +47,7 @@ class ContextLayerSerializer(ResourceSerializer):
     original_styles = serializers.SerializerMethodField()
     original_configuration = serializers.SerializerMethodField()
     configuration = serializers.SerializerMethodField()
+    ogc_api = serializers.SerializerMethodField()
 
     def get_url(self, obj: ContextLayer):
         """
@@ -181,6 +184,26 @@ class ContextLayerSerializer(ResourceSerializer):
         if isinstance(obj.configuration, str):
             return json.loads(obj.configuration)
         return obj.configuration
+
+    def get_ogc_api(self, obj: ContextLayer):
+        """Return the OGC API url for the context layer.
+
+        :param obj: Context layer instance.
+        :type obj: ContextLayer
+        :return: Original configuration dictionary or None.
+        :rtype: dict or None
+        """
+        cloud_native_gis_layer = obj.cloud_native_gis_layer
+        if not cloud_native_gis_layer:
+            return None
+        return settings.SERVER_URL + reverse(
+            'ogc:collection-detail',
+            kwargs={
+                'collection_id': (
+                    cloud_native_gis_layer.unique_id
+                )
+            }
+        )
 
     class Meta:  # noqa: D106
         model = ContextLayer
