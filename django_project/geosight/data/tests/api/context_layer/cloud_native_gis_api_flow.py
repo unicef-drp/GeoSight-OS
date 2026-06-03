@@ -42,7 +42,6 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
         super().setUp()
         self.client.force_login(self.admin)
 
-
         # ----------------------------------------
         # CREATE LAYER
         # ----------------------------------------
@@ -157,6 +156,20 @@ class ContextLayerCloudNativeAPIFlowTest(BasePermissionTest.TestCase):
     def test_api_flow(self):
         """Test attributes."""
         context_layer = self.context_layer
+        detail_url = reverse(
+            'context-layers-detail', args=(context_layer.id,)
+        )
+        response = self.assertRequestGetView(
+            url=detail_url,
+            code=200,
+            user=self.admin
+        )
+        self.assertIsNotNone(response.json()["ogc_api"])
+        self.assertTrue(
+            str(
+                self.cloud_native_layer.unique_id
+            ) in response.json()["ogc_api"]
+        )
 
         # -------------------------------------------------------
         # Add features
