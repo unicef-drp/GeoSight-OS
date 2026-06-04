@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
 
 import { addLayerWithOrder } from "../../MapLibre/utils/Render";
@@ -31,6 +31,7 @@ import { Logger } from "../../../../utils/logger";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 
 import "./style.scss";
+import { Actions } from "../../../../store/dashboard";
 
 const LAYER_HIGHLIGHT_ID = "reference-layer-highlight";
 
@@ -50,6 +51,7 @@ export function SearchGeometryMobile() {
 
 /** CompareLayer component. */
 export default function SearchGeometryInput({ map }: Props) {
+  const dispatch = useDispatch();
   const referenceLayer = useSelector(
     // @ts-ignore
     (state) => state.dashboard.data?.referenceLayer,
@@ -106,13 +108,7 @@ export default function SearchGeometryInput({ map }: Props) {
 
     const bbox = entity.bbox;
     Logger.log("SEARCH_GEOMETRY_INPUT:", bbox);
-    map.fitBounds(
-      [
-        [bbox[0], bbox[1]],
-        [bbox[2], bbox[3]],
-      ],
-      { padding: 20 },
-    );
+    dispatch(Actions.Map.updateExtent([bbox[0], bbox[1], bbox[2], bbox[3]]));
 
     // CREATE HIGHLIGHT
     addLayerWithOrder(
