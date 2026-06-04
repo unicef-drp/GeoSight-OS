@@ -49,7 +49,6 @@ import DatasetGeometryData from "./utils/DatasetGeometryData";
 import IndicatorLayersReferenceControl
   from "./IndicatorLayersReferenceController";
 import { Variables } from "../../../utils/Variables";
-import { TransparencyControl } from "../Tools/Transparency";
 import { isDashboardToolEnabled } from "../../../selectors/dashboard";
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
@@ -73,7 +72,6 @@ maplibregl.addProtocol("cog", cogProtocol);
 export default function Map({ leftPanelProps, rightPanelProps }) {
   const dispatch = useDispatch();
   const drawingRef = useRef(null);
-  const transparencyRef = useRef(null);
 
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
@@ -199,7 +197,6 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           <IndicatorLayersReferenceControl />
           <DatasetGeometryData />
           <ReferenceLayerCentroid map={map} />
-          <TransparencyControl map={map} ref={transparencyRef} />
         </>
       ) : null}
 

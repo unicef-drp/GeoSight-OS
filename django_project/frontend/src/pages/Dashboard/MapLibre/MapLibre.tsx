@@ -12,7 +12,7 @@
  * __date__ = '04/06/2026'
  * __copyright__ = ('Copyright 2026, Unicef')
  */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl, {
   LayerSpecification,
@@ -29,6 +29,10 @@ import { Variables } from "../../../utils/Variables";
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import {
+  updateContextLayerTransparency,
+  updateIndicatorLayerTransparency,
+} from "./utils/trasnparency";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -66,7 +70,6 @@ export interface Props {
   setMap: (map: maplibregl.Map) => void;
   setDeckGl: (deckgl: MapboxOverlay) => void;
   drawingRef: React.MutableRefObject<any>;
-  transparencyRef: React.MutableRefObject<any>;
 }
 
 export default function MapLibre({
@@ -75,12 +78,11 @@ export default function MapLibre({
   setMap,
   setDeckGl,
   drawingRef,
-  transparencyRef,
 }: Props) {
   const dispatch = useDispatch();
   const container = "map-" + id;
 
-  const { basemapLayer, position } = useSelector(
+  const { basemapLayer, position, transparency } = useSelector(
     // @ts-ignore
     (state) => state.map,
   );
@@ -92,6 +94,14 @@ export default function MapLibre({
   const minZoomConfig = useSelector((state) => state.dashboard.data.minZoom);
   // @ts-ignore
   const maxZoomConfig = useSelector((state) => state.dashboard.data.maxZoom);
+
+  const {
+    indicatorLayer: indicatorLayerTransparency,
+    contextLayer: contextLayerTransparency,
+  } = transparency;
+
+  const indicatorTransparencyRef = useRef(indicatorLayerTransparency);
+  const contextTransparencyRef = useRef(contextLayerTransparency);
 
   // Drawing ref
   const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
@@ -169,7 +179,11 @@ export default function MapLibre({
           popup.style.zIndex = "0"; // Lower than your intended layer
         });
       }
-      transparencyRef.current.update();
+      updateIndicatorLayerTransparency(
+        newMap,
+        indicatorTransparencyRef.current,
+      );
+      updateContextLayerTransparency(newMap, contextTransparencyRef.current);
     });
 
     let mapControl = document.querySelector(
@@ -212,7 +226,9 @@ export default function MapLibre({
         const rightContent = document.querySelector(
           ".RightContent .right",
         ) as HTMLElement;
-        const rightPadding = id != 0 ? 0 : (rightContent?.offsetWidth ?? 0);
+        const isMobile = window.innerWidth <= 1000;
+        const rightPadding =
+          id != 0 || isMobile ? 0 : (rightContent?.offsetWidth ?? 0);
         map.fitBounds(
           [
             [extent[0], extent[1]],
@@ -262,12 +278,24 @@ export default function MapLibre({
     );
   };
 
-  /** BASEMAP CHANGED */
+  /** Basemap changed */
   useEffect(() => {
     if (map && basemapLayer) {
       renderLayer(BASEMAP_ID, basemapLayer, { type: "raster" });
     }
   }, [map, basemapLayer]);
+
+  /** Indicator layer transparency */
+  useEffect(() => {
+    updateIndicatorLayerTransparency(map, indicatorLayerTransparency);
+    indicatorTransparencyRef.current = indicatorLayerTransparency;
+  }, [indicatorLayerTransparency]);
+
+  /** Indicator layer transparency */
+  useEffect(() => {
+    updateContextLayerTransparency(map, contextLayerTransparency);
+    contextTransparencyRef.current = contextLayerTransparency;
+  }, [contextLayerTransparency]);
 
   return <div key={container} id={container} className="Maplibre"></div>;
 }
