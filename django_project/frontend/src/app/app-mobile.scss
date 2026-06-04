@@ -95,9 +95,6 @@
     border-top: 2px solid white;
     border-bottom: 1px solid var(--border-gray);
   }
-  .ProjectOverview-Toolbar {
-    margin-top: 3rem;
-  }
   .LegendToggler {
     position: absolute;
     bottom: 1rem;
@@ -132,15 +129,6 @@
   }
   .MapLegendOpen .MapLegendContent {
     display: block !important;
-  }
-  .Toolbar-Left {
-    .ProjectOverview-Toolbar {
-      a {
-        margin: 0 !important;
-        padding: 6px !important;
-        line-height: unset !important;
-      }
-    }
   }
   .DashboardMiddlePanel .TopContent .MiddleContent {
     flex-grow: 1;

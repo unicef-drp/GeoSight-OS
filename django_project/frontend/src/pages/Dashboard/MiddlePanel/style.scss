@@ -89,6 +89,7 @@
       flex-direction: column;
       display: flex;
       padding-bottom: 170px;
+      margin-top: 1rem;
     }
 
     & > div {
@@ -112,35 +113,6 @@
       .RightMapNavbar {
         pointer-events: auto !important;
         padding: 0.5rem;
-      }
-    }
-  }
-
-  .ButtonSection {
-    background-color: unset !important;
-    padding: 1rem;
-    pointer-events: none !important;
-
-    .ProjectOverview-Toolbar {
-      width: fit-content;
-      pointer-events: auto !important;
-      cursor: pointer;
-
-      a {
-        padding: 6px;
-      }
-
-      & > div {
-        box-shadow: var(--box-shadow);
-        width: 29px !important;
-        height: 29px !important;
-        background-color: var(--white) !important;
-
-        svg {
-          margin-top: 6px;
-          height: 18px !important;
-          width: 18px !important;
-        }
       }
     }
   }

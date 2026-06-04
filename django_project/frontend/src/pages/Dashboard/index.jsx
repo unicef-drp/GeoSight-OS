@@ -24,7 +24,6 @@ import RightPanel from "./MiddlePanel/RightPanel";
 import MiddlePanel from "./MiddlePanel";
 import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
-import { ProjectOverview } from "./Toolbars";
 import { useTranslation } from "react-i18next";
 import { isDashboardToolEnabled } from "../../selectors/dashboard";
 import { Variables } from "../../utils/Variables";
@@ -119,11 +118,6 @@ export default function Dashboard({ children }) {
               setLeftExpanded={setLeftExpanded}
               rightExpanded={rightExpanded}
               setRightExpanded={setRightExpanded}
-              leftContent={
-                <div className="ButtonSection">
-                  <ProjectOverview />
-                </div>
-              }
               rightContent={<RightPanel rightExpanded={rightExpanded} />}
             />
           </section>

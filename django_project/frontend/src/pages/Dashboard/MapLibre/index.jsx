@@ -39,6 +39,7 @@ import {
   HomeButton,
   LabelToggler,
   PopupToolbars,
+  ProjectOverview,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -107,6 +108,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
               }}
             />
           ) : null}
+          <ProjectOverview />
           <ReferenceLayerLevelSelection />
           <GlobalDateSelector />
         </div>
