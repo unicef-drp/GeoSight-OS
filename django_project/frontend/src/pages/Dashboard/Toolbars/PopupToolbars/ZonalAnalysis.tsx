@@ -24,7 +24,7 @@ import React, {
   useState,
 } from "react";
 import maplibregl from "maplibre-gl";
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import {
   ZonalAnalysisOffIcon,
   ZonalAnalysisOnIcon,

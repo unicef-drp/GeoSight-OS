@@ -28,7 +28,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import {

@@ -20,7 +20,7 @@
 import maplibregl from "maplibre-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { hasLayer, hasSource } from "../../pages/Dashboard/MapLibre/utils";
-import { addLayerWithOrder } from "../../pages/Dashboard/MapLibre/Render";
+import { addLayerWithOrder } from "../../pages/Dashboard/MapLibre/utils/Render";
 import { Variables } from "../Variables";
 import {
   buffer as turfBufffer,

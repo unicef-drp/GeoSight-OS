@@ -23,7 +23,7 @@ import maplibregl from "maplibre-gl";
 import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
 import ReferenceLayers from "./Layers/ReferenceLayer";
 import ContextLayers from "./Layers/ContextLayers";
-import { Plugin, PluginChild } from "./Plugin";
+import { Plugin, PluginChild } from "./utils/Plugin";
 import {
   ThreeDimensionOffIcon,
   ThreeDimensionOnIcon,
@@ -45,9 +45,9 @@ import {
 } from "../Toolbars";
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
-import DatasetGeometryData from "./Controllers/DatasetGeometryData";
+import DatasetGeometryData from "./utils/DatasetGeometryData";
 import IndicatorLayersReferenceControl
-  from "./IndicatorLayersReferenceControl";
+  from "./IndicatorLayersReferenceController";
 import { Variables } from "../../../utils/Variables";
 import { TransparencyControl } from "../Tools/Transparency";
 import { isDashboardToolEnabled } from "../../../selectors/dashboard";

@@ -1,6 +1,6 @@
 import { formatStyle } from "../../../../../utils/label.tsx";
 import { hasLayer, hasSource } from "../../utils";
-import { addLayerWithOrder } from "../../Render";
+import { addLayerWithOrder } from "../../utils/Render";
 import { Variables } from "../../../../../utils/Variables";
 import { Logger } from "../../../../../utils/logger";
 

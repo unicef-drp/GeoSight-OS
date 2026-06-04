@@ -12,8 +12,8 @@
  * __date__ = '03/02/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import { removeLayer } from "./utils";
-import { Variables } from "../../../utils/Variables";
+import { removeLayer } from "./index";
+import { Variables } from "../../../../utils/Variables";
 import maplibregl from "maplibre-gl";
 
 export function addLayerWithOrder(

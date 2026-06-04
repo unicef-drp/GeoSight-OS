@@ -20,7 +20,7 @@ import {
   loadImageToMap,
 } from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
-import { addLayerWithOrder } from "../Render";
+import { addLayerWithOrder } from "../utils/Render";
 import { Variables } from "../../../../utils/Variables";
 import { dictDeepCopy } from "../../../../utils/main";
 import { renderContextLayerLabel } from "../Layers/ContextLayers/Label.tsx";

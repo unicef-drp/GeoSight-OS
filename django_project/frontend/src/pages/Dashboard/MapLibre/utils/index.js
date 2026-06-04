@@ -14,7 +14,6 @@
  */
 
 import maplibregl from "maplibre-gl";
-import { FILL_LAYER_ID_KEY } from "./Layers/ReferenceLayer";
 
 const MOBILE_BREAKPOINT = 1000;
 const centerMapOnMobile = (map, lngLat) => {
@@ -388,18 +387,6 @@ export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
   } else {
     return undefined;
   }
-};
-
-/**
- * Get layer id of reference layer
- * @param map
- * @returns {undefined|string}
- */
-export const getLayerIdOfReferenceLayer = (map) => {
-  const first = map
-    .getStyle()
-    .layers.filter((layer) => layer.id.includes(FILL_LAYER_ID_KEY))[0];
-  return first?.id;
 };
 
 export const hexToRgba = (hex, alpha = 1, format = "array") => {

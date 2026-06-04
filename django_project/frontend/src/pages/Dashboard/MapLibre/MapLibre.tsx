@@ -23,7 +23,7 @@ import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 import { Actions } from "../../../store/dashboard";
 import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 import { removeLayer, removeSource } from "./utils";
-import { addLayerWithOrder } from "./Render";
+import { addLayerWithOrder } from "./utils/Render";
 import { Variables } from "../../../utils/Variables";
 
 // Initialize cog

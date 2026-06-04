@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-/** Utils specifically for data context **/
+/** utils specifically for data context **/
 
 export function updateContextData(context, referenceLayerData) {
   const datasetlevelDict = {};

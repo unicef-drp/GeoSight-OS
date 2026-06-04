@@ -28,7 +28,7 @@ import {
   indicatorHasData,
 } from "../../../../utils/indicatorLayer";
 import { allDataIsReady } from "../../../../utils/indicators";
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { LayerIcon } from "../../../../components/Icons";
 
 import "./style.scss";

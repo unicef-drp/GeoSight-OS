@@ -15,7 +15,7 @@
 
 import $ from "jquery";
 import { addPopup } from "../../utils";
-import { renderPopup, renderTemplateContent } from "../../Popup";
+import { renderPopup, renderTemplateContent } from "../../utils/Popup";
 import { fetchingData } from "../../../../../Requests";
 import { updateContextData } from "../../../../../utils/dataContext";
 import { extractCode } from "../../../../../utils/georepo";

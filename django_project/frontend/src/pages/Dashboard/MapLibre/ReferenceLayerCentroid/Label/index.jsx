@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import { hasLayer, hasSource, removeLayer } from "../../utils";
-import { addLayerWithOrder } from "../../Render";
+import { addLayerWithOrder } from "../../utils/Render";
 import { Variables } from "../../../../../utils/Variables";
 import { Logger } from "../../../../../utils/logger";
 import { formatStyle } from "../../../../../utils/label.tsx";

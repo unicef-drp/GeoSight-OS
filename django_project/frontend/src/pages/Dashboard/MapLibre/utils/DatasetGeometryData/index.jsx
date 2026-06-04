@@ -20,15 +20,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import $ from "jquery";
-import { datasetListFromDashboardData } from "../../../../utils/geometry";
-import { dictDeepCopy } from "../../../../utils/main";
-import { Actions } from "../../../../store/dashboard";
-import { axiosGet, headers } from "../../../../utils/georepo";
-import { apiReceive } from "../../../../store/reducers_api";
-import { DjangoRequests } from "../../../../Requests";
-import { InternalReferenceDatasets } from "../../../../utils/urls";
-import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
-import { ExecuteWebWorker } from "../../../../utils/WebWorker";
+import { datasetListFromDashboardData } from "../../../../../utils/geometry";
+import { dictDeepCopy } from "../../../../../utils/main";
+import { Actions } from "../../../../../store/dashboard";
+import { axiosGet, headers } from "../../../../../utils/georepo";
+import { apiReceive } from "../../../../../store/reducers_api";
+import { DjangoRequests } from "../../../../../Requests";
+import { InternalReferenceDatasets } from "../../../../../utils/urls";
+import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
+import { ExecuteWebWorker } from "../../../../../utils/WebWorker";
 import worker from "./worker";
 
 /**

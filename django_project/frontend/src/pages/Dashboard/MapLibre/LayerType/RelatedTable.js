@@ -24,7 +24,7 @@ import {
   removeSource,
 } from "../utils";
 import { toJson } from "../../../../utils/main";
-import { addLayerWithOrder } from "../Render";
+import { addLayerWithOrder } from "../utils/Render";
 import { Variables } from "../../../../utils/Variables";
 import { renderContextLayerLabel } from "../Layers/ContextLayers/Label.tsx";
 

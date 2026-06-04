@@ -21,7 +21,7 @@ import { addPopupEl } from "../../utils";
 import $ from "jquery";
 import maplibregl from "maplibre-gl";
 import Chart from "chart.js/auto";
-import { popupTemplate } from "../../Popup";
+import { popupTemplate } from "../../utils/Popup";
 
 let charts = {};
 let markers = [];

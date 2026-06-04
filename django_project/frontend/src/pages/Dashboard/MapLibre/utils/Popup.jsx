@@ -16,8 +16,8 @@
 /**
  * POPUP that using nunjucks
  */
-import { dictDeepCopy } from "../../../utils/main";
-import { nunjucksContent } from "../../../components/Nunjucks";
+import { dictDeepCopy } from "../../../../utils/main";
+import { nunjucksContent } from "../../../../components/Nunjucks";
 
 // -------------------------------------------------
 // New popup

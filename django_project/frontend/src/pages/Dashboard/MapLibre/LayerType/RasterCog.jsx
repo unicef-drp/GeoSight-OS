@@ -30,7 +30,7 @@ import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
 import { setColorFunction } from '@geomatico/maplibre-cog-protocol';
 import { DjangoRequests } from "../../../../Requests";
-import { addLayerWithOrder } from "../Render";
+import { addLayerWithOrder } from "../utils/Render";
 import { Variables } from "../../../../utils/Variables";
 import { removeHexAlpha } from "../../../../utils/color";
 

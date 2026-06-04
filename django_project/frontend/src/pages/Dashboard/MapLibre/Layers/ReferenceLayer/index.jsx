@@ -46,7 +46,7 @@ import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
-import { addLayerWithOrder } from "../../Render";
+import { addLayerWithOrder } from "../../utils/Render";
 import { Variables } from "../../../../../utils/Variables";
 import { isProjectUsingConceptUUID } from "../../../../../selectors/dashboard";
 

@@ -21,7 +21,7 @@ import React, { Fragment, memo } from "react";
 import { useSelector } from "react-redux";
 import { HomeIcon } from "../../../../components/Icons";
 
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 

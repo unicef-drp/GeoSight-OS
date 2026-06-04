@@ -21,7 +21,7 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
 
-import { addLayerWithOrder } from "../../MapLibre/Render";
+import { addLayerWithOrder } from "../../MapLibre/utils/Render";
 import { Variables } from "../../../../utils/Variables";
 import SearchEntityOption from "../../../../components/SearchEntityOption";
 import { GeorepoUrls, updateToken } from "../../../../utils/georepo";

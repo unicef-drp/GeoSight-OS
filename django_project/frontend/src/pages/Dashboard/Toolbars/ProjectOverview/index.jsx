@@ -33,7 +33,7 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../../components/Modal";
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { CloseButton } from "../../../../components/Elements/Button";
 import { InfoFillIcon } from "../../../../components/Icons";
 

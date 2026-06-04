@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
 import { arcGisLayer, geojsonLayer, rasterTileLayer } from "../../LayerType";
 import { dictDeepCopy, parseDateTime } from "../../../../../utils/main";
-import { popupTemplate } from "../../Popup";
+import { popupTemplate } from "../../utils/Popup";
 import {
   dataStructureToListData
 } from "../../../../../components/SortableTreeForm/utilities";
@@ -32,7 +32,7 @@ import relatedTableLayer from "../../LayerType/RelatedTable";
 import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 import rasterCogLayer from "../../LayerType/RasterCog";
 import { Variables } from "../../../../../utils/Variables";
-import { addLayerWithOrder } from "../../Render";
+import { addLayerWithOrder } from "../../utils/Render";
 import { renderContextLayerLabel } from "./Label.tsx";
 
 const ID = `context-layer`;
