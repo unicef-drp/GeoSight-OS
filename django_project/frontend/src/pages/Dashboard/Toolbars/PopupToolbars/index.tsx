@@ -47,13 +47,13 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
       measurementRef?.current?.redraw();
     },
     isMeasurementToolActive() {
-      measurementRef?.current?.isActive();
+      return measurementRef?.current?.isActive() ?? false;
     },
     redrawZonalAnalysis() {
       zonalAnalysisRef?.current?.redraw();
     },
     isZonalAnalysisActive() {
-      zonalAnalysisRef?.current?.isActive();
+      return zonalAnalysisRef?.current?.isActive() ?? false;
     },
   }));
 

@@ -39,7 +39,7 @@
       display: none !important;
     }
 
-    #map {
+    #map-content {
       display: none;
     }
 
@@ -49,9 +49,14 @@
     }
   }
 
-  #map {
+  #map-content {
     height: 100%;
     width: 100%;
+
+    .maplibregl-map {
+      height: 100%;
+      width: 100%;
+    }
 
     &:focus-visible {
       outline: none;
@@ -269,7 +274,6 @@
 
 .LeftExpanded {
   .Toolbar {
-    padding-left: 20%;
     background: white;
   }
 

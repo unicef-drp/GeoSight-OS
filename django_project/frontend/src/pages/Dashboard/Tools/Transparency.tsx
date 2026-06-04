@@ -22,7 +22,7 @@ import React, {
 import $ from "jquery";
 import { useSelector } from "react-redux";
 import maplibregl, { LayerSpecification } from "maplibre-gl";
-import { changeTransparency } from "./utils";
+import { changeTransparency } from "../MapLibre/utils";
 
 export interface Props {
   map: maplibregl.Map;

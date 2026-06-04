@@ -20,7 +20,6 @@
 .DashboardMiddlePanel {
   flex-grow: 1;
   position: relative;
-  pointer-events: none;
   height: 100%;
   padding-top: 49px;
   box-sizing: border-box;
@@ -29,8 +28,7 @@
 
   &.HiddenMap {
     .BottomContent,
-    .LeftContent,
-    .MiddleContent {
+    .LeftContent {
       display: none !important;
     }
 
@@ -84,19 +82,6 @@
     z-index: 2;
     display: flex;
     min-height: 0;
-
-    .MiddleContent {
-      pointer-events: none;
-      padding-top: 1rem;
-
-      .IndicatorLayerMiddleConfig {
-        box-shadow: var(--box-shadow);
-      }
-
-      .IsDate {
-        min-width: 250px;
-      }
-    }
 
     .LeftContent {
       pointer-events: none;
@@ -164,6 +149,7 @@
     height: 50px;
     width: 100%;
     transition: height linear 0.2s;
+    pointer-events: none;
 
     &.DateOpen {
       height: 200px;
