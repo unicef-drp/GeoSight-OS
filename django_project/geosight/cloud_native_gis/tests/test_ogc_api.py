@@ -23,7 +23,9 @@ from cloud_native_gis.utils.connection import (
 )
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from knox.models import AuthToken
 
+from core.models.api_key import ApiKey
 from core.settings.utils import ABS_PATH
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
@@ -531,6 +533,111 @@ class ContextLayerCloudNativeCOGTest(BasePermissionTest.TestCase):
         )
         self.assertRequestDeleteView(private_url, 404)
         self.assertRequestDeleteView(private_url, 200, user=self.admin)
+
+    def _create_api_key(self, user):
+        """Create an active Knox token + ApiKey for *user*.
+
+        Returns the plain-text token string to use in Authorization headers.
+        """
+        auth_token, token_str = AuthToken.objects.create(user=user)
+        ApiKey.objects.create(token=auth_token)
+        return token_str
+
+    def test_bearer_authentication(self):
+        """Test that BearerAuthentication grants the correct access."""
+        url = reverse('ogc:collections')
+
+        # No token: anonymous (only public resource visible)
+        client = self.test_client()
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['collections']), 1)
+
+        # Invalid token: 401
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION='Bearer invalidtoken123',
+            HTTP_GEOSIGHT_USER_KEY=self.admin.email,
+        )
+        self.assertEqual(response.status_code, 401)
+
+        # Valid token but missing GeoSight-User-Key: 401
+        admin_token = self._create_api_key(self.admin)
+        client = self.test_client()
+        response = client.get(
+            url, HTTP_AUTHORIZATION=f'Bearer {admin_token}'
+        )
+        self.assertEqual(response.status_code, 401)
+
+        # Valid token but wrong GeoSight-User-Key: 401
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION=f'Bearer {admin_token}',
+            HTTP_GEOSIGHT_USER_KEY='wrong@example.com',
+        )
+        self.assertEqual(response.status_code, 401)
+
+        # Inactive token: 401
+        auth_token, token_str = AuthToken.objects.create(user=self.admin)
+        api_key = ApiKey.objects.create(token=auth_token, is_active=False)
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION=f'Bearer {token_str}',
+            HTTP_GEOSIGHT_USER_KEY=self.admin.email,
+        )
+        self.assertEqual(response.status_code, 401)
+        api_key.delete()
+
+        # Valid admin token + correct key: all 4 collections
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION=f'Bearer {admin_token}',
+            HTTP_GEOSIGHT_USER_KEY=self.admin.email,
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()['collections']
+        self.assertEqual(len(results), 4)
+
+        # Valid viewer token + correct key: only public collection
+        viewer_token = self._create_api_key(self.viewer)
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION=f'Bearer {viewer_token}',
+            HTTP_GEOSIGHT_USER_KEY=self.viewer.email,
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()['collections']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['title'], 'Name Public')
+
+        # Valid creator token + correct key: resource_3 + public
+        creator_token = self._create_api_key(self.creator)
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION=f'Bearer {creator_token}',
+            HTTP_GEOSIGHT_USER_KEY=self.creator.email,
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()['collections']
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0]['title'], 'Name C')
+        self.assertEqual(results[1]['title'], 'Name Public')
+
+        # Token keyword is case-insensitive (Token vs Bearer)
+        client = self.test_client()
+        response = client.get(
+            url,
+            HTTP_AUTHORIZATION=f'Token {admin_token}',
+            HTTP_GEOSIGHT_USER_KEY=self.admin.email,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['collections']), 4)
 
     def test_collection_schema(self):
         """Test SCHEMA API."""
