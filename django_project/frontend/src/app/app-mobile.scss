@@ -214,6 +214,27 @@
   .maplibregl-ctrl-bottom-right {
     right: 0 !important;
   }
+
+  #map-content {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(auto-fill, 1fr) !important;
+
+    &:has(> *:nth-child(2)):not(:has(> *:nth-child(3))) {
+      grid-template-rows: 1fr 1fr !important;
+    }
+
+    &:has(> *:nth-child(3)):not(:has(> *:nth-child(4))) {
+      grid-template-rows: 1fr 1fr 1fr !important;
+
+      > *:nth-child(1) {
+        grid-row: unset !important;
+      }
+    }
+
+    &:has(> *:nth-child(4)) {
+      grid-template-rows: 1fr 1fr 1fr 1fr !important;
+    }
+  }
   .DashboardMiddlePanel .BottomContent {
     height: 0 !important;
     width: 100vw !important;

@@ -20,7 +20,7 @@
 import React, { Fragment, useEffect } from "react";
 import { centroid as turfCentroid } from "@turf/turf";
 import { useSelector } from "react-redux";
-import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
+import { hasLayer, hasSource, removeLayer } from "../../utils";
 import { arcGisLayer, geojsonLayer, rasterTileLayer } from "../../LayerType";
 import { dictDeepCopy, parseDateTime } from "../../../../../utils/main";
 import { popupTemplate } from "../../utils/Popup";
@@ -53,23 +53,11 @@ function removeLayers(map, id) {
     removeLayer(map, layer.id);
   });
   // Remove marker
-  markersContextLayers[id]?.map((marker) => {
+  markersContextLayers[map.container]?.[id]?.map((marker) => {
     marker.remove();
   });
-  markersContextLayers[id] = [];
-}
-
-/**
- * Remove source and layer
- */
-function removeSourceAndLayers(map, id) {
-  removeLayers(map, id);
-  const sources = Object.keys(map.getStyle().sources).filter((source) =>
-    source.includes(id),
-  );
-  sources.map((source) => {
-    removeSource(map, source);
-  });
+  markersContextLayers[map.container] ??= {};
+  markersContextLayers[map.container][id] = [];
 }
 
 /*** For popup **/
@@ -128,7 +116,7 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
 /**
  * Render label of data
  */
-export function renderLabel(id, contextLayerData, contextLayer, map) {
+export function renderLabel(id, contextLayerData, map) {
   if (!contextLayerData?.data_fields) {
     return;
   }
@@ -199,8 +187,9 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
     }
 
     // For onload layer
-    if (!onLoadFunctions[id]) {
-      onLoadFunctions[id] = (e) => {
+    onLoadFunctions[map.container] ??= {};
+    if (!onLoadFunctions[map.container][id]) {
+      onLoadFunctions[map.container][id] = (e) => {
         if (e.sourceId === id && e?.source?.data?.features?.length) {
           const features = dictDeepCopy(e?.source?.data?.features);
           features.map((feature) => {
@@ -219,8 +208,8 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
         }
       };
     }
-    map.off("sourcedata", onLoadFunctions[id]);
-    map.on("sourcedata", onLoadFunctions[id]);
+    map.off("sourcedata", onLoadFunctions[map.container][id]);
+    map.on("sourcedata", onLoadFunctions[map.container][id]);
   }
 }
 
@@ -253,7 +242,8 @@ export function contextLayerRendering(
               null,
             );
           });
-          markersContextLayers[id] = markers;
+          markersContextLayers[map.container] ??= {};
+          markersContextLayers[map.container][id] = markers;
           break;
         }
         case Variables.LAYER.TYPE.RASTER_TILE: {
@@ -276,7 +266,7 @@ export function contextLayerRendering(
             },
             contextLayerOrder,
           );
-          renderLabel(id, contextLayerData, contextLayer, map);
+          renderLabel(id, contextLayerData, map);
           break;
         }
         case Variables.LAYER.TYPE.VECTOR_TILE: {

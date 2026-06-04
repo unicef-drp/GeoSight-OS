@@ -22,7 +22,6 @@ import { useDispatch, useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
 import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
 import ReferenceLayers from "./Layers/ReferenceLayer";
-import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./utils/Plugin";
 import {
   ThreeDimensionOffIcon,
@@ -186,15 +185,15 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
         <MapLibre
           key={0}
           id={0}
-          map={mainMap}
-          setMap={setMainMap}
-          setDeckGl={setDeckGl}
+          setParentMap={setMainMap}
+          setParentDeckGl={setDeckGl}
           drawingRef={drawingRef}
         />
+        {/*<MapLibre key={1} id={1} />*/}
+        {/*<MapLibre key={2} id={2} />*/}
       </div>
 
       <ReferenceLayers map={mainMap} deckgl={deckgl} is3DView={is3dMode} />
-      <ContextLayers map={mainMap} />
       {mainMap ? (
         <>
           <IndicatorLayersReferenceControl />

@@ -12,7 +12,7 @@
  * __date__ = '04/06/2026'
  * __copyright__ = ('Copyright 2026, Unicef')
  */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl, {
   LayerSpecification,
@@ -30,6 +30,8 @@ import {
   updateIndicatorLayerTransparency,
 } from "./utils/trasnparency";
 import { zoomToExtent } from "./utils/movement";
+import { registerMap, unregisterMap } from "./utils/mapSync";
+import ContextLayers from "./Layers/ContextLayers";
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
@@ -67,19 +69,19 @@ const createAttributionControl = (
 
 export interface Props {
   id: number;
-  map: maplibregl.Map;
-  setMap: (map: maplibregl.Map) => void;
-  setDeckGl: (deckgl: MapboxOverlay) => void;
-  drawingRef: React.MutableRefObject<any>;
+  setParentMap?: (map: maplibregl.Map) => void;
+  setParentDeckGl?: (deckgl: MapboxOverlay) => void;
+  drawingRef?: React.MutableRefObject<any>;
 }
 
 export default function MapLibre({
   id,
-  map,
-  setMap,
-  setDeckGl,
+  setParentMap,
+  setParentDeckGl,
   drawingRef,
 }: Props) {
+  const [map, setMap] = useState(null);
+  const [deckgl, setDeckGl] = useState(null);
   const dispatch = useDispatch();
   const container = "map-" + id;
 
@@ -115,12 +117,12 @@ export default function MapLibre({
   const contextTransparencyRef = useRef(contextLayerTransparency);
 
   // Drawing ref
-  const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
+  const redrawMeasurement = () => drawingRef?.current.redrawMeasurement();
   const isMeasurementToolActive = () =>
-    drawingRef.current.isMeasurementToolActive();
-  const redrawZonalAnalysis = () => drawingRef.current.redrawZonalAnalysis();
+    drawingRef?.current.isMeasurementToolActive();
+  const redrawZonalAnalysis = () => drawingRef?.current.redrawZonalAnalysis();
   const isZonalAnalysisActive = () =>
-    drawingRef.current.isZonalAnalysisActive();
+    drawingRef?.current.isZonalAnalysisActive();
 
   /**
    * FIRST INITIATE
@@ -143,15 +145,19 @@ export default function MapLibre({
     }).addControl(createAttributionControl({ compact: true }, dispatch));
     newMap.once("load", () => {
       setMap(newMap);
-      setTimeout(
-        () =>
+      registerMap(id, newMap);
+      if (setParentMap) {
+        setParentMap(newMap);
+      }
+      if (id === 0) {
+        setTimeout(() => {
           document
             .querySelector(".maplibregl-ctrl-compass")
-            .addEventListener("click", () => {
+            ?.addEventListener("click", () => {
               newMap.easeTo({ pitch: 0, bearing: 0 });
-            }),
-        500,
-      );
+            });
+        }, 500);
+      }
     });
     newMap.addControl(
       // @ts-ignore
@@ -166,7 +172,9 @@ export default function MapLibre({
       }),
       "bottom-right",
     );
-    newMap.addControl(new maplibregl.NavigationControl(), "bottom-left");
+    if (id === 0) {
+      newMap.addControl(new maplibregl.NavigationControl(), "bottom-left");
+    }
     let previousLayerIds: string[] = [];
     newMap.on("styledata", () => {
       const currentIds = newMap.getStyle().layers.map((layer) => layer.id);
@@ -179,7 +187,7 @@ export default function MapLibre({
         .layers.filter((layer) => layer.id.includes("context-layer-"));
       const contextLayersExists = contextLayers.length > 0;
       const popupElements = document.querySelectorAll<HTMLElement>(
-        "#map .maplibregl-popup-anchor-center",
+        `#${container} .maplibregl-popup-anchor-center`,
       );
       if (contextLayersExists) {
         popupElements.forEach((popup) => {
@@ -197,15 +205,14 @@ export default function MapLibre({
       updateContextLayerTransparency(newMap, contextTransparencyRef.current);
     });
 
-    let mapControl = document.querySelector(
-      ".maplibregl-ctrl-bottom-left .maplibregl-ctrl-group",
-    );
-    let parent = document.getElementById("maplibregl-ctrl-bottom-left");
-    parent.appendChild(mapControl);
-
-    let tilt = document.getElementsByClassName("TiltControl")[0];
-    parent = document.getElementById("tilt-control");
-    parent.appendChild(tilt);
+    if (id === 0) {
+      const mapControl = document.querySelector(
+        ".maplibregl-ctrl-bottom-left .maplibregl-ctrl-group",
+      );
+      const tilt = document.getElementsByClassName("TiltControl")[0];
+      document.getElementById("maplibregl-ctrl-bottom-left")?.appendChild(mapControl);
+      document.getElementById("tilt-control")?.appendChild(tilt);
+    }
 
     const deckgl = new MapboxOverlay({
       interleaved: true,
@@ -213,6 +220,9 @@ export default function MapLibre({
     });
     newMap.addControl(deckgl as unknown as maplibregl.IControl);
     setDeckGl(deckgl);
+    if (setParentDeckGl) {
+      setParentDeckGl(deckgl);
+    }
 
     const originalAddLayer = newMap.addLayer.bind(newMap);
     newMap.addLayer = (layer, beforeId) => {
@@ -230,35 +240,41 @@ export default function MapLibre({
     });
 
     // Event for pitch
-    newMap.on("pitch", function () {
-      dispatch(
-        Actions.Map.changePosition(
-          {
-            pitch: newMap.getPitch(),
-          },
-          id,
-        ),
-      );
-    });
+    if (id === 0) {
+      newMap.on("pitch", function () {
+        dispatch(
+          Actions.Map.changePosition(
+            {
+              pitch: newMap.getPitch(),
+            },
+            id,
+          ),
+        );
+      });
+    }
+
+    return () => {
+      unregisterMap(id);
+    };
   }, []);
 
   /** Dashboard extent changed */
   useEffect(() => {
-    if (map && dashboardExtent && !position) {
+    if (id === 0 && map && dashboardExtent && !position) {
       zoomToExtent(map, dashboardExtent, id);
     }
   }, [map, dashboardExtent]);
 
-  /** Dashboard extent changed */
+  /** Extent changed */
   useEffect(() => {
-    if (map && extent && extentTriggeredBy !== id) {
+    if (id === 0 && map && extent && extentTriggeredBy !== id) {
       zoomToExtent(map, extent, id);
     }
   }, [map, mapExtent]);
 
   /** Position changed */
   useEffect(() => {
-    if (map && position && positionTriggeredBy !== id) {
+    if (id === 0 && map && position && positionTriggeredBy !== id) {
       setTimeout(function () {
         map.easeTo({
           ...(position.pitch !== undefined && { pitch: position.pitch }),
@@ -268,7 +284,7 @@ export default function MapLibre({
         });
       }, 100);
     }
-  }, [map, position]);
+  }, [map, mapPosition]);
 
   /*** Render layer to maplibre */
   const renderLayer = (
@@ -309,5 +325,10 @@ export default function MapLibre({
     contextTransparencyRef.current = contextLayerTransparency;
   }, [contextLayerTransparency]);
 
-  return <div key={container} id={container} className="Maplibre"></div>;
+  return (
+    <>
+      <div key={container} id={container} className="Maplibre"></div>
+      <ContextLayers map={map} />
+    </>
+  );
 }
