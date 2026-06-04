@@ -658,11 +658,11 @@ paths:
       - server
 servers:
 - description: OGC API Features for CloudNativeGIS layers
-  url: http://localhost:2000/cloud-native-gis/ogc
+  url: https://staging-geosight.unitst.org/cloud-native-gis/ogc
 tags:
 - name: collections
 - description: OGC API Features for CloudNativeGIS layers
   externalDocs:
     description: information
-    url: http://localhost:2000/cloud-native-gis/ogc
+    url: https://staging-geosight.unitst.org/cloud-native-gis/ogc
   name: server

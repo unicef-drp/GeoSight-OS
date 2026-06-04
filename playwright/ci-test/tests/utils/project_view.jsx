@@ -606,6 +606,8 @@ export const assert_2 = async (page, url, countryLastLog, sumIndicatorAByCountry
   await expect(slider1).toBeVisible();
   await expect(slider2).toBeVisible();
 
+  const treeView = page.locator('#indicator-tab-panel .MuiTreeView-root');
+  await treeView.evaluate(el => el.scrollTop = el.scrollHeight);
   let box0 = await slider0.boundingBox();
   await page.mouse.click(box0.x + box0.width / 2, box0.y + box0.height / 2);
   await expect(page.locator('.widget__content').nth(1)).toContainText('978.5');
@@ -629,38 +631,46 @@ export const assert_2 = async (page, url, countryLastLog, sumIndicatorAByCountry
   await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
   await page.getByRole('option', { name: 'Blank' }).click();
   await expect(lastLog).toEqual(assertLogs[1]);
+  await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
   await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner B' })).not.toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner C' })).not.toBeVisible();
+  await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
   await page.getByRole('option', { name: 'HEALTH' }).click();
   await expect(lastLog).toEqual(assertLogs[2]);
+  await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
   await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
+  await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
   await page.getByRole('option', { name: 'WASH' }).click();
   await expect(lastLog).toEqual(assertLogs[4]);
+  await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
   await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
+  await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
   await page.getByRole('option', { name: 'EDU' }).click();
   await expect(lastLog).toEqual(assertLogs[3]);
+  await page.locator('#RelatedTableLayerMiddleConfigReal .SelectWithSearchInput').click();
 
   await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
   await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Partner C' })).toBeVisible();
+  await page.locator('#RelatedTableLayerMiddleConfigReal .MultipleSelectWithSearch').click();
 
   // Reset
   await page.locator('.ResetFilterQuery svg').click();
