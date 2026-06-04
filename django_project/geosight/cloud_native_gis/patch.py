@@ -16,15 +16,27 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '27/05/2026'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import base64
 import copy
+from functools import wraps
 
 from cloud_native_gis.models.layer import Layer
 from cloud_native_gis.utils.pygeoapi_config import _layer_to_resource
 from django.conf import settings
+from django.contrib.auth import authenticate
 from django.db import connection
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
+from rest_framework.exceptions import AuthenticationFailed
 
+from core.auth import BearerAuthentication
 from geosight.data.models.context_layer import ContextLayer
+
+
+def _unauthorized():
+    """Return a 401 Unauthorized response."""
+    response = HttpResponse(status=401)
+    response['WWW-Authenticate'] = 'Bearer realm="GeoSight"'
+    return response
 
 
 def get_queryset(request: HttpRequest):
@@ -84,3 +96,43 @@ def get_resources(request: HttpRequest) -> dict:
     config = copy.deepcopy(settings.PYGEOAPI_CONFIG)
     config['resources'] = resources
     return config
+
+
+def ogc_authenticate(view_func):
+    """Optionally authenticate via Basic Auth or Bearer/Token.
+
+    - No Authorization header: proceed as anonymous.
+    - Valid Basic credentials: set request.user and proceed.
+    - Valid Bearer/Token API key: set request.user and proceed.
+    - Invalid credentials: return 401.
+    """
+    @wraps(view_func)
+    def wrapper(request: HttpRequest, *args, **kwargs):
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+
+        if auth_header.startswith('Basic '):
+            try:
+                credentials = base64.b64decode(
+                    auth_header[6:]
+                ).decode('utf-8')
+                username, password = credentials.split(':', 1)
+                user = authenticate(
+                    request, username=username, password=password
+                )
+                if user is not None:
+                    request.user = user
+                else:
+                    return _unauthorized()
+            except Exception:
+                return _unauthorized()
+        else:
+            try:
+                result = BearerAuthentication().authenticate(request)
+                if result is not None:
+                    request.user = result[0]
+            except AuthenticationFailed:
+                return _unauthorized()
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
