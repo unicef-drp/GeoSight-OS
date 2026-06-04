@@ -25,9 +25,9 @@ import {
   MAP_POSITION,
   MAP_REFERENCE_LAYER_CHANGED,
   MAP_REMOVE_CONTEXTLAYERS,
-  MAP_UPDATE_CONFIG,
   MAP_UPDATE_TRANSPARENCY,
   MAP_ZOOM,
+  MapPosition,
 } from "./index";
 
 function changeBasemap(payload: any) {
@@ -73,7 +73,7 @@ function updateCenter(center: any) {
 
 function updateExtent(
   extent: [number, number, number, number],
-  triggeredBy?: string,
+  triggeredBy?: number,
 ) {
   return {
     name: MAP_ACTION_NAME,
@@ -107,11 +107,12 @@ function changeZoom(payload: number) {
   };
 }
 
-function changePosition(payload: Record<string, any>) {
+function changePosition(payload: Partial<MapPosition>, triggeredBy?: number) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_POSITION,
     payload,
+    triggeredBy,
   };
 }
 
@@ -119,14 +120,6 @@ function change3DMode(payload: boolean) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_IS_3D_MODE,
-    payload,
-  };
-}
-
-function update(payload: Record<string, any>) {
-  return {
-    name: MAP_ACTION_NAME,
-    type: MAP_UPDATE_CONFIG,
     payload,
   };
 }
@@ -151,6 +144,5 @@ export default {
   changeZoom,
   changePosition,
   change3DMode,
-  update,
   updateTransparency,
 };

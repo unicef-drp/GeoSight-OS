@@ -85,7 +85,7 @@ export default function MapLibre({
 
   const {
     basemapLayer,
-    position,
+    position: mapPosition,
     transparency,
     extent: mapExtent,
   } = useSelector(
@@ -93,7 +93,8 @@ export default function MapLibre({
     (state) => state.map,
   );
 
-  const { value: extent, triggeredBy } = mapExtent;
+  const { value: extent, triggeredBy: extentTriggeredBy } = mapExtent;
+  const { value: position, triggeredBy: positionTriggeredBy } = mapPosition;
 
   // Get zoom configurations
   const dashboardExtent = useSelector(
@@ -227,31 +228,43 @@ export default function MapLibre({
         newMap.resize();
       }, 1);
     });
+
+    // Event for pitch
+    newMap.on("pitch", function () {
+      dispatch(
+        Actions.Map.changePosition(
+          {
+            pitch: newMap.getPitch(),
+          },
+          id,
+        ),
+      );
+    });
   }, []);
 
   /** Dashboard extent changed */
   useEffect(() => {
-    if (map && dashboardExtent && !(position && Object.keys(position).length)) {
+    if (map && dashboardExtent && !position) {
       zoomToExtent(map, dashboardExtent, id);
     }
   }, [map, dashboardExtent]);
 
   /** Dashboard extent changed */
   useEffect(() => {
-    if (map && extent && triggeredBy !== id) {
+    if (map && extent && extentTriggeredBy !== id) {
       zoomToExtent(map, extent, id);
     }
-  }, [map, extent]);
+  }, [map, mapExtent]);
 
   /** Position changed */
   useEffect(() => {
-    if (map && position && Object.keys(position).length) {
+    if (map && position && positionTriggeredBy !== id) {
       setTimeout(function () {
         map.easeTo({
-          pitch: position.pitch,
-          bearing: position.bearing,
-          zoom: position.zoom,
-          center: position.center,
+          ...(position.pitch !== undefined && { pitch: position.pitch }),
+          ...(position.bearing !== undefined && { bearing: position.bearing }),
+          ...(position.zoom !== undefined && { zoom: position.zoom }),
+          ...(position.center !== undefined && { center: position.center }),
         });
       }, 100);
     }

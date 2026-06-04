@@ -28,7 +28,6 @@ export const MAP_REMOVE_CONTEXTLAYERS = `MAP/REMOVE_CONTEXTLAYERS`;
 export const MAP_REMOVE_CONTEXTLAYERS_ALL = `MAP/REMOVE_CONTEXTLAYERS_ALL`;
 export const MAP_POSITION = `MAP/POSITION`;
 export const MAP_IS_3D_MODE = `MAP/IS_3D_MODE`;
-export const MAP_UPDATE_CONFIG = `MAP/UPDATE_CONFIG`;
 export const MAP_UPDATE_TRANSPARENCY = `MAP/MAP_UPDATE_TRANSPARENCY`;
 
 interface ContextLayerEntry {
@@ -43,8 +42,20 @@ interface Transparency {
 }
 
 interface Extent {
-  value: [number, number, number, number];
-  triggeredBy: string;
+  value: [number, number, number, number] | null;
+  triggeredBy: number | null;
+}
+
+export interface MapPosition {
+  pitch?: number;
+  bearing?: number;
+  zoom?: number;
+  center?: [number, number];
+}
+
+interface Position {
+  value: Partial<MapPosition> | null;
+  triggeredBy: number | null;
 }
 
 export interface MapState {
@@ -56,7 +67,7 @@ export interface MapState {
   indicatorShow: boolean;
   contextLayersShow: boolean;
   zoom: number;
-  position: Record<string, any>;
+  position: Position;
   is3dMode: boolean;
   force: boolean;
   transparency: Transparency;
@@ -68,7 +79,7 @@ interface MapAction {
   payload?: any;
   id?: string | number;
   force?: boolean;
-  triggeredBy?: string;
+  triggeredBy?: number;
 }
 
 const mapInitialState: MapState = {
@@ -83,7 +94,7 @@ const mapInitialState: MapState = {
   indicatorShow: true,
   contextLayersShow: true,
   zoom: 0,
-  position: {},
+  position: { value: null, triggeredBy: null },
   is3dMode: false,
   force: false,
   transparency: {
@@ -184,7 +195,10 @@ export default function mapReducer(
       case MAP_POSITION: {
         return {
           ...state,
-          position: action.payload,
+          position: {
+            value: action.payload,
+            triggeredBy: action.triggeredBy,
+          },
           force: false,
         };
       }
@@ -193,13 +207,6 @@ export default function mapReducer(
           ...state,
           is3dMode: action.payload,
           force: false,
-        };
-      }
-      case MAP_UPDATE_CONFIG: {
-        return {
-          ...state,
-          ...action.payload,
-          force: true,
         };
       }
       case MAP_UPDATE_TRANSPARENCY: {

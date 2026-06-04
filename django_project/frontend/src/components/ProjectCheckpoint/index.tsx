@@ -103,12 +103,8 @@ export const ProjectCheckpoint = memo(
       },
       /** Apply data **/
       applyData(data: ProjectCheckpointType) {
-        dispatch(
-          Actions.Map.update({
-            is3dMode: data?.is_3d_mode,
-            position: data.position,
-          }),
-        );
+        dispatch(Actions.Map.change3DMode(data?.is_3d_mode));
+        dispatch(Actions.Map.changePosition(data.position));
         const newDashboard = dictDeepCopy(dashboardData);
         newDashboard.basemapsLayers.map((layer: BasemapLayer) => {
           layer.visible_by_default = layer.id === data.selected_basemap;
@@ -164,7 +160,16 @@ export const ProjectCheckpoint = memo(
           };
         }
         dispatch(
-          Actions.Map.update({ transparency: data.transparency_config }),
+          Actions.Map.updateTransparency(
+            "indicatorLayer",
+            data.transparency_config.indicatorLayer,
+          ),
+        );
+        dispatch(
+          Actions.Map.updateTransparency(
+            "contextLayer",
+            data.transparency_config.contextLayer,
+          ),
         );
 
         if (
