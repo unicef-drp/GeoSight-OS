@@ -25,14 +25,15 @@ import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 import { removeLayer, removeSource } from "./utils";
 import { addLayerWithOrder } from "./utils/Render";
 import { Variables } from "../../../utils/Variables";
-
-// Initialize cog
-import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {
   updateContextLayerTransparency,
   updateIndicatorLayerTransparency,
 } from "./utils/trasnparency";
+import { zoomToExtent } from "./utils/movement";
+
+// Initialize cog
+import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -82,14 +83,23 @@ export default function MapLibre({
   const dispatch = useDispatch();
   const container = "map-" + id;
 
-  const { basemapLayer, position, transparency } = useSelector(
+  const {
+    basemapLayer,
+    position,
+    transparency,
+    extent: mapExtent,
+  } = useSelector(
     // @ts-ignore
     (state) => state.map,
   );
 
+  const { value: extent, triggeredBy } = mapExtent;
+
   // Get zoom configurations
-  // @ts-ignore
-  const extent = useSelector((state) => state.dashboard.data.extent);
+  const dashboardExtent = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data.extent,
+  );
   // @ts-ignore
   const minZoomConfig = useSelector((state) => state.dashboard.data.minZoom);
   // @ts-ignore
@@ -219,28 +229,17 @@ export default function MapLibre({
     });
   }, []);
 
-  /** Extent changed */
+  /** Dashboard extent changed */
   useEffect(() => {
-    if (map && extent && !(position && Object.keys(position).length)) {
-      setTimeout(function () {
-        const rightContent = document.querySelector(
-          ".RightContent .right",
-        ) as HTMLElement;
-        const isMobile = window.innerWidth <= 1000;
-        const rightPadding =
-          id != 0 || isMobile ? 0 : (rightContent?.offsetWidth ?? 0);
-        map.fitBounds(
-          [
-            [extent[0], extent[1]],
-            [extent[2], extent[3]],
-          ],
-          {
-            pitch: 0,
-            bearing: 0,
-            padding: { top: 0, bottom: 0, left: 0, right: rightPadding },
-          },
-        );
-      }, 100);
+    if (map && dashboardExtent && !(position && Object.keys(position).length)) {
+      zoomToExtent(map, dashboardExtent, id);
+    }
+  }, [map, dashboardExtent]);
+
+  /** Dashboard extent changed */
+  useEffect(() => {
+    if (map && extent && triggeredBy !== id) {
+      zoomToExtent(map, dashboardExtent, id);
     }
   }, [map, extent]);
 

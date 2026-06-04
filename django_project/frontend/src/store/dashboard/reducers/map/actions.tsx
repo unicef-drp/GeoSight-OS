@@ -28,62 +28,42 @@ import {
   MAP_UPDATE_CONFIG,
   MAP_UPDATE_TRANSPARENCY,
   MAP_ZOOM,
-} from "../map";
+} from "./index";
 
-/**
- * Change basemap.
- * @param {object} payload Basemap data.
- */
-function changeBasemap(payload) {
+function changeBasemap(payload: any) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_CHANGE_BASEMAP,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Change reference layer.
- * @param {Array} payload Reference layer data.
- */
-function changeReferenceLayers(payload) {
+function changeReferenceLayers(payload: any[]) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_REFERENCE_LAYER_CHANGED,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Add context layer.
- * @param {int} id ID of Context Layer.
- * @param {object} payload Context Layer data.
- */
-function addContextLayer(id, payload) {
+function addContextLayer(id: string | number, payload: any) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_ADD_CONTEXTLAYERS,
-    id: id,
-    payload: payload,
+    id,
+    payload,
   };
 }
 
-/**
- * Remove context layer.
- * @param {int} id ID of Context Layer.
- */
-function removeContextLayer(id) {
+function removeContextLayer(id: string | number) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_REMOVE_CONTEXTLAYERS,
-    id: id,
+    id,
   };
 }
 
-/**
- * Update center of map.
- */
-function updateCenter(center) {
+function updateCenter(center: any) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_CENTER,
@@ -91,87 +71,67 @@ function updateCenter(center) {
   };
 }
 
-/**
- * Update extent of map.
- */
-function updateExtent(center) {
+function updateExtent(
+  extent: [number, number, number, number],
+  triggeredBy?: string,
+) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_EXTENT,
-    payload: center,
+    payload: extent,
+    triggeredBy: triggeredBy,
   };
 }
 
-/**
- * Show/Hide Indicator
- */
-function showHideIndicator(payload) {
+function showHideIndicator(payload: boolean) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_INDICATOR_SHOW,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Show/Hide ContextLayer
- */
-function showHideContextLayer(payload) {
+function showHideContextLayer(payload: boolean) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_CONTEXTLAYERS_SHOW,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Show/Hide ContextLayer
- */
-function changeZoom(payload) {
+function changeZoom(payload: number) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_ZOOM,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Position location
- */
-function changePosition(payload) {
+function changePosition(payload: Record<string, any>) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_POSITION,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Position location
- */
-function change3DMode(payload) {
+function change3DMode(payload: boolean) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_IS_3D_MODE,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Position location
- */
-function update(payload) {
+function update(payload: Record<string, any>) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_UPDATE_CONFIG,
-    payload: payload,
+    payload,
   };
 }
 
-/**
- * Update transparency
- */
-function updateTransparency(key, value) {
+function updateTransparency(key: string, value: number) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_UPDATE_TRANSPARENCY,

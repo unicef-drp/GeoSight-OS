@@ -113,7 +113,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
 
         <div className="Toolbar-Middle">
           <div className="Separator" />
-          <HomeButton map={mainMap} />
+          <HomeButton />
           <LabelToggler />
           <CompareLayer disabled={is3dMode} />
           {/* 3D View */}

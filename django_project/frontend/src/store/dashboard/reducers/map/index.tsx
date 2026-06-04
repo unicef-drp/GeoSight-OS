@@ -29,29 +29,73 @@ export const MAP_REMOVE_CONTEXTLAYERS_ALL = `MAP/REMOVE_CONTEXTLAYERS_ALL`;
 export const MAP_POSITION = `MAP/POSITION`;
 export const MAP_IS_3D_MODE = `MAP/IS_3D_MODE`;
 export const MAP_UPDATE_CONFIG = `MAP/UPDATE_CONFIG`;
-
 export const MAP_UPDATE_TRANSPARENCY = `MAP/MAP_UPDATE_TRANSPARENCY`;
 
-const mapInitialState = {
+interface ContextLayerEntry {
+  render: boolean;
+  layer: any;
+  layer_type: any;
+}
+
+interface Transparency {
+  indicatorLayer: number;
+  contextLayer: number;
+}
+
+interface Extent {
+  value: [number, number, number, number];
+  triggeredBy: string;
+}
+
+export interface MapState {
+  referenceLayers: any[];
+  basemapLayer: any | null;
+  contextLayers: Record<string | number, ContextLayerEntry>;
+  center: any | null;
+  extent: Extent | null;
+  indicatorShow: boolean;
+  contextLayersShow: boolean;
+  zoom: number;
+  position: Record<string, any>;
+  is3dMode: boolean;
+  force: boolean;
+  transparency: Transparency;
+}
+
+interface MapAction {
+  name: string;
+  type: string;
+  payload?: any;
+  id?: string | number;
+  force?: boolean;
+  triggeredBy?: string;
+}
+
+const mapInitialState: MapState = {
   referenceLayers: [],
   basemapLayer: null,
   contextLayers: {},
   center: null,
-  extent: null,
+  extent: {
+    value: null,
+    triggeredBy: null,
+  },
   indicatorShow: true,
   contextLayersShow: true,
   zoom: 0,
   position: {},
   is3dMode: false,
   force: false,
-
   transparency: {
     indicatorLayer: 100,
     contextLayer: 100,
   },
 };
 
-export default function mapReducer(state = mapInitialState, action) {
+export default function mapReducer(
+  state: MapState = mapInitialState,
+  action: MapAction,
+): MapState {
   if (action.name === MAP_ACTION_NAME) {
     switch (action.type) {
       case MAP_CHANGE_BASEMAP: {
@@ -90,8 +134,8 @@ export default function mapReducer(state = mapInitialState, action) {
         };
       }
       case MAP_REFERENCE_LAYER_CHANGED: {
-        const identifierList = [];
-        const views = action.payload.filter((view) => {
+        const identifierList: any[] = [];
+        const views = action.payload.filter((view: any) => {
           const found = identifierList.includes(view.identifier);
           identifierList.push(view.identifier);
           return !found;
@@ -102,6 +146,7 @@ export default function mapReducer(state = mapInitialState, action) {
             referenceLayers: views,
           };
         }
+        break;
       }
       case MAP_CENTER: {
         return {
@@ -112,7 +157,10 @@ export default function mapReducer(state = mapInitialState, action) {
       case MAP_EXTENT: {
         return {
           ...state,
-          extent: action.payload,
+          extent: {
+            value: action.payload,
+            triggeredBy: action.triggeredBy,
+          },
         };
       }
       case MAP_INDICATOR_SHOW: {
@@ -155,12 +203,16 @@ export default function mapReducer(state = mapInitialState, action) {
         };
       }
       case MAP_UPDATE_TRANSPARENCY: {
-        const { key, value } = action.payload;
-        const transparency = state.transparency;
-        transparency[key] = value;
+        const { key, value } = action.payload as {
+          key: keyof Transparency;
+          value: number;
+        };
         return {
           ...state,
-          transparency: { ...transparency },
+          transparency: {
+            ...state.transparency,
+            [key]: value,
+          },
         };
       }
     }
