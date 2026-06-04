@@ -73,7 +73,8 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
   const dispatch = useDispatch();
   const drawingRef = useRef(null);
 
-  const [map, setMap] = useState(null);
+  // This is for mainMap, which is the first map
+  const [mainMap, setMainMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
 
   const { is3dMode, force } = useSelector((state) => state.map);
@@ -90,8 +91,8 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
     >
       {/* TOOLBARS */}
       <div className="Toolbar">
-        <ZoomToFilteredGeometries map={map} />
-        <TiltControl map={map} is3DView={is3dMode} force={force} />
+        <ZoomToFilteredGeometries map={mainMap} />
+        <TiltControl map={mainMap} is3DView={is3dMode} force={force} />
         <div className="Toolbar-Left">
           {leftPanelProps ? (
             <ToggleSidePanel
@@ -112,7 +113,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
 
         <div className="Toolbar-Middle">
           <div className="Separator" />
-          <HomeButton map={map} />
+          <HomeButton map={mainMap} />
           <LabelToggler />
           <CompareLayer disabled={is3dMode} />
           {/* 3D View */}
@@ -123,11 +124,11 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
             >
               <PluginChild
                 title={"3D layer"}
-                disabled={!map}
+                disabled={!mainMap}
                 active={is3dMode}
                 onClick={() => {
                   if (is3dMode) {
-                    map.easeTo({ pitch: 0 });
+                    mainMap.easeTo({ pitch: 0 });
                   }
                   dispatch(Actions.Map.change3DMode(!is3dMode));
                 }}
@@ -140,26 +141,26 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
               </PluginChild>
             </div>
           </Plugin>
-          <PopupToolbars map={map} ref={drawingRef} />
+          <PopupToolbars map={mainMap} ref={drawingRef} />
           <div className="Separator" />
         </div>
 
         {/* Embed */}
         <div className="Toolbar-Right">
-          <SearchGeometryInput map={map} />
+          <SearchGeometryInput map={mainMap} />
           <Plugin className="EmbedControl" hidden={!embedToolEnable}>
             <div
               className="Active"
               data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
             >
               <PluginChild title={"Get embed code"}>
-                <EmbedControl map={map} />
+                <EmbedControl map={mainMap} />
               </PluginChild>
             </div>
           </Plugin>
           <DataDownloader />
           <Plugin className="BookmarkControl">
-            <Bookmark map={map} />
+            <Bookmark map={mainMap} />
           </Plugin>
           {rightPanelProps ? (
             <ToggleSidePanel
@@ -183,20 +184,20 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
         <MapLibre
           key={0}
           id={0}
-          map={map}
-          setMap={setMap}
+          map={mainMap}
+          setMap={setMainMap}
           setDeckGl={setDeckGl}
           drawingRef={drawingRef}
         />
       </div>
 
-      <ReferenceLayers map={map} deckgl={deckgl} is3DView={is3dMode} />
-      <ContextLayers map={map} />
-      {map ? (
+      <ReferenceLayers map={mainMap} deckgl={deckgl} is3DView={is3dMode} />
+      <ContextLayers map={mainMap} />
+      {mainMap ? (
         <>
           <IndicatorLayersReferenceControl />
           <DatasetGeometryData />
-          <ReferenceLayerCentroid map={map} />
+          <ReferenceLayerCentroid map={mainMap} />
         </>
       ) : null}
 
