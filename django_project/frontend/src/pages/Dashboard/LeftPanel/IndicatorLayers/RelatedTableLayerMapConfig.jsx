@@ -32,34 +32,18 @@ import { queryData } from "../../../../utils/queryExtraction";
 /**
  * Related table layer filter.
  */
-export default function RelatedTableLayerMapConfig() {
+export default function RelatedTableLayerMapConfig({ indicatorLayer }) {
+  const relatedTableLayer = indicatorLayer;
   const dispatch = useDispatch();
-  const selectedRelatedTableLayer = useSelector(
-    (state) => state.selectedRelatedTableLayer,
-  );
   const relatedTableDataState = useSelector((state) => state.relatedTableData);
-  const indicatorLayers = useSelector(
-    (state) => state.dashboard.data.indicatorLayers,
-  );
   const relatedTables = useSelector(
     (state) => state.dashboard.data.relatedTables,
   );
 
-  const [open, setOpen] = useState(false);
-
   const [metadata, setMetadata] = useState({});
-
-  /** When selected is changed **/
-  useEffect(() => {
-    setOpen(selectedRelatedTableLayer !== null);
-  }, [selectedRelatedTableLayer]);
 
   let config;
   let relatedFields;
-  let selectedRelatedTableLayerId = selectedRelatedTableLayer;
-  const relatedTableLayer = indicatorLayers.find(
-    (layer) => layer.id && layer.id === selectedRelatedTableLayerId,
-  );
   const { sequenceFieldSelected } = metadata[relatedTableLayer?.id] || {};
 
   let relatedTableData = null;
@@ -190,10 +174,10 @@ export default function RelatedTableLayerMapConfig() {
   };
 
   return (
-    <div className={"IndicatorLayerMiddleConfig " + (open ? "Open" : "")}>
+    <div className={"IndicatorLayerMiddleConfig"}>
       <Fragment>
-        {relatedTableLayer && selectedRelatedTableLayer ? (
-          <Fragment key={selectedRelatedTableLayerId}>
+        {relatedTableLayer && (
+          <Fragment key={relatedTableLayer.id}>
             <div
               id="RelatedTableLayerMiddleConfigReal"
               className="WhereConfigurationWrapper"
@@ -202,9 +186,6 @@ export default function RelatedTableLayerMapConfig() {
                 fields={updateFields(relatedFields)}
                 whereQuery={config.where}
                 setWhereQuery={(where) => {
-                  const indicatorLayer = indicatorLayers.find(
-                    (layer) => layer.id === relatedTableLayer.id,
-                  );
                   config.where = where;
                   updateOptions(where);
                   if (
@@ -233,7 +214,7 @@ export default function RelatedTableLayerMapConfig() {
               />
             </div>
           </Fragment>
-        ) : null}
+        )}
       </Fragment>
     </div>
   );

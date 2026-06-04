@@ -383,17 +383,21 @@ export default function SidePanelTreeView({
                   </span>
                 }
               />
-              {treeData.data?.legend && selected.indexOf(nodesDataId) >= 0 ? (
-                <div
-                  dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}
-                ></div>
-              ) : (
-                ""
-              )}
-              {treeData.data.related_table &&
-              selected.indexOf(nodesDataId) >= 0 ? (
-                <SidePanelSlicers data={treeData.data} />
-              ) : null}
+              {selected.indexOf(nodesDataId) >= 0 &&
+                (treeData.data?.legend || treeData.data.related_table) && (
+                  <div className="item-tree-layer-content">
+                    {treeData.data?.legend && (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: treeData.data?.legend,
+                        }}
+                      ></div>
+                    )}
+                    {treeData.data.related_table && (
+                      <SidePanelSlicers data={treeData.data} />
+                    )}
+                  </div>
+                )}
             </div>
           ) : groupSelectable ? (
             <FormControlLabel

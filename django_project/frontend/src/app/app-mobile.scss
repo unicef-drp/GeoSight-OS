@@ -56,6 +56,12 @@
 }
 
 @media (max-width: 1000px) {
+  .CurrentDate {
+    display: none;
+  }
+  .Toolbar {
+    border-bottom: unset !important;
+  }
   .EntitySearchEnable {
     .ReferenceLayerToolbar {
       position: absolute !important;
@@ -275,6 +281,7 @@
     padding-bottom: var(--mobile-bottom-nav-height) !important;;
     width: 100vw !important;;
     transition: left 0.2s !important;
+    box-sizing: border-box !important;
   }
   .DashboardMiddlePanel .TopContent {
     z-index: unset !important;
@@ -400,6 +407,18 @@
     .DocsCrawler-Content {
       width: 100%;
       margin-right: -100%;
+    }
+  }
+
+  .NavHeader {
+    .Separator:nth-child(2) {
+      display: none;
+    }
+
+    .MiddleSection {
+      margin-left: 0 !important;
+      position: relative;
+      width: fit-content;
     }
   }
 }

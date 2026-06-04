@@ -20,8 +20,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import { Actions } from "../../../../store/dashboard";
 import {
   dynamicLayerIndicatorList,
@@ -29,6 +27,7 @@ import {
   indicatorLayerId,
 } from "../../../../utils/indicatorLayer";
 import { getIndicatorDataByLayer } from "../../../../utils/indicatorData";
+import DynamicIndicatorLayerMapConfig from "./DynamicIndicatorLayerMapConfig";
 
 /**
  * Related table layer handler
@@ -204,72 +203,5 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
  * Dynamic indicator layer config
  */
 export function DynamicIndicatorLayerConfig({ indicatorLayer }) {
-  const dispatch = useDispatch();
-  const selectedDynamicIndicatorLayer = useSelector(
-    (state) => state.selectedDynamicIndicatorLayer,
-  );
-  const currentIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
-  const indicatorLayerIds = useSelector(
-    (state) => state.selectionState.filter.indicatorLayerIds,
-  );
-  const compositeIndicatorLayerIds = useSelector(
-    (state) => state.selectionState.composite.indicatorLayerIds,
-  );
-  const activated = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
-    ...indicatorLayerIds,
-    ...compositeIndicatorLayerIds,
-  ].includes(indicatorLayer.id);
-
-  const isActive = selectedDynamicIndicatorLayer === indicatorLayer.id;
-
-  /** Remove the selector. */
-  useEffect(() => {
-    if (activated) {
-      if (!isActive) {
-        dispatch(
-          Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
-        );
-      }
-    } else {
-      if (isActive) {
-        dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
-      }
-    }
-  }, [activated]);
-
-  if (!indicatorLayer.config.exposedVariables?.length) {
-    return;
-  }
-
-  return (
-    <div
-      className="LayerIcon LayerConfig"
-      onClick={(e) => {
-        if (isActive) {
-          dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
-        } else {
-          dispatch(
-            Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
-          );
-        }
-        if (activated) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      }}
-    >
-      {isActive ? (
-        <FilterAltIcon fontSize="small" />
-      ) : (
-        <FilterAltOffIcon fontSize="small" />
-      )}
-    </div>
-  );
+  return <DynamicIndicatorLayerMapConfig indicatorLayer={indicatorLayer} />;
 }

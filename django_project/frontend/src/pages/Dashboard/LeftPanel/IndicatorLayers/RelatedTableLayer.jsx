@@ -20,14 +20,13 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toUcode } from "../../../../utils/georepo";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import { Actions } from "../../../../store/dashboard";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
 import { getCountryGeomIds } from "../../../../utils/Dataset";
 import { RelatedTable } from "../../../../class/RelatedTable";
+import RelatedTableLayerMapConfig from "./RelatedTableLayerMapConfig";
 
 /**
  * Related table layer handler
@@ -138,69 +137,6 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
 /**
  * Related table filter
  */
-export function RelatedTableLayerFilter({ relatedTableLayer }) {
-  const dispatch = useDispatch();
-  const selectedRelatedTableLayer = useSelector(
-    (state) => state.selectedRelatedTableLayer,
-  );
-  const currentIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
-  const indicatorLayerIds = useSelector(
-    (state) => state.selectionState.filter.indicatorLayerIds,
-  );
-  const compositeIndicatorLayerIds = useSelector(
-    (state) => state.selectionState.composite.indicatorLayerIds,
-  );
-  const activated = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
-    ...indicatorLayerIds,
-    ...compositeIndicatorLayerIds,
-  ].includes(relatedTableLayer.id);
-
-  const isActive = selectedRelatedTableLayer === relatedTableLayer.id;
-
-  /** Remove the selector. */
-  useEffect(() => {
-    if (activated) {
-      if (!isActive) {
-        dispatch(
-          Actions.SelectedRelatedTableLayer.change(relatedTableLayer.id),
-        );
-      }
-    } else {
-      if (isActive) {
-        dispatch(Actions.SelectedRelatedTableLayer.change(null));
-      }
-    }
-  }, [activated]);
-
-  return (
-    <div
-      className="LayerIcon LayerConfig"
-      onClick={(e) => {
-        if (isActive) {
-          dispatch(Actions.SelectedRelatedTableLayer.change(null));
-        } else {
-          dispatch(
-            Actions.SelectedRelatedTableLayer.change(relatedTableLayer.id),
-          );
-        }
-        if (activated) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      }}
-    >
-      {isActive ? (
-        <FilterAltIcon fontSize={"small"} />
-      ) : (
-        <FilterAltOffIcon fontSize={"small"} />
-      )}
-    </div>
-  );
+export function RelatedTableLayerFilter({ indicatorLayer }) {
+  return <RelatedTableLayerMapConfig indicatorLayer={indicatorLayer} />;
 }

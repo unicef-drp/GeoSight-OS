@@ -23,7 +23,6 @@ test.describe('Project navigation', () => {
     await page.goto('/project/' + slug)
     await page.getByRole('button', { name: 'Close' }).click();
 
-    const middleConfig = ".IndicatorLayerMiddleConfig.Open";
     const layerTab = '#simple-tab-Layers'
     const filterTab = '#simple-tab-Filters'
     const indicatorTab = '#simple-tab-indicator'
@@ -40,14 +39,12 @@ test.describe('Project navigation', () => {
     await expect(page.locator(indicatorTabPanel)).toBeVisible();
     await expect(page.locator(contextLayerTabPanel)).toBeHidden();
     await expect(page.locator(filterTabPanel)).toBeHidden();
-    await expect(page.locator(middleConfig)).toBeVisible();
 
     // context layer show
     await page.locator(contextLayerTab).click();
     await expect(page.locator(contextLayerTabPanel)).toBeVisible();
     await expect(page.locator(indicatorTabPanel)).toBeHidden();
     await expect(page.locator(filterTabPanel)).toBeHidden();
-    await expect(page.locator(middleConfig)).toBeVisible();
 
     // Filter show
     await page.locator(filterTab).click();
@@ -56,7 +53,6 @@ test.describe('Project navigation', () => {
     await expect(page.locator(indicatorTabPanel)).toBeHidden();
     await expect(page.locator(indicatorTab)).toBeHidden();
     await expect(page.locator(contextLayerTab)).toBeHidden();
-    await expect(page.locator(middleConfig)).toBeVisible();
 
     // Layers show
     await page.locator(layerTab).click();
@@ -65,13 +61,10 @@ test.describe('Project navigation', () => {
     await expect(page.locator(indicatorTabPanel)).toBeHidden();
     await expect(page.locator(indicatorTab)).toBeVisible();
     await expect(page.locator(contextLayerTab)).toBeVisible();
-    await expect(page.locator(middleConfig)).toBeVisible();
     // Hide layer
     await page.locator(indicatorTab).locator('svg').click();
-    await expect(page.locator(middleConfig)).toBeHidden();
     // Hide layer
     await page.locator(indicatorTab).locator('svg').click();
-    await expect(page.locator(middleConfig)).toBeEnabled();
 
     // Context layer tab only
     await page.locator(".EditProjectLinkButton").click();
@@ -89,7 +82,6 @@ test.describe('Project navigation', () => {
     await expect(page.locator(contextLayerTabPanel)).toBeVisible();
     await expect(page.locator(indicatorTabPanel)).toBeHidden();
     await expect(page.locator(filterTabPanel)).toBeHidden();
-    await expect(page.locator(middleConfig)).toBeHidden();
 
     // Indicator tab only
     await page.locator(".EditProjectLinkButton").click();
@@ -107,7 +99,6 @@ test.describe('Project navigation', () => {
     await expect(page.locator(contextLayerTabPanel)).toBeHidden();
     await expect(page.locator(indicatorTabPanel)).toBeVisible();
     await expect(page.locator(filterTabPanel)).toBeHidden();
-    await expect(page.locator(middleConfig)).toBeVisible();
 
     // Hide filter
     await page.locator(".EditProjectLinkButton").click();
@@ -127,7 +118,6 @@ test.describe('Project navigation', () => {
     await expect(page.locator(contextLayerTabPanel)).toBeHidden();
     await expect(page.locator(indicatorTabPanel)).toBeVisible();
     await expect(page.locator(filterTabPanel)).toBeHidden();
-    await expect(page.locator(middleConfig)).toBeVisible();
 
     // --------------------------------------------------------------------
     // Delete project

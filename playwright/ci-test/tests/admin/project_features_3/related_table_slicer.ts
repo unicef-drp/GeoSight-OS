@@ -119,9 +119,11 @@ test.describe('Related table slicer', () => {
     await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
 
     // Select to EDU
-    await page.getByRole('button', { name: 'Open' }).first().click();
+    await page.getByRole('button', { name: 'Close' }).first().click();
+    await page.getByRole('button', { name: 'Open' }).nth(1).click();
     await page.getByRole('option', { name: 'EDU' }).click();
 
+    await page.getByRole('button', { name: 'Close' }).first().click();
     await page.getByRole('button', { name: 'Open' }).first().click();
     await expect(page.getByRole('option', { name: 'Select all' })).toBeVisible();
     await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
@@ -129,9 +131,11 @@ test.describe('Related table slicer', () => {
     await expect(page.getByRole('option', { name: 'Partner B' })).toBeVisible();
 
     // Select to Blank
-    await page.getByRole('button', { name: 'Open' }).first().click();
+    await page.getByRole('button', { name: 'Close' }).first().click();
+    await page.getByRole('button', { name: 'Open' }).nth(1).click();
     await page.getByRole('option', { name: 'Blank' }).click();
 
+    await page.getByRole('button', { name: 'Close' }).first().click();
     await page.getByRole('button', { name: 'Open' }).first().click();
     await expect(page.getByRole('option', { name: 'Select all' })).toBeVisible();
     await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();
@@ -142,10 +146,12 @@ test.describe('Related table slicer', () => {
     await expect(page.locator('.IndicatorLegendRowName').nth(0)).toHaveText("No data")
 
     // Select to EDU
-    await page.getByRole('button', { name: 'Open' }).first().click();
+    await page.getByRole('button', { name: 'Close' }).first().click();
+    await page.getByRole('button', { name: 'Open' }).nth(1).click();
     await page.getByRole('option', { name: 'EDU' }).click();
 
     // Open partner options
+    await page.getByRole('button', { name: 'Close' }).first().click();
     await page.getByRole('button', { name: 'Open' }).first().click();
     await expect(page.getByRole('option', { name: 'Select all' })).toBeVisible();
     await expect(page.getByRole('option', { name: 'Partner A' })).toBeVisible();

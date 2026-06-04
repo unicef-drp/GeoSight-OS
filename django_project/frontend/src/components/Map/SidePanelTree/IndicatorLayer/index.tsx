@@ -22,7 +22,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
 import Highlighted from "../Highlighted";
 import LayerDescription from "../Description";
-import SidePanelSlicers from "../SidePanelSlicers";
 import { RelatedTableLayerFilter } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/RelatedTableLayer";
 import {
   CompositeIndexLayerType,
@@ -96,7 +95,7 @@ export default function IndicatorLayer({
 
   const OtherData = () => {
     if (layer.related_tables?.length && layer.config.where) {
-      return <RelatedTableLayerFilter relatedTableLayer={layer} />;
+      return <RelatedTableLayerFilter indicatorLayer={layer} />;
     } else if (layer.type === DynamicIndicatorType) {
       return <DynamicIndicatorLayerConfig indicatorLayer={layer} />;
     }
@@ -153,14 +152,6 @@ export default function IndicatorLayer({
                 isGroup={false}
               />
             }
-            {layer.type !== CompositeIndexLayerType && (
-              // @ts-ignore
-              <LayerDescription
-                // @ts-ignore
-                layer={{ ...layer, error: error ? error : layer.error }}
-              />
-            )}
-            {!isDisabled && <>{OtherData()}</>}
             {otherElement}
             {layer.isLocal && (
               <div
@@ -168,6 +159,7 @@ export default function IndicatorLayer({
                   display: "flex",
                   gap: "0.5rem",
                   alignItems: "center",
+                  marginRight: "0.5rem",
                 }}
               >
                 <EditIcon
@@ -186,12 +178,21 @@ export default function IndicatorLayer({
                 />
               </div>
             )}
+            {layer.type !== CompositeIndexLayerType && (
+              // @ts-ignore
+              <LayerDescription
+                // @ts-ignore
+                layer={{ ...layer, error: error ? error : layer.error }}
+              />
+            )}
           </span>
         }
       />
-      {layer.related_table && selected.indexOf(nodesDataId) >= 0 ? (
-        <SidePanelSlicers data={layer} />
-      ) : null}
+      {selected.indexOf(nodesDataId) >= 0 &&
+        ((layer.related_tables?.length && layer.config.where) ||
+          layer.type === DynamicIndicatorType) && (
+          <div className="item-tree-layer-content">{OtherData()}</div>
+        )}
       <IndicatorLayerTypeSelection />
     </div>
   );
