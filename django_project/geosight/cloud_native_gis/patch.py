@@ -33,7 +33,11 @@ from geosight.data.models.context_layer import ContextLayer
 
 
 def _unauthorized():
-    """Return a 401 Unauthorized response."""
+    """Return a 401 Unauthorized response.
+
+    :returns: HTTP 401 response with WWW-Authenticate header
+    :rtype: django.http.HttpResponse
+    """
     response = HttpResponse(status=401)
     response['WWW-Authenticate'] = 'Bearer realm="GeoSight"'
     return response
@@ -105,7 +109,13 @@ def ogc_authenticate(view_func):
     - Valid Basic credentials: set request.user and proceed.
     - Valid Bearer/Token API key: set request.user and proceed.
     - Invalid credentials: return 401.
+
+    :param view_func: the view function to wrap
+    :type view_func: callable
+    :returns: wrapped view function with authentication logic applied
+    :rtype: callable
     """
+
     @wraps(view_func)
     def wrapper(request: HttpRequest, *args, **kwargs):
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
