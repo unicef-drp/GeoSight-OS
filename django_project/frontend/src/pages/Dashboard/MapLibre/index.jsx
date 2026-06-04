@@ -92,7 +92,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
     >
       {/* TOOLBARS */}
       <div className="Toolbar">
-        <ZoomToFilteredGeometries map={mainMap} />
+        <ZoomToFilteredGeometries />
         <TiltControl map={mainMap} is3DView={is3dMode} force={force} />
         <div className="Toolbar-Left">
           {leftPanelProps ? (

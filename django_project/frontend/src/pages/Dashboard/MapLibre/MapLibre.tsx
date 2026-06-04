@@ -239,7 +239,7 @@ export default function MapLibre({
   /** Dashboard extent changed */
   useEffect(() => {
     if (map && extent && triggeredBy !== id) {
-      zoomToExtent(map, dashboardExtent, id);
+      zoomToExtent(map, extent, id);
     }
   }, [map, extent]);
 

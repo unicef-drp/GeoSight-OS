@@ -42,8 +42,6 @@ export const updateContextLayerTransparency = (
   transparency: number,
 ) => {
   if (map) {
-    console.log(map.getStyle());
-    console.log(transparency);
     map
       .getStyle()
       .layers.filter((layer: LayerSpecification) =>
