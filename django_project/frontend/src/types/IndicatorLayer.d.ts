@@ -50,6 +50,21 @@ export interface LabelConfig {
   style: LabelConfigStyle;
 }
 
+export interface StyleConfig {
+  sync_filter?: boolean;
+  no_data_rule?: any;
+  sync_outline?: boolean;
+  color_palette?: number;
+
+  // Outline
+  outline_color?: string;
+  outline_size?: number;
+
+  // Dynamic classification
+  dynamic_class_num?: number;
+  dynamic_classification?: string;
+}
+
 export interface IndicatorLayerConfig {
   config: any;
   type: string;
@@ -57,7 +72,7 @@ export interface IndicatorLayerConfig {
   // style
   style?: Style[];
   style_type?: string;
-  style_config?: any;
+  style_config?: StyleConfig;
 
   // Label
   label_config?: LabelConfig;

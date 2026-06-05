@@ -53,11 +53,11 @@ function removeLayers(map, id) {
     removeLayer(map, layer.id);
   });
   // Remove marker
-  markersContextLayers[map.container]?.[id]?.map((marker) => {
+  markersContextLayers[map.getContainer().id]?.[id]?.map((marker) => {
     marker.remove();
   });
-  markersContextLayers[map.container] ??= {};
-  markersContextLayers[map.container][id] = [];
+  markersContextLayers[map.getContainer().id] ??= {};
+  markersContextLayers[map.getContainer().id][id] = [];
 }
 
 /*** For popup **/
@@ -187,9 +187,9 @@ export function renderLabel(id, contextLayerData, map) {
     }
 
     // For onload layer
-    onLoadFunctions[map.container] ??= {};
-    if (!onLoadFunctions[map.container][id]) {
-      onLoadFunctions[map.container][id] = (e) => {
+    onLoadFunctions[map.getContainer().id] ??= {};
+    if (!onLoadFunctions[map.getContainer().id][id]) {
+      onLoadFunctions[map.getContainer().id][id] = (e) => {
         if (e.sourceId === id && e?.source?.data?.features?.length) {
           const features = dictDeepCopy(e?.source?.data?.features);
           features.map((feature) => {
@@ -208,8 +208,8 @@ export function renderLabel(id, contextLayerData, map) {
         }
       };
     }
-    map.off("sourcedata", onLoadFunctions[map.container][id]);
-    map.on("sourcedata", onLoadFunctions[map.container][id]);
+    map.off("sourcedata", onLoadFunctions[map.getContainer().id][id]);
+    map.on("sourcedata", onLoadFunctions[map.getContainer().id][id]);
   }
 }
 
@@ -242,8 +242,8 @@ export function contextLayerRendering(
               null,
             );
           });
-          markersContextLayers[map.container] ??= {};
-          markersContextLayers[map.container][id] = markers;
+          markersContextLayers[map.getContainer().id] ??= {};
+          markersContextLayers[map.getContainer().id][id] = markers;
           break;
         }
         case Variables.LAYER.TYPE.RASTER_TILE: {

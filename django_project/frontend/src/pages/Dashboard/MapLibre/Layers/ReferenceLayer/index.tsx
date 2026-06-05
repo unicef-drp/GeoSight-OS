@@ -17,11 +17,13 @@
    REFERENCE LAYER
    ========================================================================== */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Feature } from "geojson";
 import { useDispatch, useSelector } from "react-redux";
-import { MVTLayer } from "@deck.gl/geo-layers";
-import { GeoJsonLayer } from "@deck.gl/layers";
-import { DataFilterExtension } from "@deck.gl/extensions";
+import { MVTLayer } from "@deck.gl/geo-layers/typed";
+import { GeoJsonLayer } from "@deck.gl/layers/typed";
+import { DataFilterExtension } from "@deck.gl/extensions/typed";
+import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 import { area as turfArea, bboxPolygon } from "@turf/turf";
 import {
   extractCode,
@@ -48,7 +50,14 @@ import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 import { addLayerWithOrder } from "../../utils/Render";
 import { Variables } from "../../../../../utils/Variables";
-import { isProjectUsingConceptUUID } from "../../../../../selectors/dashboard";
+import {
+  isDashboardToolEnabled,
+  isProjectUsingConceptUUID,
+} from "../../../../../selectors/dashboard";
+import maplibregl, { FilterSpecification } from "maplibre-gl";
+import { DatasetView } from "../../../../../types/DatasetView";
+import { IndicatorValues } from "../../../../../types/IndicatorValue";
+import { IndicatorLayerConfig } from "../../../../../types/IndicatorLayer";
 
 export const CONTEXT_LAYER_ID = `context-layer`;
 const MAX_ELEVATION = 500000;
@@ -72,65 +81,102 @@ export const REFERENCE_LAYER_ID_KEY = `reference-layer`;
 export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-fill";
 const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-outline";
 
-// GLobal data
-// To make data persist
-let deckGlData = {};
-let deckGlElevationTime = 0;
-let deckGlAnimationDate = null;
-let currentRenderDataString = "";
-let currentIndicatorLayerStringData = "";
-let currentIndicatorSecondLayerStringData = "";
-let currentCompareMode = false;
+export interface DeckGlFeatureData {
+  elevation: number;
+  fillColor: string;
+  currElevation?: number;
+}
 
-let prevCurrentLevel = null;
+export interface ReferenceLayerProps {
+  id: string;
+  referenceLayer: DatasetView;
+  map: maplibregl.Map;
+  deckgl: MapboxOverlay;
+  is3DView: boolean;
+}
 
-/**
- * ReferenceLayerSelector selector.
- */
-export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
+/** ReferenceLayerSelector selector. */
+export function ReferenceLayer({
+  id,
+  map,
+  deckgl,
+  referenceLayer,
+  is3DView,
+}: ReferenceLayerProps) {
   const dispatch = useDispatch();
-  const REFERENCE_LAYER_ID = REFERENCE_LAYER_ID_KEY + "-" + idx;
-  const FILL_LAYER_ID = FILL_LAYER_ID_KEY + "-" + idx;
-  const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + "-" + idx;
+  const REFERENCE_LAYER_ID = REFERENCE_LAYER_ID_KEY + "-" + id;
+  const FILL_LAYER_ID = FILL_LAYER_ID_KEY + "-" + id;
+  const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + "-" + id;
 
-  const {
-    referenceLayer: referenceLayerProject,
-    indicatorLayers,
-    indicators,
-    relatedTables,
-    geoField,
-  } = useSelector((state) => state.dashboard.data);
-  const { indicatorShow } = useSelector((state) => state.map);
-  const { compareMode } = useSelector((state) => state.mapMode);
+  const referenceLayerProject = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.referenceLayer,
+  );
+  const indicatorLayers = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.indicatorLayers,
+  );
+  // @ts-ignore
+  const indicators = useSelector((state) => state.dashboard.data?.indicators);
+  const relatedTables = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.relatedTables,
+  );
+  // @ts-ignore
+  const geoField = useSelector((state) => state.dashboard.data?.geoField);
+  // @ts-ignore
+  const indicatorShow = useSelector((state) => state.map?.indicatorShow);
+  // @ts-ignore
+  const compareMode = useSelector((state) => state.mapMode?.compareMode);
+  // @ts-ignore
   const referenceLayerData = useSelector(
+    // @ts-ignore
     (state) => state.referenceLayerData[referenceLayer?.identifier],
   );
+  // @ts-ignore
   const indicatorsData = useSelector((state) => state.indicatorsData);
+  // @ts-ignore
   const relatedTableData = useSelector((state) => state.relatedTableData);
+  // @ts-ignore
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  // @ts-ignore
   const currentIndicatorLayer = useSelector(
+    // @ts-ignore
     (state) => state.selectedIndicatorLayer,
   );
   const currentIndicatorSecondLayer = useSelector(
+    // @ts-ignore
     (state) => state.selectedIndicatorSecondLayer,
   );
+  // @ts-ignore
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
+  // @ts-ignore
   const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
   const selectedGlobalTimeConfig = useSelector(
+    // @ts-ignore
     (state) => state.selectedGlobalTimeConfig,
   );
+  // @ts-ignore
   const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
 
-  // TransparencySlider
-  const {
-    indicatorLayer: indicatorLayerTransparency,
+  const indicatorLayerTransparency = useSelector(
     // @ts-ignore
-  } = useSelector((state) => state.map.transparency);
+    (state) => state.map?.transparency?.indicatorLayer,
+  );
   const transparency = indicatorLayerTransparency / 100;
 
   const [is3DInit, setIs3DInit] = useState(false);
   const [layerCreated, setLayerCreated] = useState(false);
   const [referenceLayerConfig, setReferenceLayerConfig] = useState({});
+
+  const deckGlData = useRef<Record<string, DeckGlFeatureData | null>>({});
+  const deckGlElevationTime = useRef(0);
+  const deckGlAnimationDate = useRef<number | null>(null);
+  const currentRenderDataString = useRef("");
+  const currentIndicatorLayerStringData = useRef("");
+  const currentIndicatorSecondLayerStringData = useRef("");
+  const currentCompareMode = useRef(false);
+  const prevCurrentLevel = useRef<number | null>(null);
 
   const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID())
     ? "concept_uuid"
@@ -175,20 +221,21 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         currentIndicatorSecondLayer,
       );
       if (
-        currentRenderDataString !== dataInString ||
-        currentIndicatorLayerStringData !== currentIndicatorLayerString ||
-        currentIndicatorSecondLayerStringData !==
+        currentRenderDataString.current !== dataInString ||
+        currentIndicatorLayerStringData.current !==
+          currentIndicatorLayerString ||
+        currentIndicatorSecondLayerStringData.current !==
           currentIndicatorSecondLayerString ||
-        currentCompareMode !== compareMode ||
-        currentLevel !== prevCurrentLevel
+        currentCompareMode.current !== compareMode ||
+        currentLevel !== prevCurrentLevel.current
       ) {
         updateStyle();
-        currentRenderDataString = dataInString;
-        currentIndicatorLayerStringData = currentIndicatorLayerString;
-        currentIndicatorSecondLayerStringData =
+        currentRenderDataString.current = dataInString;
+        currentIndicatorLayerStringData.current = currentIndicatorLayerString;
+        currentIndicatorSecondLayerStringData.current =
           currentIndicatorSecondLayerString;
-        currentCompareMode = compareMode;
-        prevCurrentLevel = currentLevel;
+        currentCompareMode.current = compareMode;
+        prevCurrentLevel.current = currentLevel;
       }
     }
   }, [
@@ -289,7 +336,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
 
       const source = {
         ..._referenceLayerConfig,
-        type: "vector",
+        type: "vector" as const,
         maxzoom: 8,
       };
       removeAllLayers();
@@ -360,21 +407,26 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     if (isReady()) {
       const codes = checkCodes();
       if (codes) {
-        map.setFilter(
-          FILL_LAYER_ID,
-          ["in", geomFieldOnVectorTile].concat(codes),
-        );
-        map.setFilter(
-          OUTLINE_LAYER_ID,
-          ["in", geomFieldOnVectorTile].concat(codes),
-        );
+        map.setFilter(FILL_LAYER_ID, [
+          "in",
+          geomFieldOnVectorTile,
+          ...codes,
+        ] as FilterSpecification);
+        map.setFilter(OUTLINE_LAYER_ID, [
+          "in",
+          geomFieldOnVectorTile,
+          ...codes,
+        ] as FilterSpecification);
       } else {
         map.setFilter(FILL_LAYER_ID, null);
         map.setFilter(OUTLINE_LAYER_ID, null);
       }
       deckGLLayer();
 
-      let config = returnLayerStyleConfig(currentIndicatorLayer, indicators);
+      let config = returnLayerStyleConfig(
+        currentIndicatorLayer,
+        indicators,
+      ) as IndicatorLayerConfig;
       if (
         dynamicStyleTypes.includes(config.style_type) &&
         config?.style_config?.sync_filter
@@ -421,19 +473,20 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       }
       // Get indicator data per geom
       // This is needed for popup and rendering
-      const indicatorValueByGeometry = getIndicatorValueByGeometry(
-        currentIndicatorLayer,
-        indicators,
-        indicatorsData,
-        relatedTables,
-        relatedTableData,
-        selectedGlobalTime,
-        geoField,
-        filteredGeometries,
-        referenceLayerProject,
-        currentLevel,
-        indicatorLayersData,
-      );
+      const indicatorValueByGeometry: IndicatorValues =
+        getIndicatorValueByGeometry(
+          currentIndicatorLayer,
+          indicators,
+          indicatorsData,
+          relatedTables,
+          relatedTableData,
+          selectedGlobalTime,
+          geoField,
+          filteredGeometries,
+          referenceLayerProject,
+          currentLevel,
+          indicatorLayersData,
+        );
       dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry));
       if (IS_DEBUG) {
         const geoms = Object.keys(indicatorValueByGeometry);
@@ -444,10 +497,10 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       let indicatorSecondValueByGeometry = {};
 
       // Create colors
-      const hideAndGeom = [];
-      const fillColorsAndGeom = {};
-      const outlineColorsAndGeom = {};
-      const outlineSizesAndGeom = {};
+      const hideAndGeom: string[] = [];
+      const fillColorsAndGeom: Record<string, string[]> = {};
+      const outlineColorsAndGeom: Record<string, string[]> = {};
+      const outlineSizesAndGeom: Record<string, string[]> = {};
       if (!compareMode) {
         // If not compare mode
         // Fill and color is from first indicator
@@ -556,7 +609,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       // Change colors
       {
         // FILL
-        const cases = [];
+        const cases: any[] = [];
         for (const [color, codes] of Object.entries(fillColorsAndGeom)) {
           cases.push([
             "in",
@@ -566,7 +619,9 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           cases.push(color);
         }
         if (cases.length) {
-          const paintFilters = ["case"].concat(cases).concat(noDataStyle.color);
+          const paintFilters = (["case"] as any[])
+            .concat(cases)
+            .concat(noDataStyle.color);
           map.setPaintProperty(FILL_LAYER_ID, "fill-color", paintFilters);
         } else {
           map.setPaintProperty(FILL_LAYER_ID, "fill-color", noDataStyle.color);
@@ -586,7 +641,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       }
       {
         // OUTLINE
-        const cases = [];
+        const cases: any[] = [];
         for (const [color, codes] of Object.entries(outlineColorsAndGeom)) {
           cases.push([
             "in",
@@ -599,12 +654,12 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           map.setPaintProperty(
             OUTLINE_LAYER_ID,
             "line-color",
-            ["case"].concat(cases).concat(noDataStyle.outline_color),
+            (["case"] as any[]).concat(cases).concat(noDataStyle.outline_color),
           );
           map.setPaintProperty(
             FILL_LAYER_ID,
             "fill-outline-color",
-            ["case"].concat(cases).concat(noDataStyle.outline_color),
+            (["case"] as any[]).concat(cases).concat(noDataStyle.outline_color),
           );
         } else {
           map.setPaintProperty(
@@ -633,8 +688,8 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       }
       {
         // OUTLINE SIZE
-        const sizes = [];
-        const offset = [];
+        const sizes: any[] = [];
+        const offset: any[] = [];
         for (const [size, codes] of Object.entries(outlineSizesAndGeom)) {
           sizes.push([
             "in",
@@ -658,12 +713,12 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           map.setPaintProperty(
             OUTLINE_LAYER_ID,
             "line-width",
-            ["case"].concat(sizes).concat(defaultOutlineSize),
+            (["case"] as any[]).concat(sizes).concat(defaultOutlineSize),
           );
           map.setPaintProperty(
             OUTLINE_LAYER_ID,
             "line-offset",
-            ["case"].concat(offset).concat(defaultOutlineSize / 2),
+            (["case"] as any[]).concat(offset).concat(defaultOutlineSize / 2),
           );
         } else {
           map.setPaintProperty(
@@ -697,7 +752,6 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         selectedGlobalTimeConfig,
         selectedGlobalTime,
         referenceLayerData,
-        indicatorLayersData,
       );
 
       // Create deck gl
@@ -713,18 +767,18 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
   /*** ------------------------------------- ***/
   /** Elevation time changed */
   const deckGlElevationTimeChanged = (
-    timeoutDeckGlAnimationDate,
-    url,
-    currentLevel,
+    timeoutDeckGlAnimationDate: number,
+    url: string,
+    currentLevel: number,
   ) => {
-    if (deckGlElevationTime < 100) {
+    if (deckGlElevationTime.current < 100) {
       setTimeout(function () {
-        if (deckGlAnimationDate === timeoutDeckGlAnimationDate) {
-          let newElevationTime = deckGlElevationTime + 5;
+        if (deckGlAnimationDate.current === timeoutDeckGlAnimationDate) {
+          let newElevationTime = deckGlElevationTime.current + 5;
           if (newElevationTime > 100) {
             newElevationTime = 100;
           }
-          deckGlElevationTime = newElevationTime;
+          deckGlElevationTime.current = newElevationTime;
           deckGlElevationTimeChanged(
             timeoutDeckGlAnimationDate,
             url,
@@ -737,9 +791,11 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
   };
 
   /** Create deckGlLayer */
-  const deckGLLayer = (indicatorValueByGeometry) => {
+  const deckGLLayer = (
+    indicatorValueByGeometry: IndicatorValues | null = null,
+  ) => {
     if (!deckgl || (!is3DView && !is3DInit)) {
-      deckGlData = {};
+      deckGlData.current = {};
       return;
     }
     setIs3DInit(true);
@@ -771,7 +827,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
       );
     }
     if (currentIndicatorLayer.indicators?.length > 1) {
-      indicatorValueByGeometry = {};
+      indicatorValueByGeometry = {} as IndicatorValues;
     }
 
     let max = 0;
@@ -808,7 +864,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     }
 
     // Calculate style data
-    const newDeckGl = {};
+    const newDeckGl: Record<string, DeckGlFeatureData | null> = {};
     for (const [geom_id, indicatorValue] of Object.entries(
       indicatorValueByGeometry,
     )) {
@@ -827,45 +883,45 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
               ? Math.floor(((value - min) / max) * maxElevation)
               : 0,
             fillColor: style.color,
-            currElevation: deckGlData[geom_id]?.currElevation,
+            currElevation: deckGlData.current[geom_id]?.currElevation,
           };
         }
       }
     }
-    deckGlData = newDeckGl;
-    deckGlElevationTime = 0;
-    deckGlAnimationDate = new Date().getTime();
-    deckGlElevationTimeChanged(deckGlAnimationDate, url, currentLevel);
+    deckGlData.current = newDeckGl;
+    deckGlElevationTime.current = 0;
+    deckGlAnimationDate.current = new Date().getTime();
+    deckGlElevationTimeChanged(deckGlAnimationDate.current, url, currentLevel);
     deckGLLayerRender(url, currentLevel);
   };
 
   /** Render deckGlLayer */
-  const deckGLLayerRender = (url, currentLevel) => {
-    const isRender2DView = !is3DView && deckGlElevationTime === 100;
+  const deckGLLayerRender = (url: string, currentLevel: number) => {
+    const isRender2DView = !is3DView && deckGlElevationTime.current === 100;
     const layer = new MVTLayer({
       data: url,
       minZoom: 0,
       maxZoom: 8,
       updateTriggers: {
         getFillColor: [
-          deckGlData,
-          deckGlElevationTime,
+          deckGlData.current,
+          deckGlElevationTime.current,
           is3DView,
           indicatorShow,
         ],
         getElevation: [
-          deckGlData,
-          deckGlElevationTime,
+          deckGlData.current,
+          deckGlElevationTime.current,
           is3DView,
           indicatorShow,
         ],
       },
-      getFillColor: (feature) => {
+      getFillColor: (feature: Feature) => {
         if (isRender2DView || !indicatorShow) {
           return [0, 0, 0, 0];
         }
         const geom_id = extractCode(feature.properties, geomFieldOnVectorTile);
-        const data = deckGlData[geom_id];
+        const data = deckGlData.current[geom_id];
         let alpha = 200;
         if (data) {
           if (data.fillColor === "#ffffff" && data.elevation === 0) {
@@ -875,8 +931,8 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
           if (!is3DView) {
             if (!currElevation) {
               alpha = 0;
-            } else if (deckGlElevationTime !== 100) {
-              alpha = alpha * ((100 - deckGlElevationTime) / 100);
+            } else if (deckGlElevationTime.current !== 100) {
+              alpha = alpha * ((100 - deckGlElevationTime.current) / 100);
             }
             return hexToRGBList(data.fillColor, alpha);
           }
@@ -889,22 +945,23 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
         return [new GeoJsonLayer(props)];
       },
       // props added by DataFilterExtension
-      getFilterValue: (f) => f.properties.level,
+      getFilterValue: (f: Feature) => f.properties?.level as number,
       filterRange: [currentLevel, currentLevel],
       extensions: [new DataFilterExtension()],
       extruded: true,
-      getElevation: (feature) => {
+      getElevation: (feature: Feature) => {
         if (!indicatorShow) {
           return 0;
         }
         const geom_id = extractCode(feature.properties, geomFieldOnVectorTile);
-        const data = deckGlData[geom_id];
+        const data = deckGlData.current[geom_id];
 
         if (data) {
           const currElevation = data.currElevation ? data.currElevation : 0;
           data.currElevation =
             currElevation +
-            ((data.elevation - currElevation) * deckGlElevationTime) / 100;
+            ((data.elevation - currElevation) * deckGlElevationTime.current) /
+              100;
           return data.currElevation;
         }
         return 0;
@@ -915,22 +972,34 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     deckgl.setProps({ layers: [layer] });
   };
 
-  return null;
+  return <></>;
 }
 
-export default function ReferenceLayers({ map, deckgl, is3DView }) {
-  const { referenceLayers } = useSelector((state) => state.map);
-  return map ? (
+export interface Props {
+  map: maplibregl.Map;
+  deckgl: MapboxOverlay;
+}
+
+export default function ReferenceLayers({ map, deckgl }: Props) {
+  // @ts-ignore
+  const referenceLayers = useSelector((state) => state.map.referenceLayers);
+  const is3DView = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
+  );
+  if (!map) {
+    return;
+  }
+  return (
     <>
       <ReferenceLayer
-        idx={0}
+        id={map.getContainer().id + "-0"}
         map={map}
         referenceLayer={referenceLayers[0]}
         deckgl={deckgl}
         is3DView={is3DView}
       />
       <ReferenceLayer
-        idx={1}
+        id={map.getContainer().id + "-1"}
         map={map}
         referenceLayer={referenceLayers[1]}
         deckgl={deckgl}
@@ -938,5 +1007,5 @@ export default function ReferenceLayers({ map, deckgl, is3DView }) {
       />
       <GeorepoAuthorizationModal />
     </>
-  ) : null;
+  );
 }
