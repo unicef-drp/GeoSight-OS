@@ -38,7 +38,10 @@ import {
 } from "../../../../../utils/indicatorData";
 import { hasLayer, removeLayer, removeSource } from "../../utils";
 import { popup } from "./Popup";
-import { getLayerData } from "../../../../../utils/indicatorLayer";
+import {
+  getLayerData,
+  referenceLayerIndicatorLayer,
+} from "../../../../../utils/indicatorLayer";
 import {
   dynamicStyleTypes,
   returnLayerStyleConfig,
@@ -57,7 +60,10 @@ import {
 import maplibregl, { FilterSpecification } from "maplibre-gl";
 import { DatasetView } from "../../../../../types/DatasetView";
 import { IndicatorValues } from "../../../../../types/IndicatorValue";
-import { IndicatorLayerConfig } from "../../../../../types/IndicatorLayer";
+import {
+  IndicatorLayer,
+  IndicatorLayerConfig,
+} from "../../../../../types/IndicatorLayer";
 
 export const CONTEXT_LAYER_ID = `context-layer`;
 const MAX_ELEVATION = 500000;
@@ -92,7 +98,10 @@ export interface ReferenceLayerProps {
   referenceLayer: DatasetView;
   map: maplibregl.Map;
   deckgl: MapboxOverlay;
-  is3DView: boolean;
+
+  // Layers
+  firstLayer: IndicatorLayer;
+  secondLayer: IndicatorLayer;
 }
 
 /** ReferenceLayerSelector selector. */
@@ -101,13 +110,19 @@ export function ReferenceLayer({
   map,
   deckgl,
   referenceLayer,
-  is3DView,
+
+  // Layers
+  firstLayer,
+  secondLayer,
 }: ReferenceLayerProps) {
   const dispatch = useDispatch();
+
+  // Layer IDs scoped to this instance
   const REFERENCE_LAYER_ID = REFERENCE_LAYER_ID_KEY + "-" + id;
   const FILL_LAYER_ID = FILL_LAYER_ID_KEY + "-" + id;
   const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + "-" + id;
 
+  // Dashboard config
   const referenceLayerProject = useSelector(
     // @ts-ignore
     (state) => state.dashboard.data?.referenceLayer,
@@ -124,30 +139,40 @@ export function ReferenceLayer({
   );
   // @ts-ignore
   const geoField = useSelector((state) => state.dashboard.data?.geoField);
+
+  // Map state
   // @ts-ignore
   const indicatorShow = useSelector((state) => state.map?.indicatorShow);
-  // @ts-ignore
-  const compareMode = useSelector((state) => state.mapMode?.compareMode);
-  // @ts-ignore
+  const indicatorLayerTransparency = useSelector(
+    // @ts-ignore
+    (state) => state.map?.transparency?.indicatorLayer,
+  );
+  const transparency = indicatorLayerTransparency / 100;
+  const is3DView = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
+  );
+  const compareMode = useSelector(
+    // @ts-ignore
+    (state) => state.mapMode?.compareMode,
+  );
+
+  // Reference layer
   const referenceLayerData = useSelector(
     // @ts-ignore
     (state) => state.referenceLayerData[referenceLayer?.identifier],
   );
+
+  // Indicator / related table data
   // @ts-ignore
   const indicatorsData = useSelector((state) => state.indicatorsData);
   // @ts-ignore
   const relatedTableData = useSelector((state) => state.relatedTableData);
   // @ts-ignore
-  const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
+
+  // Filters & selection
   // @ts-ignore
-  const currentIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const filteredGeometries = useSelector((state) => state.filteredGeometries);
   // @ts-ignore
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   // @ts-ignore
@@ -156,28 +181,23 @@ export function ReferenceLayer({
     // @ts-ignore
     (state) => state.selectedGlobalTimeConfig,
   );
-  // @ts-ignore
-  const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
 
-  const indicatorLayerTransparency = useSelector(
-    // @ts-ignore
-    (state) => state.map?.transparency?.indicatorLayer,
-  );
-  const transparency = indicatorLayerTransparency / 100;
-
+  // State
   const [is3DInit, setIs3DInit] = useState(false);
   const [layerCreated, setLayerCreated] = useState(false);
   const [referenceLayerConfig, setReferenceLayerConfig] = useState({});
 
+  // Per-instance mutable refs (not shared across map instances)
   const deckGlData = useRef<Record<string, DeckGlFeatureData | null>>({});
   const deckGlElevationTime = useRef(0);
   const deckGlAnimationDate = useRef<number | null>(null);
   const currentRenderDataString = useRef("");
-  const currentIndicatorLayerStringData = useRef("");
-  const currentIndicatorSecondLayerStringData = useRef("");
+  const firstLayerStringData = useRef("");
+  const secondLayerStringData = useRef("");
   const currentCompareMode = useRef(false);
   const prevCurrentLevel = useRef<number | null>(null);
 
+  // Derived
   const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID())
     ? "concept_uuid"
     : "ucode";
@@ -200,7 +220,7 @@ export function ReferenceLayer({
     const data = getLayerData(
       indicatorsData,
       relatedTableData,
-      currentIndicatorLayer,
+      firstLayer,
       referenceLayerProject,
       false,
       indicatorLayersData,
@@ -208,7 +228,7 @@ export function ReferenceLayer({
       getLayerData(
         indicatorsData,
         relatedTableData,
-        currentIndicatorSecondLayer,
+        secondLayer,
         referenceLayerProject,
         false,
         indicatorLayersData,
@@ -216,32 +236,27 @@ export function ReferenceLayer({
     );
     if (allDataIsReady(data)) {
       const dataInString = JSON.stringify(data);
-      const currentIndicatorLayerString = JSON.stringify(currentIndicatorLayer);
-      const currentIndicatorSecondLayerString = JSON.stringify(
-        currentIndicatorSecondLayer,
-      );
+      const firstLayerString = JSON.stringify(firstLayer);
+      const secondLayerString = JSON.stringify(secondLayer);
       if (
         currentRenderDataString.current !== dataInString ||
-        currentIndicatorLayerStringData.current !==
-          currentIndicatorLayerString ||
-        currentIndicatorSecondLayerStringData.current !==
-          currentIndicatorSecondLayerString ||
+        firstLayerStringData.current !== firstLayerString ||
+        secondLayerStringData.current !== secondLayerString ||
         currentCompareMode.current !== compareMode ||
         currentLevel !== prevCurrentLevel.current
       ) {
         updateStyle();
         currentRenderDataString.current = dataInString;
-        currentIndicatorLayerStringData.current = currentIndicatorLayerString;
-        currentIndicatorSecondLayerStringData.current =
-          currentIndicatorSecondLayerString;
+        firstLayerStringData.current = firstLayerString;
+        secondLayerStringData.current = secondLayerString;
         currentCompareMode.current = compareMode;
         prevCurrentLevel.current = currentLevel;
       }
     }
   }, [
     indicatorsData,
-    currentIndicatorLayer,
-    currentIndicatorSecondLayer,
+    firstLayer,
+    secondLayer,
     compareMode,
     layerCreated,
     relatedTableData,
@@ -424,7 +439,7 @@ export function ReferenceLayer({
       deckGLLayer();
 
       let config = returnLayerStyleConfig(
-        currentIndicatorLayer,
+        firstLayer,
         indicators,
       ) as IndicatorLayerConfig;
       if (
@@ -443,7 +458,7 @@ export function ReferenceLayer({
     // Also filter by levels that found on indicators
     if (isReady()) {
       // Get style for no data style
-      let noDataStyle = returnNoDataStyle(currentIndicatorLayer, indicators);
+      let noDataStyle = returnNoDataStyle(firstLayer, indicators);
       if (!noDataStyle) {
         noDataStyle = {
           color: preferences.style_no_data_outline_color,
@@ -455,10 +470,7 @@ export function ReferenceLayer({
         noDataStyle.outline_size = parseFloat(noDataStyle.outline_size);
       }
 
-      let noDataStyleSecondLayer = returnNoDataStyle(
-        currentIndicatorSecondLayer,
-        indicators,
-      );
+      let noDataStyleSecondLayer = returnNoDataStyle(secondLayer, indicators);
       if (!noDataStyleSecondLayer) {
         noDataStyleSecondLayer = {
           color: preferences.style_no_data_outline_color,
@@ -475,7 +487,7 @@ export function ReferenceLayer({
       // This is needed for popup and rendering
       const indicatorValueByGeometry: IndicatorValues =
         getIndicatorValueByGeometry(
-          currentIndicatorLayer,
+          firstLayer,
           indicators,
           indicatorsData,
           relatedTables,
@@ -492,7 +504,7 @@ export function ReferenceLayer({
         const geoms = Object.keys(indicatorValueByGeometry);
         geoms.sort();
         Logger.log("VALUED_GEOM:", geoms);
-        Logger.log("LAYER_STYLE:", JSON.stringify(currentIndicatorLayer.style));
+        Logger.log("LAYER_STYLE:", JSON.stringify(firstLayer.style));
       }
       let indicatorSecondValueByGeometry = {};
 
@@ -506,11 +518,7 @@ export function ReferenceLayer({
         // Fill and color is from first indicator
         for (const [key, value] of Object.entries(indicatorValueByGeometry)) {
           {
-            const style = returnStyle(
-              currentIndicatorLayer,
-              value,
-              noDataStyle,
-            );
+            const style = returnStyle(firstLayer, value, noDataStyle);
             if (style?.hide) {
               hideAndGeom.push(key);
             }
@@ -549,7 +557,7 @@ export function ReferenceLayer({
         }
       } else {
         indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
-          currentIndicatorSecondLayer,
+          secondLayer,
           indicators,
           indicatorsData,
           relatedTables,
@@ -567,11 +575,7 @@ export function ReferenceLayer({
         for (const [key, value] of Object.entries(indicatorValueByGeometry)) {
           // Check outline color
           {
-            const style = returnStyle(
-              currentIndicatorLayer,
-              value,
-              noDataStyle,
-            );
+            const style = returnStyle(firstLayer, value, noDataStyle);
             const color = style?.color;
             if (color) {
               if (!outlineColorsAndGeom[color]) {
@@ -591,7 +595,7 @@ export function ReferenceLayer({
           // Check fill color
           {
             const style = returnStyle(
-              currentIndicatorSecondLayer,
+              secondLayer,
               value,
               noDataStyleSecondLayer,
             );
@@ -743,8 +747,8 @@ export function ReferenceLayer({
         relatedTables,
         relatedTableData,
         indicatorLayers,
-        currentIndicatorLayer,
-        currentIndicatorSecondLayer,
+        firstLayer,
+        secondLayer,
         indicatorValueByGeometry,
         indicatorSecondValueByGeometry,
         compareMode,
@@ -813,7 +817,7 @@ export function ReferenceLayer({
     // This is needed for popup and rendering
     if (!indicatorValueByGeometry) {
       indicatorValueByGeometry = getIndicatorValueByGeometry(
-        currentIndicatorLayer,
+        firstLayer,
         indicators,
         indicatorsData,
         relatedTables,
@@ -826,7 +830,7 @@ export function ReferenceLayer({
         indicatorLayersData,
       );
     }
-    if (currentIndicatorLayer.indicators?.length > 1) {
+    if (firstLayer.indicators?.length > 1) {
       indicatorValueByGeometry = {} as IndicatorValues;
     }
 
@@ -854,7 +858,7 @@ export function ReferenceLayer({
       min = 0;
     }
 
-    let noDataStyle = returnNoDataStyle(currentIndicatorLayer, indicators);
+    let noDataStyle = returnNoDataStyle(firstLayer, indicators);
     if (!noDataStyle) {
       noDataStyle = {
         color: preferences.style_no_data_outline_color,
@@ -870,11 +874,7 @@ export function ReferenceLayer({
     )) {
       const value = indicatorValue[0]?.value;
       if (![null, undefined].includes(value)) {
-        const style = returnStyle(
-          currentIndicatorLayer,
-          indicatorValue,
-          noDataStyle,
-        );
+        const style = returnStyle(firstLayer, indicatorValue, noDataStyle);
         if ((geometries && !geometries.includes(geom_id)) || !style?.color) {
           newDeckGl[geom_id] = null;
         } else {
@@ -981,11 +981,31 @@ export interface Props {
 }
 
 export default function ReferenceLayers({ map, deckgl }: Props) {
-  // @ts-ignore
-  const referenceLayers = useSelector((state) => state.map.referenceLayers);
-  const is3DView = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
+  const referenceLayer = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.referenceLayer,
   );
+
+  // Update the first layer
+  const firstLayer = useSelector(
+    // @ts-ignore
+    (state) => state.selectedIndicatorLayer,
+  );
+  const firstLayerView = referenceLayerIndicatorLayer(
+    referenceLayer,
+    firstLayer,
+  );
+
+  // Update the second layer
+  const secondLayer = useSelector(
+    // @ts-ignore
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const secondLayerView = referenceLayerIndicatorLayer(
+    referenceLayer,
+    secondLayer,
+  );
+
   if (!map) {
     return;
   }
@@ -994,17 +1014,21 @@ export default function ReferenceLayers({ map, deckgl }: Props) {
       <ReferenceLayer
         id={map.getContainer().id + "-0"}
         map={map}
-        referenceLayer={referenceLayers[0]}
+        referenceLayer={firstLayerView}
         deckgl={deckgl}
-        is3DView={is3DView}
+        firstLayer={firstLayer}
+        secondLayer={secondLayer}
       />
-      <ReferenceLayer
-        id={map.getContainer().id + "-1"}
-        map={map}
-        referenceLayer={referenceLayers[1]}
-        deckgl={deckgl}
-        is3DView={is3DView}
-      />
+      {secondLayer && (
+        <ReferenceLayer
+          id={map.getContainer().id + "-1"}
+          map={map}
+          referenceLayer={secondLayerView}
+          deckgl={deckgl}
+          firstLayer={firstLayer}
+          secondLayer={secondLayer}
+        />
+      )}
       <GeorepoAuthorizationModal />
     </>
   );

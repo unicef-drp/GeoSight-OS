@@ -403,7 +403,7 @@ export function allLayerDataIsReady(
   relatedTableData,
   indicatorLayers,
   referenceLayer,
-  indicatorLayersData
+  indicatorLayersData,
 ) {
   let done = true;
   indicatorLayers.map((indicatorLayer) => {
@@ -413,7 +413,7 @@ export function allLayerDataIsReady(
       indicatorLayer,
       referenceLayer,
       false,
-      indicatorLayersData
+      indicatorLayersData,
     ).map((data) => {
       if (data?.fetching) {
         done = false;
@@ -452,9 +452,13 @@ export function dataFieldsDefault() {
  * Return reference layer of indicator layer
  */
 export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
-  return indicatorLayer?.level_config?.referenceLayer
+  const view = indicatorLayer?.level_config?.referenceLayer
     ? indicatorLayer?.level_config?.referenceLayer
     : referenceLayer;
+  if (view?.is_local) {
+    view.detail_url = `/reference-dataset/${view.identifier}/`;
+  }
+  return view;
 }
 
 /** Return list of indicator by expression */
