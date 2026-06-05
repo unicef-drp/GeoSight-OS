@@ -182,8 +182,8 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           setParentDeckGl={setDeckGl}
           drawingRef={drawingRef}
         />
-        <MainMapLibre key={1} id={1} />
-        <MainMapLibre key={2} id={2} />
+        {/*<MainMapLibre key={1} id={1} />*/}
+        {/*<MainMapLibre key={2} id={2} />*/}
       </div>
 
       <ReferenceLayers map={mainMap} deckgl={deckgl} is3DView={is3dMode} />
