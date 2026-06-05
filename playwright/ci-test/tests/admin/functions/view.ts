@@ -10,7 +10,7 @@ test.describe('Functions test', () => {
       }
     })
     await page.goto('/');
-    await expect(page.getByText('Featured Projects')).toBeVisible();
+    await expect(page.getByText('Featured Projects', { exact: true })).toBeVisible();
 
     // Test the alasql
     await expect(alasSQLTest.length).toBeGreaterThan(0)

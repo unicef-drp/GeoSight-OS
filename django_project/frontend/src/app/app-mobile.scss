@@ -56,6 +56,9 @@
 }
 
 @media (max-width: 1000px) {
+  .Attributions {
+    display: none !important;
+  }
   .CurrentDate {
     display: none;
   }
