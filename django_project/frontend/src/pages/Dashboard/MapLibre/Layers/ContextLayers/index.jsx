@@ -362,7 +362,7 @@ export function contextLayerRendering(
 }
 
 /**
- * ReferenceLayer selector.
+ * ReferenceLayerSelector selector.
  */
 export function ContextLayer({ contextLayerData, map, contextLayerOrder }) {
   const { contextLayersShow } = useSelector((state) => state.map);
@@ -393,7 +393,7 @@ export function ContextLayer({ contextLayerData, map, contextLayerOrder }) {
 }
 
 /**
- * ReferenceLayer selector.
+ * ReferenceLayerSelector selector.
  */
 export default function ContextLayers({ map }) {
   const { contextLayers, contextLayersStructure } = useSelector(

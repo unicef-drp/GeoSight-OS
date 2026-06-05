@@ -30,7 +30,7 @@ import "./style.scss";
  * Reference layer.
  * Contains level selector.
  */
-export default function ReferenceLayerSection() {
+export default function ReferenceLayerSelector() {
   const dispatch = useDispatch();
   const levelConfig = useSelector((state) => state.dashboard.data?.levelConfig);
   const referenceLayers = useSelector((state) => state.map?.referenceLayers);

@@ -28,17 +28,21 @@ import {
   indicatorHasData,
 } from "../../../../utils/indicatorLayer";
 import { allDataIsReady } from "../../../../utils/indicators";
-import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { LayerIcon } from "../../../../components/Icons";
+import { IndicatorLayer } from "../../../../types/IndicatorLayer";
+import { Indicator } from "../../../../types/Indicator";
+import { Plugin, PluginChild } from "../utils/Plugin";
 
 import "./style.scss";
 
-/**
- * Render indicator legend section
- * @param {dict} layer Layer that will be checked
- * @param {str} name Name of layer
- */
-const RenderIndicatorLegendSection = ({ rules, name }) => {
+/** Render indicator legend section */
+const RenderIndicatorLegendSection = ({
+  rules,
+  name,
+}: {
+  rules: any;
+  name: string;
+}) => {
   return (
     <div className="MapLegendSection">
       <div className="MapLegendSectionTitle">{name}</div>
@@ -46,7 +50,7 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
         <Fragment>
           {rules.length ? (
             <div className="IndicatorLegendSection">
-              {rules.map((rule) => {
+              {rules.map((rule: any) => {
                 const border = `1px solid ${rule.outline_color}`;
                 return (
                   <div className="IndicatorLegendRow">
@@ -76,18 +80,33 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
 };
 /**
  * Render indicator legend
- * @param {dict} layer Layer that will be checked
- * @param {str} name Name of layer
  */
-const RenderIndicatorLegend = ({ layer, name }) => {
-  const { referenceLayer, indicators, geoField } = useSelector(
-    (state) => state.dashboard.data,
+const RenderIndicatorLegend = ({
+  layer,
+  name,
+}: {
+  layer: IndicatorLayer;
+  name: string;
+}) => {
+  const referenceLayer = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.referenceLayer,
   );
+  // @ts-ignore
+  const indicators = useSelector((state) => state.dashboard.data?.indicators);
+  // @ts-ignore
+  const geoField = useSelector((state) => state.dashboard.data?.geoField);
+  // @ts-ignore
   const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
+  // @ts-ignore
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
+  // @ts-ignore
   const indicatorsData = useSelector((state) => state.indicatorsData);
+  // @ts-ignore
   const relatedTableData = useSelector((state) => state.relatedTableData);
+  // @ts-ignore
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  // @ts-ignore
   const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
 
   if (layer.multi_indicator_mode === "Pin") {
@@ -96,10 +115,14 @@ const RenderIndicatorLegend = ({ layer, name }) => {
       let rules = null;
       if (hasData) {
         let indicatorData = indicator;
+        // @ts-ignore
         if (!indicator.style) {
-          const obj = indicators.find((ind) => ind.id === indicator.id);
+          const obj = indicators.find(
+            (ind: Indicator) => ind.id === indicator.id,
+          );
           if (obj) {
             indicatorData = dictDeepCopy(obj);
+            // @ts-ignore
             indicatorData.indicators = [indicator];
           }
         }
@@ -151,46 +174,44 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   }
   return <RenderIndicatorLegendSection rules={rules} name={name} />;
 };
-/** Map Legend.
- */
-export default function MapLegend() {
-  const { compareMode } = useSelector((state) => state.mapMode);
-  const selectedIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const selectedIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
-  const { indicatorShow } = useSelector((state) => state.map);
+
+export interface Props {
+  firstLayer: IndicatorLayer;
+  secondLayer: IndicatorLayer;
+}
+
+/** Map Legend. */
+export default function MapLegend({ firstLayer, secondLayer }: Props) {
+  // @ts-ignore
+  const compareMode = useSelector((state) => state.mapMode?.compareMode);
+  // @ts-ignore
+  const indicatorShow = useSelector((state) => state.map?.indicatorShow);
 
   return (
     <>
       <div className="MapLegend">
         <div className="MapLegendContent Fullscreen">
-          {selectedIndicatorLayer.id && indicatorShow && (
+          {firstLayer.id && indicatorShow && (
             <RenderIndicatorLegend
-              layer={selectedIndicatorLayer}
-              name={
-                selectedIndicatorLayer.name + (compareMode ? " (Outline)" : "")
-              }
+              layer={firstLayer}
+              name={firstLayer.name + (compareMode ? " (Outline)" : "")}
             />
           )}
-          {selectedIndicatorSecondLayer.id && indicatorShow && (
+          {secondLayer.id && indicatorShow && (
             <RenderIndicatorLegend
-              layer={selectedIndicatorSecondLayer}
-              name={selectedIndicatorSecondLayer.name + " (Inner)"}
+              layer={secondLayer}
+              name={secondLayer.name + " (Inner)"}
             />
           )}
         </div>
       </div>
       <Plugin
         className="LegendToggler Mobile"
-        title="Legend"
-        onClick={(_) => {
+        onClick={(_: any) => {
           $("html").toggleClass("MapLegendOpen");
         }}
       >
-        <PluginChild title={"Legend"}>
+        <PluginChild title={"Legend"} disabled={false} active={true}>
           <LayerIcon />
         </PluginChild>
       </Plugin>

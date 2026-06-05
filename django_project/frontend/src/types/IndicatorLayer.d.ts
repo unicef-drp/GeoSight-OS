@@ -88,6 +88,7 @@ export interface IndicatorLayer extends IndicatorLayerConfig {
   error: string;
 
   isLocal?: boolean;
+  multi_indicator_mode?: string;
 }
 
 export interface DataField {

@@ -83,6 +83,25 @@
     }
   }
 
+  .MaplibreWrapper {
+    position: relative;
+    border: 1px solid $border-gray;
+
+    .MapLegend {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      max-height: 90%;
+      overflow-y: auto;
+      margin-left: unset;
+    }
+  }
+
+  .Maplibre {
+    width: 100%;
+    height: 100%;
+  }
+
   .Toolbar {
     position: relative;
     display: flex;

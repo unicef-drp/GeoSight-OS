@@ -85,7 +85,7 @@ let currentCompareMode = false;
 let prevCurrentLevel = null;
 
 /**
- * ReferenceLayer selector.
+ * ReferenceLayerSelector selector.
  */
 export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
   const dispatch = useDispatch();

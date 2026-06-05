@@ -19,7 +19,6 @@
 
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import maplibregl from "maplibre-gl";
 import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
 import ReferenceLayers from "./Layers/ReferenceLayer";
 import { Plugin, PluginChild } from "./utils/Plugin";
@@ -52,19 +51,13 @@ import { Variables } from "../../../utils/Variables";
 import { isDashboardToolEnabled } from "../../../selectors/dashboard";
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
-import ReferenceLayerLevelSelection
-  from "../Toolbars/ReferenceLayerLevelSelection";
+import ReferenceLayerLevelSelection from "../Toolbars/ReferenceLayerSelector";
 import ZoomToFilteredGeometries
   from "../../../components/ZoomToFilteredGeometries";
-import MapLibre from "./MapLibre";
+import MainMapLibre from "./MapLibre";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
-
-// Initialize cog
-import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
-
-maplibregl.addProtocol("cog", cogProtocol);
 
 /**
  * MapLibre component.
@@ -182,15 +175,15 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
       <SearchGeometryMobile />
 
       <div id="map-content">
-        <MapLibre
+        <MainMapLibre
           key={0}
           id={0}
           setParentMap={setMainMap}
           setParentDeckGl={setDeckGl}
           drawingRef={drawingRef}
         />
-        {/*<MapLibre key={1} id={1} />*/}
-        {/*<MapLibre key={2} id={2} />*/}
+        <MainMapLibre key={1} id={1} />
+        <MainMapLibre key={2} id={2} />
       </div>
 
       <ReferenceLayers map={mainMap} deckgl={deckgl} is3DView={is3dMode} />

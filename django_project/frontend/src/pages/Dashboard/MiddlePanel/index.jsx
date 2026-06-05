@@ -15,7 +15,6 @@
 
 import React from "react";
 import { useSelector } from "react-redux";
-import MapLegend from "./MapLegend";
 import Basemaps from "./Basemaps";
 import GlobalDateSelector from "./GlobalDateSelector";
 import { FullScreen } from "../../../pages/Dashboard/Toolbars";
@@ -35,10 +34,7 @@ export default function MiddlePanel({ leftContent, rightContent }) {
     <>
       <div className="TopContent">
         <DataLoadingProgress />
-        <div className="LeftContent">
-          {leftContent}
-          <MapLegend />
-        </div>
+        <div className="LeftContent">{leftContent}</div>
         <div className="RightContent">{rightContent}</div>
       </div>
       <div

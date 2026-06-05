@@ -36,6 +36,7 @@ import ContextLayers from "./Layers/ContextLayers";
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import MapLegend from "./MapLegend";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -67,23 +68,28 @@ const createAttributionControl = (
   return control;
 };
 
-export interface Props {
+export interface _MapLibreProps {
   id: number;
-  setParentMap?: (map: maplibregl.Map) => void;
-  setParentDeckGl?: (deckgl: MapboxOverlay) => void;
+  container: string;
+  isMain: boolean;
+  map?: maplibregl.Map;
+  setMap?: (deckgl: maplibregl.Map) => void;
+  deckgl?: MapboxOverlay;
+  setDeckGl?: (deckgl: MapboxOverlay) => void;
   drawingRef?: React.MutableRefObject<any>;
 }
 
-export default function MapLibre({
+export function _MapLibre({
   id,
-  setParentMap,
-  setParentDeckGl,
+  container,
+  isMain,
+  map,
+  setMap,
+  deckgl,
+  setDeckGl,
   drawingRef,
-}: Props) {
-  const [map, setMap] = useState(null);
-  const [deckgl, setDeckGl] = useState(null);
+}: _MapLibreProps) {
   const dispatch = useDispatch();
-  const container = "map-" + id;
 
   const {
     basemapLayer,
@@ -146,10 +152,7 @@ export default function MapLibre({
     newMap.once("load", () => {
       setMap(newMap);
       registerMap(id, newMap);
-      if (setParentMap) {
-        setParentMap(newMap);
-      }
-      if (id === 0) {
+      if (isMain) {
         setTimeout(() => {
           document
             .querySelector(".maplibregl-ctrl-compass")
@@ -172,7 +175,7 @@ export default function MapLibre({
       }),
       "bottom-right",
     );
-    if (id === 0) {
+    if (isMain) {
       newMap.addControl(new maplibregl.NavigationControl(), "bottom-left");
     }
     let previousLayerIds: string[] = [];
@@ -205,12 +208,14 @@ export default function MapLibre({
       updateContextLayerTransparency(newMap, contextTransparencyRef.current);
     });
 
-    if (id === 0) {
+    if (isMain) {
       const mapControl = document.querySelector(
         ".maplibregl-ctrl-bottom-left .maplibregl-ctrl-group",
       );
       const tilt = document.getElementsByClassName("TiltControl")[0];
-      document.getElementById("maplibregl-ctrl-bottom-left")?.appendChild(mapControl);
+      document
+        .getElementById("maplibregl-ctrl-bottom-left")
+        ?.appendChild(mapControl);
       document.getElementById("tilt-control")?.appendChild(tilt);
     }
 
@@ -220,9 +225,6 @@ export default function MapLibre({
     });
     newMap.addControl(deckgl as unknown as maplibregl.IControl);
     setDeckGl(deckgl);
-    if (setParentDeckGl) {
-      setParentDeckGl(deckgl);
-    }
 
     const originalAddLayer = newMap.addLayer.bind(newMap);
     newMap.addLayer = (layer, beforeId) => {
@@ -240,7 +242,7 @@ export default function MapLibre({
     });
 
     // Event for pitch
-    if (id === 0) {
+    if (isMain) {
       newMap.on("pitch", function () {
         dispatch(
           Actions.Map.changePosition(
@@ -260,21 +262,21 @@ export default function MapLibre({
 
   /** Dashboard extent changed */
   useEffect(() => {
-    if (id === 0 && map && dashboardExtent && !position) {
+    if (isMain && map && dashboardExtent && !position) {
       zoomToExtent(map, dashboardExtent, id);
     }
   }, [map, dashboardExtent]);
 
   /** Extent changed */
   useEffect(() => {
-    if (id === 0 && map && extent && extentTriggeredBy !== id) {
+    if (isMain && map && extent && extentTriggeredBy !== id) {
       zoomToExtent(map, extent, id);
     }
   }, [map, mapExtent]);
 
   /** Position changed */
   useEffect(() => {
-    if (id === 0 && map && position && positionTriggeredBy !== id) {
+    if (isMain && map && position && positionTriggeredBy !== id) {
       setTimeout(function () {
         map.easeTo({
           ...(position.pitch !== undefined && { pitch: position.pitch }),
@@ -325,10 +327,74 @@ export default function MapLibre({
     contextTransparencyRef.current = contextLayerTransparency;
   }, [contextLayerTransparency]);
 
+  return <></>;
+}
+
+export interface Props {
+  id: number;
+  setParentMap?: (map: maplibregl.Map) => void;
+  setParentDeckGl?: (deckgl: MapboxOverlay) => void;
+  drawingRef?: React.MutableRefObject<any>;
+}
+
+export default function MainMapLibre({
+  id,
+  setParentMap,
+  setParentDeckGl,
+  drawingRef,
+}: Props) {
+  const container = "map-" + id;
+  const [map, setMap] = useState(null);
+  const [deckgl, setDeckGl] = useState(null);
+
+  // Indicator selector
+  const selectedIndicatorLayer = useSelector(
+    // @ts-ignore
+    (state) => state.selectedIndicatorLayer,
+  );
+  const selectedIndicatorSecondLayer = useSelector(
+    // @ts-ignore
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+
+  /** Update parent map */
+  useEffect(() => {
+    if (setParentMap) {
+      setParentMap(map);
+    }
+  }, [map]);
+
+  /** Update parent deckgl */
+  useEffect(() => {
+    if (setParentDeckGl) {
+      setParentDeckGl(map);
+    }
+  }, [deckgl]);
+
   return (
     <>
-      <div key={container} id={container} className="Maplibre"></div>
+      <div
+        key={container + "wrapper"}
+        id={container + "wrapper"}
+        className="MaplibreWrapper"
+      >
+        <div key={container} id={container} className="Maplibre"></div>
+        <MapLegend
+          firstLayer={selectedIndicatorLayer}
+          secondLayer={selectedIndicatorSecondLayer}
+        />
+      </div>
       <ContextLayers map={map} />
+      <_MapLibre
+        id={id}
+        container={container}
+        isMain={id === 0}
+        map={map}
+        setMap={setMap}
+        deckgl={deckgl}
+        setDeckGl={setDeckGl}
+        drawingRef={drawingRef}
+      />
     </>
   );
 }
