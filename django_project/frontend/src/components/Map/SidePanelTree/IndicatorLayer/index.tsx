@@ -95,13 +95,23 @@ export default function IndicatorLayer({
 
   const OtherData = () => {
     if (layer.related_tables?.length && layer.config.where) {
-      return <RelatedTableLayerFilter indicatorLayer={layer} />;
-    } else if (layer.type === DynamicIndicatorType) {
-      return <DynamicIndicatorLayerConfig indicatorLayer={layer} />;
+      return (
+        <div className="item-tree-layer-content">
+          <RelatedTableLayerFilter indicatorLayer={layer} />
+        </div>
+      );
+    } else if (
+      layer.type === DynamicIndicatorType &&
+      layer?.config?.exposedVariables?.length > 0
+    ) {
+      return (
+        <div className="item-tree-layer-content">
+          <DynamicIndicatorLayerConfig indicatorLayer={layer} />
+        </div>
+      );
     }
     return null;
   };
-
   return (
     <div>
       <FormControlLabel
@@ -188,11 +198,7 @@ export default function IndicatorLayer({
           </span>
         }
       />
-      {selected.indexOf(nodesDataId) >= 0 &&
-        ((layer.related_tables?.length && layer.config.where) ||
-          layer.type === DynamicIndicatorType) && (
-          <div className="item-tree-layer-content">{OtherData()}</div>
-        )}
+      {selected.indexOf(nodesDataId) >= 0 && <>{OtherData()}</>}
       <IndicatorLayerTypeSelection />
     </div>
   );
