@@ -44,6 +44,7 @@ import DynamicIndicatorLayer
   from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
 import { delay, dictDeepCopy } from "../../../../utils/main";
 import { disabledCompositeLayer } from "../utilities";
+import { selectIndicatorLayerByIdx } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 import "./style.scss";
 import CompositeIndexLayerToggler from "../Toggler";
@@ -59,10 +60,7 @@ const ToDynamicLayer = memo(() => {
     // @ts-ignore
     (state) => state.dashboard.data?.indicatorLayersStructure,
   );
-  const currentIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
+  const currentIndicatorLayer = useSelector(selectIndicatorLayerByIdx(0));
 
   return (
     <AddCircleIcon
@@ -130,7 +128,7 @@ export function CompositeIndexLayerRenderers() {
   /** Update data when opened **/
   useEffect(() => {
     if (compositeMode) {
-      dispatch(Actions.SelectedIndicatorLayer.change(indicatorLayer));
+      dispatch(Actions.Map.updateIndicatorLayers([indicatorLayer]));
       dispatch(
         Actions.SelectionState.updateCompositeIndicatorLayer(
           data.config.indicatorLayers.map((layer: any) => parseInt(layer.id)),

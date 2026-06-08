@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
 import { ProjectCheckpoint as ProjectCheckpointType } from "../../types/ProjectCheckpoint";
 import { Actions } from "../../store/dashboard";
+import { selectIndicatorLayerIds } from "../../store/dashboard/selectors/SelectedIndicatorLayers";
 import { dictDeepCopy } from "../../utils/main";
 import { compareFilters, filtersToFlatDict } from "../../utils/filters";
 import { changeIndicatorLayersForcedUpdate } from "../../pages/Dashboard/LeftPanel/IndicatorLayers";
@@ -37,14 +38,7 @@ export const ProjectCheckpoint = memo(
     const dispatch = useDispatch();
     // @ts-ignore
     const dashboardData = useSelector((state) => state.dashboard.data);
-    const selectedIndicatorLayer = useSelector(
-      // @ts-ignore
-      (state) => state.selectedIndicatorLayer,
-    );
-    const selectedIndicatorSecondLayer = useSelector(
-      // @ts-ignore
-      (state) => state.selectedIndicatorSecondLayer,
-    );
+    const indicatorLayerIds = useSelector(selectIndicatorLayerIds);
     // @ts-ignore
     const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
     const {
@@ -69,17 +63,14 @@ export const ProjectCheckpoint = memo(
     useImperativeHandle(ref, () => ({
       /** Get data */
       getData() {
-        const selectedIndicatorLayers = [selectedIndicatorLayer?.id];
-        if (selectedIndicatorSecondLayer?.id) {
-          selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id);
-        }
+        const selectedIndicatorLayerIds = indicatorLayerIds.filter(Boolean);
         const context_layers_config: { [key: string]: object } = {};
         contextLayersDashboard.map((contextLayer: ContextLayer) => {
           context_layers_config[contextLayer.id] = contextLayer.configuration;
         });
         return {
           selected_basemap: basemapLayer?.id,
-          selected_indicator_layers: selectedIndicatorLayers,
+          selected_indicator_layers: selectedIndicatorLayerIds,
           selected_context_layers: Object.keys(contextLayers).map((id) =>
             parseInt(id),
           ),
@@ -190,9 +181,9 @@ export const ProjectCheckpoint = memo(
     // Change selected bookmark when there is embed config
     useEffect(() => {
       setProjectCheckpointEnable(
-        basemapLayer && extent && selectedIndicatorLayer,
+        !!(basemapLayer && extent && indicatorLayerIds[0]),
       );
-    }, [basemapLayer, extent, selectedIndicatorLayer]);
+    }, [basemapLayer, extent, indicatorLayerIds]);
 
     /** Render **/
     return null;

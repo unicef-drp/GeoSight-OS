@@ -31,8 +31,6 @@ import relatedTableDataReducer from "./relatedTableData";
 import ReferenceLayerDataReducer from "./referenceLayerData";
 import filteredGeometriesReducer from "./filteredGeometries";
 import globalStateReducer from "./globalState";
-import selectedIndicatorLayerReducer from "./selectedIndicatorLayer";
-import selectedIndicatorSecondLayerReducer from "./selectedIndicatorSecondLayer";
 import selectedAdminLevelReducer from "./selectedAdminLevel";
 import selectedBookmarkReducer from "./selectedBookmark";
 import selectedGlobalTimeReducer from "./selectedGlobalTime";
@@ -60,8 +58,6 @@ const rootReducer = combineReducers({
   filteredGeometries: filteredGeometriesReducer,
   globalState: globalStateReducer,
   selectedAdminLevel: selectedAdminLevelReducer,
-  selectedIndicatorLayer: selectedIndicatorLayerReducer,
-  selectedIndicatorSecondLayer: selectedIndicatorSecondLayerReducer,
   selectedBookmark: selectedBookmarkReducer,
   selectedGlobalTime: selectedGlobalTimeReducer,
   selectedGlobalTimeConfig: selectedGlobalTimeConfigReducer,

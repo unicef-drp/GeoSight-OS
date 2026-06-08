@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 import { dictDeepCopy } from "../../../../utils/main";
+import { selectIndicatorLayerByIdx } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 import "./style.scss";
 
@@ -35,9 +36,7 @@ export default function ReferenceLayerSelector() {
   const levelConfig = useSelector((state) => state.dashboard.data?.levelConfig);
   const referenceLayers = useSelector((state) => state.map?.referenceLayers);
   const referenceLayerData = useSelector((state) => state.referenceLayerData);
-  const selectedIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
+  const selectedIndicatorLayer = useSelector(selectIndicatorLayerByIdx(0));
 
   // Get level list for dropdown
   // If it has the same levels from multiple dataset

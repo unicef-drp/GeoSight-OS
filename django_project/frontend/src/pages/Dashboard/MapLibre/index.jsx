@@ -191,7 +191,6 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
         <>
           <IndicatorLayersReferenceControl />
           <DatasetGeometryData />
-          <ReferenceLayerCentroid map={mainMap} />
         </>
       ) : null}
 

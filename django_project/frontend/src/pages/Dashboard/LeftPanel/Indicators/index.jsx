@@ -25,18 +25,14 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
 import { Indicator } from "../../../../class/Indicator";
+import { selectIndicatorLayers } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 /** Indicators data. */
 export default function Indicators() {
   const { referenceLayer, indicators, indicatorLayers } = useSelector(
     (state) => state.dashboard.data,
   );
-  const currentIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayers = useSelector(selectIndicatorLayers);
   const { level } = useSelector((state) => state.selectedAdminLevel);
   const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
   const indicatorLayerIds = useSelector(
@@ -46,8 +42,7 @@ export default function Indicators() {
     (state) => state.selectionState.composite.indicatorLayerIds,
   );
   const activatedLayers = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
+    ...selectedIndicatorLayers.map((l) => l?.id),
     ...indicatorLayerIds,
     ...compositeIndicatorLayerIds,
   ];
@@ -55,7 +50,7 @@ export default function Indicators() {
   /** Update the indicators with dataset. */
   useEffect(() => {
     const _indicatorsWithDataset = [];
-    [currentIndicatorLayer, currentIndicatorSecondLayer]
+    selectedIndicatorLayers
       .concat(indicatorLayers)
       .map((layer) => {
         const identifier = referenceLayerIndicatorLayer(
@@ -90,8 +85,7 @@ export default function Indicators() {
     referenceLayer,
     indicators,
     indicatorLayers,
-    currentIndicatorLayer,
-    currentIndicatorSecondLayer,
+    selectedIndicatorLayers,
   ]);
 
   return (

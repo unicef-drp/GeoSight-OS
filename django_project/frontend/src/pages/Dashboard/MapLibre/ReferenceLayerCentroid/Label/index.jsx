@@ -24,11 +24,12 @@ import { Logger } from "../../../../../utils/logger";
 import { formatStyle } from "../../../../../utils/label.tsx";
 
 export const INDICATOR_LABEL_ID = "indicator-label";
-let lastFeatures = null;
+
+export const createLabelState = () => ({ lastFeatures: null });
 
 /** Remove label **/
-export const resetLabel = (map) => {
-  lastFeatures = null;
+export const resetLabel = (map, state) => {
+  state.lastFeatures = null;
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     removeLayer(map, INDICATOR_LABEL_ID);
   }
@@ -54,12 +55,13 @@ export const hideLabel = (map) => {
 export const renderLabel = (
   map,
   features,
-  config
+  config,
+  state,
 ) => {
-  if (JSON.stringify(features) === JSON.stringify(lastFeatures)) {
+  if (JSON.stringify(features) === JSON.stringify(state.lastFeatures)) {
     return;
   }
-  lastFeatures = features;
+  state.lastFeatures = features;
 
   const { paint, layout, minZoom, maxZoom } = formatStyle(config, features);
   if (hasLayer(map, INDICATOR_LABEL_ID)) {

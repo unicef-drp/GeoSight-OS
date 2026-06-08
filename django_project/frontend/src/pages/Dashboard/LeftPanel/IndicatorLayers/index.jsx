@@ -78,27 +78,6 @@ export function IndicatorLayers() {
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
   const [treeData, setTreeData] = useState([]);
 
-  /** Update current indicator **/
-  const updateCurrentIndicator = (indicatorID, Action) => {
-    if (compositeMode) return;
-    if (!indicatorID) {
-      dispatch(Action.change(null));
-      return;
-    }
-    const indicator = indicatorLayers.filter((indicator) => {
-      return "" + indicator.id === "" + indicatorID;
-    })[0];
-    if (indicator) {
-      const indicatorData = JSON.parse(JSON.stringify(indicator));
-      if (!indicatorData.style?.length) {
-        indicatorData.style = indicators.find((indicator) => {
-          return indicator.id === indicatorData.indicators[0]?.id;
-        })?.style;
-      }
-      dispatch(Action.change(indicatorData));
-    }
-  };
-
   const updateDescription = (indicatorLayer, relatedTableConfig) => {
     const [aggrMethod, aggrField] = indicatorLayer.config.aggregation
       .replace(")", "")
@@ -127,33 +106,9 @@ export function IndicatorLayers() {
       .replace("{sql-query}", relatedTableConfig.query);
   };
 
-  /**
-   * Change selected indicator layer
-   */
-  useEffect(() => {
-    updateCurrentIndicator(
-      currentIndicatorLayer,
-      Actions.SelectedIndicatorLayer,
-    );
-  }, [currentIndicatorLayer]);
-
-  /**
-   * Change selected indicator layer
-   */
-  useEffect(() => {
-    updateCurrentIndicator(
-      currentIndicatorSecondLayer,
-      Actions.SelectedIndicatorSecondLayer,
-    );
-  }, [currentIndicatorSecondLayer]);
-
-  /**
-   * Change selected indicator layer
-   */
   useEffect(() => {
     if (!compareMode) {
       setCurrentIndicatorLayers([currentIndicatorLayer, 0]);
-      updateCurrentIndicator(null, Actions.SelectedIndicatorSecondLayer);
     }
   }, [compareMode]);
 
@@ -164,7 +119,15 @@ export function IndicatorLayers() {
       .filter((id) => id)
       .map((id) => indicatorLayers.find((l) => "" + l.id === "" + id))
       .filter(Boolean)
-      .map((l) => JSON.parse(JSON.stringify(l)));
+      .map((l) => {
+        const layer = JSON.parse(JSON.stringify(l));
+        if (!layer.style?.length) {
+          layer.style = indicators.find(
+            (ind) => ind.id === layer.indicators[0]?.id,
+          )?.style;
+        }
+        return layer;
+      });
     dispatch(Actions.Map.updateIndicatorLayers(layers));
   }, [currentIndicatorLayers, indicatorLayers]);
 
@@ -288,11 +251,6 @@ export function IndicatorLayers() {
 
     // Setup current indicator layer
     setCurrentIndicatorLayers(selectedIds);
-    updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer);
-    updateCurrentIndicator(
-      selectedIds[1],
-      Actions.SelectedIndicatorSecondLayer,
-    );
     updateOtherLayers(["" + selectedIds[0], "" + selectedIds[1]]);
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
@@ -301,7 +259,6 @@ export function IndicatorLayers() {
       if (selectedData.length === 0) {
         if (currentIndicatorLayer) {
           setCurrentIndicatorLayers([0, 0]);
-          updateCurrentIndicator(null, Actions.SelectedIndicatorLayer);
         }
       }
       if (selectedData.length >= 1) {

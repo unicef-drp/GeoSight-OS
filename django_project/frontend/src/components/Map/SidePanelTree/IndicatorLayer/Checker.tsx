@@ -18,6 +18,7 @@ import { IndicatorLayer } from "../../../../types/IndicatorLayer";
 import { useSelector } from "react-redux";
 import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
 import { getIndicatorDataId } from "../../../../utils/indicatorData";
+import { selectIndicatorLayerIds } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 export interface Props {
   layer?: IndicatorLayer;
@@ -32,18 +33,8 @@ export function Checker({ layer, setIsLoading, setError }: Props) {
   const { referenceLayer } = useSelector((state) => state.dashboard.data);
   // @ts-ignore
   const indicatorsData = useSelector((state) => state.indicatorsData);
-  const currentIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorSecondLayer,
-  );
-  const activate = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
-  ].includes(layer.id);
+  const indicatorLayerIds = useSelector(selectIndicatorLayerIds);
+  const activate = indicatorLayerIds.includes(layer.id);
 
   /** When not activated, don't show loading */
   useEffect(() => {

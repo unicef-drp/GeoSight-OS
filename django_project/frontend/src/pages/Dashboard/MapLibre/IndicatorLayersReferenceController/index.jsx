@@ -17,15 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { referenceLayerIndicatorLayer } from "../../../../utils/indicatorLayer";
 import { Actions } from "../../../../store/dashboard";
+import { selectIndicatorLayers } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 export default function IndicatorLayersReferenceController() {
   const dispatch = useDispatch();
-  const selectedIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const selectedIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayers = useSelector(selectIndicatorLayers);
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
@@ -35,11 +31,8 @@ export default function IndicatorLayersReferenceController() {
    * */
   useEffect(() => {
     const views = [];
-    if (Object.keys(selectedIndicatorLayer).length) {
-      const view = referenceLayerIndicatorLayer(
-        referenceLayer,
-        selectedIndicatorLayer,
-      );
+    selectedIndicatorLayers.forEach((layer) => {
+      const view = referenceLayerIndicatorLayer(referenceLayer, layer);
       if (
         !views.find((_view) =>
           [view, view.identifier].includes(_view.identifier),
@@ -47,20 +40,7 @@ export default function IndicatorLayersReferenceController() {
       ) {
         views.push(view);
       }
-    }
-    if (Object.keys(selectedIndicatorSecondLayer).length) {
-      const view = referenceLayerIndicatorLayer(
-        referenceLayer,
-        selectedIndicatorSecondLayer,
-      );
-      if (
-        !views.find((_view) =>
-          [view, view.identifier].includes(_view.identifier),
-        )
-      ) {
-        views.push(view);
-      }
-    }
+    });
     views.map((view) => {
       if (view.is_local) {
         view.detail_url = `/reference-dataset/${view.identifier}/`;
@@ -70,7 +50,7 @@ export default function IndicatorLayersReferenceController() {
       views.push(referenceLayer);
     }
     dispatch(Actions.Map.changeReferenceLayers(views));
-  }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
+  }, [referenceLayer, selectedIndicatorLayers]);
 
   return null;
 }

@@ -43,8 +43,6 @@ import ReferenceLayerData from "./reducers/referenceLayerData/actions";
 import RelatedTable from "./reducers/relatedTable/actions";
 import RelatedTableData from "./reducers/relatedTableData/actions";
 import SelectedAdminLevel from "./reducers/selectedAdminLevel/actions";
-import SelectedIndicatorLayer from "./reducers/selectedIndicatorLayer/actions";
-import SelectedIndicatorSecondLayer from "./reducers/selectedIndicatorSecondLayer/actions";
 import SelectedBookmark from "./reducers/selectedBookmark/actions";
 import SelectedGlobalTime from "./reducers/selectedGlobalTime/actions";
 import SelectedGlobalTimeConfig from "./reducers/selectedGlobalTimeConfig/actions";
@@ -80,8 +78,6 @@ const Actions = {
   ReferenceLayer,
   ReferenceLayerData,
   SelectedAdminLevel,
-  SelectedIndicatorLayer,
-  SelectedIndicatorSecondLayer,
   SelectedBookmark,
   SelectedGlobalTime,
   SelectedGlobalTimeConfig,

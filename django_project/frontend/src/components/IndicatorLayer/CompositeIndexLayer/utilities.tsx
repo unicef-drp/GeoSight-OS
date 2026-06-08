@@ -37,7 +37,7 @@ export function disabledCompositeLayer(
     (async () => {
       await delay(100);
       dispatch(Actions.MapMode.toggleCompositeMode());
-      dispatch(Actions.SelectedIndicatorLayer.change(previousLayer));
+      dispatch(Actions.Map.updateIndicatorLayers([previousLayer]));
     })();
   }
 }

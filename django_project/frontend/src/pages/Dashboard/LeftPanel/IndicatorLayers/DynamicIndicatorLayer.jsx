@@ -28,6 +28,7 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { getIndicatorDataByLayer } from "../../../../utils/indicatorData";
 import DynamicIndicatorLayerMapConfig from "./DynamicIndicatorLayerMapConfig";
+import { selectIndicatorLayerIds } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 /**
  * Related table layer handler
@@ -47,12 +48,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     (state) => state.indicatorLayerMetadata,
   );
   const indicatorsData = useSelector((state) => state.indicatorsData);
-  const currentIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayerIds = useSelector(selectIndicatorLayerIds);
   const indicatorLayerIds = useSelector(
     (state) => state.selectionState.filter.indicatorLayerIds,
   );
@@ -65,8 +61,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const relatedTableData = useSelector((state) => state.relatedTableData);
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const activated = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
+    ...selectedIndicatorLayerIds,
     ...indicatorLayerIds,
     ...compositeIndicatorLayerIds,
   ].includes(indicatorLayer.id);

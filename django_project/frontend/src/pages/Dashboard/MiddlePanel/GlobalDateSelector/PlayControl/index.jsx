@@ -27,6 +27,7 @@ import { ThemeButton } from "../../../../../components/Elements/Button";
 import { allLayerDataIsReady } from "../../../../../utils/indicatorLayer";
 import { returnWhere } from "../../../../../utils/queryExtraction";
 import { NextEndIcon, PrevEndIcon } from "../../../../../components/Icons/svg";
+import { selectIndicatorLayers } from "../../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 import './style.scss';
 
@@ -45,8 +46,7 @@ export default function PlayControl(
   } = useSelector(state => state.dashboard.data)
   const indicatorsData = useSelector(state => state.indicatorsData)
   const relatedTableData = useSelector(state => state.relatedTableData)
-  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
+  const selectedIndicatorLayers = useSelector(selectIndicatorLayers)
   const indicatorLayersData = useSelector((state) => state.indicatorLayersData)
 
   // Speed it 2 second for 0%
@@ -88,7 +88,7 @@ export default function PlayControl(
     if (isPlay) {
       const speedTime = minSpeed * 1000 / speed;
       const where = returnWhere(filters ? filters : [])
-      let layers = [currentIndicatorLayer, selectedIndicatorSecondLayer]
+      let layers = selectedIndicatorLayers
       if (where) {
         layers = indicatorLayers
       }

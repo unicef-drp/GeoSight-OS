@@ -21,6 +21,7 @@ import maplibregl, {
 import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 
 import { Actions } from "../../../store/dashboard";
+import { selectIndicatorLayerByIdx } from "../../../store/dashboard/selectors/SelectedIndicatorLayers";
 import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 import { removeLayer, removeSource } from "./utils";
 import { addLayerWithOrder } from "./utils/Render";
@@ -38,6 +39,7 @@ import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import MapLegend from "./MapLegend";
 import ReferenceLayers from "./Layers/ReferenceLayer";
+import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -352,13 +354,11 @@ export default function MainMapLibre({
   const compareMode = useSelector((state) => state.mapMode.compareMode);
 
   // Indicator layers
-  const mapIndicatorLayers = useSelector(
-    // @ts-ignore
-    (state) => state.map.indicatorLayers,
-  );
+  const firstLayer = useSelector(selectIndicatorLayerByIdx(0));
+  const secondLayer = useSelector(selectIndicatorLayerByIdx(1));
   const indicatorLayers = compareMode
-    ? [mapIndicatorLayers[0], mapIndicatorLayers[1]]
-    : [mapIndicatorLayers[0]];
+    ? [firstLayer, secondLayer]
+    : [firstLayer];
 
   /** Update parent map */
   useEffect(() => {
@@ -394,6 +394,11 @@ export default function MainMapLibre({
         firstLayer={indicatorLayers[0]}
         secondLayer={indicatorLayers[1]}
       />
+      <ReferenceLayerCentroid
+        map={map}
+        firstLayer={firstLayer}
+        secondLayer={secondLayer}
+      />
       <_MapLibre
         id={id}
         container={container}
@@ -415,14 +420,10 @@ export function MirrorMapLibre({ id }: { id: number }) {
   // @ts-ignore
   const compareMode = useSelector((state) => state.mapMode.compareMode);
 
-  // Indicator layers
-  const mapIndicatorLayers = useSelector(
-    // @ts-ignore
-    (state) => state.map.indicatorLayers,
-  );
   // In compare mode, MainMap renders both layers — mirror not needed
-  // In non-compare mode, mirror renders layer 1
-  if (compareMode || !mapIndicatorLayers[id]) {
+  // In non-compare mode, mirror renders the layer at this map's index
+  const mirrorLayer = useSelector(selectIndicatorLayerByIdx(id));
+  if (compareMode || !mirrorLayer) {
     return null;
   }
   return (
@@ -433,13 +434,18 @@ export function MirrorMapLibre({ id }: { id: number }) {
         className="MaplibreWrapper"
       >
         <div key={container} id={container} className="Maplibre"></div>
-        <MapLegend firstLayer={mapIndicatorLayers[id]} secondLayer={null} />
+        <MapLegend firstLayer={mirrorLayer} secondLayer={null} />
       </div>
       <ContextLayers map={map} />
       <ReferenceLayers
         map={map}
         deckgl={deckgl}
-        firstLayer={mapIndicatorLayers[id]}
+        firstLayer={mirrorLayer}
+        secondLayer={null}
+      />
+      <ReferenceLayerCentroid
+        map={map}
+        firstLayer={mirrorLayer}
         secondLayer={null}
       />
       <_MapLibre

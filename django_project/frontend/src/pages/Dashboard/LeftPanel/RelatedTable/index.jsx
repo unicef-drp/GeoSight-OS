@@ -27,6 +27,7 @@ import { getCountryGeomIds } from "../../../../utils/Dataset";
 import {
   RelatedTable as RelatedTableRequest
 } from "../../../../class/RelatedTable";
+import { selectIndicatorLayerIds } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 /**
  * RelatedTable data.
@@ -44,12 +45,7 @@ export function RelatedTable({
   const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
   const selectedGlobalTimeStr = JSON.stringify(selectedGlobalTime);
   const [responseAndTime, setResponseAndTime] = useState(null);
-  const currentIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayerIds = useSelector(selectIndicatorLayerIds);
   const relatedTableIds = useSelector(
     (state) => state.selectionState.filter.relatedTableIds,
   );
@@ -62,8 +58,7 @@ export function RelatedTable({
     (state) => state.referenceLayerData[referenceLayerUUID],
   );
   const activatedLayers = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
+    ...selectedIndicatorLayerIds,
     ...compositeIndicatorLayerIds,
   ];
   const activated =
