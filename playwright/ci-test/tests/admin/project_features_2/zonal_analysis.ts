@@ -59,7 +59,7 @@ test.describe('Zonal analysis', () => {
     await page.getByTitle('Zonal Analysis').click();
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 592,
+        x: 312,
         y: 344
       }
     });

@@ -87,7 +87,7 @@ export const defaultCheck = async (page) => {
   // Check context layers
   await page.getByRole('tab', { name: 'Context Layers' }).click();
   await expect(page.getByLabel(contextLayer)).not.toBeChecked();
-  await expect(page.getByText('Sample ArcGIS layer')).not.toBeVisible();
+  await expect(page.locator('.RightSection').getByText('Sample ArcGIS layer')).not.toBeVisible();
   await page.getByRole('tab', { name: 'Indicators' }).click();
 }
 
@@ -144,6 +144,6 @@ export const defaultBookmark = async (page) => {
   // Check context layers
   await page.getByRole('tab', { name: 'Context Layers' }).click();
   await expect(page.getByLabel(contextLayer)).toBeChecked();
-  await expect(page.getByText('Sample ArcGIS layer')).toBeVisible();
+  await expect(page.locator('.RightSection').getByText('Sample ArcGIS layer')).toBeVisible();
   await page.getByRole('tab', { name: 'Indicators' }).click();
 }

@@ -177,7 +177,7 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   // ------------------------------------------------------------
   await page.getByRole('region', { name: 'Map' }).click({
     position: {
-      x: 575,
+      x: 295,
       y: 359
     }
   });
@@ -195,7 +195,7 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await delay(1000)
   await page.getByRole('region', { name: 'Map' }).click({
     position: {
-      x: 575,
+      x: 295,
       y: 359
     }
   });
@@ -208,7 +208,7 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await delay(1000)
   await page.getByRole('region', { name: 'Map' }).click({
     position: {
-      x: 575,
+      x: 295,
       y: 359
     }
   });
@@ -233,7 +233,7 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
   await delay(1000)
   await page.getByRole('region', { name: 'Map' }).click({
     position: {
-      x: 532,
+      x: 252,
       y: 400
     }
   });

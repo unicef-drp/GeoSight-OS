@@ -219,7 +219,7 @@ test.describe('SDMX Indicator Layer', () => {
     // Check the on click
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 633,
+        x: 353,
         y: 125
       }
     });

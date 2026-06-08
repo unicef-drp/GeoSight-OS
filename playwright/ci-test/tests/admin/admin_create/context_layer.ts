@@ -56,7 +56,7 @@ test.describe('Context layer create admin', () => {
     await delay(2000);
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 531,
+        x: 251,
         y: 347
       }
     });

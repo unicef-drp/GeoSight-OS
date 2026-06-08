@@ -374,8 +374,8 @@ export default function MainMapLibre({
   return (
     <>
       <div
-        key={container + "wrapper"}
-        id={container + "wrapper"}
+        key={container + "-wrapper"}
+        id={container + "-wrapper"}
         className="MaplibreWrapper"
       >
         <div key={container} id={container} className="Maplibre"></div>

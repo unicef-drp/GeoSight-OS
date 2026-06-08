@@ -23,8 +23,8 @@ test.describe('Cloud native layer', () => {
     await delay(1000)
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 748,
-        y: 273
+        x: 468,
+        y: 272
       }
     });
     await expect(page.locator('.maplibregl-popup-content-wrapper tr').nth(0).locator('td').nth(0)).toContainText('Amenity');

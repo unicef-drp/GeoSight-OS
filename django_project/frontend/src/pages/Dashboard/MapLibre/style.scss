@@ -39,7 +39,7 @@
       display: none !important;
     }
 
-    #map-content {
+    #map {
       display: none;
     }
 
@@ -49,7 +49,7 @@
     }
   }
 
-  #map-content {
+  #map {
     display: grid;
     height: 100%;
     width: 100%;
@@ -459,5 +459,9 @@ $nav-disabled-color: '%23CCCCCC';
 }
 
 .mapboxgl-ctrl {
+  display: none !important;
+}
+
+.maplibregl-ctrl-attrib {
   display: none !important;
 }

@@ -100,7 +100,7 @@ test.describe('View edit project', () => {
     await delay(1000)
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 583,
+        x: 303,
         y: 425
       }
     });

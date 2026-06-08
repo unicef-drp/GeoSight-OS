@@ -174,7 +174,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
 
       <SearchGeometryMobile />
 
-      <div id="map-content">
+      <div id="map">
         <MainMapLibre
           key={0}
           id={0}
