@@ -53,10 +53,7 @@ import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 import { addLayerWithOrder } from "../../utils/Render";
 import { Variables } from "../../../../../utils/Variables";
-import {
-  isDashboardToolEnabled,
-  isProjectUsingConceptUUID,
-} from "../../../../../selectors/dashboard";
+import { isProjectUsingConceptUUID } from "../../../../../selectors/dashboard";
 import maplibregl, { FilterSpecification } from "maplibre-gl";
 import { DatasetView } from "../../../../../types/DatasetView";
 import { IndicatorValues } from "../../../../../types/IndicatorValue";
@@ -149,7 +146,8 @@ export function ReferenceLayer({
   );
   const transparency = indicatorLayerTransparency / 100;
   const is3DView = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
+    // @ts-ignore
+    (state) => state.map?.is3dMode,
   );
   const compareMode = useSelector(
     // @ts-ignore
@@ -504,7 +502,7 @@ export function ReferenceLayer({
         const geoms = Object.keys(indicatorValueByGeometry);
         geoms.sort();
         Logger.log("VALUED_GEOM:", geoms);
-        Logger.log("LAYER_STYLE:", JSON.stringify(firstLayer.style));
+        Logger.log("LAYER_STYLE:", JSON.stringify(firstLayer?.style));
       }
       let indicatorSecondValueByGeometry = {};
 
@@ -978,28 +976,23 @@ export function ReferenceLayer({
 export interface Props {
   map: maplibregl.Map;
   deckgl: MapboxOverlay;
+  firstLayer: IndicatorLayer;
+  secondLayer: IndicatorLayer;
 }
 
-export default function ReferenceLayers({ map, deckgl }: Props) {
+export default function ReferenceLayers({
+  map,
+  deckgl,
+  firstLayer,
+  secondLayer,
+}: Props) {
   const referenceLayer = useSelector(
     // @ts-ignore
     (state) => state.dashboard.data?.referenceLayer,
   );
-
-  // Update the first layer
-  const firstLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
   const firstLayerView = referenceLayerIndicatorLayer(
     referenceLayer,
     firstLayer,
-  );
-
-  // Update the second layer
-  const secondLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorSecondLayer,
   );
   const secondLayerView = referenceLayerIndicatorLayer(
     referenceLayer,
@@ -1019,16 +1012,14 @@ export default function ReferenceLayers({ map, deckgl }: Props) {
         firstLayer={firstLayer}
         secondLayer={secondLayer}
       />
-      {secondLayer && (
-        <ReferenceLayer
-          id={map.getContainer().id + "-1"}
-          map={map}
-          referenceLayer={secondLayerView}
-          deckgl={deckgl}
-          firstLayer={firstLayer}
-          secondLayer={secondLayer}
-        />
-      )}
+      <ReferenceLayer
+        id={map.getContainer().id + "-1"}
+        map={map}
+        referenceLayer={secondLayerView}
+        deckgl={deckgl}
+        firstLayer={firstLayer}
+        secondLayer={secondLayer}
+      />
       <GeorepoAuthorizationModal />
     </>
   );

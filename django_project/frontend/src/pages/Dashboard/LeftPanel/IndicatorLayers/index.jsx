@@ -157,6 +157,17 @@ export function IndicatorLayers() {
     }
   }, [compareMode]);
 
+  /** Sync map indicator layers when selection or available layers change */
+  useEffect(() => {
+    if (compositeMode) return;
+    const layers = currentIndicatorLayers
+      .filter((id) => id)
+      .map((id) => indicatorLayers.find((l) => "" + l.id === "" + id))
+      .filter(Boolean)
+      .map((l) => JSON.parse(JSON.stringify(l)));
+    dispatch(Actions.Map.updateIndicatorLayers(layers));
+  }, [currentIndicatorLayers, indicatorLayers]);
+
   const updateOtherLayers = (selectedData) => {
     if (compositeMode) return;
     // Check selected indicator layers

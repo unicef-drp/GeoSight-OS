@@ -54,7 +54,7 @@ import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
 import ReferenceLayerLevelSelection from "../Toolbars/ReferenceLayerSelector";
 import ZoomToFilteredGeometries
   from "../../../components/ZoomToFilteredGeometries";
-import MainMapLibre from "./MapLibre";
+import MainMapLibre, { MirrorMapLibre } from "./MapLibre";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
@@ -70,7 +70,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
   const [mainMap, setMainMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
 
-  const { is3dMode, force } = useSelector((state) => state.map);
+  const is3dMode = useSelector((state) => state.map?.is3dMode);
   const view3DEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
   );
@@ -182,11 +182,11 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           setParentDeckGl={setDeckGl}
           drawingRef={drawingRef}
         />
-        {/*<MainMapLibre key={1} id={1} />*/}
-        {/*<MainMapLibre key={2} id={2} />*/}
+        <MirrorMapLibre key={1} id={1} />
+        <MirrorMapLibre key={2} id={2} />
+        <MirrorMapLibre key={3} id={3} />
       </div>
 
-      <ReferenceLayers map={mainMap} deckgl={deckgl} is3DView={is3dMode} />
       {mainMap ? (
         <>
           <IndicatorLayersReferenceControl />

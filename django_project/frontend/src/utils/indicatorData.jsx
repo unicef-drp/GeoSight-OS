@@ -146,6 +146,9 @@ export const getIndicatorValueByGeometry = (
   selectedAdminLevel,
   indicatorLayersData,
 ) => {
+  if (!indicatorLayer) {
+    return {};
+  }
   updateIndicatorLayerWithGeographyCode(indicatorLayer, relatedTables);
   return returnValueByGeometry(
     indicatorLayer,

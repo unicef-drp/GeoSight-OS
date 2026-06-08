@@ -24,6 +24,17 @@ let syncingFrom: number | null = null;
 export function registerMap(id: number, map: maplibregl.Map) {
   registry[id] = map;
 
+  // Sync new mirror maps to the main map's current position on creation
+  if (id !== 0 && registry[0]) {
+    const mainMap = registry[0];
+    map.jumpTo({
+      center: mainMap.getCenter(),
+      zoom: mainMap.getZoom(),
+      bearing: mainMap.getBearing(),
+      pitch: mainMap.getPitch(),
+    });
+  }
+
   map.on("move", () => {
     if (syncingFrom !== null) return;
     syncingFrom = id;

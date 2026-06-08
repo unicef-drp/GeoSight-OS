@@ -37,6 +37,7 @@ import ContextLayers from "./Layers/ContextLayers";
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import MapLegend from "./MapLegend";
+import ReferenceLayers from "./Layers/ReferenceLayer";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -73,9 +74,8 @@ export interface _MapLibreProps {
   container: string;
   isMain: boolean;
   map?: maplibregl.Map;
-  setMap?: (deckgl: maplibregl.Map) => void;
-  deckgl?: MapboxOverlay;
-  setDeckGl?: (deckgl: MapboxOverlay) => void;
+  setMap?: (map: maplibregl.Map | null) => void;
+  setDeckGl?: (deckgl: MapboxOverlay | null) => void;
   drawingRef?: React.MutableRefObject<any>;
 }
 
@@ -85,21 +85,19 @@ export function _MapLibre({
   isMain,
   map,
   setMap,
-  deckgl,
   setDeckGl,
   drawingRef,
 }: _MapLibreProps) {
   const dispatch = useDispatch();
 
-  const {
-    basemapLayer,
-    position: mapPosition,
-    transparency,
-    extent: mapExtent,
-  } = useSelector(
-    // @ts-ignore
-    (state) => state.map,
-  );
+  // @ts-ignore
+  const basemapLayer = useSelector((state) => state.map.basemapLayer);
+  // @ts-ignore
+  const mapPosition = useSelector((state) => state.map.position);
+  // @ts-ignore
+  const transparency = useSelector((state) => state.map.transparency);
+  // @ts-ignore
+  const mapExtent = useSelector((state) => state.map.extent);
 
   const { value: extent, triggeredBy: extentTriggeredBy } = mapExtent;
   const { value: position, triggeredBy: positionTriggeredBy } = mapPosition;
@@ -257,6 +255,9 @@ export function _MapLibre({
 
     return () => {
       unregisterMap(id);
+      setMap?.(null);
+      setDeckGl?.(null);
+      newMap.remove();
     };
   }, []);
 
@@ -347,15 +348,17 @@ export default function MainMapLibre({
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
 
-  // Indicator selector
-  const selectedIndicatorLayer = useSelector(
+  // @ts-ignore
+  const compareMode = useSelector((state) => state.mapMode.compareMode);
+
+  // Indicator layers
+  const mapIndicatorLayers = useSelector(
     // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
+    (state) => state.map.indicatorLayers,
   );
-  const selectedIndicatorSecondLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const indicatorLayers = compareMode
+    ? [mapIndicatorLayers[0], mapIndicatorLayers[1]]
+    : [mapIndicatorLayers[0]];
 
   /** Update parent map */
   useEffect(() => {
@@ -380,20 +383,72 @@ export default function MainMapLibre({
       >
         <div key={container} id={container} className="Maplibre"></div>
         <MapLegend
-          firstLayer={selectedIndicatorLayer}
-          secondLayer={selectedIndicatorSecondLayer}
+          firstLayer={indicatorLayers[0]}
+          secondLayer={indicatorLayers[1]}
         />
       </div>
       <ContextLayers map={map} />
+      <ReferenceLayers
+        map={map}
+        deckgl={deckgl}
+        firstLayer={indicatorLayers[0]}
+        secondLayer={indicatorLayers[1]}
+      />
       <_MapLibre
         id={id}
         container={container}
-        isMain={id === 0}
+        isMain={true}
         map={map}
         setMap={setMap}
-        deckgl={deckgl}
         setDeckGl={setDeckGl}
         drawingRef={drawingRef}
+      />
+    </>
+  );
+}
+
+export function MirrorMapLibre({ id }: { id: number }) {
+  const container = "map-" + id;
+  const [map, setMap] = useState(null);
+  const [deckgl, setDeckGl] = useState(null);
+
+  // @ts-ignore
+  const compareMode = useSelector((state) => state.mapMode.compareMode);
+
+  // Indicator layers
+  const mapIndicatorLayers = useSelector(
+    // @ts-ignore
+    (state) => state.map.indicatorLayers,
+  );
+  // In compare mode, MainMap renders both layers — mirror not needed
+  // In non-compare mode, mirror renders layer 1
+  if (compareMode || !mapIndicatorLayers[id]) {
+    return null;
+  }
+  return (
+    <>
+      <div
+        key={container + "-wrapper"}
+        id={container + "-wrapper"}
+        className="MaplibreWrapper"
+      >
+        <div key={container} id={container} className="Maplibre"></div>
+        <MapLegend firstLayer={mapIndicatorLayers[id]} secondLayer={null} />
+      </div>
+      <ContextLayers map={map} />
+      <ReferenceLayers
+        map={map}
+        deckgl={deckgl}
+        firstLayer={mapIndicatorLayers[id]}
+        secondLayer={null}
+      />
+      <_MapLibre
+        id={id}
+        container={container}
+        isMain={false}
+        map={map}
+        setMap={setMap}
+        setDeckGl={setDeckGl}
       />
     </>
   );

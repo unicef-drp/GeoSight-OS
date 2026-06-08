@@ -191,13 +191,13 @@ export default function MapLegend({ firstLayer, secondLayer }: Props) {
     <>
       <div className="MapLegend">
         <div className="MapLegendContent Fullscreen">
-          {firstLayer.id && indicatorShow && (
+          {firstLayer?.id && indicatorShow && (
             <RenderIndicatorLegend
               layer={firstLayer}
               name={firstLayer.name + (compareMode ? " (Outline)" : "")}
             />
           )}
-          {secondLayer.id && indicatorShow && (
+          {secondLayer?.id && indicatorShow && (
             <RenderIndicatorLegend
               layer={secondLayer}
               name={secondLayer.name + " (Inner)"}

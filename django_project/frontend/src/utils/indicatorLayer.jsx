@@ -297,6 +297,8 @@ export function getLayerData(
   ignoreRT,
   indicatorLayersData,
 ) {
+  if (!indicatorLayer) return [];
+
   const data = [];
   indicatorLayer.indicators?.map((indicator) => {
     const indicatorData = getIndicatorDataByLayer(
