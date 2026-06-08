@@ -213,12 +213,12 @@ class ContextLayerCloudNativeCOGTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200)
         results = response.json()
         self.assertEqual(results['numberMatched'], 47)
-        self.assertEqual(len(results['features']), 10)
+        self.assertEqual(len(results['features']), 47)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
         results = response.json()
         self.assertEqual(results['numberMatched'], 47)
-        self.assertEqual(len(results['features']), 10)
+        self.assertEqual(len(results['features']), 47)
 
         url = reverse(
             'ogc:collection-items',
@@ -232,12 +232,12 @@ class ContextLayerCloudNativeCOGTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200, user=self.admin)
         results = response.json()
         self.assertEqual(results['numberMatched'], 47)
-        self.assertEqual(len(results['features']), 10)
+        self.assertEqual(len(results['features']), 47)
         self.assertRequestGetView(url, 404, user=self.viewer)
         response = self.assertRequestGetView(url, 200, user=self.creator)
         results = response.json()
         self.assertEqual(results['numberMatched'], 47)
-        self.assertEqual(len(results['features']), 10)
+        self.assertEqual(len(results['features']), 47)
 
         # Test limit
         url = reverse(
@@ -247,11 +247,11 @@ class ContextLayerCloudNativeCOGTest(BasePermissionTest.TestCase):
                     self.resource_3.cloud_native_gis_layer.unique_id
                 )
             }
-        ) + '?limit=5'
+        ) + '?limit=10'
         response = self.assertRequestGetView(url, 200, user=self.admin)
         results = response.json()
         self.assertEqual(results['numberMatched'], 47)
-        self.assertEqual(len(results['features']), 5)
+        self.assertEqual(len(results['features']), 10)
 
         # Test filter
         url = reverse(
