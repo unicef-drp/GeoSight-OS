@@ -299,14 +299,14 @@ paths:
       - $ref: '#/components/parameters/lang'
       - $ref: '#/components/parameters/bbox'
       - description: The optional limit parameter limits the number of items that
-          are presented in the response document (maximum=10, default=10).
+          are presented in the response document (maximum=10000, default=100).
         explode: false
         in: query
         name: limit
         required: false
         schema:
-          default: 10
-          maximum: 10
+          default: 100
+          maximum: 10000
           minimum: 1
           type: integer
         style: form
