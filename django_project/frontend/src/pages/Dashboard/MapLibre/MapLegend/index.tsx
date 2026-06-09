@@ -40,6 +40,7 @@ import {
 import { Actions } from "../../../../store/dashboard";
 
 import "./style.scss";
+import { MapLegendSwitcher } from "../MapSwitcher";
 
 const RenderIndicatorLegendName = ({ layer }: { layer: IndicatorLayer }) => {
   const dispatch = useDispatch();
@@ -98,6 +99,7 @@ const RenderIndicatorLegendName = ({ layer }: { layer: IndicatorLayer }) => {
     </>
   );
 };
+
 /** Render indicator legend section */
 const RenderIndicatorLegendSection = ({
   rules,
@@ -259,8 +261,6 @@ export interface Props {
 /** Map Legend. */
 export default function MapLegend({ firstLayer, secondLayer }: Props) {
   // @ts-ignore
-  const compareMode = useSelector((state) => state.mapMode?.compareMode);
-  // @ts-ignore
   const indicatorShow = useSelector((state) => state.map?.indicatorShow);
 
   return (
@@ -271,7 +271,13 @@ export default function MapLegend({ firstLayer, secondLayer }: Props) {
             <RenderIndicatorLegend layer={firstLayer} />
           )}
           {secondLayer?.id && indicatorShow && (
-            <RenderIndicatorLegend layer={secondLayer} />
+            <div style={{ position: "relative" }}>
+              <MapLegendSwitcher
+                firstLayer={firstLayer}
+                secondLayer={secondLayer}
+              />
+              <RenderIndicatorLegend layer={secondLayer} />
+            </div>
           )}
         </div>
       </div>

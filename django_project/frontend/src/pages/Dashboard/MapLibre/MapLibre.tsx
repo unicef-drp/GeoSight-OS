@@ -40,6 +40,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import MapLegend from "./MapLegend";
 import ReferenceLayers from "./Layers/ReferenceLayer";
 import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
+import { MapSwitcher } from "./MapSwitcher";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -381,6 +382,7 @@ export default function MainMapLibre({
         id={container + "-wrapper"}
         className="MaplibreWrapper"
       >
+        <MapSwitcher idx={id} />
         <div key={container} id={container} className="Maplibre"></div>
         <MapLegend
           firstLayer={indicatorLayers[0]}
@@ -396,8 +398,8 @@ export default function MainMapLibre({
       />
       <ReferenceLayerCentroid
         map={map}
-        firstLayer={firstLayer}
-        secondLayer={secondLayer}
+        firstLayer={indicatorLayers[0]}
+        secondLayer={indicatorLayers[1]}
       />
       <_MapLibre
         id={id}
@@ -435,6 +437,7 @@ export function MirrorMapLibre({ id }: { id: number }) {
         id={container + "-wrapper"}
         className="MaplibreWrapper"
       >
+        <MapSwitcher idx={id} />
         <div key={container} id={container} className="Maplibre"></div>
         <MapLegend firstLayer={mirrorLayer} secondLayer={null} />
       </div>
