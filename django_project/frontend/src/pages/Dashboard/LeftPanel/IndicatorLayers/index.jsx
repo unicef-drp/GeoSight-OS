@@ -31,12 +31,8 @@ import {
 import SidePanelTreeView
   from "../../../../components/Map/SidePanelTree/IndicatorLayer";
 import { returnWhereToDict } from "../../../../utils/queryExtraction";
-import RelatedTableLayer, {
-  RelatedTableLayerFilter,
-} from "./RelatedTableLayer";
-import DynamicIndicatorLayer, {
-  DynamicIndicatorLayerConfig,
-} from "./DynamicIndicatorLayer";
+import RelatedTableLayer from "./RelatedTableLayer";
+import DynamicIndicatorLayer from "./DynamicIndicatorLayer";
 import {
   DynamicIndicatorType,
   SDMXIndicatorLayerType,
@@ -123,6 +119,13 @@ export function IndicatorLayers() {
       ]);
     }
   }, [compareMode, sideBySideViewMode]);
+
+  /** Sync map indicator layers when selection or available layers change */
+  useEffect(() => {
+    if (!compositeMode) {
+      setCurrentIndicatorLayers([currentIndicatorLayers[0]]);
+    }
+  }, [compositeMode]);
 
   /** Sync map indicator layers when selection or available layers change */
   useEffect(() => {

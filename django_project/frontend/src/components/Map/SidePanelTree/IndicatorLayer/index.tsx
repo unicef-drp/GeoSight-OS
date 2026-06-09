@@ -13,22 +13,14 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Paper } from "@mui/material";
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import {
-  flattenTree,
-  getDepth,
-} from "../../../SortableTreeForm/utilities";
+import { flattenTree, getDepth } from "../../../SortableTreeForm/utilities";
 
 import Highlighted from "../Highlighted";
 import FilterLayer from "../FilterLayer";
@@ -36,6 +28,7 @@ import IndicatorLayer from "../IndicatorLayer/Selector";
 import { GlobalIndicatorLayerTransparency } from "./Transparency";
 import CompositeIndexLayer from "../../../IndicatorLayer/CompositeIndexLayer/Layer";
 import { Actions } from "../../../../store/dashboard";
+import { selectIndicatorLayerIds as selectIndicatorLayerIdsSelector } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 import { MaxSelectableLayersForCompositeIndexLayer } from "../../../IndicatorLayer/CompositeIndexLayer/variable";
 
 const TREE_INDENT_SPACE = 40;
@@ -54,8 +47,13 @@ export default function SidePanelTreeView({
   placeholder = "",
 }: Props) {
   const dispatch = useDispatch();
+  const selectIndicatorLayerIds: string[] = useSelector(
+    selectIndicatorLayerIdsSelector,
+  ).map(String);
+  // @ts-ignore
+  const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+
   const [nodes, setNodes] = useState([]);
-  const [selected, setSelected] = useState([]);
   const [groups, setGroups] = useState([]);
   const [filterText, setFilterText] = useState("");
   const layerGroupListRef = useRef(null);
@@ -74,6 +72,9 @@ export default function SidePanelTreeView({
       );
     }
   });
+  const selected: string[] = compositeMode
+    ? compositeIndicatorLayerIds
+    : selectIndicatorLayerIds;
 
   const updateCompositeIndicatorLayer = (selected: string[]) => {
     // Update composite index layer
@@ -97,7 +98,6 @@ export default function SidePanelTreeView({
     }
     if (maxSelect <= 2 && newSelected.length > 0) {
       const selectedIds: string[] = Array.from(new Set(newSelected));
-      setSelected(selectedIds);
       updateCompositeIndicatorLayer(selectedIds);
     }
   }, [data]);
@@ -116,12 +116,10 @@ export default function SidePanelTreeView({
       if (
         JSON.stringify(selected) !== JSON.stringify(compositeIndicatorLayerIds)
       ) {
-        setSelected(compositeIndicatorLayerIds);
         onChange(compositeIndicatorLayerIds);
       }
     }
   }, [compositeIndicatorLayerIds, maxSelect]);
-
 
   useEffect(() => {
     const filterResults = filterData(
@@ -130,12 +128,6 @@ export default function SidePanelTreeView({
     );
     setNodes(filterResults);
   }, [filterText]);
-
-  useEffect(() => {
-    if (maxSelect > 0 && selected.length > maxSelect) {
-      setSelected(selected.slice(0, maxSelect));
-    }
-  }, [maxSelect]);
 
   const getGroups = (groupData: any[]) => {
     const _groups: any[] = [];
@@ -168,7 +160,6 @@ export default function SidePanelTreeView({
       }
     }
     onChange(_selectedIds);
-    setSelected(_selectedIds);
     updateCompositeIndicatorLayer(_selectedIds);
   };
 
