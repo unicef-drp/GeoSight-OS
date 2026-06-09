@@ -559,10 +559,11 @@ export const assert_2 = async (page, url, countryLastLog, sumIndicatorAByCountry
   // Pin layer, checking the style should be pin
   const layer4 = 'Pins Indicator Layer'
   await page.getByLabel(layer4).click();
-  await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Sample Indicator A');
-  await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator B');
-  await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator C');
-  await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('Sample Indicator D');
+  await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Pins Indicator Layer');
+  await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator A');
+  await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator B');
+  await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('Sample Indicator C');
+  await expect(page.locator('.MapLegendSectionTitle').nth(4)).toContainText('Sample Indicator D');
   await expect(page.getByLabel(layer4)).toBeChecked();
 
   const pin1 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(0)

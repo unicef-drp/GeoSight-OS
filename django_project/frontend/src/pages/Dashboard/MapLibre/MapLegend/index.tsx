@@ -38,9 +38,9 @@ import {
   selectIndicatorLayerIds
 } from "../../../../selectors/indicatorLayers";
 import { Actions } from "../../../../store/dashboard";
+import { MapLegendSwitcher } from "../MapSwitcher";
 
 import "./style.scss";
-import { MapLegendSwitcher } from "../MapSwitcher";
 
 const RenderIndicatorLegendName = ({ layer }: { layer: IndicatorLayer }) => {
   const dispatch = useDispatch();
@@ -70,6 +70,11 @@ const RenderIndicatorLegendName = ({ layer }: { layer: IndicatorLayer }) => {
   });
   options.sort((a, b) => a.label.localeCompare(b.label));
   const value = options.find((opt) => opt.id === layer.id);
+
+  // This is for composite index layer
+  if (layer.id < 0) {
+    return <>{layer.name}</>;
+  }
   return (
     <>
       <Select
@@ -78,7 +83,14 @@ const RenderIndicatorLegendName = ({ layer }: { layer: IndicatorLayer }) => {
         className="FitContent"
         classNames={{ menuPortal: () => "FitContent" }}
         options={options}
-        value={value ? { ...value, label: value.label + suffix } : null}
+        value={
+          value
+            ? {
+                ...value,
+                label: value.label.replace("[current] ", "") + suffix,
+              }
+            : null
+        }
         getOptionValue={(opt: any) => opt.id}
         name="indicator_layer"
         onChange={(evt: any) => {

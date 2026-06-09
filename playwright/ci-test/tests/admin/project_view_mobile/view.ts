@@ -191,19 +191,19 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
 
-  // Widget 5
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Sample Indicator A');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('895');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Sample Indicator B');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('1,062');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(0)).toContainText('Sample Indicator C');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('1,638');
+    // Widget 5
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('895');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Sample Indicator B');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('1,062');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(0)).toContainText('Sample Indicator C');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('1,638');
 
-  // Widget 6
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Lower Juba');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Middle Shabelle');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
+    // Widget 6
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Lower Juba');
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Middle Shabelle');
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
     await toMap()
 
     // Check the label
@@ -366,10 +366,11 @@ test.describe('View project', () => {
     // Pin layer, checking the style should be pin
     const layer4 = 'Pins Indicator Layer'
     await page.getByLabel(layer4).click();
-    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Sample Indicator A');
-    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator B');
-    await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator C');
-    await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('Sample Indicator D');
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Pins Indicator Layer');
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator A');
+    await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator B');
+    await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('Sample Indicator C');
+    await expect(page.locator('.MapLegendSectionTitle').nth(4)).toContainText('Sample Indicator D');
     await expect(page.getByLabel(layer4)).toBeChecked();
 
     const pin1 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(0)

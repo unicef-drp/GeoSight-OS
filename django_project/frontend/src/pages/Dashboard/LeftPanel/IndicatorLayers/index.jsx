@@ -125,8 +125,18 @@ export function IndicatorLayers() {
     }
   }, [compareMode, sideBySideViewMode]);
 
+  /** Sync map indicator layers when selection or available layers change */
+  useEffect(() => {
+    if (!compositeMode) {
+      if (selectIndicatorLayerIds[0]?.id === selectIndicatorLayerIds) {
+        setCurrentIndicatorLayers([currentIndicatorLayers[0]]);
+      }
+    }
+  }, [compositeMode]);
+
   useEffect(() => {
     if (!compositeMode && selectIndicatorLayerIds?.length) {
+      if (selectIndicatorLayerIds[0] === -1000) return;
       if (
         JSON.stringify(selectIndicatorLayerIds) !==
         JSON.stringify(currentIndicatorLayers)
@@ -135,13 +145,6 @@ export function IndicatorLayers() {
       }
     }
   }, [compositeMode, selectIndicatorLayerIds]);
-
-  /** Sync map indicator layers when selection or available layers change */
-  useEffect(() => {
-    if (!compositeMode) {
-      setCurrentIndicatorLayers([currentIndicatorLayers[0]]);
-    }
-  }, [compositeMode]);
 
   /** Sync map indicator layers when selection or available layers change */
   useEffect(() => {

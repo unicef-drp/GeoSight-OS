@@ -95,10 +95,12 @@ const ToDynamicLayer = memo(() => {
         );
         (async () => {
           await delay(100);
+          dispatch(Actions.Map.updateIndicatorLayers([newLayer]));
           disabledCompositeLayer(
             dispatch,
             usedIndicatorLayers,
             usedIndicatorLayersStructure,
+            false,
           );
         })();
       }}

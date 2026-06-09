@@ -24,20 +24,27 @@ export function disabledCompositeLayer(
   dispatch: any,
   indicatorLayers: any,
   indicatorLayersStructure: any,
+  autoUpdateIndicatorLayers = true,
 ) {
   const previousLayer = dataStructureToListData(
     indicatorLayers,
     indicatorLayersStructure,
   ).find((layer: any) => !layer.isGroup)?.data;
   if (previousLayer) {
-    dispatch(
-      // @ts-ignore
-      Actions.CompositeIndicatorLayer.updateIndicatorLayers([previousLayer.id]),
-    );
+    if (autoUpdateIndicatorLayers) {
+      dispatch(
+        // @ts-ignore
+        Actions.CompositeIndicatorLayer.updateIndicatorLayers([
+          previousLayer.id,
+        ]),
+      );
+    }
     (async () => {
       await delay(100);
       dispatch(Actions.MapMode.toggleCompositeMode());
-      dispatch(Actions.Map.updateIndicatorLayers([previousLayer]));
+      if (autoUpdateIndicatorLayers) {
+        dispatch(Actions.Map.updateIndicatorLayers([previousLayer]));
+      }
     })();
   }
 }
