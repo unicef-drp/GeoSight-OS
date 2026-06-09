@@ -18,19 +18,12 @@
    ========================================================================== */
 
 import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
-import ReferenceLayers from "./Layers/ReferenceLayer";
+import { useSelector } from "react-redux";
 import { Plugin, PluginChild } from "./utils/Plugin";
-import {
-  ThreeDimensionOffIcon,
-  ThreeDimensionOnIcon,
-} from "../../../components/Icons";
 
 // Toolbars
 import {
   Bookmark,
-  CompareLayer,
   DataDownloader,
   EmbedControl,
   GlobalDateSelector,
@@ -43,7 +36,6 @@ import {
   ToggleSidePanel,
 } from "../Toolbars";
 import { EmbedConfig } from "../../../utils/embed";
-import { Actions } from "../../../store/dashboard";
 import DatasetGeometryData from "./utils/DatasetGeometryData";
 import IndicatorLayersReferenceControl
   from "./IndicatorLayersReferenceController";
@@ -55,6 +47,8 @@ import ReferenceLayerLevelSelection from "../Toolbars/ReferenceLayerSelector";
 import ZoomToFilteredGeometries
   from "../../../components/ZoomToFilteredGeometries";
 import MainMapLibre, { MirrorMapLibre } from "./MapLibre";
+import LayerCreationToolbars from "../Toolbars/LayerCreationToolbars";
+import MapModeToolbars from "../Toolbars/MapModeToolbars";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
@@ -63,17 +57,11 @@ import "./style.scss";
  * MapLibre component.
  */
 export default function Map({ leftPanelProps, rightPanelProps }) {
-  const dispatch = useDispatch();
   const drawingRef = useRef(null);
 
   // This is for mainMap, which is the first map
   const [mainMap, setMainMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
-
-  const is3dMode = useSelector((state) => state.map?.is3dMode);
-  const view3DEnable = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
-  );
   const embedToolEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.EMBED_TOOL),
   );
@@ -86,8 +74,9 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
       <div className="Toolbar">
         <ZoomToFilteredGeometries />
         <TiltControl />
+        {/* LEFT SIDE OF NAVBAR */}
         <div className="Toolbar-Left">
-          {leftPanelProps ? (
+          {leftPanelProps && (
             <ToggleSidePanel
               className={leftPanelProps.className}
               initState={leftPanelProps.initState}
@@ -99,47 +88,24 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
                 leftPanelProps.onRight();
               }}
             />
-          ) : null}
+          )}
           <ProjectOverview />
           <ReferenceLayerLevelSelection />
           <GlobalDateSelector />
         </div>
-
+        {/* MIDDLE SIDE OF NAVBAR */}
         <div className="Toolbar-Middle">
           <div className="Separator" />
           <HomeButton />
           <LabelToggler />
-          <CompareLayer disabled={is3dMode} />
-          {/* 3D View */}
-          <Plugin hidden={!view3DEnable}>
-            <div
-              className="ExtrudedIcon Active"
-              data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
-            >
-              <PluginChild
-                title={"3D layer"}
-                disabled={!mainMap}
-                active={is3dMode}
-                onClick={() => {
-                  if (is3dMode) {
-                    mainMap.easeTo({ pitch: 0 });
-                  }
-                  dispatch(Actions.Map.change3DMode(!is3dMode));
-                }}
-              >
-                {is3dMode ? (
-                  <ThreeDimensionOnIcon />
-                ) : (
-                  <ThreeDimensionOffIcon />
-                )}
-              </PluginChild>
-            </div>
-          </Plugin>
+          <MapModeToolbars map={mainMap} />
+          {/* This is all the toolbars that has popup */}
           <PopupToolbars map={mainMap} ref={drawingRef} />
+          <LayerCreationToolbars />
           <div className="Separator" />
         </div>
 
-        {/* Embed */}
+        {/* RIGHT SIDE OF NAVBAR */}
         <div className="Toolbar-Right">
           <SearchGeometryInput map={mainMap} />
           <Plugin className="EmbedControl" hidden={!embedToolEnable}>

@@ -24,20 +24,15 @@ import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
 import { Variables } from "../../../../utils/Variables";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
-import CompositeIndexLayerToolbar
-  from "../../../../components/IndicatorLayer/CompositeIndexLayer/Toolbar";
 
 import "./style.scss";
-import { SDMXLayerCreation } from "../SDMXLayerCreation";
 
 interface Props {
   map: maplibregl.Map;
   started: () => void;
 }
 
-/**
- * PopupToolbars
- */
+/** PopupToolbars */
 export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
   const measurementRef = useRef(null);
   const zonalAnalysisRef = useRef(null);
@@ -63,19 +58,8 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
   const zonalAnalysisEnabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS),
   );
-  const compositeIndexLayerEnabled = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER),
-  );
-  const sdmxLayerCreationEnabled = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION),
-  );
 
-  if (
-    !measurementEnabled &&
-    !zonalAnalysisEnabled &&
-    !compositeIndexLayerEnabled &&
-    !sdmxLayerCreationEnabled
-  ) {
+  if (!measurementEnabled && !zonalAnalysisEnabled) {
     return null;
   }
   return (
@@ -101,8 +85,6 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
           started={() => measurementRef?.current?.stop()}
         />
       )}
-      {compositeIndexLayerEnabled && <CompositeIndexLayerToolbar />}
-      {sdmxLayerCreationEnabled && <SDMXLayerCreation />}
     </>
   );
 });
