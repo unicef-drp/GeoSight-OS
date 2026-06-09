@@ -44,7 +44,9 @@ import DynamicIndicatorLayer
   from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
 import { delay, dictDeepCopy } from "../../../../utils/main";
 import { disabledCompositeLayer } from "../utilities";
-import { selectIndicatorLayerByIdx } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import {
+  selectIndicatorLayerByIdx
+} from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
 
 import "./style.scss";
 import CompositeIndexLayerToggler from "../Toggler";
@@ -167,6 +169,21 @@ export default function CompositeIndexLayer() {
     related_tables: [],
     error: "",
     config: {},
+    label_config: {
+      text: "{name}\n{value}.round(2)",
+      style: {
+        minZoom: 0,
+        maxZoom: 24,
+        fontFamily: '"Rubik", sans-serif',
+        fontSize: 13,
+        fontColor: "#000000",
+        fontWeight: 300,
+        strokeColor: "#FFFFFF",
+        strokeWeight: 0,
+        haloColor: "#FFFFFF",
+        haloWeight: 2,
+      },
+    },
   };
 
   /** Update data when opened **/

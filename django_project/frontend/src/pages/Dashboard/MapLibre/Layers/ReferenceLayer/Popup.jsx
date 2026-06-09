@@ -320,7 +320,7 @@ export function getContext(
   current["indicator_layers"] = [];
   const indicatorIds = [];
   [currentIndicatorLayer, currentIndicatorSecondLayer].map((indicatorLayer) => {
-    if (indicatorLayer.id) {
+    if (indicatorLayer?.id) {
       current["indicator_layers"].push({
         id: indicatorLayer.id,
         name: indicatorLayer.name,
@@ -377,8 +377,8 @@ export function getContext(
   };
   const session = new Session("FetchingPopupContext");
   const isCustom =
-    currentIndicatorLayer.popup_type?.toLowerCase() === "custom" ||
-    currentIndicatorSecondLayer.popup_type?.toLowerCase() === "custom";
+    currentIndicatorLayer?.popup_type?.toLowerCase() === "custom" ||
+    currentIndicatorSecondLayer?.popup_type?.toLowerCase() === "custom";
 
   const needAttributes = currentIndicatorLayer.data_fields?.find(
     (field) =>

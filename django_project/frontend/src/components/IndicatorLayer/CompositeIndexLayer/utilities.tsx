@@ -9,7 +9,7 @@ import { Actions } from "../../../store/dashboard";
 import { delay } from "../../../utils/main";
 
 export function isEligibleForCompositeLayer(layer: IndicatorLayer): boolean {
-  if (!layer.type) {
+  if (!layer?.type) {
     return false;
   }
   if (

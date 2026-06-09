@@ -828,7 +828,7 @@ export function ReferenceLayer({
         indicatorLayersData,
       );
     }
-    if (firstLayer.indicators?.length > 1) {
+    if (firstLayer?.indicators?.length > 1) {
       indicatorValueByGeometry = {} as IndicatorValues;
     }
 
