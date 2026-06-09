@@ -13,193 +13,425 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from "react";
+import React, {
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
-import { Checkbox } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import { IndicatorLayer } from "../../../../types/IndicatorLayer";
-import Highlighted from "../Highlighted";
-import LayerDescription from "../Description";
-import { RelatedTableLayerFilter } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/RelatedTableLayer";
+import { Checkbox, Paper } from "@mui/material";
+import { TreeView } from "@mui/x-tree-view/TreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import {
-  CompositeIndexLayerType,
-  DynamicIndicatorType,
-  RelatedTableLayerType,
-} from "../../../../utils/indicatorLayer";
-import { DynamicIndicatorLayerConfig } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
-import { Checker, RelatedTableChecker } from "./Checker";
-import { isEligibleForCompositeLayer } from "../../../IndicatorLayer/CompositeIndexLayer/utilities";
-import EditIcon from "@mui/icons-material/Edit";
+  findAllGroups,
+  flattenTree,
+  getDepth,
+} from "../../../SortableTreeForm/utilities";
+
+import { dictDeepCopy } from "../../../../utils/main";
+import Highlighted from "../Highlighted";
+import FilterLayer from "../FilterLayer";
+import IndicatorLayer from "../IndicatorLayer/Selector";
+import { GlobalIndicatorLayerTransparency } from "./Transparency";
+import CompositeIndexLayer from "../../../IndicatorLayer/CompositeIndexLayer/Layer";
 import { Actions } from "../../../../store/dashboard";
-import { DeleteIcon } from "../../../Icons";
+import { MaxSelectableLayersForCompositeIndexLayer } from "../../../IndicatorLayer/CompositeIndexLayer/variable";
 
+const TREE_INDENT_SPACE = 40;
+let unexpandedGroups: any = [];
+
+/**
+ * SidePanelTreeView component
+ * @param {array} data tree data, format = [{
+ *   'id': 'group_id',
+ *   'children': [{
+ *     'id': 'data_id',
+ *     'children': []
+ *   }]
+ * }]
+ * @param {boolean} selectable whether this sidepanel is selectable or not
+ * @param {Array} parentSelected parent selected
+ * @param {number} maxSelect max selected item
+ * @param {boolean} groupSelectable is group also selectable
+ * @param {function} onChange callback function to call when selected data changed
+ * @param {function} otherInfo Other info that will be rendered before info icon
+ */
 export interface Props {
-  layer?: IndicatorLayer;
-
-  // Parent props
-  nodesDataId: string;
-  checked: boolean;
-  selected: string[];
-  filterText: string;
-  maxWord: number;
+  data: any;
+  /**
+   * @param {array} data tree data, format = [{
+   *   'id': 'group_id',
+   *   'children': [{
+   *     'id': 'data_id',
+   *     'children': []
+   *   }]
+   * }]
+   */
+  parentSelected: string[];
   maxSelect: number;
-  selectItem: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string[]) => void;
 
-  otherElement?: React.ReactNode;
+  otherInfo: ReactNode;
+  resetSelection: boolean;
+
+  placeholder: string;
+  selectable: boolean;
+  groupSelectable: boolean;
 }
 
-export default function IndicatorLayer({
-  layer,
-  nodesDataId,
-  checked,
-  selected,
-  filterText,
-  maxWord,
-  selectItem,
-  maxSelect,
-  otherElement = null,
+export default function SidePanelTreeView({
+  data,
+  selectable = false,
+  parentSelected = null,
+  maxSelect = 0,
+  groupSelectable = false,
+  onChange = null,
+  otherInfo = null,
+  ...props
 }: Props) {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const disabled = !!(error ? error : layer.error);
-  // @ts-ignore
-  const compositeMode = useSelector((state) => state.mapMode.compositeMode);
-  const isDisabled =
-    disabled || (compositeMode && !isEligibleForCompositeLayer(layer));
+  const [nodes, setNodes] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [filterText, setFilterText] = useState("");
+  const layerGroupListRef = useRef(null);
+  const [width, setWidth] = useState(25);
 
-  // When the indicator layer type selected
-  const IndicatorLayerTypeSelection = () => {
-    switch (layer.type) {
-      case RelatedTableLayerType:
-        return (
-          <RelatedTableChecker
-            layer={layer}
-            setIsLoading={setIsLoading}
-            setError={setError}
-          />
-        );
-        break;
-      default:
-        return (
-          <Checker
-            layer={layer}
-            setIsLoading={setIsLoading}
-            setError={setError}
-          />
-        );
+  // @ts-ignore
+  const compositeIndicatorLayerIds = useSelector((state) => {
+    // @ts-ignore
+    if (!state.compositeIndicatorLayer.data?.config?.indicatorLayers) {
+      return [];
+    } else {
+      // @ts-ignore
+      return state.compositeIndicatorLayer.data?.config?.indicatorLayers.map(
+        (layer: any) => layer.id.toString(),
+      );
     }
+  });
+
+  const updateCompositeIndicatorLayer = (selected: string[]) => {
+    // Update composite index layer
+    dispatch(
+      // @ts-ignore
+      Actions.CompositeIndicatorLayer.updateIndicatorLayers(selected),
+    );
   };
 
-  const OtherData = () => {
-    if (layer.related_tables?.length && layer.config.where) {
-      return (
-        <div className="item-tree-layer-content">
-          <RelatedTableLayerFilter indicatorLayer={layer} />
-        </div>
-      );
-    } else if (
-      layer.type === DynamicIndicatorType &&
-      layer?.config?.exposedVariables?.length > 0
-    ) {
-      return (
-        <div className="item-tree-layer-content">
-          <DynamicIndicatorLayerConfig indicatorLayer={layer} />
-        </div>
-      );
+  useEffect(() => {
+    setNodes(data);
+    setGroups(getGroups(data));
+    // TODO:
+    //  We need to fix this
+    //  Appending selected is done because of context layer unselected at first time
+    const newSelected = props.resetSelection ? [] : dictDeepCopy(selected);
+    for (const item of flattenTree(data)) {
+      if (!item.isGroup && item.data?.visible_by_default) {
+        newSelected.push(item.data?.id + "");
+      }
     }
-    return null;
+    if (maxSelect <= 2 && newSelected.length > 0) {
+      const selectedIds: string[] = Array.from(new Set(newSelected));
+      setSelected(selectedIds);
+      updateCompositeIndicatorLayer(selectedIds);
+    }
+  }, [data]);
+
+  useLayoutEffect(() => {
+    if (layerGroupListRef?.current) {
+      setWidth(layerGroupListRef.current.offsetWidth - 20);
+    }
+  }, []);
+
+  /** COMPOSITE INDEX LAYER
+   * Update composite index layer when selected changed
+   */
+  useEffect(() => {
+    if (maxSelect === MaxSelectableLayersForCompositeIndexLayer) {
+      if (
+        JSON.stringify(selected) !== JSON.stringify(compositeIndicatorLayerIds)
+      ) {
+        setSelected(compositeIndicatorLayerIds);
+        onChange(compositeIndicatorLayerIds);
+      }
+    }
+  }, [compositeIndicatorLayerIds, maxSelect]);
+
+  /** Parent selected */
+  useLayoutEffect(() => {
+    if (parentSelected !== null) {
+      if (JSON.stringify(selected) !== JSON.stringify(parentSelected)) {
+        setSelected(parentSelected);
+      }
+    }
+  }, [parentSelected]);
+
+  useEffect(() => {
+    const filterResults = filterData(
+      JSON.parse(JSON.stringify(data)),
+      filterText,
+    );
+    setNodes(filterResults);
+  }, [filterText]);
+
+  useEffect(() => {
+    if (maxSelect > 0 && selected.length > maxSelect) {
+      setSelected(selected.slice(0, maxSelect));
+    }
+  }, [maxSelect]);
+
+  const getGroups = (groupData: any[]) => {
+    const _groups: any[] = [];
+    for (const _data of groupData) {
+      if (_data.children.length > 0) {
+        _groups.push(...getGroups(_data.children));
+      }
+      if (_data.isGroup) {
+        if (_groups.indexOf(_data.id) === -1) {
+          _groups.push(_data.id);
+        }
+      }
+    }
+    return _groups;
+  };
+
+  const selectItem = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const checked = e.target.checked;
+    const nodeId = e.target.value;
+    let _selectedIds = [];
+    if (selected.indexOf(nodeId) >= 0) {
+      _selectedIds = [...selected.filter((s) => s !== nodeId)];
+    } else {
+      if (maxSelect === 1) {
+        _selectedIds = [nodeId];
+      } else if (maxSelect === 0) {
+        _selectedIds = [...selected, nodeId];
+      } else {
+        _selectedIds = [...selected.slice(0, maxSelect - 1), nodeId];
+      }
+    }
+    if (!checked && selectedGroups.length > 0) {
+      const layers = flattenTree(data);
+      for (const layer of layers) {
+        if (!layer.isGroup && layer.data) {
+          if ("" + layer.data.id === nodeId) {
+            const group = layer.data.group;
+            setSelectedGroups([...selectedGroups.filter((id) => id !== group)]);
+          }
+        }
+      }
+    }
+    onChange(_selectedIds);
+    setSelected(_selectedIds);
+
+    updateCompositeIndicatorLayer(_selectedIds);
+  };
+
+  const getChildIds = (_data: any) => {
+    const _selectedIds: any[] = [];
+    for (const item of _data.children) {
+      if (!item.data || item.isGroup) {
+        if (item.children) {
+          _selectedIds.push(...getChildIds(item));
+        }
+        continue;
+      }
+      if (!item.data.error) {
+        _selectedIds.push("" + item.data.id);
+      }
+    }
+    return _selectedIds;
+  };
+
+  const selectGroup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const checked = e.target.checked;
+    let _selectedIds: any[] = [];
+    let _selectedGroups = [e.target.value];
+    const allGroups = findAllGroups(data);
+    let parentGroup = e.target.value;
+    for (const _data of allGroups) {
+      if (_data.isGroup && _data.id === e.target.value) {
+        _selectedIds.push(...getChildIds(_data));
+      }
+      if (_data.parentId === parentGroup) {
+        _selectedGroups.push(_data.id);
+        parentGroup = _data.id;
+      }
+    }
+    if (checked) {
+      _selectedIds = [
+        ...selected,
+        ..._selectedIds.filter((id) => selected.indexOf(id) >= -1),
+      ];
+      _selectedGroups = [
+        ...selectedGroups,
+        ..._selectedGroups.filter((id) => selectedGroups.indexOf(id) >= -1),
+      ];
+    } else {
+      _selectedIds = [
+        ...selected.filter((id) => _selectedIds.indexOf(id) === -1),
+      ];
+      _selectedGroups = [
+        ...selectedGroups.filter((id) => _selectedGroups.indexOf(id) === -1),
+      ];
+    }
+    setSelectedGroups([..._selectedGroups]);
+    onChange(_selectedIds);
+    setSelected(_selectedIds);
+  };
+
+  const handleToggle = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    nodeIds: string[],
+  ) => {
+    setGroups(nodeIds);
+    unexpandedGroups = getGroups(data).filter(
+      (id: string) => !nodeIds.includes(id),
+    );
+  };
+
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+  };
+
+  function filterData(data: any, query: any) {
+    try {
+      return data.filter((node: any) => {
+        if (node.name.toLowerCase().includes(query.toLowerCase())) {
+          return true;
+        }
+        if (node.children.length > 0) {
+          node.children = filterData(node.children, query);
+          return node.children.length > 0;
+        }
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const renderTree = (treeData: any) => {
+    const nodesDataId = treeData.data ? "" + treeData.data.id : treeData.id;
+    const itemDeep = getDepth(data, treeData.id);
+    const maxWord = parseInt("" + (width - TREE_INDENT_SPACE * itemDeep) / 9);
+    if (!treeData.name) {
+      return;
+    }
+    const checked = selected.indexOf(nodesDataId) >= 0;
+
+    return (
+      <TreeItem
+        className={
+          "TreeItem SidePanelTreeItem" + (checked ? " Mui-selected" : "")
+        }
+        key={nodesDataId}
+        nodeId={nodesDataId}
+        label={
+          !treeData.isGroup && selectable ? (
+            !treeData.data ? null : (
+              <IndicatorLayer
+                layer={treeData.data}
+                nodesDataId={nodesDataId}
+                checked={checked}
+                selected={selected}
+                filterText={filterText}
+                selectItem={selectItem}
+                maxWord={maxWord}
+                maxSelect={maxSelect}
+              />
+            )
+          ) : groupSelectable ? (
+            <FormControlLabel
+              className="GroupSelectable Group"
+              onClick={(e) => e.stopPropagation()}
+              control={
+                <Checkbox
+                  checked={
+                    selectedGroups.length > 0 &&
+                    selectedGroups.indexOf(treeData.id) >= 0
+                  }
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={selectGroup}
+                  className="PanelCheckbox"
+                  size="small"
+                  value={treeData.id}
+                />
+              }
+              label={
+                // @ts-ignore
+                <Highlighted
+                  text={treeData.name ? treeData.name : "No Name"}
+                  highlight={filterText}
+                  isGroup={true}
+                />
+              }
+            />
+          ) : (
+            // @ts-ignore
+            <Highlighted
+              text={treeData.name ? treeData.name : "No Name"}
+              highlight={filterText}
+              isGroup={true}
+            />
+          )
+        }
+      >
+        {Array.isArray(treeData.children)
+          ? treeData.children.map((node: any) => renderTree(node))
+          : null}
+      </TreeItem>
+    );
   };
   return (
-    <div>
-      <FormControlLabel
-        className={isDisabled ? " Disabled" : ""}
-        control={
-          <div
-            className={"PanelInput"}
-            title={
-              isDisabled && compositeMode
-                ? "This indicator layer is not eligible in composite mode"
-                : ""
-            }
-          >
-            {maxSelect >= 2 ? (
-              <Checkbox
-                tabIndex={-1}
-                className="PanelCheckbox"
-                size={"small"}
-                disabled={isDisabled}
-                value={nodesDataId}
-                checked={checked}
-                onChange={selectItem}
-              />
-            ) : (
-              <Radio
-                tabIndex={-1}
-                className="PanelRadio"
-                size={"small"}
-                disabled={isDisabled}
-                value={nodesDataId}
-                checked={checked}
-                onChange={selectItem}
-              />
-            )}
-            {isLoading ? <CircularProgress /> : null}
-          </div>
-        }
-        label={
-          <span>
-            {
-              // @ts-ignore
-              <Highlighted
-                text={layer.name.replace(
-                  new RegExp(`(\\w{${maxWord}})(?=\\w)`),
-                  "$1",
-                )}
-                highlight={filterText}
-                isGroup={false}
-              />
-            }
-            {otherElement}
-            {layer.isLocal && (
-              <div
-                style={{
-                  display: "flex",
-                  gap: "0.5rem",
-                  alignItems: "center",
-                  marginRight: "0.5rem",
-                }}
-              >
-                <EditIcon
-                  style={{ height: "1rem" }}
-                  onClick={() => {
-                    dispatch(Actions.SelectionState.editIndicatorLayer(layer));
-                  }}
-                />
-                <DeleteIcon
-                  style={{ height: "1rem", color: "red" }}
-                  onClick={() => {
-                    dispatch(
-                      Actions.SelectionState.deleteIndicatorLayer(layer),
-                    );
-                  }}
-                />
-              </div>
-            )}
-            {layer.type !== CompositeIndexLayerType && (
-              // @ts-ignore
-              <LayerDescription
-                // @ts-ignore
-                layer={{ ...layer, error: error ? error : layer.error }}
-              />
-            )}
-          </span>
-        }
-      />
-      {selected.indexOf(nodesDataId) >= 0 && <>{OtherData()}</>}
-      <IndicatorLayerTypeSelection />
+    <div className="TreeView">
+      <>
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <FilterLayer
+            placeholder={props.placeholder}
+            inputChanged={(input) => setFilterText(input)}
+          />
+        </Paper>
+        {nodes.length > 0 ? (
+          <>
+            <TreeView
+              aria-label="rich object"
+              ref={layerGroupListRef}
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              expanded={groups.filter(
+                (group) => !unexpandedGroups.includes(group),
+              )}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
+              defaultExpandIcon={<ExpandLessIcon />}
+              sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
+            >
+              <CompositeIndexLayer />
+              {nodes.map((treeData) => renderTree(treeData))}
+            </TreeView>
+            <GlobalIndicatorLayerTransparency
+              transparencyKey={"indicatorLayer"}
+            />
+          </>
+        ) : (
+          <div className="NoData">No indicators available</div>
+        )}
+      </>
     </div>
   );
 }

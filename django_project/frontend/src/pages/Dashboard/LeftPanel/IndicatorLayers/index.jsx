@@ -28,7 +28,8 @@ import { Actions } from "../../../../store/dashboard";
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
-import SidePanelTreeView from "../../../../components/Map/SidePanelTree";
+import SidePanelTreeView
+  from "../../../../components/Map/SidePanelTree/IndicatorLayer";
 import { returnWhereToDict } from "../../../../utils/queryExtraction";
 import RelatedTableLayer, {
   RelatedTableLayerFilter,
@@ -116,7 +117,10 @@ export function IndicatorLayers() {
     if (!compareMode && !sideBySideViewMode) {
       setCurrentIndicatorLayers([currentIndicatorLayers[0], 0]);
     } else {
-      setCurrentIndicatorLayers([currentIndicatorLayers[0], currentIndicatorLayers[1]]);
+      setCurrentIndicatorLayers([
+        currentIndicatorLayers[0],
+        currentIndicatorLayers[1],
+      ]);
     }
   }, [compareMode, sideBySideViewMode]);
 

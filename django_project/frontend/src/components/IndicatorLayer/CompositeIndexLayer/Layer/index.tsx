@@ -24,7 +24,8 @@ import {
   IndicatorLayer as IndicatorLayerType
 } from "../../../../types/IndicatorLayer";
 import { useDispatch, useSelector } from "react-redux";
-import IndicatorLayer from "../../../Map/SidePanelTree/IndicatorLayer";
+import IndicatorLayer
+  from "../../../Map/SidePanelTree/IndicatorLayer/Selector";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   CompositeIndexLayerType,
