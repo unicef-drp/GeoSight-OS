@@ -38,6 +38,7 @@ export const ReferenceLayerFilterCentroid = forwardRef(
 
     /*** UPDATE FILTER OF LAYER */
     const updateFilter = () => {
+      if (!map) return;
       const codes = filteredGeometries;
       if (hasLayer(map, INDICATOR_LABEL_ID)) {
         if (codes) {
@@ -64,7 +65,11 @@ export const ReferenceLayerFilterCentroid = forwardRef(
       // LOG THE LABELS
       if (IS_DEBUG) {
         setTimeout(function () {
-          if (!hasLayer(map, INDICATOR_LABEL_ID)) {
+          try {
+            if (!hasLayer(map, INDICATOR_LABEL_ID)) {
+              return;
+            }
+          } catch (err) {
             return;
           }
           const features = map.queryRenderedFeatures({

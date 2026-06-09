@@ -417,13 +417,15 @@ export function MirrorMapLibre({ id }: { id: number }) {
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
 
-  // @ts-ignore
-  const compareMode = useSelector((state) => state.mapMode.compareMode);
+  const sideBySideViewMode = useSelector(
+    // @ts-ignore
+    (state) => state.mapMode.sideBySideViewMode,
+  );
 
   // In compare mode, MainMap renders both layers — mirror not needed
   // In non-compare mode, mirror renders the layer at this map's index
   const mirrorLayer = useSelector(selectIndicatorLayerByIdx(id));
-  if (compareMode || !mirrorLayer) {
+  if (!sideBySideViewMode || !mirrorLayer) {
     return null;
   }
   return (

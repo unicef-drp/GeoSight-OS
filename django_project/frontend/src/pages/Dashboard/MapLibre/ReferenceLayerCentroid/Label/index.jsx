@@ -37,6 +37,7 @@ export const resetLabel = (map, state) => {
 
 /** Show Label **/
 export const showLabel = (map) => {
+  if (!map) return;
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     map.setLayoutProperty(INDICATOR_LABEL_ID, "visibility", "visible");
   }
@@ -45,6 +46,7 @@ export const showLabel = (map) => {
 
 /** Hide Label **/
 export const hideLabel = (map) => {
+  if (!map) return;
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     map.setLayoutProperty(INDICATOR_LABEL_ID, "visibility", "none");
   }
@@ -58,6 +60,7 @@ export const renderLabel = (
   config,
   state,
 ) => {
+  if (!map) return;
   if (JSON.stringify(features) === JSON.stringify(state.lastFeatures)) {
     return;
   }

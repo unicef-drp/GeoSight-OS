@@ -181,12 +181,8 @@ export default function SidePanelTreeView({
   }, [filterText]);
 
   useEffect(() => {
-    if (selected.length > maxSelect) {
-      if (maxSelect === 1) {
-        setSelected([selected[0]]);
-      } else {
-        setSelected([...selected.slice(-(maxSelect - 1))]);
-      }
+    if (maxSelect > 0 && selected.length > maxSelect) {
+      setSelected(selected.slice(0, maxSelect));
     }
   }, [maxSelect]);
 

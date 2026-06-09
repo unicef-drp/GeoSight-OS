@@ -25,6 +25,8 @@ import { CompareLayer } from "../index";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import {
+  SideBySideOffIcon,
+  SideBySideOnIcon,
   ThreeDimensionOffIcon,
   ThreeDimensionOnIcon,
 } from "../../../../components/Icons";
@@ -39,14 +41,21 @@ export default function MapModeToolbars({ map }: Props) {
   const dispatch = useDispatch();
   // @ts-ignore
   const is3dMode = useSelector((state) => state.map?.is3dMode);
+  const sideBySideViewMode = useSelector(
+    // @ts-ignore
+    (state) => state.mapMode?.sideBySideViewMode,
+  );
   const compareLayerEnabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPARE_LAYERS),
   );
   const view3DEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
   );
+  const sideBySideViewEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.SIDE_BY_SIDE_VIEW),
+  );
 
-  if (!compareLayerEnabled && !view3DEnable) {
+  if (!compareLayerEnabled && !view3DEnable && !sideBySideViewEnable) {
     return null;
   }
   return (
@@ -59,6 +68,23 @@ export default function MapModeToolbars({ map }: Props) {
         }}
       />
       <CompareLayer disabled={is3dMode} />
+      <Plugin hidden={!sideBySideViewEnable} className={""}>
+        <div
+          className="ExtrudedIcon Active"
+          data-tool={Variables.DASHBOARD.TOOL.SIDE_BY_SIDE_VIEW}
+        >
+          <PluginChild
+            title={"Side by side view"}
+            disabled={!map}
+            active={sideBySideViewMode}
+            onClick={() => {
+              dispatch(Actions.MapMode.toggleSideBySideView());
+            }}
+          >
+            {sideBySideViewMode ? <SideBySideOnIcon /> : <SideBySideOffIcon />}
+          </PluginChild>
+        </div>
+      </Plugin>
       <Plugin hidden={!view3DEnable} className={""}>
         <div
           className="ExtrudedIcon Active"

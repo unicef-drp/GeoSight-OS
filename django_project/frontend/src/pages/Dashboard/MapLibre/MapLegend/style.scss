@@ -25,6 +25,12 @@
   overflow-y: auto;
   width: fit-content;
 
+  .MapLegendContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .MapLegendSection {
     direction: ltr;
     padding: 0.5rem;
@@ -38,7 +44,6 @@
     font-size: 0.8rem;
     box-sizing: border-box;
     box-shadow: var(--box-shadow);
-    margin-bottom: 0.5rem;
 
     .MapLegendSectionTitle {
       color: #041217;

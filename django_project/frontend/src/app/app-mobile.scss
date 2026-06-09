@@ -98,10 +98,15 @@
     border-top: 2px solid white;
     border-bottom: 1px solid var(--border-gray);
   }
+
+  .LegendToggler:not(:last-of-type) {
+    display: none;
+  }
+
   .LegendToggler {
     position: absolute;
-    bottom: 1rem;
-    right: 4rem;
+    bottom: 11px;
+    right: 1rem;
     box-shadow: var(--box-shadow);
     width: 29px !important;
     height: 29px !important;
@@ -142,13 +147,19 @@
   }
   .MapLegend {
     position: absolute !important;
-    bottom: 4rem;
-    right: 10px;
-    max-height: 75%;
+    top: 0 !important;
+    left: unset !important;
+    right: 1rem !important;
+    max-height: unset !important;
+    height: 100% !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 4rem !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
 
-    .MapLegendSection {
-      margin-bottom: 0 !important;
-      margin-top: 0.5rem;
+    .MapLegendContent {
+      height: 100% !important;
+      overflow-y: auto !important;
     }
   }
   .DataLoadingProgress {
@@ -249,7 +260,7 @@
     .RightSection {
       position: absolute;
       bottom: 1rem;
-      right: 1rem;
+      right: 4rem;
       padding: 0 !important;
 
       .FullScreen {

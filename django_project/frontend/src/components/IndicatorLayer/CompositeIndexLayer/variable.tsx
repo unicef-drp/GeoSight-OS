@@ -53,6 +53,7 @@ export interface CompositeIndexLayerConfigIndicatorLayer {
 }
 
 export const MaxSelectableLayersForCompositeIndexLayer = 100;
+export const MaxSelectableLayersForSideBySideView = 4;
 
 export const configToExpression = (
   composite: Array<CompositeIndexLayerConfigIndicatorLayer>,

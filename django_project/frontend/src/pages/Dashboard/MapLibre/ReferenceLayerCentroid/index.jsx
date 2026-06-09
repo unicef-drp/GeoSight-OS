@@ -31,10 +31,21 @@ import {
   getIndicatorDataByLayer,
   UpdateStyleData,
 } from "../../../../utils/indicatorData";
-import { createLabelState, hideLabel, renderLabel, resetLabel, showLabel } from "./Label";
+import {
+  createLabelState,
+  hideLabel,
+  renderLabel,
+  resetLabel,
+  showLabel,
+} from "./Label";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
-import { createChartState, renderChart, renderPin, resetCharts } from "./Chart";
+import {
+  createChartState,
+  renderChart,
+  renderPin,
+  resetCharts
+} from "./Chart";
 import workerMergeGeometries from "../../../../workers/merge_geometries";
 import { ReferenceLayerFilterCentroid } from "./CentroidFiltered";
 
@@ -69,10 +80,9 @@ export default function ReferenceLayerCentroid({
   });
 
   // TransparencySlider
-  const {
-    indicatorLayer: indicatorLayerTransparency,
-    // @ts-ignore
-  } = useSelector((state) => state.map.transparency);
+  const indicatorLayerTransparency = useSelector(
+    (state) => state.map.transparency?.indicatorLayer,
+  );
   const transparency = indicatorLayerTransparency / 100;
 
   const filterRef = useRef(null);
@@ -387,7 +397,14 @@ export default function ReferenceLayerCentroid({
               properties.chart_style.size = percentageSize * diffSize + minSize;
             });
         }
-        renderChart(map, features, lastConfig.current, config, transparency, chartState.current);
+        renderChart(
+          map,
+          features,
+          lastConfig.current,
+          config,
+          transparency,
+          chartState.current,
+        );
       }
       lastConfig.current = config;
       filterRef.current?.call();
