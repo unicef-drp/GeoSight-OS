@@ -1,3 +1,4 @@
+import { createSelector } from "reselect";
 import { DashboardTool } from "../store/dashboard/reducers/dashboardTool";
 import { EmbedConfig } from "../utils/embed";
 
@@ -44,3 +45,9 @@ export const isContextLayerContentVisible = (state: any): boolean => {
     layer_tabs_visibility.includes("context_layers")
   );
 };
+
+export const getIndicatorLayersOptions = createSelector(
+  (state: any) => state.dashboard.data?.indicatorLayers,
+  (layers: { id: number; name: string }[] = []) =>
+    layers.map(({ id, name }) => ({ id, label: name })),
+);

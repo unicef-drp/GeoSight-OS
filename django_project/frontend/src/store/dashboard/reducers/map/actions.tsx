@@ -15,21 +15,23 @@
 
 import {
   MAP_ACTION_NAME,
-  MAP_REFERENCE_LAYER_CHANGED,
-  MAP_CHANGE_BASEMAP,
-  MAP_UPDATE_INDICATOR_LAYERS,
-  MAP_ADD_INDICATOR_LAYERS,
-  MAP_REMOVE_INDICATOR_LAYERS,
   MAP_ADD_CONTEXTLAYERS,
-  MAP_REMOVE_CONTEXTLAYERS,
-  MAP_ZOOM,
-  MAP_POSITION,
-  MAP_IS_3D_MODE,
+  MAP_ADD_INDICATOR_LAYERS,
   MAP_CENTER,
+  MAP_CHANGE_BASEMAP,
+  MAP_CONTEXTLAYERS_SHOW,
   MAP_EXTENT,
   MAP_INDICATOR_SHOW,
-  MAP_CONTEXTLAYERS_SHOW,
+  MAP_IS_3D_MODE,
+  MAP_POSITION,
+  MAP_REFERENCE_LAYER_CHANGED,
+  MAP_REMOVE_CONTEXTLAYERS,
+  MAP_REMOVE_INDICATOR_LAYERS,
+  MAP_SWITCH_INDICATOR_LAYERS,
+  MAP_UPDATE_INDICATOR_LAYER_AT_IDX,
+  MAP_UPDATE_INDICATOR_LAYERS,
   MAP_UPDATE_TRANSPARENCY,
+  MAP_ZOOM,
   MapPosition,
 } from "./index";
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
@@ -74,6 +76,22 @@ function removeIndicatorLayer(id: number) {
     name: MAP_ACTION_NAME,
     type: MAP_REMOVE_INDICATOR_LAYERS,
     id,
+  };
+}
+
+function switchIndicatorLayers(firstIdx: number, secondIdx: number) {
+  return {
+    name: MAP_ACTION_NAME,
+    type: MAP_SWITCH_INDICATOR_LAYERS,
+    payload: { firstIdx, secondIdx },
+  };
+}
+
+function updateIndicatorLayerAtIdx(idx: number, layer: IndicatorLayer) {
+  return {
+    name: MAP_ACTION_NAME,
+    type: MAP_UPDATE_INDICATOR_LAYER_AT_IDX,
+    payload: { idx, layer },
   };
 }
 
@@ -173,6 +191,8 @@ export default {
   updateIndicatorLayers,
   addIndicatorLayer,
   removeIndicatorLayer,
+  switchIndicatorLayers,
+  updateIndicatorLayerAtIdx,
   addContextLayer,
   removeContextLayer,
   changeZoom,

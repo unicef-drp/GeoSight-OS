@@ -29,6 +29,8 @@ export const MAP_CHANGE_BASEMAP = `MAP/CHANGE_BASEMAP`;
 export const MAP_UPDATE_INDICATOR_LAYERS = `MAP/UPDATE_INDICATOR_LAYERS`;
 export const MAP_ADD_INDICATOR_LAYERS = `MAP/ADD_INDICATOR_LAYERS`;
 export const MAP_REMOVE_INDICATOR_LAYERS = `MAP/REMOVE_INDICATOR_LAYERS`;
+export const MAP_SWITCH_INDICATOR_LAYERS = `MAP/SWITCH_INDICATOR_LAYERS`;
+export const MAP_UPDATE_INDICATOR_LAYER_AT_IDX = `MAP/UPDATE_INDICATOR_LAYER_AT_IDX`;
 
 // Context layers
 export const MAP_ADD_CONTEXTLAYERS = `MAP/ADD_CONTEXTLAYERS`;
@@ -198,6 +200,17 @@ export default function mapReducer(
             (layer) => layer.id !== action.id,
           ),
         };
+      }
+      case MAP_SWITCH_INDICATOR_LAYERS: {
+        const { firstIdx, secondIdx } = action.payload;
+        const layers = [...state.indicatorLayers];
+        [layers[firstIdx], layers[secondIdx]] = [layers[secondIdx], layers[firstIdx]];
+        return { ...state, indicatorLayers: layers };
+      }
+      case MAP_UPDATE_INDICATOR_LAYER_AT_IDX: {
+        const layers = [...state.indicatorLayers];
+        layers[action.payload.idx] = action.payload.layer;
+        return { ...state, indicatorLayers: layers };
       }
       // Context layers
       case MAP_ADD_CONTEXTLAYERS: {

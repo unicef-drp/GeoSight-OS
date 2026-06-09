@@ -19,7 +19,7 @@
 
 import React, { Fragment } from "react";
 import $ from "jquery";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { indicatorLayerStyle } from "../../../../utils/Style";
 import { dictDeepCopy } from "../../../../utils/main";
@@ -32,20 +32,87 @@ import { LayerIcon } from "../../../../components/Icons";
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
 import { Indicator } from "../../../../types/Indicator";
 import { Plugin, PluginChild } from "../utils/Plugin";
+import { Select } from "../../../../components/Input";
+import { getIndicatorLayersOptions } from "../../../../selectors/dashboard";
+import {
+  selectIndicatorLayerIds
+} from "../../../../selectors/indicatorLayers";
+import { Actions } from "../../../../store/dashboard";
 
 import "./style.scss";
 
+const RenderIndicatorLegendName = ({ layer }: { layer: IndicatorLayer }) => {
+  const dispatch = useDispatch();
+  // @ts-ignore
+  const compareMode = useSelector((state) => state.mapMode?.compareMode);
+  const indicatorLayerIds = useSelector(selectIndicatorLayerIds);
+  const activeIds = indicatorLayerIds.map(String);
+  const layerIdx = activeIds.indexOf(layer.id.toString());
+
+  const isFirst = indicatorLayerIds[0]?.toString() === layer.id.toString();
+  const allLayers = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.indicatorLayers,
+  );
+  const indicatorLayersOptions = useSelector(getIndicatorLayersOptions);
+
+  const suffix = !compareMode ? "" : isFirst ? " (Outline)" : " (Inner)";
+  const options = indicatorLayersOptions.map((opt) => {
+    const id = opt.id.toString();
+    if (id === layer.id.toString()) {
+      return { ...opt, label: "[current] " + opt.label };
+    }
+    if (activeIds.includes(id)) {
+      return { ...opt, label: "[switch] " + opt.label };
+    }
+    return opt;
+  });
+  options.sort((a, b) => a.label.localeCompare(b.label));
+  const value = options.find((opt) => opt.id === layer.id);
+  return (
+    <>
+      <Select
+        menuPortalTarget={document.body}
+        menuPosition="fixed"
+        className="FitContent"
+        classNames={{ menuPortal: () => "FitContent" }}
+        options={options}
+        value={value ? { ...value, label: value.label + suffix } : null}
+        getOptionValue={(opt: any) => opt.id}
+        name="indicator_layer"
+        onChange={(evt: any) => {
+          const selectedId = evt.id.toString();
+          if (selectedId === layer.id.toString()) return;
+          if (evt.label.includes("[switch]")) {
+            const targetIdx = activeIds.indexOf(selectedId);
+            dispatch(Actions.Map.switchIndicatorLayers(layerIdx, targetIdx));
+          } else {
+            const newLayer = allLayers?.find(
+              (l: any) => l.id.toString() === selectedId,
+            );
+            if (!newLayer) return;
+            dispatch(Actions.Map.updateIndicatorLayerAtIdx(layerIdx, newLayer));
+          }
+        }}
+      />
+    </>
+  );
+};
 /** Render indicator legend section */
 const RenderIndicatorLegendSection = ({
   rules,
   name,
+  layer,
 }: {
   rules: any;
-  name: string;
+  name?: string;
+  layer: IndicatorLayer;
 }) => {
   return (
-    <div className="MapLegendSection">
-      <div className="MapLegendSectionTitle">{name}</div>
+    <>
+      <div className="MapLegendSectionTitle">
+        {name ? <>{name}</> : <RenderIndicatorLegendName layer={layer} />}
+      </div>
       {![null, undefined].includes(rules) ? (
         <Fragment>
           {rules.length ? (
@@ -75,19 +142,13 @@ const RenderIndicatorLegendSection = ({
           <CircularProgress />
         </div>
       )}
-    </div>
+    </>
   );
 };
 /**
  * Render indicator legend
  */
-const RenderIndicatorLegend = ({
-  layer,
-  name,
-}: {
-  layer: IndicatorLayer;
-  name: string;
-}) => {
+const RenderIndicatorLegend = ({ layer }: { layer: IndicatorLayer }) => {
   const referenceLayer = useSelector(
     // @ts-ignore
     (state) => state.dashboard.data?.referenceLayer,
@@ -110,42 +171,53 @@ const RenderIndicatorLegend = ({
   const indicatorLayersData = useSelector((state) => state.indicatorLayersData);
 
   if (layer.multi_indicator_mode === "Pin") {
-    return layer.indicators.map((indicator) => {
-      const hasData = indicatorHasData(indicatorsData, indicator);
-      let rules = null;
-      if (hasData) {
-        let indicatorData = indicator;
-        // @ts-ignore
-        if (!indicator.style) {
-          const obj = indicators.find(
-            (ind: Indicator) => ind.id === indicator.id,
-          );
-          if (obj) {
-            indicatorData = dictDeepCopy(obj);
+    return (
+      <div className="MapLegendSection">
+        <div className="MapLegendSectionTitle">
+          <RenderIndicatorLegendName layer={layer} />
+        </div>
+        {layer.indicators.map((indicator) => {
+          const hasData = indicatorHasData(indicatorsData, indicator);
+          let rules = null;
+          if (hasData) {
+            let indicatorData = indicator;
             // @ts-ignore
-            indicatorData.indicators = [indicator];
+            if (!indicator.style) {
+              const obj = indicators.find(
+                (ind: Indicator) => ind.id === indicator.id,
+              );
+              if (obj) {
+                indicatorData = dictDeepCopy(obj);
+                // @ts-ignore
+                indicatorData.indicators = [indicator];
+              }
+            }
+            rules = indicatorLayerStyle(
+              {
+                ...layer,
+                indicators: [indicator],
+              },
+              indicators,
+              indicatorsData,
+              relatedTableData,
+              selectedGlobalTime,
+              geoField,
+              selectedAdminLevel?.level,
+              filteredGeometries,
+              indicatorData,
+              referenceLayer,
+            );
           }
-        }
-        rules = indicatorLayerStyle(
-          {
-            ...layer,
-            indicators: [indicator],
-          },
-          indicators,
-          indicatorsData,
-          relatedTableData,
-          selectedGlobalTime,
-          geoField,
-          selectedAdminLevel?.level,
-          filteredGeometries,
-          indicatorData,
-          referenceLayer,
-        );
-      }
-      return (
-        <RenderIndicatorLegendSection rules={rules} name={indicator.name} />
-      );
-    });
+          return (
+            <RenderIndicatorLegendSection
+              rules={rules}
+              name={indicator.name}
+              layer={layer}
+            />
+          );
+        })}
+      </div>
+    );
   }
   const layerData = getLayerData(
     indicatorsData,
@@ -172,7 +244,11 @@ const RenderIndicatorLegend = ({
       indicatorLayersData,
     );
   }
-  return <RenderIndicatorLegendSection rules={rules} name={name} />;
+  return (
+    <div className="MapLegendSection">
+      <RenderIndicatorLegendSection rules={rules} layer={layer} name={null} />
+    </div>
+  );
 };
 
 export interface Props {
@@ -192,16 +268,10 @@ export default function MapLegend({ firstLayer, secondLayer }: Props) {
       <div className="MapLegend">
         <div className="MapLegendContent Fullscreen">
           {firstLayer?.id && indicatorShow && (
-            <RenderIndicatorLegend
-              layer={firstLayer}
-              name={firstLayer.name + (compareMode ? " (Outline)" : "")}
-            />
+            <RenderIndicatorLegend layer={firstLayer} />
           )}
           {secondLayer?.id && indicatorShow && (
-            <RenderIndicatorLegend
-              layer={secondLayer}
-              name={secondLayer.name + " (Inner)"}
-            />
+            <RenderIndicatorLegend layer={secondLayer} />
           )}
         </div>
       </div>

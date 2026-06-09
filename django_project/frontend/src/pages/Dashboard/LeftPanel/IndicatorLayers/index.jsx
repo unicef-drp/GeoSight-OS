@@ -42,6 +42,9 @@ import {
   MaxSelectableLayersForSideBySideView,
 } from "../../../../components/IndicatorLayer/CompositeIndexLayer/variable";
 import SDMXIndicatorLayer from "./SDMXIndicatorLayer";
+import {
+  selectIndicatorLayerIds as selectIndicatorLayerIdsSelector
+} from "../../../../selectors/indicatorLayers";
 
 import "./style.scss";
 
@@ -67,6 +70,8 @@ export function IndicatorLayers() {
   const relatedTables = useSelector(
     (state) => state.dashboard.data.relatedTables,
   );
+  const selectIndicatorLayerIds = useSelector(selectIndicatorLayerIdsSelector);
+
   const { compareMode, sideBySideViewMode, compositeMode } = useSelector(
     (state) => state.mapMode,
     shallowEqual,
@@ -119,6 +124,17 @@ export function IndicatorLayers() {
       ]);
     }
   }, [compareMode, sideBySideViewMode]);
+
+  useEffect(() => {
+    if (!compositeMode && selectIndicatorLayerIds?.length) {
+      if (
+        JSON.stringify(selectIndicatorLayerIds) !==
+        JSON.stringify(currentIndicatorLayers)
+      ) {
+        setCurrentIndicatorLayers(selectIndicatorLayerIds);
+      }
+    }
+  }, [compositeMode, selectIndicatorLayerIds]);
 
   /** Sync map indicator layers when selection or available layers change */
   useEffect(() => {
