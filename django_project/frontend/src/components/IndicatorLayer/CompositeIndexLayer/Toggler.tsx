@@ -26,7 +26,7 @@ import {
 import { delay, dictDeepCopy } from "../../../utils/main";
 import { Actions } from "../../../store/dashboard";
 import { useConfirmDialog } from "../../../providers/ConfirmDialog";
-import { selectIndicatorLayerByIdx } from "../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerByIdx } from "../../../selectors/indicatorLayers";
 
 export interface Props {
   ActiveIcon: React.ReactElement;

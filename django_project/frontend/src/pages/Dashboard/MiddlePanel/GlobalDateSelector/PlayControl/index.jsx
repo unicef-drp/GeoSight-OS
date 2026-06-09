@@ -27,7 +27,7 @@ import { ThemeButton } from "../../../../../components/Elements/Button";
 import { allLayerDataIsReady } from "../../../../../utils/indicatorLayer";
 import { returnWhere } from "../../../../../utils/queryExtraction";
 import { NextEndIcon, PrevEndIcon } from "../../../../../components/Icons/svg";
-import { selectIndicatorLayers } from "../../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayers } from "../../../../../selectors/indicatorLayers";
 
 import './style.scss';
 

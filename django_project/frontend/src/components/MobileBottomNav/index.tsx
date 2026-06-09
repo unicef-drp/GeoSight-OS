@@ -41,11 +41,9 @@ export default function MobileBottomNav() {
   const { t } = useTranslation();
   const [activePanel, setActivePanel] = useState("Map");
 
-  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
-  const contextLayerContentVisible = useSelector(
-    isContextLayerContentVisible(),
-  );
-  const filterVisible = useSelector(isFilterContentVisible());
+  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible);
+  const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
+  const filterVisible = useSelector(isFilterContentVisible);
 
   const navItems = [{ key: t("Map"), icon: <MapActiveIcon /> }];
   if (contextLayerContentVisible) {

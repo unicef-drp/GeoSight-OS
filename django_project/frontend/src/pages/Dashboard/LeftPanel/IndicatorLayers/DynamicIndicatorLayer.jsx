@@ -28,7 +28,7 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { getIndicatorDataByLayer } from "../../../../utils/indicatorData";
 import DynamicIndicatorLayerMapConfig from "./DynamicIndicatorLayerMapConfig";
-import { selectIndicatorLayerIds } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerIds } from "../../../../selectors/indicatorLayers";
 
 /**
  * Related table layer handler

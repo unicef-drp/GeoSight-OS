@@ -38,7 +38,7 @@ export interface Props {
 export default function RequestParameter({ widget, setParameter }: Props) {
   const { config } = widget;
 
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
 
   // @ts-ignore
   const referenceLayers = useSelector((state) => state.map?.referenceLayers);

@@ -47,7 +47,7 @@ import { delay, dictDeepCopy } from "../../../../utils/main";
 import { disabledCompositeLayer } from "../utilities";
 import {
   selectIndicatorLayerByIdx
-} from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+} from "../../../../selectors/indicatorLayers";
 import CompositeIndexLayerToggler from "../Toggler";
 
 import "./style.scss";

@@ -43,7 +43,7 @@ export default function ExampleContextInput({
   const relatedTables = useSelector(
     (state) => state.dashboard.data?.relatedTables,
   );
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
 
   const referenceLayer = referenceLayerIndicatorLayer(
     referenceLayerDashboard,

@@ -21,7 +21,7 @@ import maplibregl, {
 import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 
 import { Actions } from "../../../store/dashboard";
-import { selectIndicatorLayerByIdx } from "../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerByIdx } from "../../../selectors/indicatorLayers";
 import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
 import { removeLayer, removeSource } from "./utils";
 import { addLayerWithOrder } from "./utils/Render";

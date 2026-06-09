@@ -28,7 +28,7 @@ import IndicatorLayer from "../IndicatorLayer/Selector";
 import { GlobalIndicatorLayerTransparency } from "./Transparency";
 import CompositeIndexLayer from "../../../IndicatorLayer/CompositeIndexLayer/Layer";
 import { Actions } from "../../../../store/dashboard";
-import { selectIndicatorLayerIds as selectIndicatorLayerIdsSelector } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerIds as selectIndicatorLayerIdsSelector } from "../../../../selectors/indicatorLayers";
 import { MaxSelectableLayersForCompositeIndexLayer } from "../../../IndicatorLayer/CompositeIndexLayer/variable";
 
 const TREE_INDENT_SPACE = 40;

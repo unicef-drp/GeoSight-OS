@@ -35,7 +35,7 @@ import RequestData from "./RequestData";
 import { ExecuteWebWorker } from "../../../utils/WebWorker";
 import workerReformatGeometries from "../../../workers/reformat_geometries";
 import { isProjectUsingConceptUUID } from "../../../selectors/dashboard";
-import { selectIndicatorLayers } from "../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayers } from "../../../selectors/indicatorLayers";
 
 import "./style.scss";
 
@@ -76,7 +76,7 @@ export default function TimeSeriesChartWidget({ data }) {
   const { slug, default_time_mode } = useSelector(
     (state) => state.dashboard.data,
   );
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
   const { referenceLayers } = useSelector((state) => state.map);
   const referenceLayer = referenceLayers[0];
   const { use_only_last_known_value } = default_time_mode;

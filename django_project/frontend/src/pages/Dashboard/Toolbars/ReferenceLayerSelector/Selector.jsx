@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 import { dictDeepCopy } from "../../../../utils/main";
-import { selectIndicatorLayerByIdx } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerByIdx } from "../../../../selectors/indicatorLayers";
 
 import "./style.scss";
 

@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
 import { ProjectCheckpoint as ProjectCheckpointType } from "../../types/ProjectCheckpoint";
 import { Actions } from "../../store/dashboard";
-import { selectIndicatorLayerIds } from "../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerIds } from "../../selectors/indicatorLayers";
 import { dictDeepCopy } from "../../utils/main";
 import { compareFilters, filtersToFlatDict } from "../../utils/filters";
 import { changeIndicatorLayersForcedUpdate } from "../../pages/Dashboard/LeftPanel/IndicatorLayers";

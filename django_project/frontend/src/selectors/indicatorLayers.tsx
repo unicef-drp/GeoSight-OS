@@ -14,7 +14,7 @@
  */
 
 import { createSelector } from "reselect";
-import { IndicatorLayer } from "../../../types/IndicatorLayer";
+import { IndicatorLayer } from "../types/IndicatorLayer";
 
 /** Returns the currently active indicator layers from map state. */
 export const selectIndicatorLayers = (state: any): IndicatorLayer[] =>

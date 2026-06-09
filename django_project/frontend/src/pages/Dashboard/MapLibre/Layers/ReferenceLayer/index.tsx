@@ -196,7 +196,7 @@ export function ReferenceLayer({
   const prevCurrentLevel = useRef<number | null>(null);
 
   // Derived
-  const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID())
+  const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID)
     ? "concept_uuid"
     : "ucode";
   const compareOutlineSize = preferences.style_compare_mode_outline_size;

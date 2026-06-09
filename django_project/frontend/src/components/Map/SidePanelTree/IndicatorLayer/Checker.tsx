@@ -18,7 +18,7 @@ import { IndicatorLayer } from "../../../../types/IndicatorLayer";
 import { useSelector } from "react-redux";
 import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
 import { getIndicatorDataId } from "../../../../utils/indicatorData";
-import { selectIndicatorLayerIds } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerIds } from "../../../../selectors/indicatorLayers";
 
 export interface Props {
   layer?: IndicatorLayer;

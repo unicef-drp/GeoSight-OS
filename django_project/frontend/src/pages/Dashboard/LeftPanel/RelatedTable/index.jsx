@@ -27,7 +27,7 @@ import { getCountryGeomIds } from "../../../../utils/Dataset";
 import {
   RelatedTable as RelatedTableRequest
 } from "../../../../class/RelatedTable";
-import { selectIndicatorLayerIds } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayerIds } from "../../../../selectors/indicatorLayers";
 
 /**
  * RelatedTable data.

@@ -55,7 +55,7 @@ export default function ZoomToFilteredGeometries() {
   const referenceLayerData = useSelector((state) => state.datasetGeometries);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const conceptKey = useSelector(isProjectUsingConceptUUID())
+  const conceptKey = useSelector(isProjectUsingConceptUUID)
     ? "concept_uuid"
     : "ucode";
 

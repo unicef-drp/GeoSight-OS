@@ -52,7 +52,7 @@ export const IndicatorRequest = memo(
   }: Props) => {
     const dispatch = useDispatch();
 
-    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
 
     // @ts-ignore
     const prevState = useRef();

@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { referenceLayerIndicatorLayer } from "../../../../utils/indicatorLayer";
 import { Actions } from "../../../../store/dashboard";
-import { selectIndicatorLayers } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayers } from "../../../../selectors/indicatorLayers";
 
 export default function IndicatorLayersReferenceController() {
   const dispatch = useDispatch();

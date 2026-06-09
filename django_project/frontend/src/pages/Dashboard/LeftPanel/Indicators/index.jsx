@@ -25,7 +25,7 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
 import { Indicator } from "../../../../class/Indicator";
-import { selectIndicatorLayers } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayers } from "../../../../selectors/indicatorLayers";
 
 /** Indicators data. */
 export default function Indicators() {

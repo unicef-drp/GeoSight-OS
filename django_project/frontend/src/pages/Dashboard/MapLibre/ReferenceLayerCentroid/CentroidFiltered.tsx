@@ -32,7 +32,7 @@ export const ReferenceLayerFilterCentroid = forwardRef(
     // @ts-ignore
     const filteredGeometries = useSelector((state) => state.filteredGeometries);
     // @ts-ignore
-    const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID())
+    const geomFieldOnVectorTile = useSelector(isProjectUsingConceptUUID)
       ? "concept_uuid"
       : "ucode";
 

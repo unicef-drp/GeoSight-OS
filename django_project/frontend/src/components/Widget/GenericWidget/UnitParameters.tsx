@@ -19,7 +19,7 @@
 
 import React, { memo, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { selectIndicatorLayers } from "../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayers } from "../../../selectors/indicatorLayers";
 
 // Widgets
 import { UnitConfig, WidgetConfig } from "../../../types/Widget";

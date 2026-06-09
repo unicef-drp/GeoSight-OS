@@ -48,7 +48,7 @@ import {
 
 import "./style.scss";
 import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
-import { selectIndicatorLayers } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import { selectIndicatorLayers } from "../../../../selectors/indicatorLayers";
 
 /**
  * Indicator data.
@@ -61,7 +61,7 @@ export default function GlobalDateSelector() {
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
   const indicators = useSelector((state) => state.dashboard.data?.indicators);
   const indicatorLayers = useSelector(
     (state) => state.dashboard.data?.indicatorLayers,
