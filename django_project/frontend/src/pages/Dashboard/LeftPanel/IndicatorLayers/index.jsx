@@ -284,8 +284,6 @@ export function IndicatorLayers() {
     <Fragment>
       <SidePanelTreeView
         data={treeData}
-        selectable={true}
-        resetSelection={true}
         maxSelect={
           sideBySideViewMode
             ? MaxSelectableLayersForSideBySideView
@@ -296,14 +294,6 @@ export function IndicatorLayers() {
                 : 1
         }
         onChange={onChange}
-        otherInfo={(layer) => {
-          if (layer.data.related_tables?.length && layer.data.config.where) {
-            return <RelatedTableLayerFilter relatedTableLayer={layer.data} />;
-          } else if (layer.data.type === DynamicIndicatorType) {
-            return <DynamicIndicatorLayerConfig indicatorLayer={layer} />;
-          }
-          return null;
-        }}
         placeholder={t("dashboardPage.indicatorSearch")}
       />
       {indicatorLayers.map((indicatorLayer) => {

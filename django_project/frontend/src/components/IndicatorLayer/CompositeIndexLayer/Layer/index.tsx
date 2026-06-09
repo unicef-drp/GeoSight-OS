@@ -48,9 +48,9 @@ import { disabledCompositeLayer } from "../utilities";
 import {
   selectIndicatorLayerByIdx
 } from "../../../../store/dashboard/selectors/SelectedIndicatorLayers";
+import CompositeIndexLayerToggler from "../Toggler";
 
 import "./style.scss";
-import CompositeIndexLayerToggler from "../Toggler";
 
 /** Convert to dynamic layer*/
 const ToDynamicLayer = memo(() => {

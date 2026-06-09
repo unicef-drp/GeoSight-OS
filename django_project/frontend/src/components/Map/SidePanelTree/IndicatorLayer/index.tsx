@@ -14,26 +14,22 @@
  */
 
 import React, {
-  ReactNode,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { Checkbox, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import {
-  findAllGroups,
   flattenTree,
   getDepth,
 } from "../../../SortableTreeForm/utilities";
 
-import { dictDeepCopy } from "../../../../utils/main";
 import Highlighted from "../Highlighted";
 import FilterLayer from "../FilterLayer";
 import IndicatorLayer from "../IndicatorLayer/Selector";
@@ -43,64 +39,27 @@ import { Actions } from "../../../../store/dashboard";
 import { MaxSelectableLayersForCompositeIndexLayer } from "../../../IndicatorLayer/CompositeIndexLayer/variable";
 
 const TREE_INDENT_SPACE = 40;
-let unexpandedGroups: any = [];
 
-/**
- * SidePanelTreeView component
- * @param {array} data tree data, format = [{
- *   'id': 'group_id',
- *   'children': [{
- *     'id': 'data_id',
- *     'children': []
- *   }]
- * }]
- * @param {boolean} selectable whether this sidepanel is selectable or not
- * @param {Array} parentSelected parent selected
- * @param {number} maxSelect max selected item
- * @param {boolean} groupSelectable is group also selectable
- * @param {function} onChange callback function to call when selected data changed
- * @param {function} otherInfo Other info that will be rendered before info icon
- */
 export interface Props {
   data: any;
-  /**
-   * @param {array} data tree data, format = [{
-   *   'id': 'group_id',
-   *   'children': [{
-   *     'id': 'data_id',
-   *     'children': []
-   *   }]
-   * }]
-   */
-  parentSelected: string[];
   maxSelect: number;
   onChange: (value: string[]) => void;
-
-  otherInfo: ReactNode;
-  resetSelection: boolean;
-
   placeholder: string;
-  selectable: boolean;
-  groupSelectable: boolean;
 }
 
 export default function SidePanelTreeView({
   data,
-  selectable = false,
-  parentSelected = null,
   maxSelect = 0,
-  groupSelectable = false,
   onChange = null,
-  otherInfo = null,
-  ...props
+  placeholder = "",
 }: Props) {
   const dispatch = useDispatch();
   const [nodes, setNodes] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [selectedGroups, setSelectedGroups] = useState([]);
   const [groups, setGroups] = useState([]);
   const [filterText, setFilterText] = useState("");
   const layerGroupListRef = useRef(null);
+  const unexpandedGroupsRef = useRef<string[]>([]);
   const [width, setWidth] = useState(25);
 
   // @ts-ignore
@@ -130,7 +89,7 @@ export default function SidePanelTreeView({
     // TODO:
     //  We need to fix this
     //  Appending selected is done because of context layer unselected at first time
-    const newSelected = props.resetSelection ? [] : dictDeepCopy(selected);
+    const newSelected = [];
     for (const item of flattenTree(data)) {
       if (!item.isGroup && item.data?.visible_by_default) {
         newSelected.push(item.data?.id + "");
@@ -163,14 +122,6 @@ export default function SidePanelTreeView({
     }
   }, [compositeIndicatorLayerIds, maxSelect]);
 
-  /** Parent selected */
-  useLayoutEffect(() => {
-    if (parentSelected !== null) {
-      if (JSON.stringify(selected) !== JSON.stringify(parentSelected)) {
-        setSelected(parentSelected);
-      }
-    }
-  }, [parentSelected]);
 
   useEffect(() => {
     const filterResults = filterData(
@@ -203,9 +154,8 @@ export default function SidePanelTreeView({
 
   const selectItem = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    const checked = e.target.checked;
     const nodeId = e.target.value;
-    let _selectedIds = [];
+    let _selectedIds: string[];
     if (selected.indexOf(nodeId) >= 0) {
       _selectedIds = [...selected.filter((s) => s !== nodeId)];
     } else {
@@ -217,75 +167,9 @@ export default function SidePanelTreeView({
         _selectedIds = [...selected.slice(0, maxSelect - 1), nodeId];
       }
     }
-    if (!checked && selectedGroups.length > 0) {
-      const layers = flattenTree(data);
-      for (const layer of layers) {
-        if (!layer.isGroup && layer.data) {
-          if ("" + layer.data.id === nodeId) {
-            const group = layer.data.group;
-            setSelectedGroups([...selectedGroups.filter((id) => id !== group)]);
-          }
-        }
-      }
-    }
     onChange(_selectedIds);
     setSelected(_selectedIds);
-
     updateCompositeIndicatorLayer(_selectedIds);
-  };
-
-  const getChildIds = (_data: any) => {
-    const _selectedIds: any[] = [];
-    for (const item of _data.children) {
-      if (!item.data || item.isGroup) {
-        if (item.children) {
-          _selectedIds.push(...getChildIds(item));
-        }
-        continue;
-      }
-      if (!item.data.error) {
-        _selectedIds.push("" + item.data.id);
-      }
-    }
-    return _selectedIds;
-  };
-
-  const selectGroup = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    const checked = e.target.checked;
-    let _selectedIds: any[] = [];
-    let _selectedGroups = [e.target.value];
-    const allGroups = findAllGroups(data);
-    let parentGroup = e.target.value;
-    for (const _data of allGroups) {
-      if (_data.isGroup && _data.id === e.target.value) {
-        _selectedIds.push(...getChildIds(_data));
-      }
-      if (_data.parentId === parentGroup) {
-        _selectedGroups.push(_data.id);
-        parentGroup = _data.id;
-      }
-    }
-    if (checked) {
-      _selectedIds = [
-        ...selected,
-        ..._selectedIds.filter((id) => selected.indexOf(id) >= -1),
-      ];
-      _selectedGroups = [
-        ...selectedGroups,
-        ..._selectedGroups.filter((id) => selectedGroups.indexOf(id) >= -1),
-      ];
-    } else {
-      _selectedIds = [
-        ...selected.filter((id) => _selectedIds.indexOf(id) === -1),
-      ];
-      _selectedGroups = [
-        ...selectedGroups.filter((id) => _selectedGroups.indexOf(id) === -1),
-      ];
-    }
-    setSelectedGroups([..._selectedGroups]);
-    onChange(_selectedIds);
-    setSelected(_selectedIds);
   };
 
   const handleToggle = (
@@ -293,13 +177,13 @@ export default function SidePanelTreeView({
     nodeIds: string[],
   ) => {
     setGroups(nodeIds);
-    unexpandedGroups = getGroups(data).filter(
+    unexpandedGroupsRef.current = getGroups(data).filter(
       (id: string) => !nodeIds.includes(id),
     );
   };
 
-  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.stopPropagation();
+  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
   };
 
   function filterData(data: any, query: any) {
@@ -314,7 +198,7 @@ export default function SidePanelTreeView({
         }
       });
     } catch (e) {
-      return false;
+      return [];
     }
   }
 
@@ -335,7 +219,7 @@ export default function SidePanelTreeView({
         key={nodesDataId}
         nodeId={nodesDataId}
         label={
-          !treeData.isGroup && selectable ? (
+          !treeData.isGroup ? (
             !treeData.data ? null : (
               <IndicatorLayer
                 layer={treeData.data}
@@ -348,36 +232,10 @@ export default function SidePanelTreeView({
                 maxSelect={maxSelect}
               />
             )
-          ) : groupSelectable ? (
-            <FormControlLabel
-              className="GroupSelectable Group"
-              onClick={(e) => e.stopPropagation()}
-              control={
-                <Checkbox
-                  checked={
-                    selectedGroups.length > 0 &&
-                    selectedGroups.indexOf(treeData.id) >= 0
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                  onChange={selectGroup}
-                  className="PanelCheckbox"
-                  size="small"
-                  value={treeData.id}
-                />
-              }
-              label={
-                // @ts-ignore
-                <Highlighted
-                  text={treeData.name ? treeData.name : "No Name"}
-                  highlight={filterText}
-                  isGroup={true}
-                />
-              }
-            />
           ) : (
             // @ts-ignore
             <Highlighted
-              text={treeData.name ? treeData.name : "No Name"}
+              text={treeData.name ?? "No Name"}
               highlight={filterText}
               isGroup={true}
             />
@@ -403,7 +261,7 @@ export default function SidePanelTreeView({
           }}
         >
           <FilterLayer
-            placeholder={props.placeholder}
+            placeholder={placeholder}
             inputChanged={(input) => setFilterText(input)}
           />
         </Paper>
@@ -414,7 +272,7 @@ export default function SidePanelTreeView({
               ref={layerGroupListRef}
               defaultCollapseIcon={<ExpandMoreIcon />}
               expanded={groups.filter(
-                (group) => !unexpandedGroups.includes(group),
+                (group) => !unexpandedGroupsRef.current.includes(group),
               )}
               onNodeToggle={handleToggle}
               onNodeSelect={handleSelect}
