@@ -17,51 +17,43 @@ import {
   MAP_MODE_ACTION_NAME,
   MAP_MODE_ACTION_TYPE_COMPARE,
   MAP_MODE_ACTION_TYPE_COMPOSITE,
+  MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW,
 } from "./index";
 
-/**
- * Change compare mode.
- */
-export function changeCompareMode() {
-  return {
-    name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPARE,
-  };
-}
+const makeAction = (type: string, value?: boolean) => ({
+  name: MAP_MODE_ACTION_NAME,
+  type,
+  value,
+});
 
-/**
- * Change compare mode.
- */
-export function activateCompare() {
-  return {
-    name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPARE,
-    value: true,
-  };
-}
+export const changeCompareMode = () => makeAction(MAP_MODE_ACTION_TYPE_COMPARE);
+export const activateCompare = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_COMPARE, true);
+export const deactivateCompare = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_COMPARE, false);
 
-/**
- * Change compare mode.
- */
-export function deactivateCompare() {
-  return {
-    name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPARE,
-    value: false,
-  };
-}
+export const toggleCompositeMode = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_COMPOSITE);
+export const activateComposite = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_COMPOSITE, true);
+export const deactivateComposite = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_COMPOSITE, false);
 
-/**Toggle composite mode.*/
-export function toggleCompositeMode() {
-  return {
-    name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPOSITE,
-  };
-}
+export const toggleSideBySideView = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW);
+export const activateSideBySideView = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW, true);
+export const deactivateSideBySideView = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW, false);
 
 export default {
   changeCompareMode,
   activateCompare,
   deactivateCompare,
   toggleCompositeMode,
+  activateComposite,
+  deactivateComposite,
+  toggleSideBySideView,
+  activateSideBySideView,
+  deactivateSideBySideView,
 };

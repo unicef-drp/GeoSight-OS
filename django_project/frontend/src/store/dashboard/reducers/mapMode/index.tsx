@@ -18,53 +18,46 @@
 export const MAP_MODE_ACTION_NAME = "MAP_MODE";
 export const MAP_MODE_ACTION_TYPE_COMPARE = "MAP_MODE/COMPARE";
 export const MAP_MODE_ACTION_TYPE_COMPOSITE = "MAP_MODE/COMPOSITE";
+export const MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW =
+  "MAP_MODE/SIDE_BY_SIDE_VIEW";
 
 interface mapModeProps {
   compareMode: boolean;
+  sideBySideViewMode: boolean;
   compositeMode: boolean;
 }
 
 const initialState: mapModeProps = {
   compareMode: false,
   compositeMode: false,
+  sideBySideViewMode: false,
 };
 export default function mapCompareModeReducer(
   state = initialState,
   action: any,
 ) {
-  if (action.name === MAP_MODE_ACTION_NAME) {
-    switch (action.type) {
-      case MAP_MODE_ACTION_TYPE_COMPARE: {
-        let { value } = action;
-        if (value === undefined) value = !state.compareMode;
-        if (value === true) {
-          return {
-            ...state,
-            compareMode: value,
-            compositeMode: false,
-          };
-        }
-        return {
-          ...state,
-          compareMode: value,
-        };
-      }
-      case MAP_MODE_ACTION_TYPE_COMPOSITE: {
-        let { value } = action;
-        if (value === undefined) value = !state.compositeMode;
-        if (value === true) {
-          return {
-            ...state,
-            compositeMode: value,
-            compareMode: false,
-          };
-        }
-        return {
-          ...state,
-          compositeMode: value,
-        };
-      }
+  if (action.name !== MAP_MODE_ACTION_NAME) return state;
+
+  const activate = (field: keyof mapModeProps) => {
+    const value = action.value ?? !state[field];
+    if (value) {
+      return {
+        compareMode: false,
+        compositeMode: false,
+        sideBySideViewMode: false,
+        [field]: true,
+      };
     }
+    return { ...state, [field]: false };
+  };
+
+  switch (action.type) {
+    case MAP_MODE_ACTION_TYPE_COMPARE:
+      return activate("compareMode");
+    case MAP_MODE_ACTION_TYPE_COMPOSITE:
+      return activate("compositeMode");
+    case MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW:
+      return activate("sideBySideViewMode");
   }
   return state;
 }
