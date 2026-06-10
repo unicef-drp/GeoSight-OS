@@ -114,9 +114,22 @@ export default function CloudNativeGISStreamUpload({
         ) : (
           <>
             <div>{lastImporter.created_at}</div>
-            <div>
+            <div
+              style={{
+                color: lastImporter.status === "Failed" ? "red" : "inherit",
+              }}
+            >
               Status : <b>{lastImporter.status}</b>
             </div>
+            {lastImporter.note && (
+              <div
+                style={{
+                  color: lastImporter.status === "Failed" ? "red" : "inherit",
+                }}
+              >
+                {lastImporter.note}
+              </div>
+            )}
             <div>Progress : {lastImporter.progress}</div>
           </>
         )}
