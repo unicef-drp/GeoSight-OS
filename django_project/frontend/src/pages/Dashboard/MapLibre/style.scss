@@ -504,6 +504,8 @@ $nav-disabled-color: '%23CCCCCC';
 
 .MapLegend {
   .MapLegendSwapIcon {
+    display: block !important;
+
     &:hover {
       opacity: 1;
     }
@@ -511,7 +513,6 @@ $nav-disabled-color: '%23CCCCCC';
 }
 
 .MapLegendSwapIcon {
-  display: block !important;
   background-color: white;
   border-radius: 50%;
   padding: 0.5rem;
