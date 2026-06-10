@@ -162,7 +162,7 @@ test.describe('Context layer create admin', () => {
 
     // Check data
     await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Data').click();
-    await expect(page.locator('.MuiTablePagination-displayedRows')).toHaveText('1–15 of 15');
+    await expect(page.locator('.Data .MuiTablePagination-displayedRows').filter({ hasText: '1–15 of 15' })).toBeVisible();
 
     // Wait 2 second
     await delay(2000);
