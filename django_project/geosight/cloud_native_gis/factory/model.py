@@ -44,7 +44,8 @@ def model_factory(layer: Layer):
     model_name = f"Dynamic_{schema_name}_{table_name}".replace('.', '_')
     columns = get_columns_with_types(layer)
 
-    primary_key_col = columns[0]['name'] if columns else None
+    id_col = next((c for c in columns if c['name'] == 'id'), None)
+    primary_key_col = id_col['name'] if id_col else (columns[0]['name'] if columns else None)
 
     attrs = {
         '__module__': __name__,

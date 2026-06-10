@@ -39,15 +39,19 @@ export function ContextLayerDataTable({ data }) {
         (response, error) => {
           setError(error);
           if (response) {
+            const hasIdField = response.some((f) => f.attribute_name === "id");
             setColumns(
-              [
-                {
-                  field: "id",
-                  headerName: "id",
-                  serverKey: "pk",
-                  minWidth: 200,
-                },
-              ]
+              (hasIdField
+                ? []
+                : [
+                    {
+                      field: "id",
+                      headerName: "id",
+                      serverKey: "pk",
+                      minWidth: 200,
+                    },
+                  ]
+              )
                 .concat(
                   response.map((fieldDefinition) => {
                     const field = fieldDefinition.attribute_name;
@@ -105,8 +109,7 @@ export function ContextLayerDataTable({ data }) {
   ) {
     return (
       <div className="form-helptext" style={{ padding: "1rem" }}>
-        This layer does not have a cloud-native layer. Please upload or save
-        the
+        This layer does not have a cloud-native layer. Please upload or save the
         context layer to apply the data.
       </div>
     );
