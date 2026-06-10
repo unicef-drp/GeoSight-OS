@@ -45,7 +45,9 @@ def model_factory(layer: Layer):
     columns = get_columns_with_types(layer)
 
     id_col = next((c for c in columns if c['name'] == 'id'), None)
-    primary_key_col = id_col['name'] if id_col else (columns[0]['name'] if columns else None)
+    primary_key_col = (
+        id_col['name'] if id_col else (columns[0]['name'] if columns else None)
+    )
 
     attrs = {
         '__module__': __name__,
