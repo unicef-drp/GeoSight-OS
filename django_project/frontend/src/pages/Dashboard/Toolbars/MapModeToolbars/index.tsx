@@ -74,7 +74,11 @@ export default function MapModeToolbars({ map }: Props) {
           data-tool={Variables.DASHBOARD.TOOL.SIDE_BY_SIDE_VIEW}
         >
           <PluginChild
-            title={"Side by side view"}
+            title={
+              sideBySideViewMode
+                ? "Turn off side by side view"
+                : "Turn on side by side view"
+            }
             disabled={!map}
             active={sideBySideViewMode}
             onClick={() => {

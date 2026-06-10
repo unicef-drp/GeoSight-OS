@@ -13,6 +13,7 @@ export async function saveAsProject(page, inputName, outputName) {
   await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill(outputName);
   await page.getByRole('button', { name: 'Create' }).click();
   await page.waitForURL(`${BASE_URL}/admin/project/${nameToSlug(outputName)}/edit`);
+  await expect(page.locator('div').getByText('Fetching Project Data...')).toBeHidden();
 }
 
 export async function viewProject(page, name) {

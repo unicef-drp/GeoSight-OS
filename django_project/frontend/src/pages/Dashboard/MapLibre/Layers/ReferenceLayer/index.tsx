@@ -761,6 +761,14 @@ export function ReferenceLayer({
 
       // Log layers
       Logger.layers(map);
+      Logger.log(
+        `LAYER_PAINT_FILL[${map.getContainer().id}]:`,
+        JSON.stringify(map.getPaintProperty(FILL_LAYER_ID, "fill-color")),
+      );
+      Logger.log(
+        `LAYER_PAINT_LINE[${map.getContainer().id}]:`,
+        JSON.stringify(map.getPaintProperty(OUTLINE_LAYER_ID, "line-color")),
+      );
     }
   };
 

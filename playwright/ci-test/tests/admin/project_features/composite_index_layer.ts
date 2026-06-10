@@ -163,8 +163,6 @@ test.describe('Composite index layer', () => {
       name: 'Kenya Indicator A',
       exact: true
     })).not.toBeDisabled();
-    // await expect(page.getByRole('checkbox', { name: indicatorName, exact: true })).toBeDisabled();
-
 
     await page.getByTitle('Turn on compare Layers').click();
     await expect(page.getByTitle('Activate composite index layer')).toBeVisible();
