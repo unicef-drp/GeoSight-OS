@@ -109,6 +109,7 @@
       left: 1rem;
       max-height: 90%;
       overflow-y: auto;
+      margin-top: -1px;
       margin-left: unset;
     }
 
@@ -137,8 +138,8 @@
   .Toolbar {
     position: relative;
     display: flex;
-    height: 50px;
-    min-height: 50px;
+    height: 49px;
+    min-height: 49px;
     transition: padding-left 0.3s;
     box-sizing: border-box;
     width: 100%;
