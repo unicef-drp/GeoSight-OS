@@ -41,6 +41,15 @@ export default function MapConfig({ data, setData, layerInput, setLoading }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
   const prevData  = useRef()
+  const _extent = data?.cloud_native_gis_layer_detail?.extent;
+  const extent = (
+    Array.isArray(_extent) &&
+    _extent.length === 4 &&
+    _extent.every(v => typeof v === 'number' && isFinite(v)) &&
+    _extent[0] >= -180 && _extent[2] <= 180 &&
+    _extent[1] >= -90  && _extent[3] <= 90  &&
+    _extent[0] < _extent[2] && _extent[1] < _extent[3]
+  ) ? _extent : null;
 
   const renderContextLayer = useMemo(
     () =>
@@ -73,6 +82,12 @@ export default function MapConfig({ data, setData, layerInput, setLoading }) {
       before && map.getLayer(before) ? before : undefined
     );
   }
+
+  useEffect(() => {
+    if (map && extent) {
+      map.fitBounds(extent, { padding: 50 });
+    }
+  }, [map, extent]);
 
   useEffect(() => {
     if (!map) {

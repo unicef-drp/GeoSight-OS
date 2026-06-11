@@ -21,7 +21,7 @@ import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 
 export const StringType = "String";
 export const SingleIndicatorType = "Single Indicator";
-export const SingleIndicatorTypes = [SingleIndicatorType, "Float"];
+export const SingleIndicatorTypes = [SingleIndicatorType, "Float", "Integer"];
 export const MultiIndicatorType = "Multi Indicator";
 export const DynamicIndicatorType = "Dynamic Indicator";
 export const RelatedTableLayerType = "Related Table";

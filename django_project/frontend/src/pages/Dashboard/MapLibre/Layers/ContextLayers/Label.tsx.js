@@ -6,6 +6,9 @@ import { Logger } from "../../../../../utils/logger";
 
 /** Render label **/
 export const renderContextLayerLabel = (sourceId, map, config, sourceLayer) => {
+  if (typeof config === "string") {
+    config = JSON.parse(config);
+  }
   const { paint, layout, minZoom, maxZoom } = formatStyle(config);
   const layerId = sourceId + "-label";
   if (hasLayer(map, layerId)) {

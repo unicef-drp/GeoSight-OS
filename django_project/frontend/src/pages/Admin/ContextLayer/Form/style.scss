@@ -60,3 +60,17 @@ form {
   border: 1px solid var(--primary-color);
   padding: 1rem;
 }
+
+.CloudNativeGISLayer.Preview {
+  #ContextLayerConfig {
+    display: flex;
+  }
+
+  .PreviewWrapper {
+    flex-grow: 1;
+  }
+
+  .ContextLayerConfig {
+    position: relative !important;
+  }
+}
