@@ -26,6 +26,10 @@ import { changeIndicatorLayersForcedUpdate } from "../../pages/Dashboard/LeftPan
 import { BasemapLayer } from "../../types/BasemapLayer";
 import { ContextLayer } from "../../types/ContextLayer";
 import { IndicatorLayer } from "../../types/IndicatorLayer";
+import {
+  COMPARE_MODE,
+  SIDE_BY_SIDE_VIEW_MODE,
+} from "../../store/dashboard/reducers/mapMode";
 
 export interface Props {
   map: maplibregl.Map;
@@ -50,6 +54,14 @@ export const ProjectCheckpoint = memo(
       transparency,
       // @ts-ignore
     } = useSelector((state) => state.map);
+    const sideBySideViewMode = useSelector(
+      // @ts-ignore
+      (state) => state.mapMode.sideBySideViewMode,
+    );
+    const compareMode = useSelector(
+      // @ts-ignore
+      (state) => state.mapMode.compareMode,
+    );
 
     // Extent
     const bounds = map?.getBounds();
@@ -88,6 +100,11 @@ export const ProjectCheckpoint = memo(
             zoom: map?.getZoom(),
             center: map?.getCenter(),
           },
+          map_mode: sideBySideViewMode
+            ? SIDE_BY_SIDE_VIEW_MODE
+            : compareMode
+              ? COMPARE_MODE
+              : null,
           context_layers_config: context_layers_config,
           transparency_config: transparency,
         };
@@ -104,9 +121,16 @@ export const ProjectCheckpoint = memo(
         // Activate compare
         changeIndicatorLayersForcedUpdate(data.selected_indicator_layers);
         if (data.selected_indicator_layers?.length >= 2) {
-          dispatch(Actions.MapMode.activateCompare());
+          if (data.map_mode === COMPARE_MODE) {
+            dispatch(Actions.MapMode.activateCompare());
+          } else if (data.map_mode === SIDE_BY_SIDE_VIEW_MODE) {
+            dispatch(Actions.MapMode.activateSideBySideView());
+          } else {
+            dispatch(Actions.MapMode.activateCompare());
+          }
         } else {
           dispatch(Actions.MapMode.deactivateCompare());
+          dispatch(Actions.MapMode.activateSideBySideView());
         }
 
         const { context_layers_config } = data;

@@ -21,6 +21,9 @@ export const MAP_MODE_ACTION_TYPE_COMPOSITE = "MAP_MODE/COMPOSITE";
 export const MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW =
   "MAP_MODE/SIDE_BY_SIDE_VIEW";
 
+export const SIDE_BY_SIDE_VIEW_MODE = "SIDE_BY_SIDE_VIEW";
+export const COMPARE_MODE = "COMPARE";
+
 interface mapModeProps {
   compareMode: boolean;
   sideBySideViewMode: boolean;

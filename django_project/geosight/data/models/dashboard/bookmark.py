@@ -55,6 +55,14 @@ class DashboardBookmarkAbstract(models.Model):
         ContextLayer, blank=True
     )
     context_layers_config = models.JSONField(null=True, blank=True)
+    map_mode = models.CharField(
+        max_length=255,
+        blank=True, null=True,
+        help_text=_(
+            'Map mode of the dashboard. '
+            'is it compare_layers or side_by_side_view.'
+        )
+    )
 
     # TransparencySlider
     transparency_config = models.JSONField(

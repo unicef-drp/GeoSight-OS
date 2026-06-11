@@ -10,7 +10,7 @@ import {
   saveProject,
   viewProject
 } from "../../utils/project";
-import { TEXT } from "../../variables";
+import { TEXT } from "../../utils/map";
 
 const sideBySideText = TEXT.TOOLS_PROJECT.sideBySide;
 const compareLayerText = TEXT.TOOLS_PROJECT.compareLayer;
@@ -64,15 +64,13 @@ test.describe('Toolbars behaviours', () => {
       await page.locator('.TabPrimary').getByText('Tools').click();
       await page.getByRole('listitem').filter({ hasText: itemText }).getByRole('img').click();
       await saveProject(page);
-      await viewProject(page, name);
-      await page.getByRole('button', { name: 'Close' }).click();
+      await viewProject(page, name, true);
       await expect(page.getByTitle(offTitle)).toBeHidden();
       await editProject(page, name);
       await page.locator('.TabPrimary').getByText('Tools').click();
       await page.getByRole('listitem').filter({ hasText: itemText }).getByRole('img').click();
       await saveProject(page);
-      await viewProject(page, name);
-      await page.getByRole('button', { name: 'Close' }).click();
+      await viewProject(page, name, true);
       await expect(page.getByTitle(offTitle)).toBeVisible();
     };
 
@@ -102,8 +100,7 @@ test.describe('Toolbars behaviours', () => {
     await page.getByRole('listitem').filter({ hasText: compositeLayerText }).getByRole('img').click();
 
     await saveProject(page);
-    await viewProject(page, name);
-    await page.getByRole('button', { name: 'Close' }).click();
+    await viewProject(page, name, true);
 
     // All modes off initially
     await expect(page.getByTitle(compareTitle.Off)).toBeVisible();

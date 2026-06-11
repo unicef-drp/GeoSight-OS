@@ -122,6 +122,7 @@
     width: 100%;
     transition: height linear 0.2s;
     pointer-events: none;
+    z-index: 1;
 
     &.DateOpen {
       height: 200px;

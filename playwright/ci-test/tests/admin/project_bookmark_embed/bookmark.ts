@@ -1,14 +1,19 @@
 import { expect, test } from '@playwright/test';
-
+import { MapTestContext, } from "../../utils/map";
+import { viewProject } from "../../utils/project";
 import { defaultBookmark, defaultCheck, selection } from '../../utils/bookmark'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('Bookmark', () => {
+  const ctx = new MapTestContext();
+
+  test.beforeEach(async ({ page }) => {
+    ctx.setup(page);
+  });
 
   test('Test bookmark project', async ({ page }) => {
-    await page.goto('/project/demo-geosight-project');
-    await page.getByRole('button', { name: 'Close' }).click();
+    await viewProject(page, 'Demo GeoSight Project', true);
 
     // --------------------------------------------
     // Selection

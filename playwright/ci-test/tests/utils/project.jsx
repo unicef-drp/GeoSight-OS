@@ -16,8 +16,11 @@ export async function saveAsProject(page, inputName, outputName) {
   await expect(page.locator('div').getByText('Fetching Project Data...')).toBeHidden();
 }
 
-export async function viewProject(page, name) {
+export async function viewProject(page, name, hasCloseButton = false) {
   await page.goto(`/project/${nameToSlug(name)}`);
+  if (hasCloseButton) {
+    await page.getByRole('button', { name: 'Close' }).click();
+  }
 }
 
 export async function editProject(page, name) {
