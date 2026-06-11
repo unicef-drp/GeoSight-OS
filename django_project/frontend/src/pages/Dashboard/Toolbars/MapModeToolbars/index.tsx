@@ -25,6 +25,8 @@ import { CompareLayer } from "../index";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import {
+  ChainOffIcon,
+  ChainOnIcon,
   SideBySideOffIcon,
   SideBySideOnIcon,
   ThreeDimensionOffIcon,
@@ -44,6 +46,10 @@ export default function MapModeToolbars({ map }: Props) {
   const sideBySideViewMode = useSelector(
     // @ts-ignore
     (state) => state.mapMode?.sideBySideViewMode,
+  );
+  const sideBySideViewModeSync = useSelector(
+    // @ts-ignore
+    (state) => state.mapMode?.sideBySideViewModeSync,
   );
   const compareLayerEnabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPARE_LAYERS),
@@ -89,6 +95,33 @@ export default function MapModeToolbars({ map }: Props) {
           </PluginChild>
         </div>
       </Plugin>
+      {sideBySideViewMode && (
+        <Plugin hidden={!sideBySideViewEnable} className={""}>
+          <div
+            className="ExtrudedIcon Active"
+            data-tool={Variables.DASHBOARD.TOOL.SIDE_BY_SIDE_VIEW_SYNC}
+          >
+            <PluginChild
+              title={
+                sideBySideViewModeSync
+                  ? "Turn off sync movement"
+                  : "Turn on sync movement"
+              }
+              disabled={!map}
+              active={sideBySideViewModeSync}
+              onClick={() => {
+                dispatch(Actions.MapMode.toggleSideBySideViewSync());
+              }}
+            >
+              {sideBySideViewModeSync ? (
+                <ChainOnIcon />
+              ) : (
+                <ChainOffIcon />
+              )}
+            </PluginChild>
+          </div>
+        </Plugin>
+      )}
       <Plugin hidden={!view3DEnable} className={""}>
         <div
           className="ExtrudedIcon Active"

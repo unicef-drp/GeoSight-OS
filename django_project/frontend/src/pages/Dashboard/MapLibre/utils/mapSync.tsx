@@ -14,6 +14,7 @@
  */
 
 import maplibregl from "maplibre-gl";
+import { store } from "../../../../store/dashboard";
 
 const registry: Record<number, maplibregl.Map> = {};
 
@@ -37,6 +38,9 @@ export function registerMap(id: number, map: maplibregl.Map) {
 
   map.on("move", () => {
     if (syncingFrom !== null) return;
+    // @ts-ignore
+    const syncEnabled = store.getState().mapMode?.sideBySideViewModeSync;
+    if (!syncEnabled) return;
     syncingFrom = id;
     Object.entries(registry).forEach(([otherId, otherMap]) => {
       if (parseInt(otherId) !== id) {

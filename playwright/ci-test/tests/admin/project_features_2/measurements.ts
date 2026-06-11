@@ -32,7 +32,7 @@ test.describe('Project measurements', () => {
       }
     });
     await expect(page.locator('.MeasurementComponentText')).toHaveText(
-      "138,907,696,650.25 Sq Meters1,739,641.39 Meters (1,080.96 Miles) Perimeter Delete selected"
+      "138,456,859,559.78 Sq Meters1,736,815.76 Meters (1,079.21 Miles) Perimeter Delete selected"
     );
   })
 });

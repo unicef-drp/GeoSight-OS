@@ -18,6 +18,7 @@ import {
   MAP_MODE_ACTION_TYPE_COMPARE,
   MAP_MODE_ACTION_TYPE_COMPOSITE,
   MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW,
+  MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW_SYNC,
 } from "./index";
 
 const makeAction = (type: string, value?: boolean) => ({
@@ -46,6 +47,13 @@ export const activateSideBySideView = () =>
 export const deactivateSideBySideView = () =>
   makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW, false);
 
+export const toggleSideBySideViewSync = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW_SYNC);
+export const activateSideBySideViewSync = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW_SYNC, true);
+export const deactivateSideBySideViewSync = () =>
+  makeAction(MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW_SYNC, false);
+
 export default {
   changeCompareMode,
   activateCompare,
@@ -56,4 +64,7 @@ export default {
   toggleSideBySideView,
   activateSideBySideView,
   deactivateSideBySideView,
+  toggleSideBySideViewSync,
+  activateSideBySideViewSync,
+  deactivateSideBySideViewSync,
 };

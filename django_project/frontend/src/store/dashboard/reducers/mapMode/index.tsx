@@ -20,20 +20,24 @@ export const MAP_MODE_ACTION_TYPE_COMPARE = "MAP_MODE/COMPARE";
 export const MAP_MODE_ACTION_TYPE_COMPOSITE = "MAP_MODE/COMPOSITE";
 export const MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW =
   "MAP_MODE/SIDE_BY_SIDE_VIEW";
+export const MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW_SYNC =
+  "MAP_MODE/SIDE_BY_SIDE_VIEW_SYNC";
 
 export const SIDE_BY_SIDE_VIEW_MODE = "SIDE_BY_SIDE_VIEW";
 export const COMPARE_MODE = "COMPARE";
 
 interface mapModeProps {
   compareMode: boolean;
-  sideBySideViewMode: boolean;
   compositeMode: boolean;
+  sideBySideViewMode: boolean;
+  sideBySideViewModeSync: boolean;
 }
 
 const initialState: mapModeProps = {
   compareMode: false,
   compositeMode: false,
   sideBySideViewMode: false,
+  sideBySideViewModeSync: true,
 };
 export default function mapCompareModeReducer(
   state = initialState,
@@ -48,6 +52,7 @@ export default function mapCompareModeReducer(
         compareMode: false,
         compositeMode: false,
         sideBySideViewMode: false,
+        sideBySideViewModeSync: state.sideBySideViewModeSync,
         [field]: true,
       };
     }
@@ -61,6 +66,10 @@ export default function mapCompareModeReducer(
       return activate("compositeMode");
     case MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW:
       return activate("sideBySideViewMode");
+    case MAP_MODE_ACTION_TYPE_SIDE_BY_SIDE_VIEW_SYNC: {
+      const value = action.value ?? !state.sideBySideViewModeSync;
+      return { ...state, sideBySideViewModeSync: value };
+    }
   }
   return state;
 }
