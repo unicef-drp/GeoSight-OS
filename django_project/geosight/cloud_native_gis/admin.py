@@ -64,7 +64,7 @@ class LayerAdmin(LayerAdmin):
 
     list_display = (
         'unique_id', 'name', 'created_by', 'created_at',
-        'is_ready', 'tile_url', 'editor', 'context_layer'
+        'is_ready', 'tile_url', 'editor', 'context_layer', 'extent'
     )
     list_filter = (HasContextLayerFilter,)
 
