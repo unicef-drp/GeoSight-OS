@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 export const layer1 = 'Sample Indicator A'
 export const layer2 = 'Sample Indicator B'
 export const kenyaLayer = 'Kenya Indicator A'
@@ -146,4 +148,36 @@ export const defaultBookmark = async (page) => {
   await expect(page.getByLabel(contextLayer)).toBeChecked();
   await expect(page.locator('.RightSection').getByText('Sample ArcGIS layer')).toBeVisible();
   await page.getByRole('tab', { name: 'Indicators' }).click();
+}
+
+export const createBookmark = async (page, name) => {
+  await page.getByTitle('Bookmark').locator('a').click();
+  await page.getByRole('button', { name: 'Save As...' }).click();
+  await page.getByLabel('Bookmark Name').fill(name);
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.locator('.MuiBackdrop-root').first().click();
+}
+
+export const selectBookmark = async (page, name = 'Default') => {
+  await page.getByTitle('Bookmark').locator('a').click();
+  await page.getByText(name).click();
+  await page.locator('.MuiBackdrop-root').first().click();
+}
+
+export const deleteBookmark = async (page, name) => {
+  // Delete the bookmark and it will back to default
+  page.once('dialog', async dialog => {
+    // Verify Dialog Message
+    await expect(dialog.message()).toContain(`Are you sure you want to delete ${name}?`);
+
+    //Click on OK Button
+    await dialog.accept();
+  });
+  await page.getByTitle('Bookmark').locator('a').click();
+  await page.locator('.Bookmark  .DeleteIcon').click();
+
+  // Default
+  await delay(1000)
+  await page.locator('.MuiBackdrop-root').first().click();
+  await defaultCheck(page)
 }

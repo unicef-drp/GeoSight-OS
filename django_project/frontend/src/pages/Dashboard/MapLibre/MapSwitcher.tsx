@@ -93,9 +93,9 @@ const POSITION_MAP: Record<number, Record<number, Record<number, string>>> = {
     1: { 0: "Left" },
   },
   3: {
-    0: { 1: "RightSideTop", 2: "RightSideBottom" },
-    1: { 0: "Left", 2: "Bottom" },
-    2: { 0: "Left", 1: "Top" },
+    0: { 1: "Right" },
+    1: { 0: "Left", 2: "Right" },
+    2: { 1: "Left" },
   },
   4: {
     0: { 1: "Right", 3: "Bottom", 2: "BottomRight" },
@@ -117,6 +117,9 @@ export function MapSwitcher({ idx }: { idx: number }) {
     <>
       {otherIndexes.map((targetIdx) => {
         const posClass = POSITION_MAP[count]?.[idx]?.[targetIdx] ?? "";
+        if (!posClass) {
+          return null;
+        }
         return (
           <SwapIcon
             key={targetIdx}

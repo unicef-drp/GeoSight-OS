@@ -1,16 +1,16 @@
 import { expect, test } from '@playwright/test';
 import { viewProject } from "../../utils/project";
 import {
-  TEXT,
-  MapTestContext,
-  indicatorAFill,
-  indicatorBFill,
   defaultFill,
   defaultLine,
-} from "../../utils/map";
+  indicatorAFill,
+  indicatorBFill,
+  ProjectTestContext,
+  TEXT,
+} from "../../utils/project_context";
 
 test.describe('Side by side and compare mode', () => {
-  const ctx = new MapTestContext();
+  const ctx = new ProjectTestContext();
 
   test.beforeEach(async ({ page }) => {
     ctx.setup(page);
@@ -106,9 +106,10 @@ test.describe('Side by side and compare mode', () => {
     await ctx.checkMapStyle(page, 1, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
     await ctx.checkMapStyle(page, 2, TEXT.INDICATOR_LAYERS.testIndicatorC);
     await ctx.checkMapStyle(page, 3, null);
-    await ctx.doSwap(page, 0, 1, TEXT.INDICATOR_LAYERS.sampleIndicatorA, TEXT.INDICATOR_LAYERS.sampleIndicatorB, "RightSideTop");
-    await ctx.doSwap(page, 0, 2, TEXT.INDICATOR_LAYERS.sampleIndicatorA, TEXT.INDICATOR_LAYERS.testIndicatorC, "RightSideBottom");
-    await ctx.doSwap(page, 1, 2, TEXT.INDICATOR_LAYERS.sampleIndicatorB, TEXT.INDICATOR_LAYERS.testIndicatorC, "Bottom");
+    await ctx.doSwap(page, 0, 1, TEXT.INDICATOR_LAYERS.sampleIndicatorA, TEXT.INDICATOR_LAYERS.sampleIndicatorB, "Right");
+    await ctx.doSwap(page, 1, 0, TEXT.INDICATOR_LAYERS.sampleIndicatorB, TEXT.INDICATOR_LAYERS.sampleIndicatorA, "Left");
+    await ctx.doSwap(page, 1, 2, TEXT.INDICATOR_LAYERS.sampleIndicatorB, TEXT.INDICATOR_LAYERS.testIndicatorC, "Right");
+    await ctx.doSwap(page, 2, 1, TEXT.INDICATOR_LAYERS.testIndicatorC, TEXT.INDICATOR_LAYERS.sampleIndicatorB, "Left");
 
     // Turn on Kenya
     await page.getByLabel(TEXT.INDICATOR_LAYERS.kenyaIndicatorA).click();

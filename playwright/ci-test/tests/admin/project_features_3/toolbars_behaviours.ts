@@ -10,7 +10,7 @@ import {
   saveProject,
   viewProject
 } from "../../utils/project";
-import { TEXT } from "../../utils/map";
+import { TEXT } from "../../utils/project_context";
 
 const sideBySideText = TEXT.TOOLS_PROJECT.sideBySide;
 const compareLayerText = TEXT.TOOLS_PROJECT.compareLayer;

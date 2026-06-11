@@ -62,14 +62,10 @@
       grid-template-rows: 1fr;
     }
 
-    // 3 children: top-left | top-right / bottom-right (bottom-left empty)
+    // 3 children: side by side horizontally
     &:has(> *:nth-child(3)):not(:has(> *:nth-child(4))) {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-
-      > *:nth-child(1) {
-        grid-row: span 2;
-      }
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr;
     }
 
     // 4 children: 2x2 grid — explicit placement to guarantee order

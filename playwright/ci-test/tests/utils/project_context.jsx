@@ -108,7 +108,7 @@ export const doSwap = async (page, fromMapIndex, toMapIndex, fromLayerName, toLa
   await checkMapStyle(page, toMapIndex, toLayerName, lastLayerPaintFill, lastLayerPaintLine);
 };
 
-export class MapTestContext {
+export class ProjectTestContext {
   lastLayers = {};
   lastLayerPaintFill = {};
   lastLayerPaintLine = {};
@@ -118,6 +118,16 @@ export class MapTestContext {
     this.lastLayerPaintFill = {};
     this.lastLayerPaintLine = {};
     setupConsoleLayerCapture(page, this.lastLayers, this.lastLayerPaintFill, this.lastLayerPaintLine);
+  }
+
+  async checkIndicatorSelected(page, layerName) {
+    await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').getByText(layerName)).toBeVisible();
+    await expect(page.getByLabel(layerName)).toBeChecked();
+  }
+
+  async checkIndicatorNotSelected(page, layerName) {
+    await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').getByText(layerName)).toBeHidden();
+    await expect(page.getByLabel(layerName)).not.toBeChecked();
   }
 
   async checkMapStyle(page, mapIndex, layerName) {
