@@ -31,14 +31,24 @@ class HasContextLayerFilter(SimpleListFilter):
     parameter_name = 'has_context_layer'
 
     def lookups(self, request, model_admin):
-        """Lookups for options."""
+        """Lookups for options.
+
+        :param HttpRequest request: HTTP request.
+        :param ModelAdmin model_admin: Model admin instance.
+        :returns: List of lookup tuples.
+        """
         return [
             ('Yes', 'Yes'),
             ('No', 'No'),
         ]
 
     def queryset(self, request, queryset):
-        """Return queryset."""
+        """Return queryset.
+
+        :param HttpRequest request: HTTP request.
+        :param QuerySet queryset: Base queryset.
+        :returns: Filtered queryset.
+        """
         if self.value() == 'Yes':
             return queryset.filter(
                 pk__in=ContextLayer.objects.filter(
@@ -64,12 +74,16 @@ class LayerAdmin(LayerAdmin):
 
     list_display = (
         'unique_id', 'name', 'created_by', 'created_at',
-        'is_ready', 'tile_url', 'editor', 'context_layer'
+        'is_ready', 'tile_url', 'editor', 'context_layer', 'extent'
     )
     list_filter = (HasContextLayerFilter,)
 
     def context_layer(self, obj: Layer):
-        """Return context_layer."""
+        """Return context_layer.
+
+        :param Layer obj: Layer instance.
+        :returns: Context layer name or None.
+        """
         context_layer = ContextLayer.objects.filter(
             cloud_native_gis_layer_id=obj.id
         ).first()

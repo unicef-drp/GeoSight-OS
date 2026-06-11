@@ -112,7 +112,7 @@ export default function StyleConfig({
   }, [layer, error, legend]);
 
   return (
-    <div className={"ContextLayerConfig-Wrapper " + tab}>
+    <div className={"ContextLayerConfig-Wrapper " + tab + " " + data?.layer_type?.replaceAll(" ", "")}>
       {error && <div className="error">{error.toString()}</div>}
       <div className="AdminForm">
         {/* FOR CONFIG */}

@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
 import path from "path";
-import { saveProject } from "../../utils/project";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -105,6 +104,15 @@ test.describe('Context layer create admin', () => {
     // File chooser
     {
       await page.locator('input[type="file"]').setInputFiles(
+        path.join(__dirname, 'sample_data', 'capital_cities_id_string.zip')
+      );
+      await expect(page.locator('.UploadFile').first()).toContainText("Status : Failed", { timeout: 10000 });
+      await expect(page.locator('.UploadFile').first()).toContainText("Column 'id' must be integer or bigint, got 'object'. Please rename or remove the 'id' column from your data.", { timeout: 10000 });
+    }
+
+    // File chooser
+    {
+      await page.locator('input[type="file"]').setInputFiles(
         path.join(__dirname, 'sample_data', 'capital_cities.zip')
       );
       await expect(page.locator('.UploadFile').first()).toContainText("Progress : 100", { timeout: 10000 });
@@ -151,6 +159,10 @@ test.describe('Context layer create admin', () => {
     await expect(page.locator('.DragDropItem').nth(0).locator('td').nth(1)).toHaveText('COUNTRY');
     await expect(page.locator('.DragDropItem').nth(1).locator('td').nth(1)).toHaveText('id');
     await page.locator('label').filter({ hasText: 'Override field config from' }).click();
+
+    // Check data
+    await page.locator('.AdminContent > .AdminForm > .TabPrimary').getByText('Data').click();
+    await expect(page.locator('.Data .MuiTablePagination-displayedRows').filter({ hasText: '1–15 of 15' })).toBeVisible();
 
     // Wait 2 second
     await delay(2000);
