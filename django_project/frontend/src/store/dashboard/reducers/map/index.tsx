@@ -14,6 +14,7 @@
  */
 
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
+import { Entity } from "../../../../types/Entity";
 
 /** MAP reducer */
 
@@ -50,6 +51,9 @@ export const MAP_CONTEXTLAYERS_SHOW = `MAP/CONTEXTLAYERS_SHOW`;
 
 // Layer transparency
 export const MAP_UPDATE_TRANSPARENCY = `MAP/MAP_UPDATE_TRANSPARENCY`;
+
+// Selected entities
+export const MAP_UPDATE_SELECTED_ENTITIES = `MAP/UPDATE_SELECTED_ENTITIES`;
 
 interface ContextLayerEntry {
   render: boolean;
@@ -111,6 +115,9 @@ export interface MapState {
 
   // Layer transparency
   transparency: Transparency;
+
+  // Selected entities
+  selectedEntities?: Entity[];
 }
 
 interface MapAction {
@@ -128,6 +135,7 @@ const mapInitialState: MapState = {
   indicatorLayers: [],
   contextLayers: {},
   center: null,
+  selectedEntities: [],
   extent: {
     value: null,
     triggeredBy: null,
@@ -204,7 +212,10 @@ export default function mapReducer(
       case MAP_SWITCH_INDICATOR_LAYERS: {
         const { firstIdx, secondIdx } = action.payload;
         const layers = [...state.indicatorLayers];
-        [layers[firstIdx], layers[secondIdx]] = [layers[secondIdx], layers[firstIdx]];
+        [layers[firstIdx], layers[secondIdx]] = [
+          layers[secondIdx],
+          layers[firstIdx],
+        ];
         return { ...state, indicatorLayers: layers };
       }
       case MAP_UPDATE_INDICATOR_LAYER_AT_IDX: {
@@ -292,6 +303,13 @@ export default function mapReducer(
         return {
           ...state,
           contextLayersShow: action.payload,
+        };
+      }
+      // Selected entities
+      case MAP_UPDATE_SELECTED_ENTITIES: {
+        return {
+          ...state,
+          selectedEntities: action.payload,
         };
       }
       // Layer transparency

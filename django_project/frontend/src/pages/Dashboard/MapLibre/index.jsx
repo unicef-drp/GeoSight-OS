@@ -107,7 +107,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
 
         {/* RIGHT SIDE OF NAVBAR */}
         <div className="Toolbar-Right">
-          <SearchGeometryInput map={mainMap} />
+          <SearchGeometryInput />
           <Plugin className="EmbedControl" hidden={!embedToolEnable}>
             <div
               className="Active"

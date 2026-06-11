@@ -58,6 +58,7 @@ export default function ReferenceLayerCentroid({
   map,
   firstLayer,
   secondLayer,
+  referenceLayers,
 }) {
   const lastConfig = useRef({});
   const lastRequest = useRef(null);
@@ -68,7 +69,7 @@ export default function ReferenceLayerCentroid({
     (state) => state.dashboard.data,
   );
   const { showIndicatorMapLabel } = useSelector((state) => state.globalState);
-  const { referenceLayers, indicatorShow } = useSelector((state) => state.map);
+  const { indicatorShow } = useSelector((state) => state.map);
   const datasetGeometries = useSelector((state) => state.datasetGeometries);
   const indicatorsData = useSelector((state) => state.indicatorsData);
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);

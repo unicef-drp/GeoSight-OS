@@ -30,11 +30,13 @@ import {
   MAP_SWITCH_INDICATOR_LAYERS,
   MAP_UPDATE_INDICATOR_LAYER_AT_IDX,
   MAP_UPDATE_INDICATOR_LAYERS,
+  MAP_UPDATE_SELECTED_ENTITIES,
   MAP_UPDATE_TRANSPARENCY,
   MAP_ZOOM,
   MapPosition,
 } from "./index";
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
+import { Entity } from "../../../../types/Entity";
 
 // Reference layers
 function changeReferenceLayers(payload: any[]) {
@@ -176,6 +178,15 @@ function showHideContextLayer(payload: boolean) {
   };
 }
 
+// Selected entities
+function updateSelectedEntities(payload: Entity[]) {
+  return {
+    name: MAP_ACTION_NAME,
+    type: MAP_UPDATE_SELECTED_ENTITIES,
+    payload,
+  };
+}
+
 // Layer transparency
 function updateTransparency(key: string, value: number) {
   return {
@@ -203,4 +214,5 @@ export default {
   showHideIndicator,
   showHideContextLayer,
   updateTransparency,
+  updateSelectedEntities,
 };

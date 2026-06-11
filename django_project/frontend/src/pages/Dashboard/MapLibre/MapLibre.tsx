@@ -41,6 +41,7 @@ import MapLegend from "./MapLegend";
 import ReferenceLayers from "./Layers/ReferenceLayer";
 import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
 import { MapSwitcher } from "./MapSwitcher";
+import SearchGeometryInputController from "../Toolbars/SearchGeometryInput/Controller";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -396,11 +397,6 @@ export default function MainMapLibre({
         firstLayer={indicatorLayers[0]}
         secondLayer={indicatorLayers[1]}
       />
-      <ReferenceLayerCentroid
-        map={map}
-        firstLayer={indicatorLayers[0]}
-        secondLayer={indicatorLayers[1]}
-      />
       <_MapLibre
         id={id}
         container={container}
@@ -445,11 +441,6 @@ export function MirrorMapLibre({ id }: { id: number }) {
       <ReferenceLayers
         map={map}
         deckgl={deckgl}
-        firstLayer={mirrorLayer}
-        secondLayer={null}
-      />
-      <ReferenceLayerCentroid
-        map={map}
         firstLayer={mirrorLayer}
         secondLayer={null}
       />

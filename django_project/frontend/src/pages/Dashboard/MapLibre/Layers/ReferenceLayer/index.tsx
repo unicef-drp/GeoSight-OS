@@ -61,6 +61,9 @@ import {
   IndicatorLayer,
   IndicatorLayerConfig,
 } from "../../../../../types/IndicatorLayer";
+import SearchGeometryInputController
+  from "../../../Toolbars/SearchGeometryInput/Controller";
+import ReferenceLayerCentroid from "../../ReferenceLayerCentroid";
 
 export const CONTEXT_LAYER_ID = `context-layer`;
 const MAX_ELEVATION = 500000;
@@ -82,7 +85,7 @@ const LAYER_HIGHLIGHT_ID = "reference-layer-highlight";
 // Layer keys
 export const REFERENCE_LAYER_ID_KEY = `reference-layer`;
 export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-fill";
-const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-outline";
+export const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + "-outline";
 
 export interface DeckGlFeatureData {
   elevation: number;
@@ -994,6 +997,12 @@ export default function ReferenceLayers({
   firstLayer,
   secondLayer,
 }: Props) {
+  const compareMode = useSelector(
+    // @ts-ignore
+    (state) => state.mapMode?.compareMode,
+  );
+
+  const datesets: DatasetView[] = [];
   const referenceLayer = useSelector(
     // @ts-ignore
     (state) => state.dashboard.data?.referenceLayer,
@@ -1002,10 +1011,22 @@ export default function ReferenceLayers({
     referenceLayer,
     firstLayer,
   );
-  const secondLayerView = referenceLayerIndicatorLayer(
-    referenceLayer,
-    secondLayer,
-  );
+  datesets.push(firstLayerView);
+  const secondLayerView = compareMode
+    ? referenceLayerIndicatorLayer(referenceLayer, secondLayer)
+    : null;
+  if (secondLayerView) datesets.push(secondLayerView);
+
+  // Remove second-instance layers when it disappears
+  useEffect(() => {
+    if (!map || secondLayerView) {
+      return;
+    }
+    const id = map.getContainer().id + "-1";
+    removeLayer(map, FILL_LAYER_ID_KEY + "-" + id);
+    removeLayer(map, OUTLINE_LAYER_ID_KEY + "-" + id);
+    removeSource(map, REFERENCE_LAYER_ID_KEY + "-" + id);
+  }, [secondLayerView]);
 
   if (!map) {
     return;
@@ -1020,15 +1041,28 @@ export default function ReferenceLayers({
         firstLayer={firstLayer}
         secondLayer={secondLayer}
       />
-      <ReferenceLayer
-        id={map.getContainer().id + "-1"}
+      {secondLayerView && (
+        <ReferenceLayer
+          id={map.getContainer().id + "-1"}
+          map={map}
+          referenceLayer={secondLayerView}
+          deckgl={deckgl}
+          firstLayer={firstLayer}
+          secondLayer={secondLayer}
+        />
+      )}
+      <SearchGeometryInputController
         map={map}
-        referenceLayer={secondLayerView}
-        deckgl={deckgl}
-        firstLayer={firstLayer}
-        secondLayer={secondLayer}
+        datasets={datesets}
+        isMain={map.getContainer().id === "map-0"}
       />
       <GeorepoAuthorizationModal />
+      <ReferenceLayerCentroid
+        map={map}
+        firstLayer={firstLayer}
+        secondLayer={secondLayer}
+        referenceLayers={datesets}
+      />
     </>
   );
 }
