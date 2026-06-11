@@ -1012,9 +1012,10 @@ export default function ReferenceLayers({
     firstLayer,
   );
   datesets.push(firstLayerView);
-  const secondLayerView = compareMode
-    ? referenceLayerIndicatorLayer(referenceLayer, secondLayer)
-    : null;
+  const secondLayerView =
+    compareMode && secondLayer
+      ? referenceLayerIndicatorLayer(referenceLayer, secondLayer)
+      : null;
   if (secondLayerView) datesets.push(secondLayerView);
 
   // Remove second-instance layers when it disappears
