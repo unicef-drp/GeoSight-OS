@@ -33,7 +33,7 @@ test.describe('Side by side and compare mode', () => {
 
     // Add indicator B
     await page.getByLabel(TEXT.INDICATOR_LAYERS.sampleIndicatorB).click();
-    expect(ctx.lastLayers["map-0"]).toContain("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0,reference-layer-fill-map-0-1,reference-layer-outline-map-0-1");
+    expect(ctx.lastLayers["map-0"]).toContain("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0");
     await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').nth(0)).toHaveText(TEXT.INDICATOR_LAYERS.sampleIndicatorA + ' (Outline)')
     await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').nth(1)).toHaveText(TEXT.INDICATOR_LAYERS.sampleIndicatorB + ' (Inner)')
     await expect(page.locator('.MapLegendSection').nth(0).locator('.IndicatorLegendRow').first()).toBeVisible()

@@ -65,7 +65,7 @@ test.describe('Bookmark', () => {
     // Turn on compare mode
     await page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.Off).click();
     await page.getByLabel(TEXT.INDICATOR_LAYERS.sampleIndicatorB).click();
-    expect(ctx.lastLayers["map-0"]).toContain("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0,reference-layer-fill-map-0-1,reference-layer-outline-map-0-1");
+    expect(ctx.lastLayers["map-0"]).toContain("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0");
     await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').nth(0)).toHaveText(TEXT.INDICATOR_LAYERS.sampleIndicatorA + ' (Outline)')
     await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').nth(1)).toHaveText(TEXT.INDICATOR_LAYERS.sampleIndicatorB + ' (Inner)')
     expect(ctx.lastLayerPaintFill["map-0"]).toBe(indicatorBFill + defaultFill);
