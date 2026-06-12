@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import {
   GraphCheckedIcon,
   GraphUncheckedIcon,

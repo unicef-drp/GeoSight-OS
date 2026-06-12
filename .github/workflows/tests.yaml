@@ -122,6 +122,7 @@ jobs:
           { id: "e2e-project-features", mode: "e2e", path: "tests/admin/project_features/", workers: 3, script: "make load-test-data" },
           { id: "e2e-project-features-2", mode: "e2e", path: "tests/admin/project_features_2/", workers: 3, script: "make load-test-data" },
           { id: "e2e-project-features-3", mode: "e2e", path: "tests/admin/project_features_3/", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-features-4", mode: "e2e", path: "tests/admin/project_features_4/", workers: 3, script: "make load-test-data" },
           { id: "e2e-admin-create", mode: "e2e", path: "tests/admin/admin_create/", workers: 3, script: "make load-test-data" },
           { id: "e2e-admin-user", mode: "e2e", path: "tests/admin/admin_user/", workers: 3, script: "make load-test-data" },
           { id: "e2e-admin-list", mode: "e2e", path: "tests/admin/admin_list/", workers: 3, script: "make load-test-data" },

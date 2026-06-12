@@ -704,3 +704,35 @@ header {
 .ReactSelect__control--is-disabled {
   background-color: hsl(0, 0%, 95%);
 }
+
+.ReactSelect__menu-portal.FitContent {
+  font-size: 10px;
+}
+
+.ReactSelect.FitContent {
+  min-height: unset;
+  height: fit-content;
+  font-size: 10px !important;
+
+  .ReactSelect__control {
+    min-height: unset;
+    height: fit-content;
+  }
+
+  .ReactSelect__value-container {
+    height: fit-content !important;
+  }
+
+  .ReactSelect__input-container {
+    height: 1rem;
+  }
+
+  .ReactSelect__option {
+    font-size: 10px !important;
+  }
+
+  .ReactSelect__single-value {
+    font-size: 10px !important;
+    padding: 0.5rem 0;
+  }
+}

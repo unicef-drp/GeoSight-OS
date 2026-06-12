@@ -41,7 +41,7 @@ import Modal, {
   ModalHeader,
 } from "../../../../components/Modal";
 import CustomPopover from "../../../../components/CustomPopover";
-import { PluginChild } from "../../MapLibre/Plugin";
+import { PluginChild } from "../../MapLibre/utils/Plugin";
 import { EmbedConfig } from "../../../../utils/embed";
 import { ProjectCheckpoint } from "../../../../components/ProjectCheckpoint";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";

@@ -16,7 +16,7 @@
 import React, { memo, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import { Variables } from "../../../../utils/Variables";
 import SDMXLayerConfig

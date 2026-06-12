@@ -18,17 +18,17 @@
    ========================================================================== */
 
 import React, { Fragment, memo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HomeIcon } from "../../../../components/Icons";
 
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
+import { Actions } from "../../../../store/dashboard";
 
-/**
- * Movement history component.
- */
-export function HomeButton({ map }) {
+/** Home button to back to the default extent*/
+export function HomeButton() {
+  const dispatch = useDispatch();
   const enable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.BACK_TO_HOME),
   );
@@ -46,10 +46,12 @@ export function HomeButton({ map }) {
             title={Variables.DASHBOARD.TOOL.BACK_TO_HOME}
             disabled={!extent}
             onClick={() => {
-              map.fitBounds([
-                [extent[0], extent[1]],
-                [extent[2], extent[3]],
-              ]);
+              dispatch(
+                Actions.Map.updateExtent([
+                  [extent[0], extent[1]],
+                  [extent[2], extent[3]],
+                ]),
+              );
             }}
           >
             <HomeIcon />

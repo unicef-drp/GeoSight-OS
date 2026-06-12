@@ -21,26 +21,23 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useSelector } from "react-redux";
-import maplibregl from "maplibre-gl";
+import { useDispatch, useSelector } from "react-redux";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Session } from "../../utils/Sessions";
 import GeorepoRequest from "../../utils/GeorepoRequest";
 import { Logger } from "../../utils/logger";
+import { isPropertiesInFilteredGeometries } from "../../utils/indicatorLayer";
+import { Actions } from "../../store/dashboard";
 
 import { isProjectUsingConceptUUID } from "../../selectors/dashboard";
 
 import "./style.scss";
-import { isPropertiesInFilteredGeometries } from "../../utils/indicatorLayer";
-
-export interface Props {
-  map: maplibregl.Map;
-}
 
 /**
  * Zoom To Geometries by Filters.
  */
-export default function ZoomToFilteredGeometries({ map }: Props) {
+export default function ZoomToFilteredGeometries() {
+  const dispatch = useDispatch();
   const referenceLayer = useSelector(
     // @ts-ignore
     (state) => state.dashboard.data?.referenceLayer,
@@ -58,13 +55,13 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
   const referenceLayerData = useSelector((state) => state.datasetGeometries);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const conceptKey = useSelector(isProjectUsingConceptUUID())
+  const conceptKey = useSelector(isProjectUsingConceptUUID)
     ? "concept_uuid"
     : "ucode";
 
   useEffect(() => {
     (async () => {
-      if (!autoZoomToFilter || !map || !filteredGeometries?.length) {
+      if (!autoZoomToFilter || !filteredGeometries?.length) {
         return;
       }
       let usedConceptUUIDs: string[] = [];
@@ -101,12 +98,8 @@ export default function ZoomToFilteredGeometries({ map }: Props) {
       if (session.isValid) {
         Logger.log("BBOX: ", bbox);
         if (bbox?.length === 4) {
-          map.fitBounds(
-            [
-              [bbox[0], bbox[1]],
-              [bbox[2], bbox[3]],
-            ],
-            { padding: { top: 20, bottom: 20, left: 20, right: 20 } },
+          dispatch(
+            Actions.Map.updateExtent([bbox[0], bbox[1], bbox[2], bbox[3]]),
           );
         }
         setIsLoading(false);

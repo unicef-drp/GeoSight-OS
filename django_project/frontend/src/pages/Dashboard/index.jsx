@@ -24,7 +24,6 @@ import RightPanel from "./MiddlePanel/RightPanel";
 import MiddlePanel from "./MiddlePanel";
 import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
-import { ProjectOverview } from "./Toolbars";
 import { useTranslation } from "react-i18next";
 import { isDashboardToolEnabled } from "../../selectors/dashboard";
 import { Variables } from "../../utils/Variables";
@@ -98,25 +97,31 @@ export default function Dashboard({ children }) {
       }
     >
       {user_permission ? (
-        <Fragment>
-          <MapLibre
-            leftPanelProps={leftPanelProps}
-            rightPanelProps={rightPanelProps}
-          />
+        <>
+          {/* LEFT SIDE PANEL */}
           <LeftPanel leftExpanded={leftExpanded} />
-          <MiddlePanel
-            leftExpanded={leftExpanded}
-            setLeftExpanded={setLeftExpanded}
-            rightExpanded={rightExpanded}
-            setRightExpanded={setRightExpanded}
-            leftContent={
-              <div className="ButtonSection">
-                <ProjectOverview />
-              </div>
+
+          {/* CONTENT PANEL */}
+          <section
+            className={
+              "DashboardMiddlePanel " +
+              (rightExpanded ? "RightExpanded " : "") +
+              (!EmbedConfig().map ? "HiddenMap " : "")
             }
-            rightContent={<RightPanel rightExpanded={rightExpanded} />}
-          ></MiddlePanel>
-        </Fragment>
+          >
+            <MapLibre
+              leftPanelProps={leftPanelProps}
+              rightPanelProps={rightPanelProps}
+            />
+            <MiddlePanel
+              leftExpanded={leftExpanded}
+              setLeftExpanded={setLeftExpanded}
+              rightExpanded={rightExpanded}
+              setRightExpanded={setRightExpanded}
+              rightContent={<RightPanel rightExpanded={rightExpanded} />}
+            />
+          </section>
+        </>
       ) : (
         <div className="LoadingElement">
           <div className="Throbber">

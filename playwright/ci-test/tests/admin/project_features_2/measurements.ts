@@ -9,30 +9,30 @@ test.describe('Project measurements', () => {
     await delay(2000)
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 686,
+        x: 406,
         y: 235
       }
     });
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 516,
+        x: 236,
         y: 333
       }
     });
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 530,
+        x: 250,
         y: 187
       }
     });
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 530,
+        x: 250,
         y: 187
       }
     });
     await expect(page.locator('.MeasurementComponentText')).toHaveText(
-      "138,008,199,483.25 Sq Meters1,733,999.22 Meters (1,077.46 Miles) Perimeter Delete selected"
+      "138,456,859,559.78 Sq Meters1,736,815.76 Meters (1,079.21 Miles) Perimeter Delete selected"
     );
   })
 });

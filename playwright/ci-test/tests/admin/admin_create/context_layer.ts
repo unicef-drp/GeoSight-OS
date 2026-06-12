@@ -55,8 +55,8 @@ test.describe('Context layer create admin', () => {
     await delay(2000);
     await page.getByRole('region', { name: 'Map' }).click({
       position: {
-        x: 531,
-        y: 347
+        x: 527,
+        y: 345
       }
     });
     await expect(page.locator('.maplibregl-popup-content-wrapper tr')).toHaveCount(5);

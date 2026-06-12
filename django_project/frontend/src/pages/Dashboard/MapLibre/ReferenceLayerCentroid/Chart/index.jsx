@@ -21,20 +21,18 @@ import { addPopupEl } from "../../utils";
 import $ from "jquery";
 import maplibregl from "maplibre-gl";
 import Chart from "chart.js/auto";
-import { popupTemplate } from "../../Popup";
+import { popupTemplate } from "../../utils/Popup";
 
-let charts = {};
-let markers = [];
-let chartLastConfig = [];
+export const createChartState = () => ({ charts: {}, markers: [], chartLastConfig: [] });
 
 /** Resetting **/
-export const resetCharts = () => {
-  for (const [code, chart] of Object.entries(charts)) {
+export const resetCharts = (state) => {
+  for (const [code, chart] of Object.entries(state.charts)) {
     chart.clear();
     $(`${code}-chart`).remove();
   }
-  markers.map((marker) => marker.remove());
-  markers = [];
+  state.markers.map((marker) => marker.remove());
+  state.markers = [];
 };
 
 export const renderChart = (
@@ -43,17 +41,18 @@ export const renderChart = (
   lastConfig,
   config,
   transparency,
+  state,
 ) => {
   if (!config.indicatorShow) {
-    resetCharts();
+    resetCharts(state);
     return;
   }
   if (JSON.stringify(config) === JSON.stringify(lastConfig)) {
     return;
   } else {
-    resetCharts();
+    resetCharts(state);
   }
-  chartLastConfig = config;
+  state.chartLastConfig = config;
 
   /** Render charts to Map */
   features.map((feature) => {
@@ -63,8 +62,8 @@ export const renderChart = (
     const size = chartStyle.size;
     const { labels, data, colors, options } = properties.chartData;
 
-    if (charts[code]) {
-      charts[code].clear();
+    if (state.charts[code]) {
+      state.charts[code].clear();
       $(`${code}-chart`).remove();
     }
 
@@ -78,12 +77,12 @@ export const renderChart = (
         `<div id="${code}-wrapper" class="centroid-chart" style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px; opacity: ${transparency}"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`,
       )
       .addTo(map);
-    markers.push(popup);
+    state.markers.push(popup);
 
     // Create charts
     setTimeout(function () {
       // Don't render if config is not same
-      if (JSON.stringify(config) !== JSON.stringify(chartLastConfig)) {
+      if (JSON.stringify(config) !== JSON.stringify(state.chartLastConfig)) {
         return;
       }
       const el = document.getElementById(`${code}-chart`);
@@ -110,7 +109,7 @@ export const renderChart = (
           },
           options: options,
         });
-        charts[code] = chart;
+        state.charts[code] = chart;
 
         // Popup for marker
         addPopupEl(
@@ -158,25 +157,26 @@ export const renderPin = (
   lastConfig,
   config,
   transparency,
+  state,
 ) => {
   if (!config.indicatorShow) {
-    resetCharts();
+    resetCharts(state);
     return;
   }
   if (JSON.stringify(config) === JSON.stringify(lastConfig)) {
     return;
   } else {
-    resetCharts();
+    resetCharts(state);
   }
-  chartLastConfig = config;
+  state.chartLastConfig = config;
   features.map((feature) => {
     const properties = feature.properties;
     const chartStyle = properties.chart_style;
     const code = properties.code;
     const size = chartStyle.size ? chartStyle.size : 20;
 
-    if (charts[code]) {
-      charts[code].clear();
+    if (state.charts[code]) {
+      state.charts[code].clear();
       $(`${code}-chart`).remove();
     }
     const children = [];
@@ -203,6 +203,6 @@ export const renderPin = (
         `<div id="${code}-pin" class="pins centroid-chart" style="opacity: ${transparency}">${children.join("")}</div>`,
       )
       .addTo(map);
-    markers.push(popup);
+    state.markers.push(popup);
   });
 };

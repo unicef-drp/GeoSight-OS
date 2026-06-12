@@ -50,24 +50,96 @@
   }
 
   #map {
+    display: grid;
     height: 100%;
     width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+
+    // 2 children: left | right
+    &:has(> *:nth-child(2)):not(:has(> *:nth-child(3))) {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    // 3 children: side by side horizontally
+    &:has(> *:nth-child(3)):not(:has(> *:nth-child(4))) {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    // 4 children: 2x2 grid — explicit placement to guarantee order
+    &:has(> *:nth-child(4)) {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+
+      > *:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      > *:nth-child(2) {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      > *:nth-child(3) {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      > *:nth-child(4) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+    }
 
     &:focus-visible {
       outline: none;
     }
+  }
 
-    .maplibregl-canvas-container, canvas {
-      height: 100% !important;
-      width: 100% !important;
+  .MaplibreWrapper {
+    position: relative;
+    border: 1px solid $border-gray;
+
+    .MapLegend {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      max-height: 90%;
+      overflow-y: auto;
+      margin-top: -1px;
+      margin-left: unset;
     }
+
+    .MapLegendSwapIcon {
+      display: none;
+      z-index: 2;
+    }
+
+    &:hover {
+      .MapLegendSwapIcon {
+        opacity: 0.5;
+        display: block;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .Maplibre {
+    width: 100%;
+    height: 100%;
   }
 
   .Toolbar {
     position: relative;
     display: flex;
-    height: 50px;
-    min-height: 50px;
+    height: 49px;
+    min-height: 49px;
     transition: padding-left 0.3s;
     box-sizing: border-box;
     width: 100%;
@@ -269,7 +341,6 @@
 
 .LeftExpanded {
   .Toolbar {
-    padding-left: 20%;
     background: white;
   }
 
@@ -422,4 +493,122 @@ $nav-disabled-color: '%23CCCCCC';
 
 .mapboxgl-ctrl {
   display: none !important;
+}
+
+.maplibregl-ctrl-attrib {
+  display: none !important;
+}
+
+.MapLegend {
+  .MapLegendSwapIcon {
+    display: block !important;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.MapLegendSwapIcon {
+  background-color: white;
+  border-radius: 50%;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 1;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  box-shadow: $box-shadow;
+
+  &.Top {
+    left: 50%;
+    top: -16px;
+    margin-left: -15px;
+  }
+
+  &.Bottom {
+    left: 50%;
+    bottom: -16px;
+    margin-left: -15px;
+  }
+
+  &.Left {
+    top: 50%;
+    left: -16px;
+    margin-top: -15px;
+  }
+
+  &.Right {
+    top: 50%;
+    right: -16px;
+    margin-top: -15px;
+  }
+
+  &.TopLeft {
+    top: -16px;
+    left: -16px;
+  }
+
+  &.TopRight {
+    top: -16px;
+    right: -16px;
+  }
+
+  &.BottomRight {
+    bottom: -16px;
+    right: -16px;
+  }
+
+  &.BottomLeft {
+    bottom: -16px;
+    left: -16px;
+  }
+
+  &.LeftSideTop {
+    top: 25%;
+    left: -16px;
+    margin-top: -15px;
+  }
+
+  &.LeftSideBottom {
+    top: 75%;
+    left: -16px;
+    margin-top: -15px;
+  }
+
+  &.RightSideTop {
+    top: 25%;
+    right: -16px;
+    margin-top: -15px;
+  }
+
+  &.RightSideBottom {
+    top: 75%;
+    right: -16px;
+    margin-top: -15px;
+  }
+
+  &.TopSideLeft {
+    left: 25%;
+    top: -16px;
+    margin-left: -15px;
+  }
+
+  &.TopSideRight {
+    left: 75%;
+    top: -16px;
+    margin-left: -15px;
+  }
+
+  &.BottomSideLeft {
+    left: 25%;
+    bottom: -16px;
+    margin-left: -15px;
+  }
+
+  &.BottomSideRight {
+    left: 75%;
+    bottom: -16px;
+    margin-left: -15px;
+  }
 }

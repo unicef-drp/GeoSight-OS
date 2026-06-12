@@ -31,36 +31,47 @@ import {
   getIndicatorDataByLayer,
   UpdateStyleData,
 } from "../../../../utils/indicatorData";
-import { hideLabel, renderLabel, resetLabel, showLabel } from "./Label";
+import {
+  createLabelState,
+  hideLabel,
+  renderLabel,
+  resetLabel,
+  showLabel,
+} from "./Label";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
-import { renderChart, renderPin, resetCharts } from "./Chart";
+import {
+  createChartState,
+  renderChart,
+  renderPin,
+  resetCharts
+} from "./Chart";
 import workerMergeGeometries from "../../../../workers/merge_geometries";
 import { ReferenceLayerFilterCentroid } from "./CentroidFiltered";
 
 import "./style.scss";
 
-let lastConfig = {};
-let lastRequest = null;
-let lastRequestRender = null;
-
 /**
  * GeometryCenter.
  */
-export default function ReferenceLayerCentroid({ map }) {
+export default function ReferenceLayerCentroid({
+  map,
+  firstLayer,
+  secondLayer,
+  referenceLayers,
+}) {
+  const lastConfig = useRef({});
+  const lastRequest = useRef(null);
+  const lastRequestRender = useRef(null);
+  const labelState = useRef(createLabelState());
+  const chartState = useRef(createChartState());
   const { indicators, indicatorLayers, referenceLayer } = useSelector(
     (state) => state.dashboard.data,
   );
   const { showIndicatorMapLabel } = useSelector((state) => state.globalState);
-  const { referenceLayers, indicatorShow } = useSelector((state) => state.map);
+  const { indicatorShow } = useSelector((state) => state.map);
   const datasetGeometries = useSelector((state) => state.datasetGeometries);
   const indicatorsData = useSelector((state) => state.indicatorsData);
-  const selectedIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const selectedIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   const mapGeometryValue = useSelector((state) => state.mapGeometryValue);
 
@@ -70,10 +81,9 @@ export default function ReferenceLayerCentroid({ map }) {
   });
 
   // TransparencySlider
-  const {
-    indicatorLayer: indicatorLayerTransparency,
-    // @ts-ignore
-  } = useSelector((state) => state.map.transparency);
+  const indicatorLayerTransparency = useSelector(
+    (state) => state.map.transparency?.indicatorLayer,
+  );
   const transparency = indicatorLayerTransparency / 100;
 
   const filterRef = useRef(null);
@@ -81,7 +91,7 @@ export default function ReferenceLayerCentroid({ map }) {
   // When reference layer changed, fetch features
   useEffect(() => {
     const currRequest = new Date().getTime();
-    lastRequestRender = currRequest;
+    lastRequestRender.current = currRequest;
     const identifiers = referenceLayers.map(
       (referenceLayer) => referenceLayer.identifier,
     );
@@ -93,7 +103,7 @@ export default function ReferenceLayerCentroid({ map }) {
           datasetGeometries,
         },
         (features) => {
-          if (currRequest === lastRequestRender) {
+          if (currRequest === lastRequestRender.current) {
             setGeometriesDataState({
               identifiers: identifiers,
               geometries: features,
@@ -155,18 +165,19 @@ export default function ReferenceLayerCentroid({ map }) {
 
   /** Resetting **/
   const reset = (map) => {
-    resetLabel(map);
-    resetCharts();
+    resetLabel(map, labelState.current);
+    resetCharts(chartState.current);
   };
 
   // When show label toggled
   useEffect(() => {
+    if (!map) return;
     if (showIndicatorMapLabel) {
       showLabel(map);
     } else {
       hideLabel(map);
     }
-  }, [showIndicatorMapLabel]);
+  }, [map, showIndicatorMapLabel]);
 
   const updateCentroid = () => {
     if (!map) {
@@ -176,11 +187,11 @@ export default function ReferenceLayerCentroid({ map }) {
 
     let rendering = true;
     // Check if multiple indicator or not
-    let indicatorLayer = selectedIndicatorLayer;
-    if (selectedIndicatorSecondLayer?.indicators?.length >= 2) {
-      indicatorLayer = selectedIndicatorSecondLayer;
+    let indicatorLayer = firstLayer;
+    if (secondLayer?.indicators?.length >= 2) {
+      indicatorLayer = secondLayer;
     }
-    if (!indicatorLayer.indicators) {
+    if (!indicatorLayer?.indicators) {
       rendering = false;
     }
 
@@ -190,7 +201,7 @@ export default function ReferenceLayerCentroid({ map }) {
       rendering = false;
     }
     if (!rendering) {
-      lastConfig = {};
+      lastConfig.current = {};
       reset(map);
       return;
     }
@@ -219,7 +230,7 @@ export default function ReferenceLayerCentroid({ map }) {
     const isRenderingChart = indicatorLayer?.indicators?.length >= 2;
     if (isRenderingChart) {
       // Remove label when in chart
-      resetLabel(map);
+      resetLabel(map, labelState.current);
 
       // Get all data
       const usedIndicatorsData = {};
@@ -255,7 +266,7 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       if (!rendering) {
         reset(map);
-        lastConfig = {};
+        lastConfig.current = {};
         return;
       }
 
@@ -273,7 +284,7 @@ export default function ReferenceLayerCentroid({ map }) {
         referenceLayers: identifiers,
       };
       // If config is same, don't render to prevent flicker
-      if (JSON.stringify(config) === JSON.stringify(lastConfig)) {
+      if (JSON.stringify(config) === JSON.stringify(lastConfig.current)) {
         return;
       }
 
@@ -365,9 +376,10 @@ export default function ReferenceLayerCentroid({ map }) {
           map,
           features,
           indicatorLayer,
-          lastConfig,
+          lastConfig.current,
           config,
           transparency,
+          chartState.current,
         );
       } else {
         // Change size of pie chart
@@ -386,16 +398,23 @@ export default function ReferenceLayerCentroid({ map }) {
               properties.chart_style.size = percentageSize * diffSize + minSize;
             });
         }
-        renderChart(map, features, lastConfig, config, transparency);
+        renderChart(
+          map,
+          features,
+          lastConfig.current,
+          config,
+          transparency,
+          chartState.current,
+        );
       }
-      lastConfig = config;
+      lastConfig.current = config;
       filterRef.current?.call();
     } else {
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
       // ---------------------------------------------------------
       // Remove charts when label
-      resetCharts();
+      resetCharts(chartState.current);
 
       // Hide label if indicator not show
       if (!indicatorShow) {
@@ -414,26 +433,23 @@ export default function ReferenceLayerCentroid({ map }) {
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel(map, [], labelConfig);
+        renderLabel(map, [], labelConfig, labelState.current);
         return;
       }
       const config = {
-        selectedIndicators: [
-          selectedIndicatorLayer?.id,
-          selectedIndicatorSecondLayer?.id,
-        ],
+        selectedIndicators: [firstLayer?.id, secondLayer?.id],
         referenceLayers: referenceLayers.map(
           (referenceLayer) => referenceLayer.identifier,
         ),
         selectedAdminLevel: selectedAdminLevel.level,
       };
-      if (JSON.stringify(config) !== JSON.stringify(lastConfig)) {
+      if (JSON.stringify(config) !== JSON.stringify(lastConfig.current)) {
         reset(map);
       }
-      lastConfig = config;
+      lastConfig.current = config;
 
       const currRequest = new Date().getTime();
-      lastRequest = currRequest;
+      lastRequest.current = currRequest;
       ExecuteWebWorker(
         worker,
         {
@@ -441,12 +457,8 @@ export default function ReferenceLayerCentroid({ map }) {
           mapGeometryValue,
         },
         (features) => {
-          if (currRequest === lastRequest) {
-            renderLabel(
-              map,
-              features,
-              labelConfig
-            );
+          if (currRequest === lastRequest.current) {
+            renderLabel(map, features, labelConfig, labelState.current);
             filterRef.current?.call();
           }
         },
@@ -461,8 +473,8 @@ export default function ReferenceLayerCentroid({ map }) {
     indicatorsData,
     indicatorShow,
     indicatorLayers,
-    selectedIndicatorLayer,
-    selectedIndicatorSecondLayer,
+    firstLayer,
+    secondLayer,
     selectedAdminLevel,
     mapGeometryValue,
     referenceLayers,

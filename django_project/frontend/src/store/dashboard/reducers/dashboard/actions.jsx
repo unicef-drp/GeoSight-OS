@@ -190,6 +190,7 @@ function receive(data, error = null) {
       [Variables.DASHBOARD.TOOL.BACK_TO_HOME, true],
       [Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER, false],
       [Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION, false],
+      [Variables.DASHBOARD.TOOL.SIDE_BY_SIDE_VIEW, true],
     ].map((tool) => {
       toolDefaults(data.tools, tool[0], tool[1]);
     });

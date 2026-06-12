@@ -33,7 +33,7 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../../components/Modal";
-import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { CloseButton } from "../../../../components/Elements/Button";
 import { InfoFillIcon } from "../../../../components/Icons";
 
@@ -74,7 +74,7 @@ export default function ProjectOverview() {
   }, [open]);
 
   return (
-    <Plugin className="ProjectOverview-Toolbar">
+    <Plugin className="ProjectOverview-Button">
       <div className={open ? "Active" : "Inactive"}>
         <PluginChild title={"Project Overview"}>
           <InfoFillIcon onClick={(_) => setOpen(true)} />

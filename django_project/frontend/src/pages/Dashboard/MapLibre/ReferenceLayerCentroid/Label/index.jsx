@@ -18,17 +18,18 @@
    ========================================================================== */
 
 import { hasLayer, hasSource, removeLayer } from "../../utils";
-import { addLayerWithOrder } from "../../Render";
+import { addLayerWithOrder } from "../../utils/Render";
 import { Variables } from "../../../../../utils/Variables";
 import { Logger } from "../../../../../utils/logger";
 import { formatStyle } from "../../../../../utils/label.tsx";
 
 export const INDICATOR_LABEL_ID = "indicator-label";
-let lastFeatures = null;
+
+export const createLabelState = () => ({ lastFeatures: null });
 
 /** Remove label **/
-export const resetLabel = (map) => {
-  lastFeatures = null;
+export const resetLabel = (map, state) => {
+  state.lastFeatures = null;
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     removeLayer(map, INDICATOR_LABEL_ID);
   }
@@ -36,6 +37,7 @@ export const resetLabel = (map) => {
 
 /** Show Label **/
 export const showLabel = (map) => {
+  if (!map) return;
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     map.setLayoutProperty(INDICATOR_LABEL_ID, "visibility", "visible");
   }
@@ -44,6 +46,7 @@ export const showLabel = (map) => {
 
 /** Hide Label **/
 export const hideLabel = (map) => {
+  if (!map) return;
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     map.setLayoutProperty(INDICATOR_LABEL_ID, "visibility", "none");
   }
@@ -54,12 +57,14 @@ export const hideLabel = (map) => {
 export const renderLabel = (
   map,
   features,
-  config
+  config,
+  state,
 ) => {
-  if (JSON.stringify(features) === JSON.stringify(lastFeatures)) {
+  if (!map) return;
+  if (JSON.stringify(features) === JSON.stringify(state.lastFeatures)) {
     return;
   }
-  lastFeatures = features;
+  state.lastFeatures = features;
 
   const { paint, layout, minZoom, maxZoom } = formatStyle(config, features);
   if (hasLayer(map, INDICATOR_LABEL_ID)) {

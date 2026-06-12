@@ -14,6 +14,10 @@
  */
 import { Extent, Position } from "./Geometry";
 import { TransparencyConfiguration } from "../pages/Admin/Dashboard/Form/General";
+import {
+  COMPARE_MODE,
+  SIDE_BY_SIDE_VIEW_MODE
+} from "../store/dashboard/reducers/mapMode";
 
 export interface ProjectCheckpoint {
   selected_basemap: number;
@@ -28,4 +32,5 @@ export interface ProjectCheckpoint {
   position: Position;
   context_layers_config?: object;
   transparency_config?: TransparencyConfiguration;
+  map_mode?: typeof SIDE_BY_SIDE_VIEW_MODE | typeof COMPARE_MODE | null;
 }

@@ -19,7 +19,7 @@
 
 import { Variables } from "../../../../../utils/Variables";
 import { Actions } from "../../../../../store/dashboard";
-import { popupTemplate } from "../../Popup";
+import { popupTemplate } from "../../utils/Popup";
 import EsriData from "../../../../../utils/esri/esri-data";
 import { dictDeepCopy, toJson } from "../../../../../utils/main";
 import { fetchingData } from "../../../../../Requests";

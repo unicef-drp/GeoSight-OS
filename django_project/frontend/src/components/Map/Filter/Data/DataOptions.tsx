@@ -61,7 +61,7 @@ export const FetchIndicatorOptions = memo(
       (state) => state.referenceLayerData[referenceLayer?.identifier],
     );
 
-    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
 
     // @ts-ignore
     const indicator = new Indicator({ id: id });

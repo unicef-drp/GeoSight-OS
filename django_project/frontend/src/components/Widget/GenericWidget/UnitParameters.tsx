@@ -19,6 +19,7 @@
 
 import React, { memo, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { selectIndicatorLayers } from "../../../selectors/indicatorLayers";
 
 // Widgets
 import { UnitConfig, WidgetConfig } from "../../../types/Widget";
@@ -41,14 +42,7 @@ function UnitParameters({ config, parameter, setParameter }: Props) {
   // ------------------------------------------
   // Get the indicators
   // ------------------------------------------
-  const selectedIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
-  const selectedIndicatorSecondLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayers = useSelector(selectIndicatorLayers);
   let indicators: UnitConfig[] = [];
   switch (config.indicatorsType) {
     case SeriesDataType.PREDEFINED: {
@@ -56,18 +50,13 @@ function UnitParameters({ config, parameter, setParameter }: Props) {
       break;
     }
     case SeriesDataType.SYNC: {
-      selectedIndicatorLayer.indicators?.map((indicator: Indicator) => {
-        indicators.push({
-          id: indicator.id,
-          name: indicator.name,
-          color: null,
-        });
-      });
-      selectedIndicatorSecondLayer.indicators?.map((indicator: Indicator) => {
-        indicators.push({
-          id: indicator.id,
-          name: indicator.name,
-          color: null,
+      selectedIndicatorLayers.forEach((layer) => {
+        layer.indicators?.map((indicator: Indicator) => {
+          indicators.push({
+            id: indicator.id,
+            name: indicator.name,
+            color: null,
+          });
         });
       });
       break;

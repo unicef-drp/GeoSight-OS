@@ -43,6 +43,9 @@ export const Variables = {
     TOOL: {
       VIEW_3D: "3D view",
       COMPARE_LAYERS: "Compare layers",
+      SIDE_BY_SIDE_VIEW: "Side by side view",
+      SIDE_BY_SIDE_VIEW_SYNC: "Side by side view sync",
+
       MEASUREMENT: "Measurement",
       ZONAL_ANALYSIS: "Zonal analysis",
 

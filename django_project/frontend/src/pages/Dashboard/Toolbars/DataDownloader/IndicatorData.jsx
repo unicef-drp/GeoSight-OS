@@ -50,6 +50,7 @@ import {
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
+import { selectIndicatorLayerIds } from "../../../../selectors/indicatorLayers";
 
 export const GeographyFilter = {
   All: "All Geographies",
@@ -80,14 +81,12 @@ export default function IndicatorDataDownloader() {
   );
   const name = useSelector((state) => state.dashboard.data?.name);
 
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
 
   const referenceLayerData = useSelector(
     (state) => state.referenceLayerData[referenceLayer.identifier],
   );
-  const selectedIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
+  const selectedIndicatorLayerIds = useSelector(selectIndicatorLayerIds);
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
 
@@ -164,8 +163,10 @@ export default function IndicatorDataDownloader() {
   /** Selected indicator changed **/
   useEffect(() => {
     state.indicators = [];
-    addIndicator(selectedIndicatorLayer.id);
-  }, [selectedIndicatorLayer]);
+    selectedIndicatorLayerIds.forEach((id) => {
+      if (id) addIndicator(id);
+    });
+  }, [selectedIndicatorLayerIds]);
 
   // Get indicator data
   const getData = (

@@ -17,18 +17,16 @@ export const Logger = {
   layers: function (map) {
     if (IS_DEBUG) {
       const output = map.getStyle();
-      Logger.log(
-        "LAYERS:",
-        output.layers.map((layer) => layer.id),
-      );
-      Logger.log(
-        "LAYERS-VISIBLE:",
-        output.layers
-          .filter((layer) => {
-            return layer?.layout?.visibility !== "none";
-          })
-          .map((layer) => layer.id),
-      );
+      const layers = output.layers.map((layer) => layer.id);
+      const layersVisible = output.layers
+        .filter((layer) => {
+          return layer?.layout?.visibility !== "none";
+        })
+        .map((layer) => layer.id);
+      Logger.log("LAYERS:", layers);
+      Logger.log("LAYERS-VISIBLE:", layersVisible);
+      Logger.log(`LAYERS[${map.getContainer().id}]:`, layers);
+      Logger.log(`LAYERS-VISIBLE[${map.getContainer().id}]:`, layersVisible);
 
       // Zoom to the layer
       const labelLayer = output.layers.find((layer) =>

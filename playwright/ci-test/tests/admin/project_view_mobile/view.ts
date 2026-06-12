@@ -191,19 +191,19 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
 
-  // Widget 5
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Sample Indicator A');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('895');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Sample Indicator B');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('1,062');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(0)).toContainText('Sample Indicator C');
-  await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('1,638');
+    // Widget 5
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('895');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Sample Indicator B');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('1,062');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(0)).toContainText('Sample Indicator C');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(2).locator('td').nth(1)).toContainText('1,638');
 
-  // Widget 6
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Lower Juba');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Middle Shabelle');
-  await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
+    // Widget 6
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Lower Juba');
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Middle Shabelle');
+    await expect(page.locator('.widget__content').nth(5).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
     await toMap()
 
     // Check the label
@@ -219,7 +219,7 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(1)).toContainText('562');
     await delay(1000)
     await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89");
-    await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
+    await expect(lastLayers.includes("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0")).toBeTruthy();
     await toFilter();
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
     await toMap()
@@ -333,7 +333,7 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(1)).toContainText('1,674.5');
     await delay(1000)
     await expect(lastLogLabel).toEqual("Lughaye,SOM_0001_0003_V1,2020-01-01,80 - 100,91,Zeylac,SOM_0001_0004_V1,2020-01-01,80 - 100,82,Waajid,SOM_0002_0004_V1,2020-01-01,80 - 100,94,Caluula,SOM_0004_0003_V1,2020-01-01,60 - 80,67,Ceel Dheer,SOM_0006_0004_V1,2020-01-01,60 - 80,70,Dhuusamarreeb,SOM_0006_0005_V1,2020-01-01,60 - 80,80,Ceel Waaq,SOM_0007_0003_V1,2020-01-01,80 - 100,94,Luuq,SOM_0007_0006_V1,2020-01-01,80 - 100,84,Jalalaqsi,SOM_0008_0003_V1,2020-01-01,60 - 80,79,Badhaadhe,SOM_0009_0002_V1,2020-01-01,80 - 100,87,Kismaayo,SOM_0009_0004_V1,2020-01-01,80 - 100,98,Baraawe,SOM_0010_0002_V1,2020-01-01,60 - 80,63,Kurtunwaarey,SOM_0010_0003_V1,2020-01-01,80 - 100,96,Marka,SOM_0010_0004_V1,2020-01-01,80 - 100,94,Bu'Aale,SOM_0011_0001_V1,2020-01-01,80 - 100,94,Jilib,SOM_0011_0002_V1,2020-01-01,60 - 80,72,Saakow,SOM_0011_0003_V1,2020-01-01,60 - 80,71,Cadale,SOM_0012_0003_V1,2020-01-01,60 - 80,62,Jowhar,SOM_0012_0004_V1,2020-01-01,60 - 80,75,Galdogob,SOM_0013_0002_V1,2020-01-01,80 - 100,93,Hobyo,SOM_0013_0003_V1,2020-01-01,80 - 100,91,Jariiban,SOM_0013_0004_V1,2020-01-01,60 - 80,65,Garoowe,SOM_0014_0003_V1,2020-01-01,60 - 80,67,Caynabo,SOM_0016_0001_V1,2020-01-01,60 - 80,65,Berbera,SOM_0018_0001_V1,2020-01-01,80 - 100,81");
-    await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
+    await expect(lastLayers.includes("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0")).toBeTruthy();
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
     await toMap()
 
@@ -366,10 +366,11 @@ test.describe('View project', () => {
     // Pin layer, checking the style should be pin
     const layer4 = 'Pins Indicator Layer'
     await page.getByLabel(layer4).click();
-    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Sample Indicator A');
-    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator B');
-    await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator C');
-    await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('Sample Indicator D');
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Pins Indicator Layer');
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator A');
+    await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator B');
+    await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('Sample Indicator C');
+    await expect(page.locator('.MapLegendSectionTitle').nth(4)).toContainText('Sample Indicator D');
     await expect(page.getByLabel(layer4)).toBeChecked();
 
     const pin1 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(0)
@@ -453,7 +454,7 @@ test.describe('View project', () => {
     await expect(page.locator('#indicator-tab-panel.layers-panel .MuiRadio-root:visible')).toHaveCount(0);
     await page.getByLabel(kenyaLayer).click();
     await delay(1000)
-    await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
+    await expect(lastLayers.includes("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0,reference-layer-fill-map-0-1,reference-layer-outline-map-0-1")).toBeTruthy();
     await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions (Outline)')
     await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Kenya Indicator A (Inner)')
     await page.getByLabel(kenyaLayer).click();
@@ -468,27 +469,25 @@ test.describe('View project', () => {
     // ------------------------------------------------
     // Check the filter inputs behaviour
     // ------------------------------------------------
-    // TODO:
-    //  Fix after layout being fixed
-    // await page.getByLabel(layer2).click();
-    // await page.locator('.WhereConfigurationQuery .MuiTextField-root').first().click()
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', 'All selected');
-    // await page.getByRole('option', { name: 'Partner A' }).click();
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '2 selected');
-    // await page.getByRole('option', { name: 'Partner B' }).click();
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
-    // await page.getByRole('option', { name: 'Partner C' }).click();
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
-    // await page.getByRole('option', { name: 'Select all' }).click();
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', 'All selected');
-    // await page.getByRole('option', { name: 'Select all' }).click();
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
-    // await page.getByRole('option', { name: 'Partner C' }).click();
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
-    // await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
+    await page.getByLabel(layer2).click();
+    await page.locator('.WhereConfigurationQuery .MuiTextField-root').first().click()
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', 'All selected');
+    await page.getByRole('option', { name: 'Partner A' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '2 selected');
+    await page.getByRole('option', { name: 'Partner B' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
+    await page.getByRole('option', { name: 'Partner C' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await page.getByRole('option', { name: 'Select all' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', 'All selected');
+    await page.getByRole('option', { name: 'Select all' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await page.getByRole('option', { name: 'Partner C' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
   }
 
   // A use case tests scenarios

@@ -23,7 +23,7 @@ import { Variables } from "../../../../utils/Variables";
 import {
   Plugin,
   PluginChild,
-} from "../../../../pages/Dashboard/MapLibre/Plugin";
+} from "../../../../pages/Dashboard/MapLibre/utils/Plugin";
 import {
   CompositeIndexLayerActiveIcon,
   CompositeIndexLayerIcon,

@@ -23,7 +23,7 @@ import {
   loadImageToMap,
 } from "../utils";
 import { toFloat } from "../../../../utils/main";
-import { addLayerWithOrder } from "../Render";
+import { addLayerWithOrder } from "../utils/Render";
 import { Variables } from "../../../../utils/Variables";
 
 /***

@@ -19,12 +19,17 @@ import { useDispatch, useSelector } from "react-redux";
 import maplibregl from "maplibre-gl";
 import { ProjectCheckpoint as ProjectCheckpointType } from "../../types/ProjectCheckpoint";
 import { Actions } from "../../store/dashboard";
+import { selectIndicatorLayerIds } from "../../selectors/indicatorLayers";
 import { dictDeepCopy } from "../../utils/main";
 import { compareFilters, filtersToFlatDict } from "../../utils/filters";
 import { changeIndicatorLayersForcedUpdate } from "../../pages/Dashboard/LeftPanel/IndicatorLayers";
 import { BasemapLayer } from "../../types/BasemapLayer";
 import { ContextLayer } from "../../types/ContextLayer";
 import { IndicatorLayer } from "../../types/IndicatorLayer";
+import {
+  COMPARE_MODE,
+  SIDE_BY_SIDE_VIEW_MODE,
+} from "../../store/dashboard/reducers/mapMode";
 
 export interface Props {
   map: maplibregl.Map;
@@ -37,14 +42,7 @@ export const ProjectCheckpoint = memo(
     const dispatch = useDispatch();
     // @ts-ignore
     const dashboardData = useSelector((state) => state.dashboard.data);
-    const selectedIndicatorLayer = useSelector(
-      // @ts-ignore
-      (state) => state.selectedIndicatorLayer,
-    );
-    const selectedIndicatorSecondLayer = useSelector(
-      // @ts-ignore
-      (state) => state.selectedIndicatorSecondLayer,
-    );
+    const indicatorLayerIds = useSelector(selectIndicatorLayerIds);
     // @ts-ignore
     const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
     const {
@@ -56,6 +54,14 @@ export const ProjectCheckpoint = memo(
       transparency,
       // @ts-ignore
     } = useSelector((state) => state.map);
+    const sideBySideViewMode = useSelector(
+      // @ts-ignore
+      (state) => state.mapMode.sideBySideViewMode,
+    );
+    const compareMode = useSelector(
+      // @ts-ignore
+      (state) => state.mapMode.compareMode,
+    );
 
     // Extent
     const bounds = map?.getBounds();
@@ -69,17 +75,14 @@ export const ProjectCheckpoint = memo(
     useImperativeHandle(ref, () => ({
       /** Get data */
       getData() {
-        const selectedIndicatorLayers = [selectedIndicatorLayer?.id];
-        if (selectedIndicatorSecondLayer?.id) {
-          selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id);
-        }
+        const selectedIndicatorLayerIds = indicatorLayerIds.filter(Boolean);
         const context_layers_config: { [key: string]: object } = {};
         contextLayersDashboard.map((contextLayer: ContextLayer) => {
           context_layers_config[contextLayer.id] = contextLayer.configuration;
         });
         return {
           selected_basemap: basemapLayer?.id,
-          selected_indicator_layers: selectedIndicatorLayers,
+          selected_indicator_layers: selectedIndicatorLayerIds,
           selected_context_layers: Object.keys(contextLayers).map((id) =>
             parseInt(id),
           ),
@@ -97,18 +100,19 @@ export const ProjectCheckpoint = memo(
             zoom: map?.getZoom(),
             center: map?.getCenter(),
           },
+          map_mode: sideBySideViewMode
+            ? SIDE_BY_SIDE_VIEW_MODE
+            : compareMode
+              ? COMPARE_MODE
+              : null,
           context_layers_config: context_layers_config,
           transparency_config: transparency,
         };
       },
       /** Apply data **/
       applyData(data: ProjectCheckpointType) {
-        dispatch(
-          Actions.Map.update({
-            is3dMode: data?.is_3d_mode,
-            position: data.position,
-          }),
-        );
+        dispatch(Actions.Map.change3DMode(data?.is_3d_mode));
+        dispatch(Actions.Map.changePosition(data.position));
         const newDashboard = dictDeepCopy(dashboardData);
         newDashboard.basemapsLayers.map((layer: BasemapLayer) => {
           layer.visible_by_default = layer.id === data.selected_basemap;
@@ -117,9 +121,16 @@ export const ProjectCheckpoint = memo(
         // Activate compare
         changeIndicatorLayersForcedUpdate(data.selected_indicator_layers);
         if (data.selected_indicator_layers?.length >= 2) {
-          dispatch(Actions.MapMode.activateCompare());
+          if (data.map_mode === COMPARE_MODE) {
+            dispatch(Actions.MapMode.activateCompare());
+          } else if (data.map_mode === SIDE_BY_SIDE_VIEW_MODE) {
+            dispatch(Actions.MapMode.activateSideBySideView());
+          } else {
+            dispatch(Actions.MapMode.activateCompare());
+          }
         } else {
           dispatch(Actions.MapMode.deactivateCompare());
+          dispatch(Actions.MapMode.activateSideBySideView());
         }
 
         const { context_layers_config } = data;
@@ -164,7 +175,16 @@ export const ProjectCheckpoint = memo(
           };
         }
         dispatch(
-          Actions.Map.update({ transparency: data.transparency_config }),
+          Actions.Map.updateTransparency(
+            "indicatorLayer",
+            data.transparency_config.indicatorLayer,
+          ),
+        );
+        dispatch(
+          Actions.Map.updateTransparency(
+            "contextLayer",
+            data.transparency_config.contextLayer,
+          ),
         );
 
         if (
@@ -185,9 +205,9 @@ export const ProjectCheckpoint = memo(
     // Change selected bookmark when there is embed config
     useEffect(() => {
       setProjectCheckpointEnable(
-        basemapLayer && extent && selectedIndicatorLayer,
+        !!(basemapLayer && extent && indicatorLayerIds[0]),
       );
-    }, [basemapLayer, extent, selectedIndicatorLayer]);
+    }, [basemapLayer, extent, indicatorLayerIds]);
 
     /** Render **/
     return null;

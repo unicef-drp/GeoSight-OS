@@ -85,7 +85,7 @@ export default function DatasetViewSelector({
 
   // TODO:
   //  This makes the E2E tests fails, need to check it
-  // const url = URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
+  // const url = URLS.ReferenceLayerSelector.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
 
   const url =
     sourceType === VALUE_REMOTE

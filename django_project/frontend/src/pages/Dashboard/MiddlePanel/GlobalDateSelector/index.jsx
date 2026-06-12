@@ -48,6 +48,7 @@ import {
 
 import "./style.scss";
 import { isProjectUsingConceptUUID } from "../../../../selectors/dashboard";
+import { selectIndicatorLayers } from "../../../../selectors/indicatorLayers";
 
 /**
  * Indicator data.
@@ -60,7 +61,7 @@ export default function GlobalDateSelector() {
   const referenceLayer = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
   const indicators = useSelector((state) => state.dashboard.data?.indicators);
   const indicatorLayers = useSelector(
     (state) => state.dashboard.data?.indicatorLayers,
@@ -73,12 +74,7 @@ export default function GlobalDateSelector() {
   );
   const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
   const relatedTableData = useSelector((state) => state.relatedTableData);
-  const currentIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const currentIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayers = useSelector(selectIndicatorLayers);
 
   const [dates, setDates] = useState([]);
   const [selectedDatePointSelected, setSelectedDatePointSelected] =
@@ -188,10 +184,7 @@ export default function GlobalDateSelector() {
   };
 
   // Indicator configs
-  let indicatorLayersSelected = [
-    currentIndicatorLayer?.id,
-    currentIndicatorSecondLayer?.id,
-  ];
+  let indicatorLayersSelected = selectedIndicatorLayers.map((l) => l?.id).filter(Boolean);
   if (!isFitToIndicatorRange) {
     indicatorLayersSelected = indicatorLayers.map((indicator) => indicator.id);
   }
@@ -311,7 +304,7 @@ export default function GlobalDateSelector() {
         setMaxDate(currentDates[currentDates.length - 1]);
       }
     }
-  }, [currentIndicatorLayer, currentIndicatorSecondLayer]);
+  }, [selectedIndicatorLayers]);
 
   /**
    * Update Global Dates
@@ -437,7 +430,7 @@ export default function GlobalDateSelector() {
     (async () => {
       if (indicatorLayers.length) {
         const datasetWithIndicators = {};
-        [currentIndicatorLayer, currentIndicatorSecondLayer]
+        selectedIndicatorLayers
           .concat(indicatorLayers)
           .map((layer) => {
             const identifier = referenceLayerIndicatorLayer(
@@ -532,22 +525,15 @@ export default function GlobalDateSelector() {
       if (!newDates.includes(selectedDatePoint)) {
         setSelectedDatePoint(max);
       } else if (
-        currentIndicatorSecondLayer?.id &&
+        selectedIndicatorLayers[1]?.id &&
         prevState.indicatorLayersSelected &&
-        !prevState.indicatorLayersSelected.includes(
-          currentIndicatorSecondLayer?.id,
-        )
+        !prevState.indicatorLayersSelected.includes(selectedIndicatorLayers[1]?.id)
       ) {
         setSelectedDatePoint(max);
       }
       prevState.indicatorLayersSelected = indicatorLayersSelected;
     }
-  }, [
-    currentIndicatorLayer,
-    currentIndicatorSecondLayer,
-    interval,
-    isFitToIndicatorRange,
-  ]);
+  }, [selectedIndicatorLayers, interval, isFitToIndicatorRange]);
 
   /**
    * Animation done

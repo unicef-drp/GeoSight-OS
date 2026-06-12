@@ -35,6 +35,7 @@ import RequestData from "./RequestData";
 import { ExecuteWebWorker } from "../../../utils/WebWorker";
 import workerReformatGeometries from "../../../workers/reformat_geometries";
 import { isProjectUsingConceptUUID } from "../../../selectors/dashboard";
+import { selectIndicatorLayers } from "../../../selectors/indicatorLayers";
 
 import "./style.scss";
 
@@ -75,7 +76,7 @@ export default function TimeSeriesChartWidget({ data }) {
   const { slug, default_time_mode } = useSelector(
     (state) => state.dashboard.data,
   );
-  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+  const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
   const { referenceLayers } = useSelector((state) => state.map);
   const referenceLayer = referenceLayers[0];
   const { use_only_last_known_value } = default_time_mode;
@@ -87,12 +88,7 @@ export default function TimeSeriesChartWidget({ data }) {
     (state) => state.datasetGeometries[referenceLayer?.identifier],
   );
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
-  const selectedIndicatorLayer = useSelector(
-    (state) => state.selectedIndicatorLayer,
-  );
-  const selectedIndicatorSecondLayer = useSelector(
-    (state) => state.selectedIndicatorSecondLayer,
-  );
+  const selectedIndicatorLayers = useSelector(selectIndicatorLayers);
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
 
   const [requestProgress, setRequestProgress] = useState({
@@ -175,71 +171,44 @@ export default function TimeSeriesChartWidget({ data }) {
       colors = color.colors;
     }
     let indicatorList = [];
-    if (selectedIndicatorLayer?.indicators?.length) {
-      indicatorList = indicatorList.concat(
-        selectedIndicatorLayer.indicators.map((indicator) => {
-          const indicatorInList = indicators.find(
-            (row) => row.id === indicator.id,
-          );
-          if (!indicatorInList) {
-            return {
-              id: indicator.id,
-              name: indicator.name,
-              color: getRandomColor(),
-            };
-          }
-          return indicatorInList;
-        }),
-      );
-    } else if (selectedIndicatorLayer?.id) {
-      const id = indicatorLayerId(selectedIndicatorLayer);
-      const indicatorInList = indicators.find((row) => row.id === id);
-      if (!indicatorInList) {
-        indicatorList.push({
-          id: id,
-          name: selectedIndicatorLayer.name,
-          color: getRandomColor(),
-        });
-      } else {
-        indicatorList.push(indicatorInList);
+    selectedIndicatorLayers.forEach((layer) => {
+      if (layer?.indicators?.length) {
+        indicatorList = indicatorList.concat(
+          layer.indicators.map((indicator) => {
+            const indicatorInList = indicators.find(
+              (row) => row.id === indicator.id,
+            );
+            if (!indicatorInList) {
+              return {
+                id: indicator.id,
+                name: indicator.name,
+                color: getRandomColor(),
+              };
+            }
+            return indicatorInList;
+          }),
+        );
+      } else if (layer?.id) {
+        const id = indicatorLayerId(layer);
+        const indicatorInList = indicators.find((row) => row.id === id);
+        if (!indicatorInList) {
+          indicatorList.push({
+            id: id,
+            name: layer.name,
+            color: getRandomColor(),
+          });
+        } else {
+          indicatorList.push(indicatorInList);
+        }
       }
-    }
-    if (selectedIndicatorSecondLayer?.indicators?.length) {
-      indicatorList = indicatorList.concat(
-        selectedIndicatorSecondLayer.indicators.map((indicator) => {
-          const indicatorInList = indicators.find(
-            (row) => row.id === indicator.id,
-          );
-          if (!indicatorInList) {
-            return {
-              id: indicator.id,
-              name: indicator.name,
-              color: getRandomColor(),
-            };
-          }
-          return indicatorInList;
-        }),
-      );
-    } else if (selectedIndicatorSecondLayer?.id) {
-      const id = indicatorLayerId(selectedIndicatorSecondLayer);
-      const indicatorInList = indicators.find((row) => row.id === id);
-      if (!indicatorInList) {
-        indicatorList.push({
-          id: id,
-          name: selectedIndicatorSecondLayer.name,
-          color: getRandomColor(),
-        });
-      } else {
-        indicatorList.push(indicatorInList);
-      }
-    }
+    });
     indicatorList.map((list, idx) => {
       if (colors?.length) {
         list.color = colors[idx % color.colors.length];
       }
     });
     setIndicators(indicatorList);
-  }, [selectedIndicatorLayer, selectedIndicatorSecondLayer, colorPalettes]);
+  }, [selectedIndicatorLayers, colorPalettes]);
 
   // Geometries of data
   useEffect(() => {
@@ -310,7 +279,7 @@ export default function TimeSeriesChartWidget({ data }) {
           </Fragment>
         ) : (
           <div className="form-helptext">
-            {selectedIndicatorLayer?.id
+            {selectedIndicatorLayers[0]?.id
               ? "This indicator layer is not supported yet."
               : "No indicator layer is selected."}
           </div>

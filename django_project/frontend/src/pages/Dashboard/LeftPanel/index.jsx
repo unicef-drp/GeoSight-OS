@@ -96,12 +96,10 @@ export function IndicatorsVisibility() {
  * Left panel.
  */
 export default function LeftPanel({ leftExpanded }) {
-  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
-  const contextLayerContentVisible = useSelector(
-    isContextLayerContentVisible(),
-  );
+  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible);
+  const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
 
-  const filterVisible = useSelector(isFilterContentVisible());
+  const filterVisible = useSelector(isFilterContentVisible);
   const state = leftExpanded ? LEFT : RIGHT;
   const showLayerTab = !!EmbedConfig().layer_tab;
   const showFilterTab = !!EmbedConfig().filter_tab;

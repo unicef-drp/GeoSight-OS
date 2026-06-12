@@ -17,286 +17,54 @@
    MAP CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import maplibregl from "maplibre-gl";
-import { MapboxOverlay } from "@deck.gl/mapbox/typed";
-import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
-import ReferenceLayers from "./Layers/ReferenceLayer";
-import ContextLayers from "./Layers/ContextLayers";
-import { Plugin, PluginChild } from "./Plugin";
-import { removeLayer, removeSource } from "./utils";
-import {
-  ThreeDimensionOffIcon,
-  ThreeDimensionOnIcon,
-} from "../../../components/Icons";
+import React, { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { Plugin, PluginChild } from "./utils/Plugin";
 
 // Toolbars
 import {
   Bookmark,
-  CompareLayer,
   DataDownloader,
   EmbedControl,
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
   PopupToolbars,
+  ProjectOverview,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
 } from "../Toolbars";
 import { EmbedConfig } from "../../../utils/embed";
-import { Actions } from "../../../store/dashboard";
-import DatasetGeometryData from "./Controllers/DatasetGeometryData";
+import DatasetGeometryData from "./utils/DatasetGeometryData";
 import IndicatorLayersReferenceControl
-  from "./IndicatorLayersReferenceControl";
+  from "./IndicatorLayersReferenceController";
 import { Variables } from "../../../utils/Variables";
-import { addLayerWithOrder } from "./Render";
-import { TransparencyControl } from "./Transparency";
 import { isDashboardToolEnabled } from "../../../selectors/dashboard";
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
-import { customDrawStyles } from "../../../utils/MaplibreDrawingTools/Styles";
-import ReferenceLayerLevelSelection
-  from "../Toolbars/ReferenceLayerLevelSelection";
+import ReferenceLayerLevelSelection from "../Toolbars/ReferenceLayerSelector";
 import ZoomToFilteredGeometries
   from "../../../components/ZoomToFilteredGeometries";
+import MainMapLibre, { MirrorMapLibre } from "./MapLibre";
+import LayerCreationToolbars from "../Toolbars/LayerCreationToolbars";
+import MapModeToolbars from "../Toolbars/MapModeToolbars";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
 
-// Initialize cog
-import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-
-maplibregl.addProtocol("cog", cogProtocol);
-
-const BASEMAP_ID = `basemap`;
-let previousLayerIds = [];
-
 /**
  * MapLibre component.
  */
-export default function MapLibre({ leftPanelProps, rightPanelProps }) {
-  const dispatch = useDispatch();
-  const [map, setMap] = useState(null);
-  const [deckgl, setDeckGl] = useState(null);
-  const extent = useSelector((state) => state.dashboard.data.extent);
-  const minZoomConfig = useSelector((state) => state.dashboard.data.minZoom);
-  const maxZoomConfig = useSelector((state) => state.dashboard.data.maxZoom);
-  const { basemapLayer, is3dMode, position, force } = useSelector(
-    (state) => state.map,
-  );
-  const transparencyRef = useRef(null);
+export default function Map({ leftPanelProps, rightPanelProps }) {
+  const drawingRef = useRef(null);
 
-  const view3DEnable = useSelector(
-    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
-  );
+  // This is for mainMap, which is the first map
+  const [mainMap, setMainMap] = useState(null);
+  const [deckgl, setDeckGl] = useState(null);
   const embedToolEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.EMBED_TOOL),
   );
-
-  const drawingRef = useRef(null);
-  const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
-  const isMeasurementToolActive = () =>
-    drawingRef.current.isMeasurementToolActive();
-  const redrawZonalAnalysis = () => drawingRef.current.redrawZonalAnalysis();
-  const isZonalAnalysisActive = () =>
-    drawingRef.current.isZonalAnalysisActive();
-
-  /***
-   * Make attribution call Attributions component instead
-   */
-  class AttributionControl extends maplibregl.AttributionControl {
-    _updateCompact() {
-      if (this._map?.style) {
-        const attributions = [];
-        for (const [key, layer] of Object.entries(this._map.style._layers)) {
-          const source = this._map.style.sourceCaches[layer.source];
-          if (this._map.style.sourceCaches[layer.source]) {
-            if (source._source.attribution) {
-              attributions.push(source._source.attribution);
-            }
-          }
-        }
-        dispatch(
-          Actions.GlobalState.update({
-            attributions: Array.from(new Set(attributions)),
-          }),
-        );
-      }
-    }
-  }
-
-  /**
-   * FIRST INITIATE
-   * */
-  useEffect(() => {
-    if (!map) {
-      const newMap = new maplibregl.Map({
-        container: "map",
-        style: {
-          version: 8,
-          sources: {},
-          layers: [],
-          glyphs: staticUrl + "fonts/{fontstack}/{range}.pbf",
-        },
-        center: [0, 0],
-        zoom: minZoomConfig > 1 ? minZoomConfig : 1,
-        minZoom: minZoomConfig,
-        maxZoom: maxZoomConfig,
-        attributionControl: false,
-      }).addControl(
-        new AttributionControl({
-          compact: true,
-        }),
-      );
-      newMap.once("load", () => {
-        setMap(newMap);
-        setTimeout(
-          () =>
-            document
-              .querySelector(".maplibregl-ctrl-compass")
-              .addEventListener("click", () => {
-                newMap.easeTo({ pitch: 0, bearing: 0 });
-              }),
-          500,
-        );
-      });
-      newMap.addControl(
-        new MapboxDraw({
-          displayControlsDefault: false,
-          styles: customDrawStyles,
-          controls: {
-            polygon: true,
-            line_string: true,
-            trash: true,
-          },
-        }),
-        "bottom-right",
-      );
-      newMap.addControl(new maplibregl.NavigationControl(), "bottom-left");
-      newMap.on("styledata", () => {
-        const currentIds = newMap.getStyle().layers.map((layer) => layer.id);
-        if (JSON.stringify(currentIds) === JSON.stringify(previousLayerIds)) {
-          return;
-        }
-        previousLayerIds = currentIds;
-        const contextLayers = newMap
-          .getStyle()
-          .layers.filter((layer) => layer.id.includes("context-layer-"));
-        const contextLayersExists = contextLayers.length > 0;
-        const popupElements = document.querySelectorAll(
-          "#map .maplibregl-popup-anchor-center",
-        );
-        if (contextLayersExists) {
-          popupElements.forEach((popup) => {
-            popup.style.zIndex = "-9"; // Lower than your intended layer
-          });
-        } else {
-          popupElements.forEach((popup) => {
-            popup.style.zIndex = "0"; // Lower than your intended layer
-          });
-        }
-        transparencyRef.current.update();
-      });
-
-      let mapControl = document.querySelector(
-        ".maplibregl-ctrl-bottom-left .maplibregl-ctrl-group",
-      );
-      let parent = document.getElementById("maplibregl-ctrl-bottom-left");
-      parent.appendChild(mapControl);
-
-      let tilt = document.getElementsByClassName("TiltControl")[0];
-      parent = document.getElementById("tilt-control");
-      parent.appendChild(tilt);
-
-      const deckgl = new MapboxOverlay({
-        interleaved: true,
-        layers: [],
-      });
-      newMap.addControl(deckgl);
-      setDeckGl(deckgl);
-
-      const originalAddLayer = newMap.addLayer.bind(newMap);
-      newMap.addLayer = (layer, beforeId) => {
-        originalAddLayer(layer, beforeId);
-        if (isZonalAnalysisActive()) redrawZonalAnalysis();
-        if (isMeasurementToolActive()) redrawMeasurement();
-      };
-
-      // Event when resized
-      window.addEventListener("resize", (_) => {
-        setTimeout(function () {
-          newMap.resize();
-        }, 1);
-      });
-    }
-  }, []);
-
-  /**
-   * EXTENT CHANGED
-   * */
-  useEffect(() => {
-    if (map && extent && !(position && Object.keys(position).length)) {
-      setTimeout(function () {
-        map.fitBounds(
-          [
-            [extent[0], extent[1]],
-            [extent[2], extent[3]],
-          ],
-          {
-            pitch: 0,
-            bearing: 0,
-          },
-        );
-      }, 100);
-    }
-  }, [map, extent]);
-
-  /**
-   * EXTENT CHANGED
-   * */
-  useEffect(() => {
-    if (map && position && Object.keys(position).length) {
-      setTimeout(function () {
-        map.easeTo({
-          pitch: position.pitch,
-          bearing: position.bearing,
-          zoom: position.zoom,
-          center: position.center,
-        });
-      }, 100);
-    }
-  }, [map, position]);
-
-  /***
-   * Render layer to maplibre
-   * @param {String} id of layer
-   * @param {Object} source Layer config options.
-   * @param {Object} layer Layer config options.
-   */
-  const renderLayer = (id, source, layer) => {
-    removeLayer(map, id);
-    removeSource(map, id);
-    map.addSource(id, source);
-    addLayerWithOrder(
-      map,
-      {
-        ...layer,
-        id: id,
-        source: id,
-      },
-      Variables.LAYER_CATEGORY.BASEMAP,
-    );
-  };
-
-  /** BASEMAP CHANGED */
-  useEffect(() => {
-    if (map && basemapLayer) {
-      renderLayer(BASEMAP_ID, basemapLayer, { type: "raster" });
-    }
-  }, [map, basemapLayer]);
 
   return (
     <section
@@ -304,10 +72,11 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
     >
       {/* TOOLBARS */}
       <div className="Toolbar">
-        <ZoomToFilteredGeometries map={map} />
-        <TiltControl map={map} is3DView={is3dMode} force={force} />
+        <ZoomToFilteredGeometries />
+        <TiltControl />
+        {/* LEFT SIDE OF NAVBAR */}
         <div className="Toolbar-Left">
-          {leftPanelProps ? (
+          {leftPanelProps && (
             <ToggleSidePanel
               className={leftPanelProps.className}
               initState={leftPanelProps.initState}
@@ -319,61 +88,39 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
                 leftPanelProps.onRight();
               }}
             />
-          ) : null}
+          )}
+          <ProjectOverview />
           <ReferenceLayerLevelSelection />
           <GlobalDateSelector />
         </div>
-
+        {/* MIDDLE SIDE OF NAVBAR */}
         <div className="Toolbar-Middle">
           <div className="Separator" />
-          <HomeButton map={map} />
+          <HomeButton />
           <LabelToggler />
-          <CompareLayer disabled={is3dMode} />
-          {/* 3D View */}
-          <Plugin hidden={!view3DEnable}>
-            <div
-              className="ExtrudedIcon Active"
-              data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
-            >
-              <PluginChild
-                title={"3D layer"}
-                disabled={!map}
-                active={is3dMode}
-                onClick={() => {
-                  if (is3dMode) {
-                    map.easeTo({ pitch: 0 });
-                  }
-                  dispatch(Actions.Map.change3DMode(!is3dMode));
-                }}
-              >
-                {is3dMode ? (
-                  <ThreeDimensionOnIcon />
-                ) : (
-                  <ThreeDimensionOffIcon />
-                )}
-              </PluginChild>
-            </div>
-          </Plugin>
-          <PopupToolbars map={map} ref={drawingRef} />
+          <MapModeToolbars map={mainMap} />
+          {/* This is all the toolbars that has popup */}
+          <PopupToolbars map={mainMap} ref={drawingRef} />
+          <LayerCreationToolbars />
           <div className="Separator" />
         </div>
 
-        {/* Embed */}
+        {/* RIGHT SIDE OF NAVBAR */}
         <div className="Toolbar-Right">
-          <SearchGeometryInput map={map} />
+          <SearchGeometryInput />
           <Plugin className="EmbedControl" hidden={!embedToolEnable}>
             <div
               className="Active"
               data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
             >
               <PluginChild title={"Get embed code"}>
-                <EmbedControl map={map} />
+                <EmbedControl map={mainMap} />
               </PluginChild>
             </div>
           </Plugin>
           <DataDownloader />
           <Plugin className="BookmarkControl">
-            <Bookmark map={map} />
+            <Bookmark map={mainMap} />
           </Plugin>
           {rightPanelProps ? (
             <ToggleSidePanel
@@ -393,16 +140,23 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
 
       <SearchGeometryMobile />
 
-      <div id="map"></div>
+      <div id="map">
+        <MainMapLibre
+          key={0}
+          id={0}
+          setParentMap={setMainMap}
+          setParentDeckGl={setDeckGl}
+          drawingRef={drawingRef}
+        />
+        <MirrorMapLibre key={1} id={1} />
+        <MirrorMapLibre key={2} id={2} />
+        <MirrorMapLibre key={3} id={3} />
+      </div>
 
-      <ReferenceLayers map={map} deckgl={deckgl} is3DView={is3dMode} />
-      <ContextLayers map={map} />
-      {map ? (
+      {mainMap ? (
         <>
           <IndicatorLayersReferenceControl />
           <DatasetGeometryData />
-          <ReferenceLayerCentroid map={map} />
-          <TransparencyControl map={map} ref={transparencyRef} />
         </>
       ) : null}
 

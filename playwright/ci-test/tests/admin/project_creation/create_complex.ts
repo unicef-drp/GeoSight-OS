@@ -307,8 +307,9 @@ test.describe('Create complex project', () => {
     // Pin layer
     const layer4 = 'Pin Layer'
     await page.getByLabel(layer4).click();
-    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Sample Indicator A');
-    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator B');
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Pin Layer');
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator A');
+    await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('Sample Indicator B');
     await expect(page.getByLabel(layer4)).toBeChecked();
 
     const pin1 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(0)

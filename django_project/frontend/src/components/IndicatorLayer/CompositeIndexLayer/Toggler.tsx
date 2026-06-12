@@ -26,6 +26,7 @@ import {
 import { delay, dictDeepCopy } from "../../../utils/main";
 import { Actions } from "../../../store/dashboard";
 import { useConfirmDialog } from "../../../providers/ConfirmDialog";
+import { selectIndicatorLayerByIdx } from "../../../selectors/indicatorLayers";
 
 export interface Props {
   ActiveIcon: React.ReactElement;
@@ -46,10 +47,7 @@ export default function CompositeIndexLayerToggler({
     // @ts-ignore
     (state) => state.dashboard.data?.indicatorLayersStructure,
   );
-  const currentIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
+  const currentIndicatorLayer = useSelector(selectIndicatorLayerByIdx(0));
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
   const enabled =

@@ -24,7 +24,8 @@ import {
   IndicatorLayer as IndicatorLayerType
 } from "../../../../types/IndicatorLayer";
 import { useDispatch, useSelector } from "react-redux";
-import IndicatorLayer from "../../../Map/SidePanelTree/IndicatorLayer";
+import IndicatorLayer
+  from "../../../Map/SidePanelTree/IndicatorLayer/Selector";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   CompositeIndexLayerType,
@@ -44,9 +45,12 @@ import DynamicIndicatorLayer
   from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
 import { delay, dictDeepCopy } from "../../../../utils/main";
 import { disabledCompositeLayer } from "../utilities";
+import {
+  selectIndicatorLayerByIdx
+} from "../../../../selectors/indicatorLayers";
+import CompositeIndexLayerToggler from "../Toggler";
 
 import "./style.scss";
-import CompositeIndexLayerToggler from "../Toggler";
 
 /** Convert to dynamic layer*/
 const ToDynamicLayer = memo(() => {
@@ -59,10 +63,7 @@ const ToDynamicLayer = memo(() => {
     // @ts-ignore
     (state) => state.dashboard.data?.indicatorLayersStructure,
   );
-  const currentIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
+  const currentIndicatorLayer = useSelector(selectIndicatorLayerByIdx(0));
 
   return (
     <AddCircleIcon
@@ -94,10 +95,12 @@ const ToDynamicLayer = memo(() => {
         );
         (async () => {
           await delay(100);
+          dispatch(Actions.Map.updateIndicatorLayers([newLayer]));
           disabledCompositeLayer(
             dispatch,
             usedIndicatorLayers,
             usedIndicatorLayersStructure,
+            false,
           );
         })();
       }}
@@ -130,7 +133,7 @@ export function CompositeIndexLayerRenderers() {
   /** Update data when opened **/
   useEffect(() => {
     if (compositeMode) {
-      dispatch(Actions.SelectedIndicatorLayer.change(indicatorLayer));
+      dispatch(Actions.Map.updateIndicatorLayers([indicatorLayer]));
       dispatch(
         Actions.SelectionState.updateCompositeIndicatorLayer(
           data.config.indicatorLayers.map((layer: any) => parseInt(layer.id)),
@@ -169,6 +172,21 @@ export default function CompositeIndexLayer() {
     related_tables: [],
     error: "",
     config: {},
+    label_config: {
+      text: "{name}\n{value}.round(2)",
+      style: {
+        minZoom: 0,
+        maxZoom: 24,
+        fontFamily: '"Rubik", sans-serif',
+        fontSize: 13,
+        fontColor: "#000000",
+        fontWeight: 300,
+        strokeColor: "#FFFFFF",
+        strokeWeight: 0,
+        haloColor: "#FFFFFF",
+        haloWeight: 2,
+      },
+    },
   };
 
   /** Update data when opened **/

@@ -56,7 +56,7 @@ export async function updateColorPaletteData() {
 /** Return layer style config */
 export function returnLayerStyleConfig(layer, indicators) {
   let config = {};
-  if (layer.id) {
+  if (layer?.id) {
     config = dictDeepCopy(layer);
     // Use layer rules
     // If not, use first indicator rules

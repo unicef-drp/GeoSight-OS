@@ -14,7 +14,7 @@
  */
 
 import { addPopup, getBeforeLayerId, hasSource } from "../utils";
-import { addLayerWithOrder } from "../Render";
+import { addLayerWithOrder } from "../utils/Render";
 import { Variables } from "../../../../utils/Variables";
 
 

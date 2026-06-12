@@ -16,7 +16,7 @@
 import { Marker } from "maplibre-gl";
 import { jsonToUrlParams, stringToUrlAndParams } from "../../../../utils/main";
 import { addPopup, addPopupEl, hasLayer, hasSource } from "../utils";
-import { addLayerWithOrder } from "../Render";
+import { addLayerWithOrder } from "../utils/Render";
 import { Variables } from "../../../../utils/Variables";
 
 export { default as arcGisLayer } from "./ArcGis";

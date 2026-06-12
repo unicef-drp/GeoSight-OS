@@ -68,7 +68,7 @@ export const FilterInputData = memo(
   }: Props) => {
     const dispatch = useDispatch();
     const isEnabled = isAdmin || allowModify;
-    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID());
+    const isUsingConceptUUID = useSelector(isProjectUsingConceptUUID);
     // @ts-ignore
     const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
 

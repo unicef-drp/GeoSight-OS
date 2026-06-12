@@ -32,11 +32,8 @@ export const defaultCompositeIndexLayer = (): IndicatorLayerConfig => {
     dynamic_class_num: 7,
     sync_outline: false,
     sync_filter: false,
-    // @ts-ignore
     outline_color: preferences.style_dynamic_style_outline_color,
-    // @ts-ignore
     outline_size: preferences.style_dynamic_style_outline_size,
-    // @ts-ignore
     color_palette: preferences.default_color_palette,
     no_data_rule: no_data_rule,
   };
@@ -56,6 +53,7 @@ export interface CompositeIndexLayerConfigIndicatorLayer {
 }
 
 export const MaxSelectableLayersForCompositeIndexLayer = 100;
+export const MaxSelectableLayersForSideBySideView = 4;
 
 export const configToExpression = (
   composite: Array<CompositeIndexLayerConfigIndicatorLayer>,
