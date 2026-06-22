@@ -28,7 +28,7 @@ from django.http import (
 from django.urls import re_path, reverse
 from django.utils.html import format_html
 
-from geosight.log.models import LogFile
+from geosight.log.models import LogFile, CleanupDirectoryLog
 
 
 def list_log_files(parent_dir):
@@ -202,3 +202,12 @@ class LogFileAdmin(admin.ModelAdmin):
         return HttpResponseRedirect(request.get_full_path())
 
     refresh_log_files.short_description = "Refresh log files"
+
+
+@admin.register(CleanupDirectoryLog)
+class CleanupDirectoryLogAdmin(admin.ModelAdmin):
+    """Class that represents CleanupDirectoryLog Admin."""
+
+    list_display = (
+        'date_time', 'storage_path', 'usage_percentage', 'deleted_files_count'
+    )

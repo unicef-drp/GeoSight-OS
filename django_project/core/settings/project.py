@@ -156,7 +156,11 @@ CELERY_BEAT_SCHEDULE = {
     'cleanup-old-layer-downloads': {
         'task': 'cloud_native_gis.tasks.cleanup_old_layer_downloads',
         'schedule': crontab(minute='*/30')
-    }
+    },
+    'cleanup-tmp-directory': {
+        'task': 'geosight.log.tasks.cleanup_tmp_directory',
+        'schedule': crontab(minute='0', hour='*/12'),
+    },
 }
 
 # Beat schedule for plugins
