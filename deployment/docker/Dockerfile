@@ -19,7 +19,7 @@ ENV CACHE_BUSTER=27.05.2026
 # NOTE: If you forgot to run setup.sh and you are arm architecture
 #  And comment above FROM
 # ----------------------------------------------------------------
-#FROM --platform=linux/arm64 ubuntu:22.04 AS prod
+FROM --platform=linux/arm64 ubuntu:22.04 AS prod
 # --------------------------------------------
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
@@ -45,7 +45,10 @@ ENV LC_ALL en_ZA.UTF-8
 
 ADD deployment/docker/requirements.txt /requirements.txt
 RUN python3 -m pip install --upgrade pip setuptools wheel
-RUN python3 -m pip install -r /requirements.txt
+# rasterio 1.3.x has no linux/arm64 wheel; its sdist needs pkg_resources (removed in setuptools 81)
+RUN echo "setuptools<81" > /tmp/build-constraints.txt && \
+    PIP_BUILD_CONSTRAINT=/tmp/build-constraints.txt PIP_CONSTRAINT=/tmp/build-constraints.txt \
+    python3 -m pip install -r /requirements.txt
 
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
