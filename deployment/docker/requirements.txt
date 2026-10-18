@@ -11,6 +11,9 @@
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
 
+# added h3
+h3>=4.1,<5
+
 Django==3.2.16
 django-braces==1.15.0
 django-celery-beat==2.4.0
