@@ -38,4 +38,5 @@ except ImportError:
 if REFERENCE_DATASET_ENABLED:
     REFERENCE_DATASET_APPS = [
         'geosight.reference_dataset',
+        'geosight.h3grid'
     ]
