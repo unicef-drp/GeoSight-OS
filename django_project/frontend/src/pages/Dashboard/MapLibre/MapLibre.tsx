@@ -39,9 +39,7 @@ import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import MapLegend from "./MapLegend";
 import ReferenceLayers from "./Layers/ReferenceLayer";
-import ReferenceLayerCentroid from "./ReferenceLayerCentroid";
 import { MapSwitcher } from "./MapSwitcher";
-import SearchGeometryInputController from "../Toolbars/SearchGeometryInput/Controller";
 
 maplibregl.addProtocol("cog", cogProtocol);
 

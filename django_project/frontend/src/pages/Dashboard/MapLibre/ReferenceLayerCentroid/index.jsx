@@ -40,16 +40,13 @@ import {
 } from "./Label";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
-import {
-  createChartState,
-  renderChart,
-  renderPin,
-  resetCharts
-} from "./Chart";
+import { createChartState, renderChart, renderPin, resetCharts } from "./Chart";
 import workerMergeGeometries from "../../../../workers/merge_geometries";
 import { ReferenceLayerFilterCentroid } from "./CentroidFiltered";
 
 import "./style.scss";
+
+const EMPTY_GEOMETRY_VALUE = {};
 
 /**
  * GeometryCenter.
@@ -73,7 +70,9 @@ export default function ReferenceLayerCentroid({
   const datasetGeometries = useSelector((state) => state.datasetGeometries);
   const indicatorsData = useSelector((state) => state.indicatorsData);
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
-  const mapGeometryValue = useSelector((state) => state.mapGeometryValue);
+  const mapGeometryValue = useSelector(
+    (state) => state.mapGeometryValue[firstLayer?.id] ?? EMPTY_GEOMETRY_VALUE,
+  );
 
   const [geometriesDataState, setGeometriesDataState] = useState({
     identifiers: null,
