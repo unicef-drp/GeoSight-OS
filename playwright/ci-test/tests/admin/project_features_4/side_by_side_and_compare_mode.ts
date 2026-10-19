@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { viewProject } from "../../utils/project";
+import {Browser, expect, test, TestInfo} from '@playwright/test';
+import {viewProject, deleteProject, saveAsProject, saveProject} from "../../utils/project";
 import {
   defaultFill,
   defaultLine,
@@ -9,12 +9,45 @@ import {
   TEXT,
 } from "../../utils/project_context";
 
+const sideBySideText = TEXT.TOOLS_PROJECT.sideBySide;
+const name = 'Demo GeoSight Project Side by side and compare mode'
+
 test.describe('Side by side and compare mode', () => {
   const ctx = new ProjectTestContext();
 
+  const newPage = async (browser: Browser, testInfo: TestInfo) => {
+    const { storageState, baseURL } = testInfo.project.use;
+    const context = await browser.newContext({ storageState, baseURL });
+    return context.newPage();
+  };
+
+  test.beforeAll(async ({ browser }, testInfo) => {
+    const page = await newPage(browser, testInfo);
+    await deleteProject(page, name)
+    await saveAsProject(page, 'Demo GeoSight Project', name)
+    await page.locator('.TabPrimary').getByText('Tools').click();
+
+    // Side by side view
+    await expect(page.getByRole('listitem').filter({ hasText: sideBySideText })).toBeVisible();
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: sideBySideText })
+      .locator('.VisibilityIconOff')
+      .first().click();
+    await saveProject(page);
+    await page.context().close();
+  });
+
+  // Delete the project after all tests are done
+  test.afterAll(async ({ browser }, testInfo) => {
+    const page = await newPage(browser, testInfo);
+    await deleteProject(page, name)
+    await page.context().close();
+  });
+
   test.beforeEach(async ({ page }) => {
     ctx.setup(page);
-    await viewProject(page, 'Demo GeoSight Project', true);
+    await viewProject(page, name, true);
   });
 
   test('Compare mode', async ({ page }) => {
