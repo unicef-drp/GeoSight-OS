@@ -762,6 +762,9 @@ class Dashboard(
                 - type (str): Widget type
                 - config (dict): Configuration options
         :type widget_data: list[dict]
+        :param indicator_layers_new:
+            Mapping indicator layer with key is old id and value is new id.
+        :type indicator_layers_new: dict
 
         :return:
             A mapping of original widget IDs (or 0 for new ones)
@@ -798,7 +801,7 @@ class Dashboard(
                 widget.type = data['type']
 
                 try:
-                    data['config']['layer_id']  = indicator_layers_new[
+                    data['config']['layer_id'] = indicator_layers_new[
                         data['config']['layer_id']
                     ]
                 except Exception:
