@@ -60,7 +60,8 @@ export const renderLabel = (
   config,
   state,
 ) => {
-  if (!map) return;
+  // Map style is undefined after map.remove()
+  if (!map?.style) return;
   if (JSON.stringify(features) === JSON.stringify(state.lastFeatures)) {
     return;
   }

@@ -6,10 +6,10 @@
     </marker>
   </defs>
   <!-- Corner boxes -->
-  <rect x="1" y="1" width="7" height="7" rx="1"/>
-  <rect x="16" y="1" width="7" height="7" rx="1"/>
-  <rect x="1" y="16" width="7" height="7" rx="1"/>
-  <rect x="16" y="16" width="7" height="7" rx="1"/>
+  <rect x="1" y="1" width="7" height="7" rx="1" fill="currentColor"/>
+  <rect x="16" y="1" width="7" height="7" rx="1" fill="currentColor"/>
+  <rect x="1" y="16" width="7" height="7" rx="1" fill="currentColor"/>
+  <rect x="16" y="16" width="7" height="7" rx="1" fill="currentColor"/>
   <!-- Diagonal double-headed arrows crossing center -->
   <line x1="9.5" y1="9.5" x2="14.5" y2="14.5" marker-start="url(#tip)" marker-end="url(#tip)"/>
   <line x1="14.5" y1="9.5" x2="9.5" y2="14.5" marker-start="url(#tip)" marker-end="url(#tip)"/>
