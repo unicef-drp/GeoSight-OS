@@ -142,6 +142,7 @@ export function IndicatorLayers() {
         JSON.stringify(currentIndicatorLayers)
       ) {
         setCurrentIndicatorLayers(selectIndicatorLayerIds);
+        updateOtherLayers(selectIndicatorLayerIds.map((id) => "" + id));
       }
     }
   }, [compositeMode, selectIndicatorLayerIds]);
@@ -188,7 +189,21 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers));
-    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer];
+
+    const useMapState =
+      !compositeMode &&
+      selectIndicatorLayerIds?.length &&
+      selectIndicatorLayerIds[0] !== -1000;
+    const firstLayer = useMapState
+      ? selectIndicatorLayerIds[0]
+      : currentIndicatorLayer;
+    const secondLayer = useMapState
+      ? sideBySideViewMode
+        ? null
+        : selectIndicatorLayerIds[1]
+      : currentIndicatorSecondLayer;
+    let selectedIds = [firstLayer, secondLayer];
+
     if (indicatorLayersTree && indicatorLayersTree.length) {
       // Indicator enabled
       const indicatorLayersIds = [];
@@ -197,10 +212,10 @@ export function IndicatorLayers() {
         indicatorLayersIds.push("" + layer.id);
       });
       // Assign to selected ids
-      if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
+      if (!indicatorLayersIds.includes(firstLayer)) {
         selectedIds[0] = null;
       }
-      if (!indicatorLayersIds.includes(currentIndicatorSecondLayer)) {
+      if (!indicatorLayersIds.includes(secondLayer)) {
         selectedIds[1] = null;
       }
 
@@ -219,7 +234,7 @@ export function IndicatorLayers() {
       }
 
       // Check default indicator as turned one
-      if (currentIndicatorLayer !== selectedIds[0]) {
+      if (firstLayer !== selectedIds[0]) {
         if (!selectedIds[0]) {
           indicatorLayersTree[0].visible_by_default = true;
           selectedIds[0] = indicatorLayersTree[0].id;
