@@ -165,12 +165,20 @@ function receive(data, error = null) {
       data.show_map_toolbar = true;
     }
 
-    try {
-      const tool = data.tools.find(
-        (tool) => tool.name === "SDMX layer creation",
-      );
-      tool.name = Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION;
-    } catch (e) {}
+    // ------------------------------
+    // This is for the patch from old key name
+    // Check if it contains "SDMX layer", exclude SDMX layer creation
+    // If not contains "SDMX layer", rename "SDMX layer creation" to it
+    const OLD_SDMX_KEY = "SDMX layer creation";
+    const NEW_SDMX_KEY = Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION;
+    const newSdmxTool = data.tools.find((tool) => tool.name === NEW_SDMX_KEY);
+    const oldSdmxTool = data.tools.find((tool) => tool.name === OLD_SDMX_KEY);
+    if (!newSdmxTool && oldSdmxTool) {
+      oldSdmxTool.name = NEW_SDMX_KEY;
+    }
+    // Delete SDMX layer creation
+    data.tools = data.tools.filter((tool) => tool.name !== OLD_SDMX_KEY);
+    // ------------------------------
 
     // DASHBOARD TOOLS
     // Adding default tools
