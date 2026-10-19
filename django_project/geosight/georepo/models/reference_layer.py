@@ -52,8 +52,9 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     description = models.TextField(
         null=True, blank=True
     )
-
     in_georepo = models.BooleanField(default=True)
+
+    is_h3 = models.BooleanField(default=False)
 
     # Country
     countries = models.ManyToManyField(
