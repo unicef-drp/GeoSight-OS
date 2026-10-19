@@ -43,7 +43,7 @@ class ReferenceDatasetManager(models.Manager):
     def get_queryset(self):
         """Return queryset just for non georepo."""
         qs = ReferenceDatasetLocalQuerySet(self.model, using=self._db)
-        return qs.filter(in_georepo=False)
+        return qs.filter(in_georepo=False, is_h3=False)
 
 
 class ReferenceDatasetPermissionManager(PermissionManager):
@@ -52,7 +52,7 @@ class ReferenceDatasetPermissionManager(PermissionManager):
     def get_queryset(self):
         """Return queryset just for non georepo."""
         qs = ReferenceDatasetLocalQuerySet(self.model, using=self._db)
-        return qs.filter(in_georepo=False)
+        return qs.filter(in_georepo=False, is_h3=False)
 
     def create(self, user: User, **kwargs):
         """Create function with user."""
@@ -61,7 +61,7 @@ class ReferenceDatasetPermissionManager(PermissionManager):
         except KeyError:
             kwargs['identifier'] = ReferenceDataset.get_uuid()
         return super().create(user=user, **kwargs)
-
+        
 
 class ReferenceDataset(ReferenceLayerView):
     """Reference Layer view data."""
