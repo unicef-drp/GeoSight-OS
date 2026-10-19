@@ -114,6 +114,20 @@ test.describe('Side by side and compare mode', () => {
   })
 
   test('Side by side view', async ({ page }) => {
+    page.on('console', msg => {
+      [0, 1, 2, 3].map(id => {
+        const key = `LABEL_GEOM-map-${id}:`
+        if (msg.text().indexOf(key) !== -1) {
+          try {
+            ctx.currentLabels[id] = msg.text().replace(key, '')
+          } catch (e) {
+            console.log(e)
+
+          }
+        }
+      })
+    })
+
     await page.locator('.ToolbarControl.RightButton').click();
 
     // Default

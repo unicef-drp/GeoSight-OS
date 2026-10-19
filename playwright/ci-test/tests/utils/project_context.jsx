@@ -1,4 +1,6 @@
-import { expect } from '@playwright/test';
+import {expect} from '@playwright/test';
+
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export const TEXT = {
   TOOLS_PROJECT: {
@@ -95,23 +97,60 @@ export const checkMapStyle = async (page, mapIndex, layerName, lastLayerPaintFil
   expect(lastLayerPaintLine[mapId]).toBe(line + defaultLine);
 };
 
-export const doSwap = async (page, fromMapIndex, toMapIndex, fromLayerName, toLayerName, togglerClass, lastLayerPaintFill, lastLayerPaintLine) => {
+export const doSwap = async (page, fromMapIndex, toMapIndex, fromLayerName, toLayerName, togglerClass, lastLayerPaintFill, lastLayerPaintLine, currentLabels, layerLabels) => {
+  // Check current label
+  await delay(500)
+  if (layerLabels[fromLayerName]) {
+    expect(currentLabels[fromMapIndex]).toEqual(layerLabels[fromLayerName]);
+  }
+  if (layerLabels[toLayerName]) {
+    expect(currentLabels[toMapIndex]).toEqual(layerLabels[toLayerName]);
+  }
+
+  // Switching
   const container = `#map-${fromMapIndex}-wrapper`;
   await page.locator(container).hover();
   await page.locator(container).locator(".MapLegendSwapIcon." + togglerClass).click({ force: true });
   await checkMapStyle(page, fromMapIndex, toLayerName, lastLayerPaintFill, lastLayerPaintLine);
   await checkMapStyle(page, toMapIndex, fromLayerName, lastLayerPaintFill, lastLayerPaintLine);
 
+  // Check current after switched
+  await delay(500)
+  if (layerLabels[toLayerName]) {
+    expect(currentLabels[fromMapIndex]).toEqual(layerLabels[toLayerName]);
+  }
+  if (layerLabels[fromLayerName]) {
+    expect(currentLabels[toMapIndex]).toEqual(layerLabels[fromLayerName]);
+  }
+
+  // Switching back
   await page.locator(container).locator('.MapLegendSection .ReactSelect').first().click();
   await page.getByRole('option', { name: "[switch] " + fromLayerName }).click();
   await checkMapStyle(page, fromMapIndex, fromLayerName, lastLayerPaintFill, lastLayerPaintLine);
   await checkMapStyle(page, toMapIndex, toLayerName, lastLayerPaintFill, lastLayerPaintLine);
+
+  // Check current label after switching back
+  await delay(500)
+  if (layerLabels[fromLayerName]) {
+    expect(currentLabels[fromMapIndex]).toEqual(layerLabels[fromLayerName]);
+  }
+  if (layerLabels[toLayerName]) {
+    expect(currentLabels[toMapIndex]).toEqual(layerLabels[toLayerName]);
+  }
 };
 
 export class ProjectTestContext {
   lastLayers = {};
   lastLayerPaintFill = {};
   lastLayerPaintLine = {};
+
+  layerLabels = {
+    [TEXT.INDICATOR_LAYERS.sampleIndicatorA]: "Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Banadir,SOM_0003_V1,2020-01-01,20 - 40,30,Bari,SOM_0004_V1,2020-01-01,0 - 20,11,Bay,SOM_0005_V1,2020-01-01,20 - 40,40,Galgaduud,SOM_0006_V1,2020-01-01,0 - 20,10,Gedo,SOM_0007_V1,2020-01-01,20 - 40,40,Hiraan,SOM_0008_V1,2020-01-01,20 - 40,32,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Lower Shabelle,SOM_0010_V1,2020-01-01,40 - 60,59,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Sanaag,SOM_0015_V1,2020-01-01,0 - 20,14,Sool,SOM_0016_V1,2020-01-01,20 - 40,35,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89,Woqooyi Galbeed,SOM_0018_V1,2020-01-01,0 - 20,1",
+    [TEXT.INDICATOR_LAYERS.sampleIndicatorB]: "Awdal,SOM_0001_V1,2023-01-01,80 - 100,85,Bakool,SOM_0002_V1,2023-01-01,60 - 80,71,Banadir,SOM_0003_V1,2023-01-01,60 - 80,76,Bari,SOM_0004_V1,2023-01-01,80 - 100,90,Bay,SOM_0005_V1,2023-01-01,20 - 40,34,Galgaduud,SOM_0006_V1,2023-01-01,40 - 60,53,Gedo,SOM_0007_V1,2023-01-01,0 - 20,13,Hiraan,SOM_0008_V1,2023-01-01,80 - 100,97,Lower Juba,SOM_0009_V1,2023-01-01,40 - 60,54,Lower Shabelle,SOM_0010_V1,2023-01-01,20 - 40,23,Middle Juba,SOM_0011_V1,2023-01-01,40 - 60,46,Middle Shabelle,SOM_0012_V1,2023-01-01,20 - 40,31,Mudug,SOM_0013_V1,2026-02-17,Other data,150,Nugaal,SOM_0014_V1,2023-01-01,40 - 60,58,Sanaag,SOM_0015_V1,2023-01-01,60 - 80,63,Sool,SOM_0016_V1,2023-01-01,60 - 80,66,Togdheer,SOM_0017_V1,2023-01-01,0 - 20,6,Woqooyi Galbeed,SOM_0018_V1,2023-01-01,40 - 60,46",
+    [TEXT.INDICATOR_LAYERS.testIndicatorC]: "",
+    [TEXT.INDICATOR_LAYERS.kenyaIndicatorA]: "Baringo,KEN_0001_V1,2025-01-01,1.00 - 2.00,1,Bomet,KEN_0002_V1,2025-01-01,1.00 - 2.00,2,Bungoma,KEN_0003_V1,2025-01-01,1.00 - 2.00,1,Busia,KEN_0004_V1,2025-01-01,1.00 - 2.00,2,Elgeyo-Marakwet,KEN_0005_V1,2025-01-01,2.00 - 3.00,3,Embu,KEN_0006_V1,2025-01-01,5.00 - 6.00,6,Garissa,KEN_0007_V1,2025-01-01,6.00 - 7.00,7,Homa Bay,KEN_0008_V1,2025-01-01,3.00 - 4.00,4,Isiolo,KEN_0009_V1,2025-01-01,4.00 - 5.00,5,Kajiado,KEN_0010_V1,2025-01-01,2.00 - 3.00,3,Kakamega,KEN_0011_V1,2025-01-01,3.00 - 4.00,4,Kericho,KEN_0012_V1,2025-01-01,6.00 - 7.00,7,Kiambu,KEN_0013_V1,2025-01-01,5.00 - 6.00,6,Kilifi,KEN_0014_V1,2025-01-01,7.00 - 8.00,8,Kirinyaga,KEN_0015_V1,2025-01-01,1.00 - 2.00,1,Kisii,KEN_0016_V1,2025-01-01,1.00 - 2.00,2,Kisumu,KEN_0017_V1,2025-01-01,1.00 - 2.00,1,Kitui,KEN_0018_V1,2025-01-01,1.00 - 2.00,2,Kwale,KEN_0019_V1,2025-01-01,2.00 - 3.00,3,Laikipia,KEN_0020_V1,2025-01-01,3.00 - 4.00,4,Lamu,KEN_0021_V1,2025-01-01,2.00 - 3.00,3,Machakos,KEN_0022_V1,2025-01-01,1.00 - 2.00,2,Makueni,KEN_0023_V1,2025-01-01,1.00 - 2.00,1,Mandera,KEN_0024_V1,2025-01-01,1.00 - 2.00,2,Marsabit,KEN_0025_V1,2025-01-01,2.00 - 3.00,3,Meru,KEN_0026_V1,2025-01-01,3.00 - 4.00,4,Migori,KEN_0027_V1,2025-01-01,4.00 - 5.00,5,Mombasa,KEN_0028_V1,2025-01-01,3.00 - 4.00,4,Murang'A,KEN_0029_V1,2025-01-01,2.00 - 3.00,3,Nairobi,KEN_0030_V1,2025-01-01,1.00 - 2.00,2,Nakuru,KEN_0031_V1,2025-01-01,1.00 - 2.00,1,Nandi,KEN_0032_V1,2025-01-01,1.00 - 2.00,2,Narok,KEN_0033_V1,2025-01-01,2.00 - 3.00,3,Nyamira,KEN_0034_V1,2025-01-01,1.00 - 2.00,2,Nyandarua,KEN_0035_V1,2025-01-01,5.00 - 6.00,6,Nyeri,KEN_0036_V1,2025-01-01,1.00 - 2.00,1,Samburu,KEN_0037_V1,2025-01-01,7.00 - 8.00,8,Siaya,KEN_0038_V1,2025-01-01,2.00 - 3.00,3,Taita Taveta,KEN_0039_V1,2025-01-01,3.00 - 4.00,4,Tana River,KEN_0040_V1,2025-01-01,1.00 - 2.00,1,Tharaka-Nithi,KEN_0041_V1,2025-01-01,1.00 - 2.00,2,Trans Nzoia,KEN_0042_V1,2025-01-01,2.00 - 3.00,3,Turkana,KEN_0043_V1,2025-01-01,7.00 - 8.00,8,Uasin Gishu,KEN_0044_V1,2025-01-01,2.00 - 3.00,3,Vihiga,KEN_0045_V1,2025-01-01,3.00 - 4.00,4,Wajir,KEN_0046_V1,2025-01-01,2.00 - 3.00,3,West Pokot,KEN_0047_V1,2025-01-01,1.00 - 2.00,1"
+  };
+  currentLabels = [];
 
   setup(page) {
     this.lastLayers = {};
@@ -135,6 +174,6 @@ export class ProjectTestContext {
   }
 
   async doSwap(page, fromMapIndex, toMapIndex, fromLayerName, toLayerName, togglerClass) {
-    return doSwap(page, fromMapIndex, toMapIndex, fromLayerName, toLayerName, togglerClass, this.lastLayerPaintFill, this.lastLayerPaintLine);
+    return doSwap(page, fromMapIndex, toMapIndex, fromLayerName, toLayerName, togglerClass, this.lastLayerPaintFill, this.lastLayerPaintLine, this.currentLabels, this.layerLabels);
   }
 }
