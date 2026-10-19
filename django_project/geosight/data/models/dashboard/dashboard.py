@@ -272,11 +272,6 @@ class Dashboard(
         if data.get('permission', None):
             self.permission.update(data['permission'])
 
-        # BASEMAPS
-        widgets_new = self.save_widgets(data['widgets'])
-        widgets_structure = data['widgets_structure']
-        self.widgets_new = update_structure(widgets_structure, widgets_new)
-
         # INDICATORS
         self.save_relation(
             DashboardIndicator, Indicator, self.dashboardindicator_set.all(),
@@ -628,6 +623,15 @@ class Dashboard(
             obj.visible_by_default = tool['visible_by_default']
             obj.config = tool.get('config', None)
             obj.save()
+
+        # --------------------------------
+        # WIDGETS
+        # --------------------------------
+        widgets_new = self.save_widgets(data['widgets'], indicator_layers_new)
+        widgets_structure = data['widgets_structure']
+        self.widgets_new = update_structure(widgets_structure, widgets_new)
+
+        # Save the dashboard
         self.save()
 
     def save_relation(self, ModelClass, ObjectClass, modelQuery, inputData):
@@ -735,7 +739,7 @@ class Dashboard(
             ids_new[data.get('id', 0)] = data['id']
         return ids_new
 
-    def save_widgets(self, widget_data):
+    def save_widgets(self, widget_data, indicator_layers_new):
         """
         Save or update dashboard widgets from the provided data.
 
@@ -792,6 +796,13 @@ class Dashboard(
                 widget.order = order if order else 0
                 widget.visible_by_default = data['visible_by_default']
                 widget.type = data['type']
+
+                try:
+                    data['config']['layer_id']  = indicator_layers_new[
+                        data['config']['layer_id']
+                    ]
+                except Exception:
+                    pass
 
                 # This is config
                 widget.config = data['config']
