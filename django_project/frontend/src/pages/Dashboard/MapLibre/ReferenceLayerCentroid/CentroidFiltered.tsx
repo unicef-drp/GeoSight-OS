@@ -64,7 +64,7 @@ export const ReferenceLayerFilterCentroid = forwardRef(
 
       // LOG THE LABELS
       if (IS_DEBUG) {
-        setTimeout(function () {
+        setTimeout(async function () {
           try {
             if (!hasLayer(map, INDICATOR_LABEL_ID)) {
               return;
@@ -72,9 +72,26 @@ export const ReferenceLayerFilterCentroid = forwardRef(
           } catch (err) {
             return;
           }
-          const features = map.queryRenderedFeatures({
-            layers: [INDICATOR_LABEL_ID],
-          });
+
+          // Return all labels
+          const source = map.getSource(
+            INDICATOR_LABEL_ID,
+          ) as maplibregl.GeoJSONSource;
+          let features: any[];
+          try {
+            const data = (await source.getData()) as any;
+            features = data?.features ?? [];
+          } catch (err) {
+            return;
+          }
+          // Apply the same filter as the layer
+          if (codes) {
+            features = features.filter((feature) =>
+              codes.includes(feature.properties?.[geomFieldOnVectorTile]),
+            );
+          }
+
+          // Create output
           const output = features
             .sort((a, b) => {
               try {
@@ -93,7 +110,7 @@ export const ReferenceLayerFilterCentroid = forwardRef(
               feature.properties.value,
             ]);
 
-          Logger.log("LABEL_GEOM:", output);
+          Logger.log("LABEL_GEOM-" + map.getContainer().id + ":", output);
         }, 500);
       }
     };

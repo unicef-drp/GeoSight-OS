@@ -81,9 +81,9 @@ export const assert = async (page, url, countryLastLog, sumIndicatorAByCountry, 
 
       }
     }
-    if (msg.text().indexOf('LABEL_GEOM:') !== -1) {
+    if (msg.text().indexOf('LABEL_GEOM-map-0:') !== -1) {
       try {
-        lastLogLabel = msg.text().replace('LABEL_GEOM:', '')
+        lastLogLabel = msg.text().replace('LABEL_GEOM-map-0:', '')
       } catch (e) {
         console.log(e)
 
@@ -488,9 +488,9 @@ export const assert_2 = async (page, url, countryLastLog, sumIndicatorAByCountry
 
       }
     }
-    if (msg.text().indexOf('LABEL_GEOM:') !== -1) {
+    if (msg.text().indexOf('LABEL_GEOM-map-0:') !== -1) {
       try {
-        lastLogLabel = msg.text().replace('LABEL_GEOM:', '')
+        lastLogLabel = msg.text().replace('LABEL_GEOM-map-0:', '')
       } catch (e) {
         console.log(e)
 

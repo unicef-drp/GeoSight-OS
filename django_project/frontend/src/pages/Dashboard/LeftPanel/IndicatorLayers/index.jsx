@@ -142,6 +142,7 @@ export function IndicatorLayers() {
         JSON.stringify(currentIndicatorLayers)
       ) {
         setCurrentIndicatorLayers(selectIndicatorLayerIds);
+        updateOtherLayers(selectIndicatorLayerIds.map((id) => "" + id));
       }
     }
   }, [compositeMode, selectIndicatorLayerIds]);
@@ -188,7 +189,23 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers));
-    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer];
+
+    // If we decide to use mapstate selected indicator layers
+    const useMapState =
+      !compositeMode &&
+      selectIndicatorLayerIds?.length &&
+      selectIndicatorLayerIds[0] !== -1000;
+
+    const source = useMapState
+      ? selectIndicatorLayerIds
+      : currentIndicatorLayers;
+    const firstLayer = source[0];
+
+    // Side by side view can have more than 2 layers, keep all of them
+    let selectedIds = sideBySideViewMode
+      ? [...source]
+      : [firstLayer, source[1]];
+
     if (indicatorLayersTree && indicatorLayersTree.length) {
       // Indicator enabled
       const indicatorLayersIds = [];
@@ -197,12 +214,9 @@ export function IndicatorLayers() {
         indicatorLayersIds.push("" + layer.id);
       });
       // Assign to selected ids
-      if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
-        selectedIds[0] = null;
-      }
-      if (!indicatorLayersIds.includes(currentIndicatorSecondLayer)) {
-        selectedIds[1] = null;
-      }
+      selectedIds = selectedIds.map((id) =>
+        indicatorLayersIds.includes(id) ? id : null,
+      );
 
       // Get the force update ids
       if (indicatorLayersForcedUpdateIds !== null) {
@@ -219,7 +233,7 @@ export function IndicatorLayers() {
       }
 
       // Check default indicator as turned one
-      if (currentIndicatorLayer !== selectedIds[0]) {
+      if (firstLayer !== selectedIds[0]) {
         if (!selectedIds[0]) {
           indicatorLayersTree[0].visible_by_default = true;
           selectedIds[0] = indicatorLayersTree[0].id;
@@ -285,7 +299,7 @@ export function IndicatorLayers() {
 
     // Setup current indicator layer
     setCurrentIndicatorLayers(selectedIds);
-    updateOtherLayers(["" + selectedIds[0], "" + selectedIds[1]]);
+    updateOtherLayers(selectedIds.map((id) => "" + id));
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {

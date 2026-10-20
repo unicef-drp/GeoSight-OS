@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import {expect, test} from '@playwright/test';
 import {
   defaultFill,
   defaultLine,
@@ -7,7 +7,7 @@ import {
   ProjectTestContext,
   TEXT
 } from "../../utils/project_context";
-import { viewProject } from "../../utils/project";
+import {viewProject, saveProject, deleteProject, saveAsProject} from "../../utils/project";
 import {
   createBookmark,
   defaultBookmark,
@@ -16,6 +16,8 @@ import {
   selectBookmark,
   selection
 } from '../../utils/bookmark'
+
+const sideBySideText = TEXT.TOOLS_PROJECT.sideBySide;
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -53,8 +55,21 @@ test.describe('Bookmark', () => {
   });
 
   test('Test bookmark project with map mode', async ({ page }) => {
-    const name = 'Bookmark Map Mode'
-    await viewProject(page, 'Demo GeoSight Project', true);
+    const bookmarkName = 'Bookmark Map Mode'
+    const projectName = 'Demo GeoSight Project Bookmark'
+    await deleteProject(page, projectName)
+    await saveAsProject(page, 'Demo GeoSight Project', projectName)
+    await page.locator('.TabPrimary').getByText('Tools').click();
+
+    // Side by side view
+    await expect(page.getByRole('listitem').filter({ hasText: sideBySideText })).toBeVisible();
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: sideBySideText })
+      .locator('.VisibilityIconOff')
+      .first().click();
+    await saveProject(page);
+    await viewProject(page, projectName, true);
 
     // -----------------------------------
     // Compare mode
@@ -71,19 +86,19 @@ test.describe('Bookmark', () => {
     expect(ctx.lastLayerPaintFill["map-0"]).toBe(indicatorBFill + defaultFill);
     expect(ctx.lastLayerPaintLine["map-0"]).toBe(indicatorAFill + defaultLine);
 
-    await createBookmark(page, name)
+    await createBookmark(page, bookmarkName)
 
     await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.On)).toBeVisible();
     await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.Off)).toBeVisible();
 
     // We view
-    await viewProject(page, 'Demo GeoSight Project', true);
+    await viewProject(page, projectName, true);
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
     await ctx.checkIndicatorNotSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
     await ctx.checkIndicatorNotSelected(page, TEXT.INDICATOR_LAYERS.kenyaIndicatorA);
 
     // Select bookmark
-    await selectBookmark(page, name)
+    await selectBookmark(page, bookmarkName)
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
     await ctx.checkIndicatorNotSelected(page, TEXT.INDICATOR_LAYERS.kenyaIndicatorA);
@@ -91,12 +106,12 @@ test.describe('Bookmark', () => {
     await expect(page.locator("#map-1")).toBeHidden();
 
     // Delete bookmark
-    await deleteBookmark(page, name)
+    await deleteBookmark(page, bookmarkName)
 
     // -----------------------------------
     // Side by Side mode
     // -----------------------------------
-    await viewProject(page, 'Demo GeoSight Project', true);
+    await viewProject(page, projectName, true);
     await page.getByLabel(TEXT.INDICATOR_LAYERS.sampleIndicatorA).click();
     await ctx.checkMapStyle(page, 0, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
 
@@ -111,13 +126,13 @@ test.describe('Bookmark', () => {
     await ctx.checkMapStyle(page, 1, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
     await ctx.checkMapStyle(page, 2, TEXT.INDICATOR_LAYERS.testIndicatorC);
 
-    await createBookmark(page, name)
+    await createBookmark(page, bookmarkName)
 
     await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.Off)).toBeVisible();
     await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.On)).toBeVisible();
 
     // We view
-    await viewProject(page, 'Demo GeoSight Project', true);
+    await viewProject(page, projectName, true);
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
     await ctx.checkIndicatorNotSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
     await ctx.checkIndicatorNotSelected(page, TEXT.INDICATOR_LAYERS.testIndicatorC);
@@ -126,7 +141,7 @@ test.describe('Bookmark', () => {
     await ctx.checkMapStyle(page, 2, null);
 
     // Select bookmark
-    await selectBookmark(page, name)
+    await selectBookmark(page, bookmarkName)
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
     await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.testIndicatorC);
@@ -135,6 +150,7 @@ test.describe('Bookmark', () => {
     await ctx.checkMapStyle(page, 2, TEXT.INDICATOR_LAYERS.testIndicatorC);
 
     // Delete bookmark
-    await deleteBookmark(page, name)
+    await deleteBookmark(page, bookmarkName)
+    await deleteProject(page, projectName)
   })
 });

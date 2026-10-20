@@ -60,7 +60,8 @@ export const offTouchEvent = (map, eventId, fnId) => {
  * @param {String} id of layer
  */
 export const hasLayer = (map, id) => {
-  if (!map) {
+  // Map style is undefined after map.remove()
+  if (!map?.style) {
     return false;
   }
   return typeof map.getLayer(id) !== "undefined";
@@ -83,6 +84,9 @@ export const removeLayer = (map, id) => {
  * @param {String} id of layer
  */
 export const hasSource = (map, id) => {
+  if (!map?.style) {
+    return false;
+  }
   return typeof map.getSource(id) !== "undefined";
 };
 /**

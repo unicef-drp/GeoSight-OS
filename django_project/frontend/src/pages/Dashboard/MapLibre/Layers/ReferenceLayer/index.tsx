@@ -33,9 +33,7 @@ import {
 import { allDataIsReady } from "../../../../../utils/indicators";
 import { returnStyle } from "../../../../../utils/referenceLayer";
 import { dictDeepCopy, hexToRGBList } from "../../../../../utils/main";
-import {
-  getIndicatorValueByGeometry
-} from "../../../../../utils/indicatorData";
+import { getIndicatorValueByGeometry } from "../../../../../utils/indicatorData";
 import { hasLayer, removeLayer, removeSource } from "../../utils";
 import { popup } from "./Popup";
 import {
@@ -47,8 +45,7 @@ import {
   returnLayerStyleConfig,
   returnNoDataStyle,
 } from "../../../../../utils/Style";
-import GeorepoAuthorizationModal
-  from "../../../../../components/GeorepoAuthorizationModal";
+import GeorepoAuthorizationModal from "../../../../../components/GeorepoAuthorizationModal";
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 import { addLayerWithOrder } from "../../utils/Render";
@@ -61,8 +58,7 @@ import {
   IndicatorLayer,
   IndicatorLayerConfig,
 } from "../../../../../types/IndicatorLayer";
-import SearchGeometryInputController
-  from "../../../Toolbars/SearchGeometryInput/Controller";
+import SearchGeometryInputController from "../../../Toolbars/SearchGeometryInput/Controller";
 import ReferenceLayerCentroid from "../../ReferenceLayerCentroid";
 
 export const CONTEXT_LAYER_ID = `context-layer`;
@@ -500,7 +496,14 @@ export function ReferenceLayer({
           currentLevel,
           indicatorLayersData,
         );
-      dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry));
+      if (firstLayer?.id) {
+        dispatch(
+          Actions.MapGeometryValue.update(
+            firstLayer?.id,
+            indicatorValueByGeometry,
+          ),
+        );
+      }
       if (IS_DEBUG) {
         const geoms = Object.keys(indicatorValueByGeometry);
         geoms.sort();

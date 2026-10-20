@@ -19,12 +19,15 @@ import {
 } from './index'
 
 /**
- * Change values.
+ * Change values of an indicator layer.
+ * @param {number|string} id Indicator layer id.
+ * @param {dict} values Values by geometry.
  */
-export function update(values) {
+export function update(id, values) {
   return {
     name: MAP_GEOMETRY_VALUE_ACTION_NAME,
     type: MAP_GEOMETRY_VALUE_ACTION_UPDATE,
+    id: id,
     values: values
   };
 }

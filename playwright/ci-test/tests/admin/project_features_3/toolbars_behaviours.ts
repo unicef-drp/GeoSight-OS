@@ -2,7 +2,7 @@
  * This is for toolbars behaviours test
  * Just for visibility, and enable disabled
  */
-import { expect, test } from '@playwright/test';
+import {expect, test} from '@playwright/test';
 import {
   deleteProject,
   editProject,
@@ -10,7 +10,7 @@ import {
   saveProject,
   viewProject
 } from "../../utils/project";
-import { TEXT } from "../../utils/project_context";
+import {TEXT} from "../../utils/project_context";
 
 const sideBySideText = TEXT.TOOLS_PROJECT.sideBySide;
 const compareLayerText = TEXT.TOOLS_PROJECT.compareLayer;
@@ -29,13 +29,28 @@ test.describe('Toolbars behaviours', () => {
     await saveAsProject(page, 'Demo GeoSight Project', name)
 
     await page.locator('.TabPrimary').getByText('Tools').click();
+
+    // Side by side view
     await expect(page.getByRole('listitem').filter({ hasText: sideBySideText })).toBeVisible();
+    await expect(page
+      .getByRole('listitem')
+      .filter({ hasText: sideBySideText })
+      .locator('.VisibilityIconOff')
+      .first()
+    ).toBeVisible();
+    // Enable it
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: sideBySideText })
+      .locator('.VisibilityIconOff')
+      .first().click();
     await expect(page
       .getByRole('listitem')
       .filter({ hasText: sideBySideText })
       .locator('.VisibilityIconOn')
       .first()
     ).toBeVisible();
+
     await expect(page.getByRole('listitem').filter({ hasText: compareLayerText })).toBeVisible();
     await expect(page
       .getByRole('listitem')
@@ -95,14 +110,15 @@ test.describe('Toolbars behaviours', () => {
     await deleteProject(page, name)
     await saveAsProject(page, 'Demo GeoSight Project', name)
 
-    // Enable composite layer visibility so it appears in the view toolbar
+    // Enable composite layer and side by side visibility so it appears in the view toolbar
     await page.locator('.TabPrimary').getByText('Tools').click();
     await page.getByRole('listitem').filter({ hasText: compositeLayerText }).getByRole('img').click();
+    await page.getByRole('listitem').filter({ hasText: sideBySideText }).getByRole('img').click();
 
     await saveProject(page);
     await viewProject(page, name, true);
 
-    // All modes off initially
+    // All modes on initially
     await expect(page.getByTitle(compareTitle.Off)).toBeVisible();
     await expect(page.getByTitle(sideBySideTitle.Off)).toBeVisible();
     await expect(page.getByTitle(compositeLayerTitle.Off)).toBeVisible();

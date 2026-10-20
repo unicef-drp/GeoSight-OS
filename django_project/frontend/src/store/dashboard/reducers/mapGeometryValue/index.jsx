@@ -25,7 +25,11 @@ export default function mapGeometryValueReducer(state = initialState, action) {
   if (action.name === MAP_GEOMETRY_VALUE_ACTION_NAME) {
     switch (action.type) {
       case MAP_GEOMETRY_VALUE_ACTION_UPDATE: {
-        return { ...action.values }
+        // Map geometry value based on layer id
+        return {
+          ...state,
+          [action.id]: { ...action.values }
+        }
       }
     }
   }
