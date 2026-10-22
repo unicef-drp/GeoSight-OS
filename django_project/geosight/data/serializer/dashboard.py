@@ -161,17 +161,27 @@ class DashboardSerializer(serializers.ModelSerializer):
         :type obj: Dashboard
         :return:
             A dictionary with reference layer info
-            (identifier, URL, name, is_local).
+            (identifier, URL, name, is_local, is_h3 and,
+            for H3 layers, h3_config).
         :rtype: dict
         """
         reference_layer = obj.reference_layer
         if reference_layer:
-            return {
+            data = {
                 'identifier': reference_layer.identifier,
                 'detail_url': reference_layer.detail_url,
                 'name': reference_layer.name,
-                'is_local': reference_layer.is_local
+                'is_local': reference_layer.is_local,
+                'is_h3': reference_layer.is_h3
             }
+            config = getattr(reference_layer, 'h3_config', None)
+            if reference_layer.is_h3 and config:
+                data['h3_config'] = {
+                    'default_resolution': config.default_resolution,
+                    'min_resolution': config.min_resolution,
+                    'max_resolution': config.max_resolution
+                }
+            return data
         else:
             return {
                 'identifier': '',
