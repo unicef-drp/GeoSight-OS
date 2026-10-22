@@ -81,6 +81,51 @@ const sdmxConfig = async (page: any) => {
   await page.locator('div:nth-child(3) > .MuiFormControl-root > .DimensionDropdown > .DimensionDropdown__control > .DimensionDropdown__value-container > .DimensionDropdown__input-container').click();
   await page.getByRole('option', { name: 'B (Indicator B)' }).click();
 
+  // Dimension uses the dimension id, not the concept id
+  await expect(page.locator('label#INDICATOR')).toBeVisible();
+  await expect(page.locator('label#SAMPLE_INDICATOR')).toHaveCount(0);
+
+  // Time dimension is date range, not dropdown
+  await expect(page.locator('.DimensionGrid .DimensionDropdown')).toHaveCount(3);
+  const timeInputs = page.locator('.DimensionContainer').filter({ has: page.locator('label#TIME_PERIOD') }).locator('input');
+  await expect(timeInputs).toHaveCount(2);
+  const sdmxUrl = page.locator('.SDMX-Config section').filter({ has: page.getByText('SDMX URL', { exact: true }) }).locator('input');
+
+  // Date before 1900 is not applied
+  await timeInputs.nth(0).fill('1800-01-01');
+  await expect(sdmxUrl).not.toHaveValue(/startPeriod/);
+  await timeInputs.nth(0).fill('2021-01-01');
+  await expect(sdmxUrl).toHaveValue(/startPeriod=2021-01-01/);
+
+  // End period before start period is not applied
+  await timeInputs.nth(1).fill('2020-12-31');
+  await expect(sdmxUrl).not.toHaveValue(/endPeriod/);
+  await timeInputs.nth(1).fill('2021-12-31');
+  await expect(sdmxUrl).toHaveValue(/startPeriod=2021-01-01&endPeriod=2021-12-31/);
+
+  await page.getByText('Data Preview', { exact: true }).click();
+  await expect(page.getByText('1–1 of 1')).toBeVisible();
+  await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(2)).toHaveText("B");
+  await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toHaveText("2021-01-01");
+  await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(4)).toHaveText("8");
+
+  // No data returns empty data
+  await page.locator('.IndicatorLayerConfig .TabPrimary').getByText('General').nth(0).click();
+  await page.locator('.SDMX-Tab').getByText('Filter Dimensions').click();
+  await timeInputs.nth(1).fill('2025-12-31');
+  await timeInputs.nth(0).fill('2025-01-01');
+  await expect(sdmxUrl).toHaveValue(/startPeriod=2025-01-01&endPeriod=2025-12-31/);
+  await page.getByText('Data Preview', { exact: true }).click();
+  await expect(page.locator('.LoadDataError')).toHaveCount(0);
+  await expect(page.locator('.MuiDataGrid-row')).toHaveCount(0);
+
+  // Clear time period
+  await page.locator('.IndicatorLayerConfig .TabPrimary').getByText('General').nth(0).click();
+  await page.locator('.SDMX-Tab').getByText('Filter Dimensions').click();
+  await timeInputs.nth(0).fill('');
+  await timeInputs.nth(1).fill('');
+  await expect(sdmxUrl).not.toHaveValue(/Period/);
+
   // Check auto data
   await page.locator('.IndicatorLayerConfig .TabPrimary').getByText('General').nth(0).click();
   await page.locator('.SDMX-Tab').getByText('Layer Metadata').click();
@@ -232,7 +277,7 @@ test.describe('SDMX Indicator Layer', () => {
     await page.locator('.layers-tab').locator('[data-testid="EditIcon"]').click()
     await page.locator('.TabPrimary').getByText('General').nth(0).click();
     await page.locator('.SDMX-Tab').getByText('Filter Dimensions').click();
-    await page.locator('.DimensionContainer').last().locator('.DimensionDropdown__multi-value__remove').first().click();
+    await page.locator('.DimensionContainer').filter({ has: page.locator('label#INDICATOR') }).locator('.DimensionDropdown__multi-value__remove').first().click();
     await page.getByText('Apply Changes').click();
     await expect(page.locator('.IndicatorLegendRow').nth(0).locator('.IndicatorLegendRowName')).toHaveText('18');
     await expect(page.locator('.IndicatorLegendRow').nth(1).locator('.IndicatorLegendRowName')).toHaveText('No data');

@@ -53,6 +53,7 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
     fetchSdmx(requestedUrl)
       .then(async (array: Record<string, any>[]) => {
         if (requestedUrl !== url) return;
+        if (!array.length) return;
         const headers = Object.keys(array[0]);
         setData((prev) => ({
           ...prev,

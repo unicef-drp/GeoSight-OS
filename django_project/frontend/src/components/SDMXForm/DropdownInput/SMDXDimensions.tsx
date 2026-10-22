@@ -15,6 +15,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
+import TextField from "@mui/material/TextField";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs, { Dayjs } from "dayjs";
 
 import { MainDropdownInputSDMXProps } from "./types";
 import { fetchDimensions, fetchStructure } from "../requests";
@@ -26,42 +31,52 @@ interface Props extends MainDropdownInputSDMXProps {
   onChange: () => void;
 }
 
-const MIN_YEAR = 1900;
+const DATE_FORMAT = "YYYY-MM-DD";
+const MIN_DATE = dayjs("1900-01-01");
 
-/** Check if year is empty or 4 digits and minimum 1900. */
-const isValidYear = (value: string) =>
-  !value || (/^\d{4}$/.test(value) && parseInt(value) >= MIN_YEAR);
-
-interface YearInputProps {
+interface DateInputProps {
   value: string;
+  minDate?: string;
+  maxDate?: string;
   onChange: (value: string) => void;
 }
 
-/** Year input, only call onChange when the year is valid. */
-const YearInput = ({ value, onChange }: YearInputProps) => {
-  const [input, setInput] = useState<string>(value ?? "");
+/** Date input, only call onChange when the date is valid. */
+const DateInput = ({ value, minDate, maxDate, onChange }: DateInputProps) => {
+  const [input, setInput] = useState<Dayjs | null>(
+    value ? dayjs(value) : null,
+  );
 
   useEffect(() => {
-    setInput(value ?? "");
+    setInput(value ? dayjs(value) : null);
   }, [value]);
 
+  const min =
+    minDate && dayjs(minDate).isAfter(MIN_DATE) ? dayjs(minDate) : MIN_DATE;
+  const max = maxDate ? dayjs(maxDate) : undefined;
+
   return (
-    <input
-      type="number"
-      className="form-control"
-      min={MIN_YEAR}
-      max={9999}
-      step={1}
-      placeholder="YYYY"
-      value={input}
-      onChange={(evt) => {
-        const newInput = evt.target.value.replace(/\D/g, "").slice(0, 4);
-        setInput(newInput);
-        if (isValidYear(newInput) && newInput !== (value ?? "")) {
-          onChange(newInput);
-        }
-      }}
-    />
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DesktopDatePicker
+        inputFormat={DATE_FORMAT}
+        minDate={min}
+        maxDate={max}
+        value={input}
+        onChange={(newInput: Dayjs | null) => {
+          setInput(newInput);
+          if (!newInput) {
+            if (value) onChange("");
+            return;
+          }
+          if (!newInput.isValid()) return;
+          if (newInput.isBefore(min, "day")) return;
+          if (max && newInput.isAfter(max, "day")) return;
+          const newValue = newInput.format(DATE_FORMAT);
+          if (newValue !== value) onChange(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    </LocalizationProvider>
   );
 };
 
@@ -171,9 +186,11 @@ export const SMDXDimensions = ({
                 (sdmxDataForm.dimensions &&
                   sdmxDataForm.dimensions[dimensionId]) ??
                 [];
-              const yearInput = (index: number) => (
-                <YearInput
+              const dateInput = (index: number) => (
+                <DateInput
                   value={timeValues[index]}
+                  minDate={index === 1 ? timeValues[0] : undefined}
+                  maxDate={index === 0 ? timeValues[1] : undefined}
                   onChange={(value) => {
                     const newValues = [
                       timeValues[0] ?? "",
@@ -184,7 +201,7 @@ export const SMDXDimensions = ({
                     if (
                       newValues[0] &&
                       newValues[1] &&
-                      parseInt(newValues[0]) > parseInt(newValues[1])
+                      newValues[0] > newValues[1]
                     ) {
                       return;
                     }
@@ -204,13 +221,13 @@ export const SMDXDimensions = ({
                   <div
                     style={{
                       display: "flex",
-                      gap: "3rem",
+                      gap: "2rem",
                       alignItems: "center",
                     }}
                   >
-                    {yearInput(0)}
+                    {dateInput(0)}
                     <span>-</span>
-                    {yearInput(1)}
+                    {dateInput(1)}
                   </div>
                 </div>
               );

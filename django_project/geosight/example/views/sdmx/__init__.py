@@ -121,6 +121,20 @@ class SDMXDataView(View):
             except FileNotFoundError:
                 raise Http404
 
+            # Time period filter, e.g. startPeriod=2021 or 2021-01
+            start_period = request.GET.get('startPeriod')
+            end_period = request.GET.get('endPeriod')
+            if start_period:
+                rows = [
+                    row for row in rows
+                    if row['TIME_PERIOD'][:len(start_period)] >= start_period
+                ]
+            if end_period:
+                rows = [
+                    row for row in rows
+                    if row['TIME_PERIOD'][:len(end_period)] <= end_period
+                ]
+
             filters = self._parse_filters(key, base_path)
             if filters:
                 rows = [
@@ -131,6 +145,10 @@ class SDMXDataView(View):
                         if dim in row
                     )
                 ]
+
+            # SDMX returns 404 when there is no data
+            if not rows:
+                raise Http404
 
             output = io.StringIO()
             writer = csv.DictWriter(
