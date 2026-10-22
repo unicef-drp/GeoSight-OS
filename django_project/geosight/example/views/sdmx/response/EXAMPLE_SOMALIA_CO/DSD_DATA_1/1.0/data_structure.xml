@@ -79,7 +79,7 @@
                                      package="conceptscheme"
                                      maintainableParentVersion="1.0"
                                      agencyID="UNICEF"
-                                     id="INDICATOR" class="Concept"/>
+                                     id="SAMPLE_INDICATOR" class="Concept"/>
                             </str:ConceptIdentity>
                             <str:LocalRepresentation>
                                 <str:Enumeration>

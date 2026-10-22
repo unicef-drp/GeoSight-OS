@@ -200,7 +200,8 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         output = {}
         for config in obj.dashboardindicatorlayerconfig_set.all():
             if obj.type == 'SDMX Indicator Layer' and config.name not in [
-                'attributeKeys', 'dimensionKeys', 'smdxConfigId', "dimensions"
+                'attributeKeys', 'dimensionKeys', 'dimensionTimeKeys',
+                'smdxConfigId', "dimensions"
             ]:
                 output[config.name] = config.value
                 continue

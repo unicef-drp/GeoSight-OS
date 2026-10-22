@@ -104,6 +104,7 @@ export const fetchDimensions = async (
 ): Promise<{
   dimensionSelections: DimensionOptions;
   dimensionKeys: string[];
+  dimensionTimeKeys: string[];
 }> => {
   apiUrl = apiUrl
     .replaceAll("<agency>", agencyId)
@@ -112,25 +113,30 @@ export const fetchDimensions = async (
   const response = await axios.get(apiUrl, { signal });
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(response.data, "application/xml");
-  const dimensionNodes = xmlDoc.getElementsByTagName("str:Dimension");
   const dimensionSelections: DimensionOptions = {};
-  const dimensionKeys: string[] = [];
-  Array.from(dimensionNodes).forEach((dimension) => {
-    const conceptIdentityNode = dimension.getElementsByTagName(
-      "str:ConceptIdentity",
-    )[0];
-    if (conceptIdentityNode) {
-      const refNode = conceptIdentityNode.getElementsByTagName("Ref")[0];
-      if (refNode) {
-        const id = refNode.getAttribute("id");
-        if (id) {
-          dimensionSelections[id] = [];
-          dimensionKeys.push(id);
+
+  // Use the dimension id, fallback to the concept identity id
+  const getDimensionIds = (tagName: string): string[] =>
+    Array.from(xmlDoc.getElementsByTagName(tagName))
+      .map((dimension) => {
+        let id = dimension.getAttribute("id");
+        if (!id) {
+          const conceptIdentityNode = dimension.getElementsByTagName(
+            "str:ConceptIdentity",
+          )[0];
+          const refNode = conceptIdentityNode?.getElementsByTagName("Ref")[0];
+          id = refNode?.getAttribute("id");
         }
-      }
-    }
+        return id;
+      })
+      .filter((id) => !!id);
+
+  const dimensionKeys = getDimensionIds("str:Dimension");
+  const dimensionTimeKeys = getDimensionIds("str:TimeDimension");
+  [...dimensionKeys, ...dimensionTimeKeys].forEach((id) => {
+    dimensionSelections[id] = [];
   });
-  return { dimensionSelections, dimensionKeys };
+  return { dimensionSelections, dimensionKeys, dimensionTimeKeys };
 };
 
 export const fetchStructure = async (

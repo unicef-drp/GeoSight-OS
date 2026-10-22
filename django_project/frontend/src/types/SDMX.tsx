@@ -31,6 +31,7 @@ export interface SDMXDataForm {
   dataflowVersionId?: string;
   dimensions?: Dimensions;
   dimensionKeys?: string[];
+  dimensionTimeKeys?: string[];
   attributeKeys?: string[];
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FormControl } from "@mui/material";
 import { MainDataGrid } from "../Table";
 import { fetchSdmx } from "../../utils/sdmx";
@@ -19,16 +19,20 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
     requestData: null,
   });
   const { error, loading, requestData } = request;
+  const latestUrl = useRef(url);
+  latestUrl.current = url;
 
   /** Read url **/
-  const readUrl = () => {
-    if (!url) return;
+  const readUrl = (currentUrl: string, force: boolean = false) => {
+    if (!currentUrl) return;
     setRequest({ loading: true, error: "", requestData: null });
-    fetchSdmx(url)
+    fetchSdmx(currentUrl, force)
       .then(async (array: Record<string, any>[]) => {
+        if (latestUrl.current !== currentUrl) return;
         setRequest({ loading: false, error: "", requestData: array });
       })
       .catch(() => {
+        if (latestUrl.current !== currentUrl) return;
         setRequest({
           loading: false,
           error: "The request is not csv format",
@@ -40,7 +44,7 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
   // Set default data
   useEffect(() => {
     if (autoFetch) {
-      readUrl();
+      readUrl(url);
     }
   }, [url]);
 
@@ -74,7 +78,7 @@ export const SDMXPreview = ({ url, autoFetch }: Props) => {
           variant="primary Basic"
           className="LoadDataButton"
           disabled={!url || loading}
-          onClick={readUrl}
+          onClick={() => readUrl(url, true)}
           style={{ width: "100px" }}
         >
           Load Data

@@ -194,6 +194,26 @@
               "name": "Indicator C"
             }
           ]
+        },
+        {
+          "id": "TIME_PERIOD",
+          "name": "Time period",
+          "keyPosition": 4,
+          "role": "time",
+          "values": [
+            {
+              "start": "2020-01-01T00:00:00",
+              "end": "2020-12-31T23:59:59",
+              "id": "2020",
+              "name": "2020"
+            },
+            {
+              "start": "2021-01-01T00:00:00",
+              "end": "2021-12-31T23:59:59",
+              "id": "2021",
+              "name": "2021"
+            }
+          ]
         }
       ]
     }
