@@ -16,15 +16,35 @@ import Papa from "papaparse";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 import { alasqlQuery } from "./alasql";
 
-export const fetchSdmx = async (
+// Last request, so the same url is not fetched again by the form and the preview
+let lastRequest: { url: string; promise: Promise<Record<string, any>[]> } =
+  null;
+
+export const fetchSdmx = (
   url: string,
+  force: boolean = false,
 ): Promise<Record<string, any>[]> => {
   const urls = url.split("?");
   const isLocalhost = /^https?:\/\/localhost(:\d+)?/i.test(urls[0]);
   const cleanPath = isLocalhost
     ? urls[0].replace(/\/(%2E%2E|\.\.)(?=\/|$)/gi, "")
     : urls[0];
-  url = [cleanPath, "format=csv"].join("?");
+
+  // Keep the other parameters
+  const params = new URLSearchParams(urls[1]);
+  params.set("format", "csv");
+  url = [cleanPath, params.toString()].join("?");
+
+  if (!force && lastRequest?.url === url) return lastRequest.promise;
+  const promise = requestSdmx(url);
+  lastRequest = { url, promise };
+  promise.catch(() => {
+    if (lastRequest?.promise === promise) lastRequest = null;
+  });
+  return promise;
+};
+
+const requestSdmx = (url: string): Promise<Record<string, any>[]> => {
   return new Promise((resolve, reject) => {
     const rows: Record<string, any>[] = [];
     let idx = 0;
@@ -39,12 +59,16 @@ export const fetchSdmx = async (
         }
       },
       complete: () => resolve(rows),
-      error: (error: Error & { status?: number }) => {
-        if (error?.status === 404) {
-          resolve([]);
-          return;
-        }
-        reject(error);
+      error: (error: Error) => {
+        fetch(url, { method: "HEAD" })
+          .then((response) => {
+            if (response.status === 404) {
+              resolve([]);
+              return;
+            }
+            reject(error);
+          })
+          .catch(() => reject(error));
       },
     });
   });

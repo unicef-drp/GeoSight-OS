@@ -81,15 +81,23 @@ const SDMXForm = ({ initialData, dataChanged }: Props) => {
       data.dataflowId &&
       data.dataflowVersionId
     ) {
-      const url =
-        constructSDMXUrl(
-          sdmxConfig.urls.data,
-          data.agencyId,
-          data.dataflowId,
-          data.dataflowVersionId,
-          data.dimensionKeys,
-          data.dimensions || {},
-        ).split("?")[0] + "?format=csv";
+      const [path, query] = constructSDMXUrl(
+        sdmxConfig.urls.data,
+        data.agencyId,
+        data.dataflowId,
+        data.dataflowVersionId,
+        data.dimensionKeys,
+        data.dimensionTimeKeys,
+        data.dimensions || {},
+      ).split("?");
+
+      // Keep only the time period from the query
+      const queryParams = new URLSearchParams(query);
+      const params = new URLSearchParams({ format: "csv" });
+      ["startPeriod", "endPeriod"].forEach((key) => {
+        if (queryParams.get(key)) params.set(key, queryParams.get(key));
+      });
+      const url = `${path}?${params.toString()}`;
       if (data.url !== url) {
         setData({ ...data, url: url });
       }

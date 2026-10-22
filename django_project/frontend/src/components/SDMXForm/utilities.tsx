@@ -20,6 +20,7 @@ export const constructSDMXUrl = (
   dataFlowId: string,
   dataFlowVersionId: string,
   dimensionKeys: string[] = [],
+  dimensionTimeKeys: string[] = [],
   dimensions: Dimensions = {},
 ): string => {
   const urlSection = dimensionKeys
@@ -27,9 +28,19 @@ export const constructSDMXUrl = (
       dimensions && dimensions[key] ? dimensions[key].join("+") : "",
     )
     .join(".");
-  return apiUrl
+  let url = apiUrl
     .replaceAll("<agency>", agencyId)
     .replaceAll("<dataflow>", dataFlowId)
     .replaceAll("<dataflow_version>", dataFlowVersionId)
     .replaceAll("<dimensions>", urlSection);
+
+  const [startPeriod, endPeriod] =
+    (dimensionTimeKeys[0] && dimensions?.[dimensionTimeKeys[0]]) || [];
+  const params = new URLSearchParams();
+  if (startPeriod) params.set("startPeriod", startPeriod);
+  if (endPeriod) params.set("endPeriod", endPeriod);
+  if (params.toString()) {
+    url += (url.includes("?") ? "&" : "?") + params.toString();
+  }
+  return url;
 };
