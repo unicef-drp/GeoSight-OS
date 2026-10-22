@@ -12,7 +12,7 @@ Contact : geosight-no-reply@unicef.org
 """
 __author__ = 'andrewleblanc187@gmail.com'
 __date__ = '22/10/2026'
-__copyright__ = ('Copyright 2026, Unicef')
+__copyright__ = ('Copyright 2023, Unicef')
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
