@@ -141,6 +141,26 @@ const sdmxConfig = async (page: any) => {
   await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(7).locator('.ReactSelect__single-value')).toHaveText("TIME_PERIOD");
   await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(8).locator('.ReactSelect__single-value')).toHaveText("Date (YYYY-MM-DD)");
 
+  // Date time format selected by user is not overridden by the detected one
+  const dateTimeFormat = page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(8);
+  const yearMonthFormat = 'Year-Month (YYYY-MM) - will be translated into YYYY-MM-01';
+  await dateTimeFormat.locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: yearMonthFormat }).click();
+  await expect(dateTimeFormat.locator('.ReactSelect__single-value')).toHaveText(yearMonthFormat);
+
+  // Still kept after other config is updated
+  await page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(6).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'AVG' }).click();
+  await page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(6).locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'SUM' }).click();
+  await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(6).locator('.ReactSelect__single-value')).toHaveText("SUM");
+  await expect(dateTimeFormat.locator('.ReactSelect__single-value')).toHaveText(yearMonthFormat);
+
+  // Revert the format
+  await dateTimeFormat.locator('.ReactSelect__input-container').click();
+  await page.getByRole('option', { name: 'Date (YYYY-MM-DD)' }).click();
+  await expect(dateTimeFormat.locator('.ReactSelect__single-value')).toHaveText("Date (YYYY-MM-DD)");
+
   // Preview data
   await page.getByText('Data Preview', { exact: true }).click();
   await expect(page.getByText('1–2 of 2')).toBeVisible();

@@ -18,6 +18,7 @@ import React, {
   Fragment,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 import { FormControl } from "@mui/material";
@@ -97,6 +98,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
     const [data, setData] = useState<IndicatorLayer>(defaultData);
     const [open, setOpen] = useState<boolean>(false);
     const [sdmxTab, setSdmxTab] = useState<string>("Layer Metadata");
+    const detectedDateTimeFormat = useRef<string | null>(null);
 
     useImperativeHandle(ref, () => ({
       open: () => setOpen(true),
@@ -113,6 +115,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
 
     // Open data selection when the props true
     useEffect(() => {
+      detectedDateTimeFormat.current = null;
       if (!indicatorLayer) {
         setData(defaultData);
       } else {
@@ -167,10 +170,17 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
             if (/^\d{4}$/.test(val)) return "%Y";
             return null;
           };
+          // Only force change when the detected format changes
           const newValue = detectFormat(String(value));
-          if (newValue && newValue !== data.config.dateTimeFormat) {
-            data.config.dateTimeFormat = newValue;
-            updated = true;
+          if (newValue && newValue !== detectedDateTimeFormat.current) {
+            if (
+              detectedDateTimeFormat.current !== null ||
+              !data.config.dateTimeFormat
+            ) {
+              data.config.dateTimeFormat = newValue;
+              updated = true;
+            }
+            detectedDateTimeFormat.current = newValue;
           }
         }
         if (!data?.config?.aggregationType) {
