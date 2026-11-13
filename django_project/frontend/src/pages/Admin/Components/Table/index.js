@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { MainDataGrid } from "../../../../components/Table";
 import { ThemeButton } from "../../../../components/Elements/Button";
 
@@ -38,6 +39,7 @@ export function AdminTable(
     ...props
   }
 ) {
+  const { t } = useTranslation();
   const [pageSize, setPageSize] = useState(25);
 
   // When selection model show
@@ -79,7 +81,7 @@ export function AdminTable(
           <div className='AdminListHeader'>
             <div
               className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
-              {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list ' + (selectionModel.length > 1 ? 'are' : 'is') + ' selected. '}
+              {selectionModel.length === 1 ? t('admin.oneItemSelected') : t('admin.numberOfItemsSelected', { numberOfItems: selectionModel.length })}
               {
                 selectionModel.length ?
                   <ThemeButton
@@ -88,7 +90,7 @@ export function AdminTable(
                       setSelectionModel([])
                     }}
                   >
-                    Clear selection.
+                    {t('admin.clearSelection')}
                   </ThemeButton> : null
               }
               {props.leftHeader ? props.leftHeader : null}
@@ -120,7 +122,7 @@ export function AdminTable(
             filter: filter
           }}
           localeText={{
-            noRowsLabel: props.noRowsLabel ? props.noRowsLabel : 'No results found',
+            noRowsLabel: props.noRowsLabel ? props.noRowsLabel : t('admin.table.noResultsFound'),
             errorOverlayDefaultLabel: <div
               className='error'>{props.error}</div>
           }}

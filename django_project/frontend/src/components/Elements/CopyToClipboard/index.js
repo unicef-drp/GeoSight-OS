@@ -14,7 +14,7 @@
  */
 
 import React, { useState } from "react";
-
+import { useTranslation } from "react-i18next";
 import Tooltip from '@mui/material/Tooltip';
 import './style.scss';
 
@@ -22,6 +22,7 @@ import './style.scss';
  * @param {String} text Text to be copied
  */
 export default function CopyToClipboard({ text }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const copy = () => {
@@ -41,7 +42,7 @@ export default function CopyToClipboard({ text }) {
       disableFocusListener
       disableHoverListener
       disableTouchListener
-      title="Copied"
+      title={t('components.copyToClipboard.copied')}
     >
       <span className='CopyToClipboard' onClick={() => copy()}>
         {text}

@@ -15,6 +15,7 @@
 
 import React, { memo, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
@@ -29,6 +30,7 @@ import "./style.scss";
  * SDMX Layer Creation component.
  */
 export function SDMXLayerCreation() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const sdmxConfigRef = useRef(null);
   const sdmxConfigEditorRef = useRef(null);
@@ -69,7 +71,7 @@ export function SDMXLayerCreation() {
           data-tool={Variables.DASHBOARD.TOOL.SDMX_LAYER_CREATION}
         >
           <PluginChild
-            title={"Create SDMX layer"}
+            title={t("dashboardPage.toolbars.sdmx.createLayer")}
             onClick={() => {
               sdmxConfigRef.current.open();
             }}

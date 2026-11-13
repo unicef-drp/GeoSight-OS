@@ -197,7 +197,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
         className="WidgetEditor MuiFormControl-Form MuiBox-Large"
       >
         <ModalHeader onClosed={onClosed}>
-          {data.name ? "Change " + data.name : "New " + title + " Widget"}
+          {data.name ? t("components.widget.form.changeTitle", { name: data.name }) : t("components.widget.form.newTitle", { title: title })}
         </ModalHeader>
         <ModalContent>
           <div className="BasicForm">
@@ -222,13 +222,13 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
                   style={{ marginLeft: 0 }}
                   value={WidgetType.GENERIC_SUMMARY_WIDGET}
                   control={<Radio />}
-                  label="Summary"
+                  label={t("components.widget.form.summary")}
                 />
                 <FormControlLabel
                   style={{ marginLeft: 0 }}
                   value={WidgetType.GENERIC_TIME_SERIES_WIDGET}
                   control={<Radio />}
-                  label="Time Series"
+                  label={t("components.widget.form.timeSeries")}
                 />
               </RadioGroup>
             )}
@@ -238,12 +238,12 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
             {/* ------------------------------------- */}
             <div className="BasicFormSection">
               <div>
-                <label className="form-label">Widget name</label>
+                <label className="form-label">{t("components.widget.form.widgetName")}</label>
               </div>
               <div>
                 <input
                   type="text"
-                  placeholder="Widget name"
+                  placeholder={t("components.widget.form.widgetName")}
                   onChange={(event) => {
                     setWidgetData({ ...widgetData, name: event.target.value });
                   }}
@@ -253,12 +253,12 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
             </div>
             <div className="BasicFormSection">
               <div>
-                <label className="form-label">Widget description</label>
+                <label className="form-label">{t("components.widget.form.widgetDescription")}</label>
               </div>
               <div>
                 <input
                   type="text"
-                  placeholder="Widget description"
+                  placeholder={t("components.widget.form.widgetDescription")}
                   onChange={(event) => {
                     setWidgetData({
                       ...widgetData,

@@ -14,6 +14,7 @@
  */
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
 import CheckBoxOutlineBlankIcon
@@ -40,6 +41,7 @@ export function SelectWithSearch(
     value, options, className, disabled = false, onChangeFn, ...props
   }
 ) {
+  const { t } = useTranslation();
   value = !value ? '' : value
   const isCompact = props.isCompact
   return <div className={'SelectWithSearchInput ' + props.parentClassName}>
@@ -60,15 +62,15 @@ export function SelectWithSearch(
       value={value}
       options={options}
       disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
-      getOptionLabel={(option) => option === '' ? <i>Blank</i> : option}
+      getOptionLabel={(option) => option === '' ? <i>{t('components.selectWithSearch.blank')}</i> : option}
       renderInput={(params) => {
         if (params.inputProps.value === "[object Object]") {
-          params.inputProps.value = 'Blank'
+          params.inputProps.value = t('components.selectWithSearch.blank')
         }
         return <TextField
           {...params}
           value={value}
-          placeholder={props.placeholder ? props.placeholder : 'Select 1 option'}
+          placeholder={props.placeholder ? props.placeholder : t('components.selectWithSearch.selectOneOption')}
         />
       }}
       onChange={(event, values) => {
@@ -103,8 +105,9 @@ export function MultipleSelectWithSearch(
     ...props
   }
 ) {
+  const { t } = useTranslation();
   const isCompact = props.isCompact
-  const selectAllText = 'Select all'
+  const selectAllText = t('components.selectWithSearch.selectAll')
   const allSelected = value.length >= options.length && value.length > 0
   const optionsWithSelectAll = [selectAllText].concat(options)
   return <>
@@ -143,14 +146,14 @@ export function MultipleSelectWithSearch(
             style={{ marginRight: 8 }}
             checked={selected}
           />
-          {option === '' ? <i>Blank</i> : option}
+          {option === '' ? <i>{t('components.selectWithSearch.blank')}</i> : option}
         </li>
       }}
       renderInput={(params) => {
         if (props.showValues) {
-          params.InputProps.placeholder = !value.length ? props.placeholder ? props.placeholder : 'Select 1 option' : ''
+          params.InputProps.placeholder = !value.length ? props.placeholder ? props.placeholder : t('components.selectWithSearch.selectOneOption') : ''
         } else {
-          params.InputProps.placeholder = value.length === 1 ? '' : allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : 'Select 1 option'
+          params.InputProps.placeholder = value.length === 1 ? '' : allSelected ? t('components.selectWithSearch.allSelected') : value.length ? t('components.selectWithSearch.nSelected', { count: value.length }) : props.placeholder ? props.placeholder : t('components.selectWithSearch.selectOneOption')
         }
         if (props?.quickSelection) {
           params.InputProps.endAdornment = (

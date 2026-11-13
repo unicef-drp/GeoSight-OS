@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
@@ -32,6 +33,7 @@ export const dynamicClassificationChoices = dynamicClassification.map(type => {
 
 /*** Style section ***/
 export default function DynamicStyleConfig({ data, setData }) {
+  const { t } = useTranslation();
 
   // Init data
   useEffect(() => {
@@ -95,10 +97,10 @@ export default function DynamicStyleConfig({ data, setData }) {
                 setData({ ...data })
               }
             }/>}
-          label='Sync fill and Outline Color'
+          label={t('admin.style.dynamic.syncFillOutlineColor')}
         />
       </FormGroup>
-      <div className='RuleTable-Title'>Outline</div>
+      <div className='RuleTable-Title'>{t('admin.style.dynamic.outline')}</div>
       <div>
         <ColorSelector
           disabled={data.style_config.sync_outline}
@@ -138,7 +140,7 @@ export default function DynamicStyleConfig({ data, setData }) {
                 setData({ ...data })
               }
             }/>}
-          label='Apply when filtering'
+          label={t('admin.style.dynamic.applyWhenFiltering')}
         />
       </FormGroup>
     </div>
@@ -147,11 +149,11 @@ export default function DynamicStyleConfig({ data, setData }) {
         <thead>
         <tr className="RuleTable-Header">
           <th colSpan="2"></th>
-          <th valign="top">Name</th>
-          <th valign="top">Rule</th>
-          <th valign="top">Color</th>
-          <th valign="top">Outline Color</th>
-          <th valign="top">Outline Width</th>
+          <th valign="top">{t('admin.style.rules.nameHeader')}</th>
+          <th valign="top">{t('admin.style.rules.ruleHeader')}</th>
+          <th valign="top">{t('admin.style.rules.colorHeader')}</th>
+          <th valign="top">{t('admin.style.rules.outlineColorHeader')}</th>
+          <th valign="top">{t('admin.style.rules.outlineWidthHeader')}</th>
         </tr>
         </thead>
         <tbody>

@@ -24,6 +24,7 @@ import React, {
   useState,
 } from "react";
 import maplibregl from "maplibre-gl";
+import { useTranslation } from "react-i18next";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -51,6 +52,7 @@ interface Props {
  * Measurement
  */
 export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
+  const { t } = useTranslation();
   const [draw, setDraw] = useState<MaplibreDrawingTools>(null);
   const [drawState, setDrawState] = useState<number>(null);
 
@@ -116,7 +118,7 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
     <Plugin className="PopupToolbarIcon">
       <div className="Active" data-tool={Variables.DASHBOARD.TOOL.MEASUREMENT}>
         <PluginChild
-          title={"Start Measurement"}
+          title={t("dashboardPage.toolbars.measurement.startMeasurement")}
           disabled={!map}
           active={start}
           onClick={() => {
@@ -131,21 +133,21 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
       </div>
       {start ? (
         <div className={"PopupToolbarComponent"}>
-          <div className={"Title"}>Measure distances and areas</div>
+          <div className={"Title"}>{t("dashboardPage.toolbars.measurement.measureDistancesAreas")}</div>
           <div className="MeasurementComponentText">
             {draw?.draw.getSelectedIds().length && information ? (
               <div>
                 {information.featureType === "Polygon" ? (
-                  <div>{formatNumber(information.area, 2)} Sq Meters</div>
+                  <div>{formatNumber(information.area, 2)} {t("dashboardPage.toolbars.measurement.sqMeters")}</div>
                 ) : null}
                 <div>
-                  {formatNumber(information.lengthMeters, 2)} Meters (
-                  {formatNumber(information.lengthMiles, 2)} Miles){" "}
+                  {formatNumber(information.lengthMeters, 2)} {t("dashboardPage.toolbars.measurement.meters")} (
+                  {formatNumber(information.lengthMiles, 2)} {t("dashboardPage.toolbars.measurement.miles")}){" "}
                   {information.lengthTerm}
                 </div>
               </div>
             ) : (
-              <i>Draw on map and finish by double click.</i>
+              <i>{t("dashboardPage.toolbars.measurement.drawInstructions")}</i>
             )}
             <div style={{ textAlign: "right" }}>
               {draw?.draw.getSelectedIds().length ? (
@@ -155,7 +157,7 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
                   }}
                   className={"MeasurementDeleteButton"}
                 >
-                  <DeleteIcon /> Delete selected
+                  <DeleteIcon /> {t("dashboardPage.toolbars.measurement.deleteSelected")}
                 </ThemeButton>
               ) : (
                 ""
@@ -179,7 +181,7 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
               }}
               style={{ width: "300px" }}
             >
-              <AddLocationIcon /> Add new measurement
+              <AddLocationIcon /> {t("dashboardPage.toolbars.measurement.addNewMeasurement")}
             </ThemeButton>
             {draw?.isDrawing ? (
               <ThemeButton
@@ -188,7 +190,7 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
                   draw.stop();
                 }}
               >
-                <CancelIcon /> Cancel
+                <CancelIcon /> {t("dashboardPage.toolbars.measurement.cancel")}
               </ThemeButton>
             ) : (
               <ThemeButton
@@ -196,7 +198,7 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
                   draw.deleteFeatures();
                 }}
               >
-                <CancelIcon /> Clear
+                <CancelIcon /> {t("dashboardPage.toolbars.measurement.clear")}
               </ThemeButton>
             )}
           </div>

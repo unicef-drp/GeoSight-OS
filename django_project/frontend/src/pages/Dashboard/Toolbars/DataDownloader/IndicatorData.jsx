@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
@@ -67,6 +68,7 @@ export const TimeType = {
 
 /** Indicator data downloader component. */
 export default function IndicatorDataDownloader() {
+  const { t } = useTranslation();
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const indicators = useSelector((state) => state.dashboard.data?.indicators);
   const referenceLayer = useSelector(
@@ -664,7 +666,7 @@ export default function IndicatorDataDownloader() {
   };
   return (
     <div
-      title={downloading ? "Preparing Data" : ""}
+      title={downloading ? t("dashboardPage.toolbars.dataDownloader.preparingData") : ""}
       className={downloading ? "Disabled" : ""}
     >
       <div className="DataDownloaderForm">
@@ -682,14 +684,14 @@ export default function IndicatorDataDownloader() {
               }}
             />
           }
-          label={"Exclude records without indicator values"}
+          label={t("dashboardPage.toolbars.dataDownloader.excludeEmptyValue")}
         />
         <br />
         <br />
 
         {/* FOR ADMIN FILTER */}
         <FormGroup className={"GroupSelection"}>
-          <FormLabel>Admin level</FormLabel>
+          <FormLabel>{t("dashboardPage.toolbars.dataDownloader.adminLevel")}</FormLabel>
           <FormGroup>
             {levels
               ? levels.map((level) => {
@@ -718,7 +720,7 @@ export default function IndicatorDataDownloader() {
         </FormGroup>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <FormLabel>Geographical extent</FormLabel>
+            <FormLabel>{t("dashboardPage.toolbars.dataDownloader.geographicalExtent")}</FormLabel>
             <SelectWithSearch
               disableCloseOnSelect={false}
               options={[GeographyFilter.All, GeographyFilter.Filtered]}
@@ -729,7 +731,7 @@ export default function IndicatorDataDownloader() {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormLabel>Format</FormLabel>
+            <FormLabel>{t("dashboardPage.toolbars.dataDownloader.format")}</FormLabel>
             <SelectWithSearch
               disableCloseOnSelect={false}
               options={[Format.Geojson, Format.Excel]}
@@ -744,7 +746,7 @@ export default function IndicatorDataDownloader() {
         {/* TIME */}
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <FormLabel>Time filter</FormLabel>
+            <FormLabel>{t("dashboardPage.toolbars.dataDownloader.timeFilter")}</FormLabel>
             <SelectWithSearch
               disableCloseOnSelect={false}
               options={[TimeType.Current, TimeType.All]}
@@ -779,7 +781,7 @@ export default function IndicatorDataDownloader() {
                     }}
                   />
                 </td>
-                <td>Indicator</td>
+                <td>{t("dashboardPage.toolbars.dataDownloader.indicator")}</td>
               </tr>
             </thead>
             <tbody>
@@ -813,7 +815,7 @@ export default function IndicatorDataDownloader() {
           onClick={download}
         >
           {downloading ? <CircularProgress /> : <DownloadIcon />}
-          {downloading ? "Downloading" : "Download"}
+          {downloading ? t("dashboardPage.toolbars.dataDownloader.downloading") : t("dashboardPage.toolbars.dataDownloader.download")}
         </ThemeButton>
       </div>
       <Notification ref={notificationRef} />

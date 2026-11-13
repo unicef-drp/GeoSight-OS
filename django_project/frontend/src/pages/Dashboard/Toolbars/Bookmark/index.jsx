@@ -20,6 +20,7 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import TextField from "@mui/material/TextField";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -51,6 +52,7 @@ import "./style.scss";
 
 /** Bookmark component. */
 export default function Bookmark({ map }) {
+  const { t } = useTranslation();
   const enabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK),
   );
@@ -179,7 +181,7 @@ export default function Bookmark({ map }) {
               className="Active"
               data-tool={Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK}
             >
-              <PluginChild title={"Bookmark"}>
+              <PluginChild title={t("dashboardPage.toolbars.bookmark.title")}>
                 <a>
                   <StarOffIcon />
                 </a>
@@ -199,7 +201,7 @@ export default function Bookmark({ map }) {
                     setName("");
                   }}
                 >
-                  <SaveAsIcon /> Save As...
+                  <SaveAsIcon /> {t("dashboardPage.toolbars.bookmark.saveAs")}
                 </ThemeButton>
               </div>
             ) : null}
@@ -209,7 +211,7 @@ export default function Bookmark({ map }) {
                 <tbody>
                   {bookmarks === null ? (
                     <tr>
-                      <td>Loading</td>
+                      <td>{t("dashboardPage.toolbars.bookmark.loading")}</td>
                     </tr>
                   ) : (
                     <Fragment>
@@ -313,16 +315,16 @@ export default function Bookmark({ map }) {
             >
               {bookmarkSave ? (
                 <Fragment>
-                  {`Save bookmark ${bookmarkSave.name}`}
+                  {t("dashboardPage.toolbars.bookmark.saveBookmark", { name: bookmarkSave.name })}
                   <div className="helptext">
-                    {`Save current selection and extent to ${bookmarkSave.name}.`}
+                    {t("dashboardPage.toolbars.bookmark.saveCurrentBookmark", { name: bookmarkSave.name })}
                   </div>
                 </Fragment>
               ) : (
                 <Fragment>
-                  Save bookmark as
+                  {t("dashboardPage.toolbars.bookmark.saveBookmarkAs")}
                   <div className="helptext">
-                    Save current selection and extent as new bookmark.
+                    {t("dashboardPage.toolbars.bookmark.saveCurrentBookmarkAs")}
                   </div>
                 </Fragment>
               )}
@@ -330,7 +332,7 @@ export default function Bookmark({ map }) {
             <ModalContent>
               <TextField
                 fullWidth
-                label="Bookmark Name"
+                label={t("dashboardPage.toolbars.bookmark.bookmarkName")}
                 value={name}
                 onChange={(event) => {
                   setName(event.target.value);
@@ -341,7 +343,7 @@ export default function Bookmark({ map }) {
             <ModalFooter>
               <SaveButton
                 variant="primary"
-                text="Submit"
+                text={t("dashboardPage.toolbars.bookmark.submit")}
                 onClick={() => {
                   if (bookmarkSave) {
                     onSave(bookmarkSave?.id);

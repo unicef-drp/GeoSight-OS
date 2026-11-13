@@ -59,7 +59,7 @@ export default function DataDownloader() {
           }}
           Button={
             <div className="Active">
-              <PluginChild title={"Download Data"}>
+              <PluginChild title={t("dashboardPage.toolbars.dataDownloader.title")}>
                 <DownloadIcon />
               </PluginChild>
             </div>

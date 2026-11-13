@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import StyleRules from "./StyleRules";
 import DynamicStyleConfig from "./DynamicStyleConfig";
@@ -39,6 +40,7 @@ export default function StyleConfig({
   valuesUrl,
   useLibrary = true,
 }) {
+  const { t } = useTranslation();
   const [selectableInputState, setSelectableInputState] = useState({});
   const [style, setStyle] = useState(data.style_data ? data.style_data : null);
 
@@ -87,7 +89,7 @@ export default function StyleConfig({
                 !selectableInputStateOutput("style_config_enable")[0];
               setSelectableInputState({ ...selectableInputState });
             }}
-            label={"Change style"}
+            label={t('admin.style.changeStyle')}
           />
         </div>
       ) : null}
@@ -95,7 +97,7 @@ export default function StyleConfig({
         <Fragment>
           <div className="BasicFormSection">
             <div>
-              <label className="form-label required">Style type</label>
+              <label className="form-label required">{t('admin.style.styleType')}</label>
             </div>
             <Select
               options={
@@ -120,7 +122,7 @@ export default function StyleConfig({
             className="BasicFormSection"
             hidden={data.style_type !== "Predefined style/color rules."}
           >
-            <div className="RuleTable-Title">Style</div>
+            <div className="RuleTable-Title">{t('admin.style.style')}</div>
             <StyleRules
               inputStyleRules={dictDeepCopy(defaultStyleRules)}
               valueType={data.value_type}
@@ -139,13 +141,13 @@ export default function StyleConfig({
             className="BasicFormSection"
             hidden={data.style_type !== "Style from library."}
           >
-            <label className="form-label required">Style</label>
+            <label className="form-label required">{t('admin.style.style')}</label>
             <StyleSelector
               initData={style ? [style] : []}
               dataSelected={(styles) => {
                 setStyle(styles[0]);
               }}
-              placeholder="Select style"
+              placeholder={t('admin.style.selectStyle')}
               multipleSelection={false}
             />
             <input

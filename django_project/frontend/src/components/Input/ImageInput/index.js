@@ -14,6 +14,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { ThemeButton } from "../../Elements/Button";
 
 import './style.scss'
@@ -25,6 +26,7 @@ export function ImageInput(
     ...props
   }) {
 
+  const { t } = useTranslation();
   const [iconSrc, setIconSrc] = useState(image);
 
   /** Image changed */
@@ -39,7 +41,7 @@ export function ImageInput(
   }
 
   return <div className='ImageInput'>
-    <ThemeButton variant="primary Reverse Basic">Browse File</ThemeButton>
+    <ThemeButton variant="primary Reverse Basic">{t('components.imageInput.browseFile')}</ThemeButton>
     <div className='ImageInput-Input'>
       <input
         type="file" name="icon"

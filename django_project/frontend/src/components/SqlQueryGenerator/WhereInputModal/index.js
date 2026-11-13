@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { WhereQueryGenerator } from "../../SqlQueryGenerator"
 import Modal, { ModalContent, ModalHeader } from "../../../components/Modal";
 import { SaveButton } from "../../Elements/Button";
@@ -31,6 +32,7 @@ import './style.scss';
 export default function WhereInputModal(
   { value, setValue, fields, disabledChanges = {}, ...props }
 ) {
+  const { t } = useTranslation();
   const [where, setWhere] = useState(value);
   const [open, setOpen] = useState(false);
   const onClosed = () => {
@@ -60,11 +62,11 @@ export default function WhereInputModal(
   return <div className="BasicFormSection">
     <label
       className={"form-label"}>
-      {props.title ? props.title : "Change filter for the data."}
+      {props.title ? props.title : t('components.whereInputModal.defaultLabel')}
     </label>
     <input
       type="text"
-      placeholder={"SQL Filter"}
+      placeholder={t('components.whereInputModal.sqlFilterPlaceholder')}
       className='ClickedReadOnly'
       readOnly={true}
       value={where}
@@ -81,7 +83,7 @@ export default function WhereInputModal(
       onClosed={onClosed}
     >
       <ModalHeader onClosed={onClosed}>
-        Define {props.title ? props.title : "Change filter for the data."}
+        Define {props.title ? props.title : t('components.whereInputModal.defaultLabel')}
       </ModalHeader>
       <ModalContent>
         <WhereQueryGenerator
@@ -98,7 +100,7 @@ export default function WhereInputModal(
             <div className='Save-Button'>
               <SaveButton
                 variant="primary"
-                text={"Apply"}
+                text={t('components.whereInputModal.apply')}
                 onClick={() => {
                   setValue(where)
                   setOpen(false)

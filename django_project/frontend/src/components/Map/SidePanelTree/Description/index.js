@@ -15,6 +15,7 @@
 
 import React, { Fragment, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import CircularProgress from "@mui/material/CircularProgress";
 import CustomPopover from "../../../CustomPopover";
 import { fetchingData } from "../../../../Requests";
@@ -31,6 +32,7 @@ const LAYER_TYPE_INDICATOR = "Indicator";
  * @param {Object} layer Layer data.
  */
 export default function LayerDescription({ layer }) {
+  const { t } = useTranslation();
   const indicators = useSelector((state) => state.dashboard.data?.indicators);
   const slug = useSelector((state) => state.dashboard.data?.slug);
   const relatedTables = useSelector(
@@ -158,7 +160,7 @@ export default function LayerDescription({ layer }) {
                 <Fragment>
                   {layerType === LAYER_TYPE_INDICATOR ? (
                     <div>
-                      <b className="light"> Last Update: </b>
+                      <b className="light"> {t('dashboardPage.layerInfo.lastUpdate')} </b>
                       {loadedData.last_update
                         ? formatDateTime(
                             new Date(loadedData.last_update),
@@ -174,7 +176,7 @@ export default function LayerDescription({ layer }) {
                       marginTop: "5px",
                     }}
                   >
-                    <b className="light">Description: </b>
+                    <b className="light">{t('dashboardPage.layerInfo.description')} </b>
                     {layer.description ? layer.description : "-"}
                   </div>
                   <div
@@ -183,7 +185,7 @@ export default function LayerDescription({ layer }) {
                       marginTop: "5px",
                     }}
                   >
-                    <b className="light">Source: </b>
+                    <b className="light">{t('dashboardPage.layerInfo.source')} </b>
                     {sources.length ? sources.join(",") : "-"}
                   </div>
                   {layerType === LAYER_TYPE_INDICATOR && (
@@ -193,7 +195,7 @@ export default function LayerDescription({ layer }) {
                         marginTop: "5px",
                       }}
                     >
-                      <b className="light">Unit: </b>
+                      <b className="light">{t('dashboardPage.layerInfo.unit')} </b>
                       {units.length ? units.join(",") : "-"}
                     </div>
                   )}

@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { DeleteProps } from "./types.d";
 import { DeleteIcon } from "../../Icons";
 import Tooltip from "@mui/material/Tooltip";
@@ -20,14 +21,15 @@ import { useConfirmDialog } from "../../../providers/ConfirmDialog";
 
 /** Filter group delete button */
 const DeleteFilter = ({ text, onDelete }: DeleteProps) => {
+  const { t } = useTranslation();
   const { openConfirmDialog } = useConfirmDialog();
-  return <Tooltip title="Delete Group">
+  return <Tooltip title={t("components.filter.deleteFilter.title")}>
     <DeleteIcon
       className='MuiButtonLike FilterGroupDelete FilterDelete MuiButtonLike'
       onClick={
         (e: any) => {
           openConfirmDialog({
-            header: 'Delete confirmation',
+            header: t("admin.deleteConfirmation"),
             onConfirmed: async () => {
               onDelete()
             },

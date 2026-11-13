@@ -74,6 +74,7 @@ export function PermissionFormTableDataSelection(
     permissionDataListKey
   }
 ) {
+  const { t } = useTranslation();
   const selectedData = permissionData[permissionDataListKey]
   const [permissionChoice, setPermissionChoice] = useState(permissionChoices[0][0])
   const [data, setData] = useState(null)
@@ -132,7 +133,7 @@ export function PermissionFormTableDataSelection(
     <ModalHeader onClosed={() => {
       setOpen(false)
     }}>
-      List of {permissionLabel}
+      {t('admin.permission.listOf', { label: permissionLabel })}
     </ModalHeader>
     <div className='AdminContent'>
       <div className='BasicForm'>
@@ -162,7 +163,7 @@ export function PermissionFormTableDataSelection(
       </div>
       <div className='AdminBaseInput Indicator-Search'>
         <IconTextField
-          placeholder={"Search " + permissionLabel}
+          placeholder={t('admin.permission.search', { label: permissionLabel })}
           iconStart={<SearchIcon/>}
           onChange={searchOnChange}
           value={search ? search : ""}
@@ -197,7 +198,7 @@ export function PermissionFormTableDataSelection(
       <div className='Save-Button' style={{ padding: "1rem" }}>
         <SaveButton
           variant="primary"
-          text={"Add " + permissionLabel + 's'}
+          text={t('admin.permission.add', { label: permissionLabel })}
           onClick={() => {
             const newData = data.filter(row => {
               const selected = selectionModel.includes(row.id)
@@ -222,6 +223,7 @@ export function PermissionFormTableDataSelection(
 export function UpdatePermissionModal(
   { choices, open, setOpen, selectedPermission }
 ) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState(choices[0][0])
 
   return <Modal
@@ -233,7 +235,7 @@ export function UpdatePermissionModal(
   >
     <ModalHeader onClosed={() => {
       setOpen(false)
-    }}>Update permission</ModalHeader>
+    }}>{t('admin.permission.updatePermission')}</ModalHeader>
     <ModalContent>
       <FormControl className='BasicForm'>
         <Select
@@ -284,6 +286,7 @@ export function PermissionFormTable(
     dataUrl
   }
 ) {
+  const { t } = useTranslation();
   const { openConfirmDialog } = useConfirmDialog();
   const [open, setOpen] = useState(false)
   const [openPermission, setOpenPermission] = useState(false)
@@ -308,10 +311,10 @@ export function PermissionFormTable(
       <DeleteButton
         disabled={!selectionModel.length}
         variant="primary Reverse"
-        text={"Delete"}
+        text={t('admin.delete')}
         onClick={() => {
           openConfirmDialog({
-            header: 'Delete confirmation',
+            header: t('admin.deleteConfirmation'),
             onConfirmed: async () => {
               deleteData(selectionModel)
               setSelectionModel([])
@@ -319,8 +322,7 @@ export function PermissionFormTable(
             onRejected: () => {
             },
             children: <div>
-              Do you want to delete the
-              selected <>{permissionLabel.toLowerCase()}</>s?
+              {t('admin.permission.deleteConfirmationMessage', { label: permissionLabel.toLowerCase() })}
             </div>
           })
         }}
@@ -328,7 +330,7 @@ export function PermissionFormTable(
       <EditButton
         disabled={!selectionModel.length}
         variant="primary Reverse"
-        text={"Change permission"}
+        text={t('admin.permission.changePermission')}
         onClick={() => {
           setOpenPermission(true)
         }}
@@ -419,8 +421,7 @@ export function PermissionFormTable(
                       onRejected: () => {
                       },
                       children: <div>
-                        Do you want to remove
-                        this <>{permissionLabel.toLowerCase()}</>s?
+                        {t('admin.permission.removeConfirmationMessage', { label: permissionLabel.toLowerCase() })}
                       </div>
                     })
                   }}

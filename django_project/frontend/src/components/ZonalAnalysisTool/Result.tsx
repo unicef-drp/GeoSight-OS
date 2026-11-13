@@ -20,6 +20,7 @@ import React, {
   useState
 } from 'react';
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { ZonalAnalysisLayerConfiguration } from "./index.d";
 import { AGGREGATION_TYPES, analyzeData } from "../../utils/analysisData";
 import { Variables } from "../../utils/Variables";
@@ -45,7 +46,7 @@ interface Props {
 export const ZonalAnalysisResult = forwardRef((
     { index, analysisLayer, isAnalyzing, setIsAnalysing }: Props, ref
   ) => {
-
+    const { t } = useTranslation();
     // @ts-ignore
     const { contextLayers } = useSelector(state => state.dashboard.data)
     const [data, setData] = useState<object[]>(null);
@@ -165,9 +166,9 @@ export const ZonalAnalysisResult = forwardRef((
         <td>{analysisLayer.aggregatedField}</td>
         <td>
           {
-            isAnalyzing ? <i>Loading</i> : error ?
+            isAnalyzing ? <i>{t("components.zonalAnalysisTool.loading")}</i> : error ?
               <i className='Error'>
-                {error}value
+                {error === 'Context layer is not setup' ? t("components.zonalAnalysisTool.contextLayerNotSetup") : error}
               </i> : shownValue
           }
         </td>

@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import {
   getContext,
@@ -33,6 +34,7 @@ export default function ExampleContextInput({
   setContext,
   currentIndicatorLayer,
 }) {
+  const { t } = useTranslation();
   const referenceLayerDashboard = useSelector(
     (state) => state.dashboard.data?.referenceLayer,
   );
@@ -166,11 +168,10 @@ export default function ExampleContextInput({
     <div className="indicator-layer context">
       <div className="title">
         <div>
-          Example context. Select admin level and the geometry to fetch the
-          actual context.
+          {t('admin.indicatorLayers.popupConfig.exampleContextDescription')}
         </div>
         {!datasetLevels ? (
-          "Loading"
+          t('admin.loading')
         ) : (
           <Select
             options={datasetLevels.map((level) => {
@@ -183,7 +184,7 @@ export default function ExampleContextInput({
           />
         )}
         {!geometries || !geometries[levelSelected?.value] ? (
-          "Loading"
+          t('admin.loading')
         ) : (
           <Select
             options={Object.keys(selectedGeometries).map((concept_uuid) => {

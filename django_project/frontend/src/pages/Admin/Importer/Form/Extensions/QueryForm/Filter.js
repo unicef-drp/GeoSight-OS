@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import {
   WhereQueryGenerator
 } from "../../../../../../components/SqlQueryGenerator"
@@ -35,6 +36,7 @@ import "../../../../../../components/SqlQueryGenerator/WhereInputModal/style.scs
 export default function Filter(
   { data, setData, fields, onLoading }
 ) {
+  const { t } = useTranslation();
   const [where, setWhere] = useState('');
   const [open, setOpen] = useState(false);
   const onClosed = () => {
@@ -86,7 +88,7 @@ export default function Filter(
       disabled={!fields || onLoading}
       type="text"
       className='ClickedReadOnly'
-      placeholder={onLoading ? "Loading" : "SQL Filter"}
+      placeholder={onLoading ? t('admin.loading') : t('components.whereInputModal.sqlFilterPlaceholder')}
       readOnly={true}
       value={data}
       onClick={evt => setOpen(true)}
@@ -100,7 +102,7 @@ export default function Filter(
       onClosed={onClosed}
     >
       <ModalHeader onClosed={onClosed}>
-        Change filter for the data.
+        {t('admin.importer.filter.modalTitle')}
       </ModalHeader>
       <ModalContent>
         <WhereQueryGenerator
@@ -114,7 +116,7 @@ export default function Filter(
             <div className='Save-Button'>
               <SaveButton
                 variant="primary"
-                text={"Apply"}
+                text={t('components.whereInputModal.apply')}
                 onClick={() => {
                   setOpen(false)
                   setData(where)

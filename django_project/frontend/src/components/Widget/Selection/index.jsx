@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import Modal, { ModalContent, ModalHeader } from "../../Modal";
 
@@ -45,6 +46,7 @@ export default function WidgetSelection({
   open,
   setOpen,
 }) {
+  const { t } = useTranslation();
   const [data, setData] = useState(initData);
   const [formOpen, setFormOpen] = useState(null);
 
@@ -81,7 +83,7 @@ export default function WidgetSelection({
       case WidgetType.GENERIC_TIME_SERIES_WIDGET:
         return (
           <WidgetForm
-            title={"Generic"}
+            title={t("components.widget.selection.generic")}
             open={formOpen}
             data={data}
             setData={onUpdateData}
@@ -90,7 +92,7 @@ export default function WidgetSelection({
       case WidgetType.TIME_SERIES_CHART_WIDGET:
         return (
           <WidgetForm
-            title={"Time Series"}
+            title={t("components.widget.selection.timeSeries")}
             open={formOpen}
             data={data}
             setData={onUpdateData}
@@ -126,7 +128,7 @@ export default function WidgetSelection({
         onClosed={onClosed}
         className="modal__widget__selection"
       >
-        <ModalHeader onClosed={onClosed}>Add new widget</ModalHeader>
+        <ModalHeader onClosed={onClosed}>{t("components.widget.selection.addNewWidget")}</ModalHeader>
         <ModalContent>
           <GenericWidgetMember onClick={onSelected} />
         </ModalContent>

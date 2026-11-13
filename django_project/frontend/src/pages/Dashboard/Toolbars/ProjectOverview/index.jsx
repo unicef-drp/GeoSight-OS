@@ -97,7 +97,7 @@ export default function ProjectOverview() {
                 <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                   {overview
                     ? overview
-                    : "*There is no information for this project.*"}
+                    : t("dashboardPage.projectOverviewNoInfo")}
                 </Markdown>
               </div>
             </ModalContent>

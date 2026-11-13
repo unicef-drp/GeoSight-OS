@@ -144,6 +144,8 @@ jobs:
 
           { id: "e2e-data-restorer-plugin-enable-country-data", mode: "e2e", path: "tests/admin/data_restorer/country_data.ts", workers: 1, plugins: "cloud_native_gis,reference_dataset,data_restorer", initial_default_data: "true" },
           { id: "e2e-data-restorer-plugin-enable-with-data", mode: "e2e", path: "tests/admin/data_restorer/with_data.ts", workers: 1, script: "make load-test-data", plugins: "cloud_native_gis,reference_dataset,data_restorer" },
+          # i18n translations
+          { id: "e2e-i18n-translations", mode: "e2e", path: "tests/admin/i18n/", workers: 1, script: "make load-test-data" },
         ]
     env:
       APP_IMAGE: unicef/geosight

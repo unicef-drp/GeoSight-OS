@@ -19,6 +19,7 @@
 
 import React, { Fragment, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -41,6 +42,7 @@ import './style.scss';
  * Embed component.
  */
 export default function Embed({ map }) {
+  const { t } = useTranslation();
   // Project point states
   const projectCheckpointRef = useRef(null);
   const [projectCheckpointEnable, setProjectCheckpointEnable] = useState(false)
@@ -94,7 +96,7 @@ export default function Embed({ map }) {
         <ModalHeader onClosed={() => {
           setOpen(false)
         }}>
-          <b>Create embed snippet for this map.</b>
+          <b>{t("dashboardPage.toolbars.embed.createSnippet")}</b>
         </ModalHeader>
         <ModalContent>
           <div className='AdminForm'>
@@ -107,7 +109,7 @@ export default function Embed({ map }) {
                       setData({ ...data, layer_tab: evt.target.checked })
                     }}/>
                 }
-                label="Layer Tab"
+                label={t("dashboardPage.toolbars.embed.layerTab")}
               />
               <FormControlLabel
                 control={
@@ -117,7 +119,7 @@ export default function Embed({ map }) {
                       setData({ ...data, filter_tab: evt.target.checked })
                     }}/>
                 }
-                label="Filter Tab"
+                label={t("dashboardPage.toolbars.embed.filterTab")}
               />
               <FormControlLabel
                 control={
@@ -127,7 +129,7 @@ export default function Embed({ map }) {
                       setData({ ...data, map: evt.target.checked })
                     }}/>
                 }
-                label="Map"
+                label={t("dashboardPage.toolbars.embed.map")}
               />
               <FormControlLabel
                 control={
@@ -137,7 +139,7 @@ export default function Embed({ map }) {
                       setData({ ...data, widget_tab: evt.target.checked })
                     }}/>
                 }
-                label="Widget Tab"
+                label={t("dashboardPage.toolbars.embed.widgetTab")}
               />
             </FormGroup>
           </div>
@@ -145,7 +147,7 @@ export default function Embed({ map }) {
         <ModalFooter>
           <SaveButton
             variant="primary"
-            text='Generate'
+            text={t("dashboardPage.toolbars.embed.generate")}
             disabled={code === 'Generating' || !projectCheckpointEnable}
             onClick={() => {
               save()
@@ -154,7 +156,7 @@ export default function Embed({ map }) {
             readOnly={true}
             iconEnd={
               <ContentCopyIcon
-                className='CopyIcon' title='Copy embed code'
+                className='CopyIcon' title={t("dashboardPage.toolbars.embed.copyEmbedCode")}
                 onClick={evt => {
                   navigator.clipboard.writeText(code);
                 }}

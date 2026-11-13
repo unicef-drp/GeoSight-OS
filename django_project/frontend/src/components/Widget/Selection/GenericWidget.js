@@ -14,7 +14,7 @@
  */
 
 import React from "react";
-
+import { useTranslation } from "react-i18next";
 import WidgetSelectionMember from "./Member";
 import { WidgetType } from "../Definition";
 
@@ -23,10 +23,11 @@ import { WidgetType } from "../Definition";
  * @param {function} onClick When element clicked
  */
 export default function GenericWidgetMember({ onClick }) {
+  const { t } = useTranslation();
   return (
     <WidgetSelectionMember
-      title="Generic Widget"
-      description="A generic widget."
+      title={t('components.widget.generic.title')}
+      description={t('components.widget.generic.description')}
       onClick={() => {
         onClick({
           type: WidgetType.GENERIC_SUMMARY_WIDGET,

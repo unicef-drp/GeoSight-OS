@@ -14,6 +14,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowLeftIcon
   from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -36,6 +37,7 @@ import './styles.scss';
 export default function MultiSelectorConfig(
   { items, selectedItems, setSelectedItems, configEnabled = true, ...props }
 ) {
+  const { t } = useTranslation();
   const [temporarySelectedItems, setTemporarySelectedItems] = useState([]);
   const [filter, setFilter] = useState('');
   const ids = selectedItems.map(item => item.id)
@@ -63,7 +65,7 @@ export default function MultiSelectorConfig(
       <div className='MultiSelectorItemList'>
         <input
           type="text"
-          placeholder="Filter data"
+          placeholder={t('admin.multiSelector.filterData')}
           onChange={(event) => {
             setFilter(event.target.value)
           }}

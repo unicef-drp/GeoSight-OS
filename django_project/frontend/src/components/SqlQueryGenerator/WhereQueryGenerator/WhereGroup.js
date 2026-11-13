@@ -14,11 +14,13 @@
  */
 
 import React, { Fragment } from "react";
+import { useTranslation } from "react-i18next";
 import WhereRender from "./WhereRender"
 import { TYPE, WHERE_OPERATOR } from "../../../utils/queryExtraction";
 
 export default function WhereGroup(
   { where, upperWhere, updateWhere, fields, disabledChanges = {}, ...props }) {
+  const { t } = useTranslation();
   return <div className='WhereConfigurationQueryGroup'>
     {
       where.queries.length > 0 ?
@@ -62,7 +64,7 @@ export default function WhereGroup(
           }
         )
         :
-        <div className='WhereConfigurationNote'>No filter</div>
+        <div className='WhereConfigurationNote'>{t('components.whereQueryGenerator.noFilter')}</div>
     }
   </div>
 }

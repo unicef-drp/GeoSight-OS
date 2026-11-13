@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import { Button, FormControl, Input, InputLabel, Radio } from "@mui/material";
@@ -43,6 +44,7 @@ import { RemoveIcon } from "../../../Icons";
  * @param {React.Component} children React component to be rendered
  */
 export default function WidgetEditor({ open, setData, data, title, children }) {
+  const { t } = useTranslation();
   const { indicators, indicatorLayers, default_time_mode } = useSelector(
     (state) => state.dashboard.data,
   );
@@ -165,14 +167,14 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
         className="WidgetEditor MuiFormControl-Form"
       >
         <ModalHeader onClosed={onClosed}>
-          {name ? "Change " + name : "New " + title}
+          {name ? t("components.widget.summaryEditor.changeTitle", { name: name }) : t("components.widget.summaryEditor.newTitle", { title: title })}
         </ModalHeader>
         <ModalContent>
           <FormControl>
-            <InputLabel>Widget name</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.widgetName")}</InputLabel>
             <Input
               type="text"
-              placeholder="Widget name"
+              placeholder={t("components.widget.summaryEditor.widgetName")}
               onChange={(event) => {
                 setName(event.target.value);
               }}
@@ -180,10 +182,10 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel>Widget description</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.widgetDescription")}</InputLabel>
             <Input
               type="text"
-              placeholder="Widget description"
+              placeholder={t("components.widget.summaryEditor.widgetDescription")}
               onChange={(event) => {
                 setDescription(event.target.value);
               }}
@@ -191,7 +193,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel>Unit</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.unit")}</InputLabel>
             <Input
               type="text"
               placeholder="Unit"
@@ -202,7 +204,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel>Layer Type</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.layerType")}</InputLabel>
             <Select
               onChange={(event) => {
                 setLayerType(event.target.value);
@@ -217,7 +219,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             </Select>
           </FormControl>
           <FormControl>
-            <InputLabel>Source Layer</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.sourceLayer")}</InputLabel>
             <Select
               onChange={(event) => {
                 setLayerID(event.target.value);
@@ -237,7 +239,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             </Select>
           </FormControl>
           <FormControl>
-            <InputLabel>Operation</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.operation")}</InputLabel>
             <Select
               onChange={(event) => {
                 setOperation(event.target.value);
@@ -252,7 +254,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             </Select>
           </FormControl>
           <FormControl>
-            <InputLabel>Source Value</InputLabel>
+            <InputLabel>{t("components.widget.summaryEditor.sourceValue")}</InputLabel>
             <Select
               onChange={(event) => {
                 setProperty(event.target.value);
@@ -276,7 +278,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
           })}
 
           <FormControl className="MuiForm-RadioGroup">
-            <FormLabel className="MuiInputLabel-root">Datetime</FormLabel>
+            <FormLabel className="MuiInputLabel-root">{t("components.widget.summaryEditor.datetime")}</FormLabel>
             <RadioGroup
               value={dateFilterType}
               onChange={(evt) => {
@@ -287,19 +289,19 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
                 disabled={use_only_last_known_value}
                 value={DateFilterType.NO_FILTER}
                 control={<Radio />}
-                label="No filter (global latest values will be used)"
+                label={t("components.widget.summaryEditor.noFilter")}
               />
               <FormControlLabel
                 disabled={use_only_last_known_value}
                 value={DateFilterType.SYNC}
                 control={<Radio />}
-                label="Use datetime filter from Dashboard level."
+                label={t("components.widget.summaryEditor.useGlobalFilter")}
               />
               <FormControlLabel
                 disabled={use_only_last_known_value}
                 value={DateFilterType.CUSTOM}
                 control={<Radio />}
-                label="Use custom datetime filter."
+                label={t("components.widget.summaryEditor.useCustomFilter")}
               />
             </RadioGroup>
 
@@ -333,8 +335,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
                   />
                 </div>
                 <div className="helptext" style={{ width: "100%" }}>
-                  Make the max date empty to make the data filtered up to
-                  `today`.
+                  {t("components.widget.summaryEditor.maxDateHelp")}
                 </div>
               </div>
             ) : (
@@ -348,7 +349,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
             onClick={onApply}
             disabled={!name || !layerType || !operation || !property}
           >
-            Apply
+            {t("components.widget.summaryEditor.apply")}
           </Button>
         </ModalContent>
       </Modal>

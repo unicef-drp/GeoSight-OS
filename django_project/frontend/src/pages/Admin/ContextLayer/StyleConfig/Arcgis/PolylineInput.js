@@ -14,18 +14,20 @@
  */
 
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
 
 /**
  * One point input
  */
 export default function PolylineInput({ style, update }) {
+  const { t } = useTranslation();
 
   return <div className='ContextLayerConfigInput BasicForm'>
     <div className="BasicFormSectionInline">
       <div className="BasicFormSection">
         <div>
-          <label className="form-label">Border Color</label>
+          <label className="form-label">{t('admin.contextLayer.arcgis.borderColor')}</label>
         </div>
         <div>
           <ColorSelector
@@ -41,7 +43,7 @@ export default function PolylineInput({ style, update }) {
       </div>
       <div className="BasicFormSection">
         <div>
-          <label className="form-label">Border Weight</label>
+          <label className="form-label">{t('admin.contextLayer.arcgis.borderWeight')}</label>
         </div>
         <div>
           <input

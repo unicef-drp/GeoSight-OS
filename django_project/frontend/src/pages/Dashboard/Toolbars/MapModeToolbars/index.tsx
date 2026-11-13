@@ -19,6 +19,7 @@
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Variables } from "../../../../utils/Variables";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { CompareLayer } from "../index";
@@ -40,6 +41,7 @@ interface Props {
 
 /** PopupToolbars */
 export default function MapModeToolbars({ map }: Props) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   // @ts-ignore
   const is3dMode = useSelector((state) => state.map?.is3dMode);
@@ -82,8 +84,8 @@ export default function MapModeToolbars({ map }: Props) {
           <PluginChild
             title={
               sideBySideViewMode
-                ? "Turn off side by side view"
-                : "Turn on side by side view"
+                ? t("dashboardPage.toolbars.mapMode.turnOffSideBySideView")
+                : t("dashboardPage.toolbars.mapMode.turnOnSideBySideView")
             }
             disabled={!map}
             active={sideBySideViewMode}
@@ -104,8 +106,8 @@ export default function MapModeToolbars({ map }: Props) {
             <PluginChild
               title={
                 sideBySideViewModeSync
-                  ? "Turn off sync movement"
-                  : "Turn on sync movement"
+                  ? t("dashboardPage.toolbars.mapMode.turnOffSyncMovement")
+                  : t("dashboardPage.toolbars.mapMode.turnOnSyncMovement")
               }
               disabled={!map}
               active={sideBySideViewModeSync}
@@ -128,7 +130,7 @@ export default function MapModeToolbars({ map }: Props) {
           data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
         >
           <PluginChild
-            title={"3D layer"}
+            title={t("dashboardPage.toolbars.mapMode.threeDLayer")}
             disabled={!map}
             active={is3dMode}
             onClick={() => {

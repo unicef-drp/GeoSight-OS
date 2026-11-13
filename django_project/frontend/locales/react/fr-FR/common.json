@@ -1,0 +1,568 @@
+{
+  "(from)": "(de)",
+  "(to)": "(à)",
+  "3D view": "Vue 3D",
+  "Apply Changes": "Appliquer les modifications",
+  "Back to home": "Retour à l'accueil",
+  "Back to Home": "Retour à l'accueil",
+  "Compare layers": "Comparer les couches",
+  "Config": "Configuration",
+  "Context Layers": "Couches de contexte",
+  "Context and indicator layer tabs visibility": "Visibilité des onglets de couches de contexte et d'indicateurs",
+  "Context layer data": "Données de la couche de contexte",
+  "Context layers": "Couches de contexte",
+  "Context layers tab only": "Onglet des couches de contexte uniquement",
+  "Data download": "Téléchargement de données",
+  "Delete": "Supprimer",
+  "Embed tool": "Outil d'intégration",
+  "Entity search box": "Champ de recherche d'entité",
+  "Feature it": "Mettre en avant",
+  "Featured": "En vedette",
+  "Filter": "Filtre",
+  "Homepage": "Page d'accueil",
+  "Indicator data": "Données de l'indicateur",
+  "Indicator layers tab only": "Onglet des couches d'indicateurs uniquement",
+  "Indicators": "Indicateurs",
+  "Left panel toggle": "Basculer le panneau gauche",
+  "Level selector": "Sélecteur de niveau",
+  "List": "Liste",
+  "Map": "Carte",
+  "Map label toggle": "Basculer l'étiquette de la carte",
+  "Measurement": "Mesure",
+  "No featured projects available": "Aucun projet en vedette disponible",
+  "Permission": "Permission",
+  "Read": "Lecture",
+  "Read Data": "Lire les données",
+  "Remove from featured": "Retirer des favoris",
+  "SDMX Indicators Layer Configurations": "Configurations de la couche d'indicateurs SDMX",
+  "Share": "Partager",
+  "Show both tabs": "Afficher les deux onglets",
+  "Show map toolbar": "Afficher la barre d'outils de la carte",
+  "Spatial bookmark": "Signet spatial",
+  "Widget": "Widget",
+  "Widget panel toggle": "Basculer le panneau de widgets",
+  "Write": "Écriture",
+  "Write Data": "Écrire les données",
+  "You haven't selected a view yet": "Vous n'avez pas encore sélectionné une vue",
+  "Zonal analysis": "Analyse zonale",
+  "admin": {
+    "access": "ACCÈS",
+    "accessRequest": "Demande d'accès",
+    "actions": {
+      "changeShareConfig": "Modifier la configuration de partage",
+      "goToMap": "Aller à la carte",
+      "needReselectReferenceLayer": "Besoin de re-sélectionner la couche de référence",
+      "previewDashboard": "Aperçu du tableau de bord"
+    },
+    "add": {
+      "basemap": "Ajouter un fond de carte",
+      "contextLayer": "Ajouter une couche de contexte",
+      "indicator": "Ajouter un indicateur",
+      "indicatorLayer": "Ajouter une couche d'indicateurs",
+      "relatedTable": "Ajouter une table liée",
+      "widget": "Ajouter un widget"
+    },
+    "basemaps": "Fonds de carte",
+    "cancel": "Annuler",
+    "clearSelection": "Effacer la sélection",
+    "columns": {
+      "category": "Catégorie",
+      "createdAt": "Créé le",
+      "createdBy": "Créé par",
+      "description": "Description",
+      "modifiedAt": "Modifié le",
+      "modifiedBy": "Modifié par",
+      "shortcode": "Code court"
+    },
+    "complexColorValueDetected": "Valeur de couleur complexe détectée. Veuillez modifier en mode de saisie brute.",
+    "confirm": "Confirmer",
+    "contextLayer": {
+      "arcgis": {
+        "borderColor": "Couleur de bordure",
+        "borderWeight": "Épaisseur de bordure",
+        "fillColor": "Couleur de remplissage",
+        "point": {
+          "icon": "Icône",
+          "radius": "Rayon",
+          "size": "Taille"
+        }
+      },
+      "vectorStyle": {
+        "loadingAttributes": "Chargement des attributs...",
+        "stylesHeading": "Styles"
+      }
+    },
+    "contextLayers": "Couches de contexte",
+    "create": {
+      "basemap": "Créer un nouveau fond de carte",
+      "contextLayer": "Créer une nouvelle couche de contexte",
+      "indicator": "Créer un nouvel indicateur"
+    },
+    "createNew": "Créer un nouveau {{pageName}}",
+    "dashboard": {
+      "enableGeographyEntitySearchBox": "Activer la boîte de recherche d'entité géographique",
+      "hideContextLayerTab": "Masquer l'onglet des couches de contexte",
+      "mappingIndicatorsUsing": "Cartographier les indicateurs avec",
+      "nameExample": "Exemple : Tableau de bord des risques en Afghanistan",
+      "showSplashScreenOnFirstOpen": "Afficher comme écran d'accueil à la première ouverture du projet",
+      "transparencyOfContextLayers": "Transparence des couches de contexte",
+      "transparencyOfIndicatorLayers": "Transparence des couches d'indicateurs",
+      "truncateLongIndicatorLayerName": "Tronquer le nom long des couches d'indicateurs",
+      "urlShortcode": "Code URL court",
+      "urlShortcodeDescription": "URL du projet en format slug. Remplace automatiquement les espaces par \"-\" et met en minuscules.\nSera généré à partir du nom si laissé vide."
+    },
+    "data": "DONNÉES",
+    "dataBrowser": "Navigateur de données",
+    "dataManagement": "Gestion des données",
+    "delete": "Supprimer",
+    "deleteConfirmation": "Confirmation de suppression",
+    "deleteConfirmationMessage": "Êtes-vous sûr de vouloir supprimer {{item}} ?",
+    "deleteMultipleConfirmationInputText": "Veuillez saisir '{{numberOfItems}}' ci-dessous pour activer le bouton de confirmation.",
+    "deleteMultipleConfirmationMessage": "Êtes-vous sûr de vouloir supprimer {{numberOfItems}} {{dataName}} ?",
+    "edit": "Modifier",
+    "fetchingProjectData": "Récupération des données du projet...",
+    "help": "Aide",
+    "importer": {
+      "filter": {
+        "modalTitle": "Modifier le filtre des données."
+      }
+    },
+    "importers": "Importateurs",
+    "indicator": {
+      "inputFile": {
+        "areaCode": "Code de zone",
+        "chooseSpreadsheet": "Choisir une feuille de calcul pour remplir automatiquement...",
+        "modalTitle": "Utiliser Excel pour remplir tous les champs",
+        "step1": "1. Créez une feuille de calcul avec au moins 2 colonnes.",
+        "step1Help": "Vous pouvez ajouter des colonnes supplémentaires optionnelles pour des valeurs additionnelles.",
+        "step2": "2. Sélectionnez la feuille de calcul.",
+        "step3": "3. Choisissez la feuille.",
+        "step4": "4. Choisissez la colonne de code de zone.",
+        "step5": "5. Choisissez la colonne de valeur.",
+        "step6": "6. Choisissez les colonnes supplémentaires."
+      }
+    },
+    "indicatorLayers": {
+      "multiIndicator": {
+        "chartType": "Type de graphique",
+        "createTitle": "Créer une couche multi-indicateurs",
+        "editTitle": "Modifier la couche {{name}}",
+        "max": "Max :",
+        "min": "Min :",
+        "mode": "Mode",
+        "size": "Taille",
+        "symbolSize": "Taille du symbole"
+      },
+      "popupConfig": {
+        "exampleContextDescription": "Exemple de contexte. Sélectionnez le niveau administratif et la géométrie pour récupérer le contexte réel."
+      },
+      "relatedTable": {
+        "columns": {
+          "date": "Date",
+          "ucode": "Ucode",
+          "value": "Valeur"
+        },
+        "dataSlicers": "Segments de données",
+        "enableRelatedRecordsPopup": "Activer le popup pour les enregistrements liés",
+        "relatedFieldAsGeoCode": "Champ lié comme code de géométrie",
+        "relatedFieldHelp": "Champ lié comme code géographique. Modifiez dans la section des tables liées.",
+        "relatedTable": "Table liée",
+        "setupTitle": "Configurer la couche de table liée",
+        "styleNotConfigured": "Le style n'est pas configuré."
+      }
+    },
+    "indicators": "Indicateurs",
+    "labelStyle": {
+      "fontColor": "Couleur de police",
+      "fontFamily": "Famille de police",
+      "fontSize": "Taille de police",
+      "fontWeight": "Graisse de police",
+      "haloColor": "Couleur du halo",
+      "haloWeight": "Épaisseur du halo",
+      "preview": "Aperçu",
+      "visibleZoom": "Zoom visible"
+    },
+    "language": "Langue",
+    "loading": "Chargement",
+    "multiSelector": {
+      "filterData": "Filtrer les données"
+    },
+    "noDataTable": "Aucune donnée disponible.",
+    "numberOfItemsSelected": "{{numberOfItems}} éléments de cette liste sont sélectionnés.",
+    "oneItemSelected": "1 élément de cette liste est sélectionné.",
+    "pageNameFormats": {
+      "names": {
+        "Basemaps": "Nom du fond de carte",
+        "Group": "Nom du groupe",
+        "Groups": "Nom du groupe",
+        "Indicator Layers": "Nom de l'indicateur",
+        "User": "Nom de l'utilisateur",
+        "Users": "Nom de l'utilisateur",
+        "accessRequest": "Nom de la demande d'accès",
+        "accessRequestPermissionDetail": "Nom du détail de permission de la demande",
+        "accessRequestUserDetail": "Nom du détail du nouvel utilisateur de la demande",
+        "basemaps": "Nom du fond de carte",
+        "contextLayer": "Nom de la couche de contexte",
+        "dashboard": "Nom du projet",
+        "dataManagement": "Nom de la gestion de données",
+        "dataset": "Nom du navigateur de données",
+        "importer": "Nom de l'importateur de données",
+        "indicators": "Nom de l'indicateur",
+        "logs": "Nom du journal",
+        "newUsers": "Nom du nouvel utilisateur",
+        "permissionRequests": "Nom de la demande de permission",
+        "referenceDatasetImporter": "Nom de l'importateur de jeu de données de référence",
+        "referenceLayerView": "Nom du jeu de données de référence",
+        "relatedTables": "Nom de la table liée",
+        "relatedTablesData": "Nom des données de la table liée",
+        "scheduledJobs": "Nom du travail planifié",
+        "styles": "Nom du style",
+        "userProfile": "Nom du profil utilisateur",
+        "usersAndGroups": "Nom de l'utilisateur et du groupe"
+      },
+      "plural": {
+        "Group": "Groupes",
+        "Groups": "Groupes",
+        "User": "Utilisateurs",
+        "Users": "Utilisateurs",
+        "accessRequest": "Demandes d'accès",
+        "accessRequestPermissionDetail": "Détails des permissions de la demande",
+        "accessRequestUserDetail": "Détails du nouvel utilisateur de la demande",
+        "basemap": "Fonds de carte",
+        "basemaps": "Fonds de carte",
+        "contextLayer": "Couches de contexte",
+        "dashboard": "Projets",
+        "dataManagement": "Gestion des données",
+        "dataset": "Navigateurs de données",
+        "importer": "Importateurs de données",
+        "indicator": "Indicateurs",
+        "indicators": "Indicateurs",
+        "logs": "Journaux",
+        "newUsers": "Nouveaux utilisateurs",
+        "permissionRequests": "Demandes de permission",
+        "referenceDatasetImporter": "Importateurs de jeux de données de référence",
+        "referenceLayerView": "Jeux de données de référence",
+        "relatedTable": "Tables liées",
+        "relatedTables": "Tables liées",
+        "relatedTablesData": "Données des tables liées",
+        "scheduledJobs": "Travaux planifiés",
+        "style": "Styles",
+        "styles": "Styles",
+        "userProfile": "Profils utilisateur",
+        "usersAndGroups": "Utilisateurs et groupes"
+      },
+      "singular": {
+        "Group": "Groupe",
+        "Groups": "Groupe",
+        "User": "Utilisateur",
+        "Users": "Utilisateur",
+        "accessRequest": "Demande d'accès",
+        "accessRequestPermissionDetail": "Détail de permission de la demande",
+        "accessRequestUserDetail": "Détail du nouvel utilisateur de la demande",
+        "basemap": "Fond de carte",
+        "basemaps": "Fond de carte",
+        "contextLayer": "Couche de contexte",
+        "dashboard": "Projet",
+        "dataManagement": "Gestion des données",
+        "dataset": "Navigateur de données",
+        "importer": "Importateur de données",
+        "indicator": "Indicateur",
+        "indicators": "Indicateur",
+        "logs": "Journal",
+        "newUsers": "Nouvel utilisateur",
+        "permissionRequests": "Demande de permission",
+        "referenceDatasetImporter": "Importateur de jeu de données de référence",
+        "referenceLayerView": "Jeu de données de référence",
+        "relatedTable": "Table liée",
+        "relatedTables": "Table liée",
+        "relatedTablesData": "Données de la table liée",
+        "scheduledJobs": "Travail planifié",
+        "style": "Style",
+        "styles": "Style",
+        "userProfile": "Profil utilisateur",
+        "usersAndGroups": "Utilisateur et groupe"
+      }
+    },
+    "permission": {
+      "add": "Ajouter des {{label}}s",
+      "changePermission": "Modifier la permission",
+      "deleteConfirmationMessage": "Voulez-vous supprimer les {{label}}s sélectionnés ?",
+      "groupAccess": "Accès du groupe",
+      "groupName": "Nom du groupe",
+      "listOf": "Liste de {{label}}",
+      "publicAccess": "Accès public",
+      "removeConfirmationMessage": "Voulez-vous supprimer ce {{label}} ?",
+      "search": "Rechercher {{label}}",
+      "shareModal": "Partager '{{name}}'",
+      "updatePermission": "Mettre à jour la permission",
+      "userAccess": "Accès utilisateur"
+    },
+    "profile": "Profil",
+    "project": "Projet",
+    "referenceDatasets": "JEUX DE DONNÉES DE RÉFÉRENCE",
+    "referenceDatasetsLower": "Jeux de données de référence",
+    "relatedTables": "Tables liées",
+    "requestApproved": "La demande est approuvée",
+    "requestRejected": "La demande est rejetée",
+    "searchPlaceholder": "Rechercher {{pageName}}",
+    "showSelected": "Afficher la sélection",
+    "style": {
+      "changeStyle": "Modifier le style",
+      "dynamic": {
+        "applyWhenFiltering": "Appliquer lors du filtrage",
+        "outline": "Contour",
+        "syncFillOutlineColor": "Synchroniser la couleur de remplissage et de contour"
+      },
+      "rules": {
+        "addNewRule": "Ajouter une nouvelle règle",
+        "assignAllOutlineColor": "Attribuer une couleur de contour à tous",
+        "assignAllWidth": "Attribuer une largeur à tous",
+        "assignColors": "Attribuer des couleurs",
+        "colorHeader": "Couleur",
+        "fillColorHelp": "Utilisé pour remplir la géométrie. Mettez la couleur hex avec # (ex : #ffffff).",
+        "nameHeader": "Nom",
+        "noOptionsCreateNew": "Pas d'options, écrivez pour créer une nouvelle option.",
+        "outlineColorHeader": "Couleur de contour",
+        "outlineColorHelp": "Utilisé pour colorier le contour de la géométrie. Mettez la couleur hex avec # (ex : #ffffff).",
+        "outlineWidthHeader": "Largeur du contour",
+        "outlineWidthHelp": "Modifier la largeur du contour (en px)",
+        "ruleHeader": "Règle"
+      },
+      "selectStyle": "Sélectionner un style",
+      "style": "Style",
+      "styleType": "Type de style"
+    },
+    "styles": "Styles",
+    "table": {
+      "noResultsFound": "Aucun résultat trouvé"
+    },
+    "tableError": "Oups ! Un problème est survenu lors du chargement des données.",
+    "user": "UTILISATEUR",
+    "usersAndGroups": "Utilisateurs et groupes",
+    "viewAllDashboards": "Voir tous les tableaux de bord",
+    "visualization": "VISUALISATION"
+  },
+  "category": "Catégorie",
+  "components": {
+    "copyToClipboard": {
+      "copied": "Copié"
+    },
+    "filter": {
+      "applyFilters": "Appliquer les filtres",
+      "deleteFilter": {
+        "title": "Supprimer le filtre"
+      },
+      "editor": {
+        "allowModify": "Permettre aux utilisateurs de modifier les paramètres du filtre (valeurs)",
+        "createFilter": "Créer le filtre",
+        "createRule": "Créer une règle",
+        "creatingNewFilter": "Créer un nouveau filtre",
+        "descriptionLabel": "Description",
+        "filterDescriptionPlaceholder": "Description du filtre",
+        "filterNameLabel": "Nom du filtre*",
+        "filterNamePlaceholder": "Nom du filtre",
+        "updateFilter": "Mettre à jour le filtre",
+        "updatingNewFilter": "Mise à jour du filtre"
+      },
+      "group": {
+        "addNewFilter": "Ajouter un nouveau filtre",
+        "addNewGroup": "Ajouter un nouveau groupe",
+        "deleteGroupConfirm": "Êtes-vous sûr de vouloir supprimer ce groupe ?"
+      }
+    },
+    "imageInput": {
+      "browseFile": "Parcourir le fichier"
+    },
+    "selectWithSearch": {
+      "allSelected": "Tout sélectionné",
+      "blank": "Vide",
+      "nSelected": "{{count}} sélectionnés",
+      "selectAll": "Tout sélectionner",
+      "selectOneOption": "Sélectionner 1 option"
+    },
+    "whereInput": {
+      "last": "Dernier",
+      "next": "Suivant",
+      "pickATime": "Choisir une heure",
+      "pickAnOperation": "Choisir une opération",
+      "pickTheField": "Choisir l'attribut",
+      "putTheValue": "Saisir la valeur"
+    },
+    "whereInputModal": {
+      "apply": "Appliquer",
+      "defaultLabel": "Modifier le filtre des données.",
+      "sqlFilterPlaceholder": "Filtre SQL"
+    },
+    "whereQueryGenerator": {
+      "noFilter": "Aucun filtre"
+    },
+    "widget": {
+      "form": {
+        "changeTitle": "Modifier {{name}}",
+        "newTitle": "Nouveau widget {{title}}",
+        "summary": "Résumé",
+        "timeSeries": "Série temporelle",
+        "widgetDescription": "Description du widget",
+        "widgetName": "Nom du widget"
+      },
+      "generic": {
+        "description": "Un widget générique.",
+        "title": "Widget générique"
+      },
+      "selection": {
+        "addNewWidget": "Ajouter un nouveau widget",
+        "generic": "Générique",
+        "timeSeries": "Série temporelle"
+      },
+      "summaryEditor": {
+        "apply": "Appliquer",
+        "changeTitle": "Modifier {{name}}",
+        "datetime": "Date et heure",
+        "layerType": "Type de couche",
+        "maxDateHelp": "Laissez la date maximale vide pour filtrer les données jusqu'à `aujourd'hui`.",
+        "newTitle": "Nouveau {{title}}",
+        "noFilter": "Aucun filtre (les dernières valeurs globales seront utilisées).",
+        "operation": "Opération",
+        "sourceLayer": "Couche source",
+        "sourceValue": "Valeur source",
+        "unit": "Unité",
+        "useCustomFilter": "Utiliser un filtre de date et heure personnalisé.",
+        "useGlobalFilter": "Utiliser le filtre de date et heure du niveau du tableau de bord.",
+        "widgetDescription": "Description du widget",
+        "widgetName": "Nom du widget"
+      }
+    },
+    "zonalAnalysisTool": {
+      "add": "Ajouter",
+      "aggregation": "Agrégation",
+      "buffer": "Tampon :",
+      "bufferTooltip": "Les géométries seront simplifiées avant l'application du tampon",
+      "cancel": "Annuler",
+      "clear": "Effacer",
+      "clickFeature": "Cliquez sur une entité sur la carte",
+      "clickToSelect": "Cliquer pour sélectionner",
+      "contextLayerNotSetup": "La couche de contexte n'est pas configurée",
+      "draw": "Dessiner",
+      "drawInstructions": "Dessinez sur la carte et terminez par un double-clic.",
+      "field": "Champ",
+      "loading": "Chargement",
+      "runAnalysis": "Lancer l'analyse",
+      "selectionMode": "Mode de sélection :",
+      "sourceLayer": "Couche source",
+      "value": "Valeur"
+    }
+  },
+  "dashboardPage": {
+    "adminPanelButton": "Panneau d'administration",
+    "contextLayerErrorDelete": "Il semble que cette couche ait déjà été supprimée",
+    "contextLayerErrorPermission": "Vous n'avez pas la permission d'accéder à cette ressource",
+    "contextLayerSearch": "Rechercher des couches de contexte",
+    "contextLayers": "Couches de contexte",
+    "filterNote": "Il n'y a pas de filtre pour ce groupe.",
+    "filters": "Filtres",
+    "indicatorLayerErrorPermission": "Vous n'avez pas la permission d'accéder à cette ressource",
+    "indicatorLayerNotFound": "Aucun indicateur trouvé pour cette couche. Veuillez demander à l'administrateur de corriger cela.",
+    "indicatorSearch": "Rechercher des indicateurs",
+    "indicators": "Indicateurs",
+    "layerInfo": {
+      "description": "Description :",
+      "lastUpdate": "Dernière mise à jour :",
+      "source": "Source :",
+      "unit": "Unité :"
+    },
+    "layers": "Couches",
+    "loadingDashboardData": "Chargement des données du tableau de bord...",
+    "projectOverview": "Vue d'ensemble du projet",
+    "projectOverviewClose": "Fermer",
+    "projectOverviewNoInfo": "Il n'y a pas d'informations pour ce projet.",
+    "projectOverviewNoShow": "Ne plus afficher !",
+    "relatedTableNotConfigured": "La table liée n'est pas correctement configurée",
+    "searchGeographyEntity": "Rechercher une entité géographique",
+    "searchGeographyEntityLoading": "Chargement...",
+    "toolbars": {
+      "bookmark": {
+        "bookmarkName": "Nom du signet",
+        "loading": "Chargement",
+        "saveAs": "Enregistrer sous...",
+        "saveBookmark": "Enregistrer le signet {{name}}",
+        "saveBookmarkAs": "Enregistrer le signet sous",
+        "saveCurrentBookmark": "Enregistrer la sélection et l'étendue actuelles dans {{name}}.",
+        "saveCurrentBookmarkAs": "Enregistrer la sélection et l'étendue actuelles comme nouveau signet.",
+        "submit": "Envoyer",
+        "title": "Signet"
+      },
+      "dataDownloader": {
+        "adminLevel": "Niveau administratif",
+        "download": "Télécharger",
+        "downloading": "Téléchargement en cours",
+        "excludeEmptyValue": "Exclure les enregistrements sans valeurs d'indicateurs",
+        "format": "Format",
+        "geographicalExtent": "Étendue géographique",
+        "indicator": "Indicateur",
+        "preparingData": "Préparation des données",
+        "timeFilter": "Filtre temporel",
+        "title": "Télécharger les données"
+      },
+      "embed": {
+        "copyEmbedCode": "Copier le code d'intégration",
+        "createSnippet": "Créer un extrait d'intégration pour cette carte.",
+        "filterTab": "Onglet des filtres",
+        "generate": "Générer",
+        "layerTab": "Onglet des couches",
+        "map": "Carte",
+        "widgetTab": "Onglet des widgets"
+      },
+      "mapMode": {
+        "threeDLayer": "Couche 3D",
+        "turnOffSideBySideView": "Désactiver la vue côte à côte",
+        "turnOffSyncMovement": "Désactiver le mouvement synchronisé",
+        "turnOnSideBySideView": "Activer la vue côte à côte",
+        "turnOnSyncMovement": "Activer le mouvement synchronisé"
+      },
+      "measurement": {
+        "addNewMeasurement": "Ajouter une nouvelle mesure",
+        "cancel": "Annuler",
+        "clear": "Effacer",
+        "deleteSelected": "Supprimer la sélection",
+        "drawInstructions": "Dessinez sur la carte et terminez par un double-clic.",
+        "measureDistancesAreas": "Mesurer les distances et les surfaces",
+        "meters": "Mètres",
+        "miles": "Miles",
+        "sqMeters": "Mètres carrés",
+        "startMeasurement": "Démarrer la mesure"
+      },
+      "referenceLayers": {
+        "title": "Sélection de la couche de référence"
+      },
+      "sdmx": {
+        "createLayer": "Créer une couche SDMX"
+      },
+      "tilt": {
+        "tooltip": "Réinitialiser l'inclinaison. Maintenez Ctrl gauche et cliquez avec le bouton gauche de la souris sur la carte et déplacez le curseur vers le haut/bas pour changer l'inclinaison"
+      },
+      "togglePanel": {
+        "title": "Basculer le panneau"
+      },
+      "zonalAnalysis": {
+        "title": "Analyse zonale"
+      }
+    }
+  },
+  "featured": "En vedette",
+  "featured projects": "Projets en vedette",
+  "loggedAs": "Connecté en tant que",
+  "logout": "Déconnexion",
+  "mapboxStyleInformation": "Informations sur le style Mapbox.",
+  "name": "Nom",
+  "native": {
+    "flag": "🇫🇷",
+    "name": "Français"
+  },
+  "navbar": {
+    "apiDocumentation": "Documentation API",
+    "authorizedToGeoRepo": "Autorisé à GeoRepo.",
+    "djangoAdmin": "Admin Django"
+  },
+  "seeMapboxDocumentationForMoreDetail": "Consultez la documentation Mapbox pour plus de détails.",
+  "thereAreSomeInformationToControlTheLegend": "Il y a des informations pour contrôler la légende."
+}

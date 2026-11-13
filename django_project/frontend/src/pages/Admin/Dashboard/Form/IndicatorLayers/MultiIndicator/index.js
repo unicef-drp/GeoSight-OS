@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
 import Radio from "@mui/material/Radio";
@@ -89,6 +90,7 @@ export default function MultiIndicatorConfig({
     };
   };
 
+  const { t } = useTranslation();
   const { referenceLayer } = useSelector((state) => state.dashboard.data);
   const [data, setData] = useState(defaultData());
   const [open, setOpen] = useState(false);
@@ -171,8 +173,8 @@ export default function MultiIndicatorConfig({
           }}
         >
           {!indicatorLayer
-            ? "Create Multi Indicator Layer"
-            : "Change Layer " + indicatorLayer.name}
+            ? t('admin.indicatorLayers.multiIndicator.createTitle')
+            : t('admin.indicatorLayers.multiIndicator.editTitle', { name: indicatorLayer.name })}
         </ModalHeader>
         <ModalContent className="Gray">
           <div className="SaveButton-Section">
@@ -216,7 +218,7 @@ export default function MultiIndicatorConfig({
                   <div>
                     <div className="BasicFormSection">
                       <label className="form-label" htmlFor="group">
-                        Mode
+                        {t('admin.indicatorLayers.multiIndicator.mode')}
                       </label>
                       <SelectWithSearch
                         options={[ChartMode, PinMode]}
@@ -279,7 +281,7 @@ export default function MultiIndicatorConfig({
                           <div>
                             <FormControl>
                               <div>
-                                <b className="light">Chart Type</b>
+                                <b className="light">{t('admin.indicatorLayers.multiIndicator.chartType')}</b>
                               </div>
                               <RadioGroup
                                 value={data.chart_style.chartType}
@@ -305,7 +307,7 @@ export default function MultiIndicatorConfig({
                           <div>
                             <FormControl>
                               <div>
-                                <b className="light">Size</b>
+                                <b className="light">{t('admin.indicatorLayers.multiIndicator.size')}</b>
                               </div>
                               <RadioGroup
                                 value={data.chart_style.sizeType}
@@ -353,7 +355,7 @@ export default function MultiIndicatorConfig({
                       ) : null}
                       <div>
                         <div>
-                          <b className="light">Symbol Size</b>
+                          <b className="light">{t('admin.indicatorLayers.multiIndicator.symbolSize')}</b>
                         </div>
                         <br />
                         {data.chart_style.sizeType === FixedSize ? (
@@ -384,7 +386,7 @@ export default function MultiIndicatorConfig({
                             <table>
                               <tbody>
                                 <tr>
-                                  <td>Min :</td>
+                                  <td>{t('admin.indicatorLayers.multiIndicator.min')}</td>
                                   <td>
                                     <input
                                       min={defaultMinSize}
@@ -409,7 +411,7 @@ export default function MultiIndicatorConfig({
                                   <td>px</td>
                                 </tr>
                                 <tr>
-                                  <td>Max :</td>
+                                  <td>{t('admin.indicatorLayers.multiIndicator.max')}</td>
                                   <td>
                                     <input
                                       min={defaultMinSize}

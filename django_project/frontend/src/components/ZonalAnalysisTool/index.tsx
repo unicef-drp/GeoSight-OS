@@ -22,6 +22,7 @@ import React, {
   useState
 } from 'react';
 import maplibregl from 'maplibre-gl';
+import { useTranslation } from "react-i18next";
 
 import TextField from "@mui/material/TextField";
 import FormLabel from "@mui/material/FormLabel";
@@ -76,6 +77,7 @@ const IdFunction = 'ZonaAnalyzing'
 export const ZonalAnalysisTool = forwardRef((
     { map }: Props, ref
   ) => {
+    const { t } = useTranslation();
     // @ts-ignore
     const { tools, contextLayers } = useSelector(state => state.dashboard.data)
     const tool: DashboardTool = tools.find((row: DashboardTool) => row.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS);
@@ -372,7 +374,7 @@ export const ZonalAnalysisTool = forwardRef((
         <div className='ZonalAnalysisToolConfiguration'>
           <FormControl className='MuiForm-RadioGroup'>
             <FormLabel className="MuiInputLabel-root">
-              Selection mode:
+              {t("components.zonalAnalysisTool.selectionMode")}
             </FormLabel>
             <RadioGroup
               value={config.selectionMode}
@@ -387,7 +389,7 @@ export const ZonalAnalysisTool = forwardRef((
                   <FormControlLabel
                     value={SELECTION_MODE.MANUAL}
                     control={<Radio disabled={!isAllAnalyzingDone}/>}
-                    label='Draw'
+                    label={t("components.zonalAnalysisTool.draw")}
                   /> : null
               }
               {
@@ -395,16 +397,16 @@ export const ZonalAnalysisTool = forwardRef((
                   <FormControlLabel
                     value={SELECTION_MODE.SELECT_ADMIN}
                     control={<Radio disabled={!isAllAnalyzingDone}/>}
-                    label='Click to select'
+                    label={t("components.zonalAnalysisTool.clickToSelect")}
                   /> : null
               }
             </RadioGroup>
           </FormControl>
           <Tooltip
-            title={'Geometries will be simplified before buffer is applied'}
+            title={t("components.zonalAnalysisTool.bufferTooltip")}
             sx={{ fontSize: '16px' }}>
             <FormControl className='MuiForm-RadioGroup Buffer-Input'>
-              <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
+              <FormLabel className="MuiInputLabel-root">{t("components.zonalAnalysisTool.buffer")}</FormLabel>
               <TextField
                 disabled={!isAllAnalyzingDone}
                 value={bufferInput}
@@ -433,7 +435,7 @@ export const ZonalAnalysisTool = forwardRef((
               style={{ margin: 0, minWidth: "100%" }}
               onClick={analyze}
             >
-              Run analysis
+              {t("components.zonalAnalysisTool.runAnalysis")}
             </ThemeButton>
           </div>
         </div>
@@ -468,7 +470,7 @@ export const ZonalAnalysisTool = forwardRef((
                   ) :
                   <i>
                     {
-                      config.selectionMode === SELECTION_MODE.MANUAL ? 'Draw on map and finish by double click.' : "Click a feature on the map"
+                      config.selectionMode === SELECTION_MODE.MANUAL ? t("components.zonalAnalysisTool.drawInstructions") : t("components.zonalAnalysisTool.clickFeature")
                     }
                   </i>
               }
@@ -483,7 +485,7 @@ export const ZonalAnalysisTool = forwardRef((
                   }}
                   style={{ width: '300px' }}
                 >
-                  <AddLocationIcon/> Add
+                  <AddLocationIcon/> {t("components.zonalAnalysisTool.add")}
                 </ThemeButton> : null
             }
             {
@@ -494,7 +496,7 @@ export const ZonalAnalysisTool = forwardRef((
                   onClick={() => {
                     draw.stop()
                   }}>
-                  <CancelIcon/> Cancel
+                  <CancelIcon/> {t("components.zonalAnalysisTool.cancel")}
                 </ThemeButton> :
                 <ThemeButton
                   disabled={!isAllAnalyzingDone}
@@ -502,7 +504,7 @@ export const ZonalAnalysisTool = forwardRef((
                     draw.deleteFeatures()
                     clearData()
                   }}>
-                  <CancelIcon/> Clear
+                  <CancelIcon/> {t("components.zonalAnalysisTool.clear")}
                 </ThemeButton>
             }
           </div>
@@ -510,10 +512,10 @@ export const ZonalAnalysisTool = forwardRef((
         <div className='PopupToolbarComponentFooter ZonalAnalysisTable'>
           <table>
             <tr>
-              <th>Source layer</th>
-              <th>Aggregation</th>
-              <th>Field</th>
-              <th>Value</th>
+              <th>{t("components.zonalAnalysisTool.sourceLayer")}</th>
+              <th>{t("components.zonalAnalysisTool.aggregation")}</th>
+              <th>{t("components.zonalAnalysisTool.field")}</th>
+              <th>{t("components.zonalAnalysisTool.value")}</th>
             </tr>
             {
               layers.map((layer, index) => {

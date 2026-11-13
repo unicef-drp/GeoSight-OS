@@ -65,6 +65,7 @@ const FilterGroupElement = memo(
     isAdmin,
     isLoading
   }: FilterGroupElementProps) => {
+    const { t } = useTranslation();
     const modalRef = useRef(null);
 
     // Fetch this from global data
@@ -110,7 +111,7 @@ const FilterGroupElement = memo(
           <div className='Separator' />
           {
             isEnabled && <>
-              <Tooltip title="Add New Filter">
+              <Tooltip title={t("components.filter.group.addNewFilter")}>
                 <AddCircleIcon
                   className='FilterGroupAddExpression MuiButtonLike'
                   onClick={
@@ -122,7 +123,7 @@ const FilterGroupElement = memo(
                       )
                     }} />
               </Tooltip>
-              <Tooltip title="Add New Group">
+              <Tooltip title={t("components.filter.group.addNewGroup")}>
                 <CreateNewFolderIcon
                   className='FilterGroupAdd MuiButtonLike' onClick={
                     () => {
@@ -138,7 +139,7 @@ const FilterGroupElement = memo(
           }
           {
             !isMaster && <DeleteFilter
-              text={'Are you sure want to delete this group?'}
+              text={t("components.filter.group.deleteGroupConfirm")}
               onDelete={onDelete}
               isAdmin={isAdmin}
             />

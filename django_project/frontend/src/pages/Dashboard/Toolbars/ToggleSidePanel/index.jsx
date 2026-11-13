@@ -19,6 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import {
@@ -42,6 +43,7 @@ export default function ToggleSidePanel({
   onRight,
   ...props
 }) {
+  const { t } = useTranslation();
   const leftPanelToggleEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE),
   );
@@ -96,7 +98,7 @@ export default function ToggleSidePanel({
         }
       >
         <PluginChild
-          title={"Toggle Panel"}
+          title={t("dashboardPage.toolbars.togglePanel.title")}
           onClick={() => {
             change();
           }}

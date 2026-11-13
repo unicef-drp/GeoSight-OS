@@ -14,6 +14,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import Modal, { ModalHeader } from "../../../../components/Modal";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import { SaveButton } from "../../../../components/Elements/Button";
@@ -22,6 +23,7 @@ import { SaveButton } from "../../../../components/Elements/Button";
  * InputFile component.
  */
 export default function InputFile({ data, apply, open, setOpen }) {
+  const { t } = useTranslation();
   const rowNumber = 0
   const sheetName = "sheet_name";
   const admCodeName = "column_name_administration_code";
@@ -141,18 +143,17 @@ export default function InputFile({ data, apply, open, setOpen }) {
     <ModalHeader onClosed={() => {
       setOpen(false)
     }}>
-      Using excel to fill all inputs
+      {t('admin.indicator.inputFile.modalTitle')}
     </ModalHeader>
     <div>
       <form className="BasicForm">
         <div className="modal-body">
           <div>
             <b>
-              1. Create a spreadsheet with at least 2 columns.
+              {t('admin.indicator.inputFile.step1')}
             </b>
             <div>
-              You can add optional extra columns for extra
-              values.
+              {t('admin.indicator.inputFile.step1Help')}
             </div>
           </div>
 
@@ -160,7 +161,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
             <table role="table">
               <thead>
               <tr>
-                <th>Area Code</th>
+                <th>{t('admin.indicator.inputFile.areaCode')}</th>
                 <th>Value</th>
               </tr>
               </thead>
@@ -175,7 +176,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
 
           <div>
             <div>
-              <b>2. Select the spreadsheet.</b>
+              <b>{t('admin.indicator.inputFile.step2')}</b>
             </div>
             <div className="custom-file">
               <input type="file" className="custom-file-input"
@@ -185,14 +186,14 @@ export default function InputFile({ data, apply, open, setOpen }) {
               }/>
               <label className="form-helptext"
                      htmlFor="validatedCustomFile">
-                Choose spreadsheet to refill automatically...
+                {t('admin.indicator.inputFile.chooseSpreadsheet')}
               </label>
             </div>
           </div>
 
           <div>
             <div>
-              <b>3. Choose the sheet.</b>
+              <b>{t('admin.indicator.inputFile.step3')}</b>
             </div>
             <SelectWithList
               list={attributes[sheetName].options}
@@ -207,7 +208,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
 
           <div>
             <div>
-              <b>4. Choose area code column.</b>
+              <b>{t('admin.indicator.inputFile.step4')}</b>
             </div>
             <SelectWithList
               list={attributes[admCodeName].options}
@@ -221,7 +222,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
 
           <div>
             <div>
-              <b>5. Choose value column.</b>
+              <b>{t('admin.indicator.inputFile.step5')}</b>
             </div>
             <SelectWithList
               list={attributes[valueColumn].options}
@@ -235,7 +236,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
 
           <div>
             <div>
-              <b>6. Choose extra columns.</b>
+              <b>{t('admin.indicator.inputFile.step6')}</b>
             </div>
             <SelectWithList
               list={attributes[valueExtraColumn].options}
@@ -254,7 +255,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
           <div>
             <SaveButton
               variant="primary"
-              text="Apply"
+              text={t('components.whereInputModal.apply')}
               disabled={
                 !attributes[sheetName].value ||
                 !attributes[admCodeName].value ||

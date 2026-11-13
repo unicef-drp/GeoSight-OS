@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { dictDeepCopy, toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
 import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
@@ -24,6 +25,7 @@ import RelatedTableRequest from "../../../../utils/RelatedTable/Request";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 export default function VectorStyleConfig({ data, setData, setError }) {
+  const { t } = useTranslation();
   const [inputStyle, setInputStyle] = useState(null);
   const [fields, setFields] = useState([]);
 
@@ -98,13 +100,13 @@ export default function VectorStyleConfig({ data, setData, setError }) {
   };
 
   if (fields === null) {
-    return <div>Loading attributes...</div>;
+    return <div>{t('admin.contextLayer.vectorStyle.loadingAttributes')}</div>;
   }
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div>
         <div>
-          <b>Styles</b>
+          <b>{t('admin.contextLayer.vectorStyle.stylesHeading')}</b>
         </div>
         {field_aggregation ? (
           <AggregationStyleGuide

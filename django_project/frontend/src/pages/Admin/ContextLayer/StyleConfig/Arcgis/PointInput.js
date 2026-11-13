@@ -14,6 +14,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
 import { Select } from "../../../../../components/Input";
 
@@ -21,6 +22,7 @@ import { Select } from "../../../../../components/Input";
  * One point input
  */
 export default function PointInput({ style, update }) {
+  const { t } = useTranslation();
   const optionsTypes = [
     { value: 'circle', label: 'Circle' },
     { value: 'icon', label: 'Icon' },
@@ -30,7 +32,7 @@ export default function PointInput({ style, update }) {
   return <div className='ContextLayerConfigInput BasicForm'>
     <div className="BasicFormSection">
       <div>
-        <label className="form-label">Style type</label>
+        <label className="form-label">{t('admin.style.styleType')}</label>
       </div>
       <div>
         <Select
@@ -49,7 +51,7 @@ export default function PointInput({ style, update }) {
         <>
           <div className="BasicFormSection">
             <div>
-              <label className="form-label">Radius</label>
+              <label className="form-label">{t('admin.contextLayer.arcgis.point.radius')}</label>
             </div>
             <div>
               <input
@@ -66,7 +68,7 @@ export default function PointInput({ style, update }) {
           <div className="BasicFormSectionInline">
             <div className="BasicFormSection">
               <div>
-                <label className="form-label">Border Color</label>
+                <label className="form-label">{t('admin.contextLayer.arcgis.borderColor')}</label>
               </div>
               <div>
                 <ColorSelector
@@ -82,7 +84,7 @@ export default function PointInput({ style, update }) {
             </div>
             <div className="BasicFormSection">
               <div>
-                <label className="form-label">Border Weight</label>
+                <label className="form-label">{t('admin.contextLayer.arcgis.borderWeight')}</label>
               </div>
               <div>
                 <input
@@ -99,7 +101,7 @@ export default function PointInput({ style, update }) {
           <div className="BasicFormSectionInline">
             <div className="BasicFormSection">
               <div>
-                <label className="form-label">Fill Color</label>
+                <label className="form-label">{t('admin.contextLayer.arcgis.fillColor')}</label>
               </div>
               <div>
                 <ColorSelector
@@ -118,7 +120,7 @@ export default function PointInput({ style, update }) {
         </> : <>
           <div className="BasicFormSection">
             <div>
-              <label className="form-label">Icon</label>
+              <label className="form-label">{t('admin.contextLayer.arcgis.point.icon')}</label>
             </div>
             <div>
               <img src={style.style.iconUrl}/>
@@ -139,7 +141,7 @@ export default function PointInput({ style, update }) {
           </div>
           <div className="BasicFormSection">
             <div>
-              <label className="form-label">Size</label>
+              <label className="form-label">{t('admin.contextLayer.arcgis.point.size')}</label>
             </div>
             <div className='ContextLayerConfig-IconSize'>
               <input

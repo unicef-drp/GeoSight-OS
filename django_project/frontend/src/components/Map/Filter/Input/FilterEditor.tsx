@@ -18,6 +18,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { Button, Checkbox, Input, InputLabel } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {
@@ -63,6 +64,7 @@ export function FilterEditorModal({
   onApply,
   inputData,
 }: FilterEditorModalProps) {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
 
   // Field callbacks
@@ -122,27 +124,27 @@ export function FilterEditorModal({
             setOpen(false);
           }}
         >
-          {inputData.field ? "Updating" : "Creating"} new filter
+          {inputData.field ? t("components.filter.editor.updatingNewFilter") : t("components.filter.editor.creatingNewFilter")}
         </ModalHeader>
         <ModalContent className={""}>
           <form className="BasicForm" style={{ padding: "0" }}>
             <div>
               <InputLabel>
-                <b>Filter Name*</b>
+                <b>{t("components.filter.editor.filterNameLabel")}</b>
               </InputLabel>
               <Input
                 type="text"
-                placeholder="Filter name"
+                placeholder={t("components.filter.editor.filterNamePlaceholder")}
                 value={data.name}
                 disableUnderline={true}
                 onChange={(event) => {
                   setData({ ...data, name: event.target.value });
                 }}
               />
-              <InputLabel>Description</InputLabel>
+              <InputLabel>{t("components.filter.editor.descriptionLabel")}</InputLabel>
               <Input
                 type="text"
-                placeholder="Filter description"
+                placeholder={t("components.filter.editor.filterDescriptionPlaceholder")}
                 value={data.description}
                 disableUnderline={true}
                 onChange={(event) => {
@@ -151,7 +153,7 @@ export function FilterEditorModal({
               />
             </div>
             <div className="FilterEditModalQueryWrapper">
-              <div>Create rule</div>
+              <div>{t("components.filter.editor.createRule")}</div>
               <div className="FilterEditModalQuery">
                 <FilterFieldOperatorInput
                   field={data.field}
@@ -181,7 +183,7 @@ export function FilterEditorModal({
                 onChange={(evt) => {
                   setData({ ...data, allowModify: !data.allowModify });
                 }}
-                label={"Allow users to modify filter parameters (values)"}
+                label={t("components.filter.editor.allowModify")}
               />
             </div>
             <div className="button-div">
@@ -192,7 +194,7 @@ export function FilterEditorModal({
                 disabled={!data.field || !data.operator || !data.name}
                 onClick={onSave}
               >
-                {inputData.field ? "Update filter" : "Create filter"}
+                {inputData.field ? t("components.filter.editor.updateFilter") : t("components.filter.editor.createFilter")}
               </Button>
             </div>
           </form>

@@ -43,7 +43,7 @@
   "Widget panel toggle": "Alternar panel de widgets",
   "Write": "Escribir",
   "Write Data": "Escribir datos",
-  "You haven’t selected a view yet": "Aún no has seleccionado una vista",
+  "You haven't selected a view yet": "Aún no has seleccionado una vista",
   "Zonal analysis": "Análisis zonal",
   "admin": {
     "access": "ACCESO",
@@ -76,6 +76,22 @@
     },
     "complexColorValueDetected": "Valor de color complejo detectado. Por favor edite en modo de entrada sin procesar.",
     "confirm": "Confirmar",
+    "contextLayer": {
+      "arcgis": {
+        "borderColor": "Color de borde",
+        "borderWeight": "Grosor de borde",
+        "fillColor": "Color de relleno",
+        "point": {
+          "icon": "Icono",
+          "radius": "Radio",
+          "size": "Tamaño"
+        }
+      },
+      "vectorStyle": {
+        "loadingAttributes": "Cargando atributos...",
+        "stylesHeading": "Estilos"
+      }
+    },
     "contextLayers": "Capas de contexto",
     "create": {
       "basemap": "Crear nuevo mapa base",
@@ -106,9 +122,71 @@
     "edit": "Editar",
     "fetchingProjectData": "Obteniendo datos del proyecto...",
     "help": "Ayuda",
+    "importer": {
+      "filter": {
+        "modalTitle": "Cambiar filtro de los datos."
+      }
+    },
     "importers": "Importadores",
+    "indicator": {
+      "inputFile": {
+        "areaCode": "Código de área",
+        "chooseSpreadsheet": "Elige una hoja de cálculo para rellenar automáticamente...",
+        "modalTitle": "Usar Excel para rellenar todas las entradas",
+        "step1": "1. Crea una hoja de cálculo con al menos 2 columnas.",
+        "step1Help": "Puedes agregar columnas adicionales opcionales para valores extra.",
+        "step2": "2. Selecciona la hoja de cálculo.",
+        "step3": "3. Elige la hoja.",
+        "step4": "4. Elige la columna de código de área.",
+        "step5": "5. Elige la columna de valor.",
+        "step6": "6. Elige las columnas adicionales."
+      }
+    },
+    "indicatorLayers": {
+      "multiIndicator": {
+        "chartType": "Tipo de Gráfico",
+        "createTitle": "Crear Capa de Multi Indicador",
+        "editTitle": "Cambiar Capa {{name}}",
+        "max": "Máx :",
+        "min": "Mín :",
+        "mode": "Modo",
+        "size": "Tamaño",
+        "symbolSize": "Tamaño de Símbolo"
+      },
+      "popupConfig": {
+        "exampleContextDescription": "Contexto de ejemplo. Selecciona el nivel administrativo y la geometría para obtener el contexto real."
+      },
+      "relatedTable": {
+        "columns": {
+          "date": "Fecha",
+          "ucode": "Ucode",
+          "value": "Valor"
+        },
+        "dataSlicers": "Segmentadores de Datos",
+        "enableRelatedRecordsPopup": "Habilitar popup para Registros Relacionados",
+        "relatedFieldAsGeoCode": "Campo relacionado como código de geometría",
+        "relatedFieldHelp": "Campo relacionado como código de geografía. Cámbialo en la sección de tablas relacionadas.",
+        "relatedTable": "Tabla Relacionada",
+        "setupTitle": "Configurar Capa de Tabla Relacionada",
+        "styleNotConfigured": "El estilo no está configurado."
+      }
+    },
     "indicators": "Indicadores",
+    "labelStyle": {
+      "fontColor": "Color de fuente",
+      "fontFamily": "Familia de fuente",
+      "fontSize": "Tamaño de fuente",
+      "fontWeight": "Peso de fuente",
+      "haloColor": "Color de halo",
+      "haloWeight": "Grosor de halo",
+      "preview": "Vista previa",
+      "visibleZoom": "Zoom visible"
+    },
     "language": "Idioma",
+    "loading": "Cargando",
+    "multiSelector": {
+      "filterData": "Filtrar datos"
+    },
     "noDataTable": "No hay datos disponibles.",
     "numberOfItemsSelected": "{{numberOfItems}} elementos en esta lista están seleccionados.",
     "oneItemSelected": "1 elemento en esta lista está seleccionado.",
@@ -205,6 +283,20 @@
         "usersAndGroups": "Usuario y grupo"
       }
     },
+    "permission": {
+      "add": "Agregar {{label}}s",
+      "changePermission": "Cambiar permiso",
+      "deleteConfirmationMessage": "¿Deseas eliminar los {{label}}s seleccionados?",
+      "groupAccess": "Acceso de Grupo",
+      "groupName": "Nombre de grupo",
+      "listOf": "Lista de {{label}}",
+      "publicAccess": "Acceso Público",
+      "removeConfirmationMessage": "¿Deseas eliminar este {{label}}?",
+      "search": "Buscar {{label}}",
+      "shareModal": "Compartir '{{name}}'",
+      "updatePermission": "Actualizar permiso",
+      "userAccess": "Acceso de Usuario"
+    },
     "profile": "Perfil",
     "project": "Proyecto",
     "referenceDatasets": "CONJUNTOS DE DATOS DE REFERENCIA",
@@ -214,7 +306,36 @@
     "requestRejected": "La solicitud ha sido rechazada",
     "searchPlaceholder": "Buscar {{pageName}}",
     "showSelected": "Mostrar seleccionados",
+    "style": {
+      "changeStyle": "Cambiar estilo",
+      "dynamic": {
+        "applyWhenFiltering": "Aplicar al filtrar",
+        "outline": "Contorno",
+        "syncFillOutlineColor": "Sincronizar color de relleno y contorno"
+      },
+      "rules": {
+        "addNewRule": "Agregar Nueva Regla",
+        "assignAllOutlineColor": "Asignar color de contorno a todos",
+        "assignAllWidth": "Asignar ancho a todos",
+        "assignColors": "Asignar colores",
+        "colorHeader": "Color",
+        "fillColorHelp": "Usado para rellenar la geometría. Escribe el color hexadecimal con # (ej. #ffffff).",
+        "nameHeader": "Nombre",
+        "noOptionsCreateNew": "Sin opciones, escribe para crear una nueva opción.",
+        "outlineColorHeader": "Color de Contorno",
+        "outlineColorHelp": "Usado para colorear el contorno de la geometría. Escribe el color hexadecimal con # (ej. #ffffff).",
+        "outlineWidthHeader": "Ancho de Contorno",
+        "outlineWidthHelp": "Cambiar el ancho del contorno (en px)",
+        "ruleHeader": "Regla"
+      },
+      "selectStyle": "Seleccionar estilo",
+      "style": "Estilo",
+      "styleType": "Tipo de estilo"
+    },
     "styles": "Estilos",
+    "table": {
+      "noResultsFound": "No se encontraron resultados"
+    },
     "tableError": "¡Vaya! Ocurrió un error al cargar los datos.",
     "user": "USUARIO",
     "usersAndGroups": "Usuarios y grupos",
@@ -222,6 +343,115 @@
     "visualization": "VISUALIZACIÓN"
   },
   "category": "Categoría",
+  "components": {
+    "copyToClipboard": {
+      "copied": "Copiado"
+    },
+    "imageInput": {
+      "browseFile": "Examinar archivo"
+    },
+    "selectWithSearch": {
+      "allSelected": "Todo seleccionado",
+      "blank": "En blanco",
+      "nSelected": "{{count}} seleccionados",
+      "selectAll": "Seleccionar todo",
+      "selectOneOption": "Seleccionar 1 opción"
+    },
+    "whereInput": {
+      "last": "Último",
+      "next": "Siguiente",
+      "pickATime": "Selecciona una hora",
+      "pickAnOperation": "Selecciona una operación",
+      "pickTheField": "Selecciona el atributo",
+      "putTheValue": "Introduce el valor"
+    },
+    "whereInputModal": {
+      "apply": "Aplicar",
+      "defaultLabel": "Cambiar filtro de los datos.",
+      "sqlFilterPlaceholder": "Filtro SQL"
+    },
+    "whereQueryGenerator": {
+      "noFilter": "Sin filtro"
+    },
+    "filter": {
+      "applyFilters": "Aplicar filtros",
+      "deleteFilter": {
+        "title": "Eliminar filtro"
+      },
+      "editor": {
+        "allowModify": "Permitir a los usuarios modificar los parámetros del filtro (valores)",
+        "createFilter": "Crear filtro",
+        "creatingNewFilter": "Crear nuevo filtro",
+        "createRule": "Crear regla",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Descripción del filtro",
+        "filterName": "Nombre del filtro",
+        "filterNamePlaceholder": "Nombre del filtro",
+        "updateFilter": "Actualizar filtro",
+        "updatingNewFilter": "Actualizar filtro"
+      },
+      "group": {
+        "addNewFilter": "Agregar nuevo filtro",
+        "addNewGroup": "Agregar nuevo grupo",
+        "deleteGroupConfirm": "¿Estás seguro de que deseas eliminar este grupo?"
+      }
+    },
+    "widget": {
+      "form": {
+        "changeTitle": "Cambiar {{name}}",
+        "newTitle": "Nuevo widget de {{title}}",
+        "summary": "Resumen",
+        "timeSeries": "Serie temporal",
+        "widgetDescription": "Descripción del widget",
+        "widgetName": "Nombre del widget"
+      },
+      "generic": {
+        "description": "Un widget genérico.",
+        "title": "Widget Genérico"
+      },
+      "selection": {
+        "addNewWidget": "Agregar nuevo widget",
+        "generic": "Genérico",
+        "timeSeries": "Serie temporal"
+      },
+      "summaryEditor": {
+        "apply": "Aplicar",
+        "changeTitle": "Cambiar {{name}}",
+        "datetime": "Fecha y hora",
+        "layerType": "Tipo de capa",
+        "maxDateHelp": "Deja la fecha máxima vacía para filtrar los datos hasta `hoy`.",
+        "newTitle": "Nuevo {{title}}",
+        "noFilter": "Sin filtro (se utilizarán los últimos valores globales).",
+        "operation": "Operación",
+        "sourceLayer": "Capa fuente",
+        "sourceValue": "Valor fuente",
+        "unit": "Unidad",
+        "useCustomFilter": "Usar filtro de fecha y hora personalizado.",
+        "useGlobalFilter": "Usar filtro de fecha y hora del nivel del panel.",
+        "widgetDescription": "Descripción del widget",
+        "widgetName": "Nombre del widget"
+      }
+    },
+    "zonalAnalysisTool": {
+      "add": "Agregar",
+      "aggregation": "Agregación",
+      "buffer": "Buffer:",
+      "bufferTooltip": "Agregar buffer en metros alrededor de la selección",
+      "cancel": "Cancelar",
+      "clear": "Limpiar",
+      "clickFeature": "Haz clic en una entidad del mapa para seleccionarla",
+      "clickToSelect": "Clic para seleccionar",
+      "contextLayerNotSetup": "La capa de contexto no está configurada",
+      "draw": "Dibujar",
+      "drawInstructions": "Dibuja un polígono en el mapa y haz doble clic para finalizar",
+      "field": "Campo",
+      "loading": "Cargando",
+      "runAnalysis": "Ejecutar análisis",
+      "selectionMode": "Modo de selección:",
+      "sourceLayer": "Capa fuente",
+      "value": "Valor"
+    }
+  },
   "dashboardPage": {
     "adminPanelButton": "Panel de administración",
     "contextLayerErrorDelete": "Parece que esta capa ya fue eliminada",
@@ -234,14 +464,89 @@
     "indicatorLayerNotFound": "No se encontró ningún indicador para esta capa. Por favor, pide al administrador que lo solucione.",
     "indicatorSearch": "Buscar indicadores",
     "indicators": "Indicadores",
+    "layerInfo": {
+      "description": "Descripción:",
+      "lastUpdate": "Última actualización:",
+      "source": "Fuente:",
+      "unit": "Unidad:"
+    },
     "layers": "Capas",
     "loadingDashboardData": "Cargando datos del panel...",
     "projectOverview": "Resumen del proyecto",
     "projectOverviewClose": "Cerrar",
     "projectOverviewNoShow": "¡No mostrar esto de nuevo!",
     "relatedTableNotConfigured": "La tabla relacionada no está configurada correctamente",
+    "projectOverviewNoInfo": "No hay información para este proyecto.",
     "searchGeographyEntity": "Buscar entidad geográfica",
-    "searchGeographyEntityLoading": "Cargando..."
+    "searchGeographyEntityLoading": "Cargando...",
+    "toolbars": {
+      "bookmark": {
+        "bookmarkName": "Nombre del marcador",
+        "loading": "Cargando",
+        "saveAs": "Guardar como...",
+        "saveBookmark": "Guardar marcador {{name}}",
+        "saveBookmarkAs": "Guardar marcador como",
+        "saveCurrentBookmark": "Guardar la selección y extensión actuales en {{name}}.",
+        "saveCurrentBookmarkAs": "Guardar la selección y extensión actuales como nuevo marcador.",
+        "submit": "Enviar",
+        "title": "Marcador"
+      },
+      "dataDownloader": {
+        "adminLevel": "Nivel administrativo",
+        "download": "Descargar",
+        "downloading": "Descargando",
+        "excludeEmptyValue": "Excluir registros sin valores de indicador",
+        "format": "Formato",
+        "geographicalExtent": "Extensión geográfica",
+        "indicator": "Indicador",
+        "preparingData": "Preparando datos",
+        "timeFilter": "Filtro de tiempo",
+        "title": "Descargar datos"
+      },
+      "embed": {
+        "copyEmbedCode": "Copiar código de incrustación",
+        "createSnippet": "Crear fragmento de incrustación para este mapa.",
+        "filterTab": "Pestaña de filtros",
+        "generate": "Generar",
+        "layerTab": "Pestaña de capas",
+        "map": "Mapa",
+        "widgetTab": "Pestaña de widgets"
+      },
+      "mapMode": {
+        "threeDLayer": "Capa 3D",
+        "turnOffSideBySideView": "Desactivar vista lado a lado",
+        "turnOffSyncMovement": "Desactivar movimiento sincronizado",
+        "turnOnSideBySideView": "Activar vista lado a lado",
+        "turnOnSyncMovement": "Activar movimiento sincronizado"
+      },
+      "measurement": {
+        "addNewMeasurement": "Agregar nueva medición",
+        "cancel": "Cancelar",
+        "clear": "Limpiar",
+        "deleteSelected": "Eliminar seleccionado",
+        "drawInstructions": "Dibuja en el mapa y finaliza con doble clic.",
+        "measureDistancesAreas": "Medir distancias y áreas",
+        "meters": "Metros",
+        "miles": "Millas",
+        "sqMeters": "Metros cuadrados",
+        "startMeasurement": "Iniciar medición"
+      },
+      "referenceLayers": {
+        "title": "Selección de capa de referencia"
+      },
+      "sdmx": {
+        "createLayer": "Crear capa SDMX"
+      },
+      "tilt": {
+        "tooltip": "Restablecer inclinación. Mantén pulsado Ctrl izquierdo y haz clic con el botón izquierdo del ratón en el mapa y mueve el cursor arriba/abajo para cambiar la inclinación"
+      },
+      "togglePanel": {
+        "title": "Alternar panel"
+      },
+      "zonalAnalysis": {
+        "title": "Análisis zonal"
+      }
+    }
   },
   "featured": "Destacado",
   "featured projects": "Proyectos Destacados",
@@ -258,7 +563,7 @@
     "authorizedToGeoRepo": "Autorizado para GeoRepo.",
     "djangoAdmin": "Administrador de Django"
   },
-  "SDMX layer" : "Capa SDMX",
+  "SDMX layer": "Capa SDMX",
   "seeMapboxDocumentationForMoreDetail": "Consulta la documentación de Mapbox para más detalles.",
   "thereAreSomeInformationToControlTheLegend": "Hay información para controlar la leyenda."
 }

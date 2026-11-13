@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from "react-i18next";
 import { Select } from "../../../components/Input";
 
 import './style.scss';
@@ -44,6 +45,7 @@ export default function LabelStyle({ label_styles, update }) {
     haloWeight: 2,
   }, label_styles)
 
+  const { t } = useTranslation();
   const prevState = useRef();
 
   /** Update data **/
@@ -82,11 +84,11 @@ export default function LabelStyle({ label_styles, update }) {
       <tr className="BasicFormSection">
         <td rowSpan="9" className='LabelStylePreview' valign={"middle"}
             style={style}>
-          Preview
+          {t('admin.labelStyle.preview')}
         </td>
         <td>
           <label className="form-label">
-            Visible Zoom
+            {t('admin.labelStyle.visibleZoom')}
           </label>
         </td>
         <td>
@@ -121,7 +123,7 @@ export default function LabelStyle({ label_styles, update }) {
       </tr>
       <tr className="BasicFormSection">
         <td>
-          <label className="form-label">Font Family</label>
+          <label className="form-label">{t('admin.labelStyle.fontFamily')}</label>
         </td>
         <td>
           <Select
@@ -134,7 +136,7 @@ export default function LabelStyle({ label_styles, update }) {
       </tr>
       <tr className="BasicFormSection">
         <td>
-          <label className="form-label">Font Size</label>
+          <label className="form-label">{t('admin.labelStyle.fontSize')}</label>
         </td>
         <td>
           <div className='FlexConfig'>
@@ -153,7 +155,7 @@ export default function LabelStyle({ label_styles, update }) {
       </tr>
       <tr className="BasicFormSection">
         <td>
-          <label className="form-label">Font Weight</label>
+          <label className="form-label">{t('admin.labelStyle.fontWeight')}</label>
         </td>
         <td>
           <div className='FlexConfig'>
@@ -173,7 +175,7 @@ export default function LabelStyle({ label_styles, update }) {
       </tr>
       <tr className="BasicFormSection">
         <td>
-          <label className="form-label">Font Color</label>
+          <label className="form-label">{t('admin.labelStyle.fontColor')}</label>
         </td>
         <td>
           <div className='FlexConfig ColorConfig'>
@@ -198,7 +200,7 @@ export default function LabelStyle({ label_styles, update }) {
       </tr>
       <tr className="BasicFormSection">
         <td>
-          <label className="form-label">Halo Color</label>
+          <label className="form-label">{t('admin.labelStyle.haloColor')}</label>
         </td>
         <td>
           <div className='FlexConfig ColorConfig'>
@@ -223,7 +225,7 @@ export default function LabelStyle({ label_styles, update }) {
       </tr>
       <tr className="BasicFormSection">
         <td>
-          <label className="form-label">Halo Weight</label>
+          <label className="form-label">{t('admin.labelStyle.haloWeight')}</label>
         </td>
         <td>
           <div className='FlexConfig'>

@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import RestartAlt from "@mui/icons-material/RestartAlt";
 import { Input } from "@mui/material";
@@ -60,6 +61,7 @@ export function WhereInputValue({
   disabled,
   ...props
 }) {
+  const { t } = useTranslation();
   const isDate = fieldType?.toLowerCase() === "date";
   let betweenMin = defaultMin;
   let betweenMax = defaultMax;
@@ -83,7 +85,7 @@ export function WhereInputValue({
       <Input
         type={fieldType}
         className="WhereConfigurationOperatorValue"
-        placeholder="Put the value"
+        placeholder={t('components.whereInput.putTheValue')}
         value={value ? value : ""}
         onChange={(evt) => {
           if ([IS_IN, IS_NOT_IN].includes(operator)) {
@@ -258,7 +260,7 @@ export function WhereInputValue({
     return (
       <div className="DateOperator">
         <span className="WhereConfigurationOperatorText">
-          {operator === OPERATOR_WITH_INTERVAL ? "Last" : "Next"}
+          {operator === OPERATOR_WITH_INTERVAL ? t('components.whereInput.last') : t('components.whereInput.next')}
         </span>
         <Input
           type="number"
@@ -272,7 +274,7 @@ export function WhereInputValue({
           disabled={disabled}
         />
         <SelectPlaceholder
-          placeholder="Pick a time"
+          placeholder={t('components.whereInput.pickATime')}
           className={"WhereConfigurationOperatorType"}
           list={INTERVAL.map((key, idx) => {
             return { id: key, name: capitalize(key) };
@@ -400,7 +402,7 @@ export function WhereInputValue({
         <Input
           type="text"
           className="WhereConfigurationOperatorValue"
-          placeholder="Put the value"
+          placeholder={t('components.whereInput.putTheValue')}
           value={value ? value : ""}
           onChange={(evt) => {
             setValue(evt.target.value);
@@ -483,6 +485,7 @@ export default function WhereInput({
   onDelete,
   ...props
 }) {
+  const { t } = useTranslation();
   const [originalValue, setOriginalValue] = useState(where.value);
 
   // UPDATE THE OPERATOR
@@ -565,7 +568,7 @@ export default function WhereInput({
       )}
 
       <SelectPlaceholder
-        placeholder="Pick the field"
+        placeholder={t('components.whereInput.pickTheField')}
         className={"WhereConfigurationField"}
         list={fields.map((field) =>
           field.name
@@ -587,7 +590,7 @@ export default function WhereInput({
       />
 
       <SelectPlaceholder
-        placeholder="Pick an operation"
+        placeholder={t('components.whereInput.pickAnOperation')}
         className={
           "WhereConfigurationOperator " +
           (!Object.keys(UPDATED_OPERATOR).includes(operator) ? "Error" : "")

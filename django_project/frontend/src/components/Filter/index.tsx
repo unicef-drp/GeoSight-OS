@@ -69,7 +69,7 @@ export const DataGridFilter = (
       Button={
         <div className='Popover-Btn'>
           <PluginChild
-            title={'Filter'} disabled={false}
+            title={t("Filter")} disabled={false}
             active={true}>
             <a>
               <FilterAltIcon
@@ -232,7 +232,7 @@ export const DataGridFilter = (
         <div className='Footer'>
           <Button
             variant='contained' id={'ListFilter-Btn'}
-            onClick={handleApplyFilters}>Apply Filters</Button>
+            onClick={handleApplyFilters}>{t("components.filter.applyFilters")}</Button>
         </div>
       </div>
     </CustomPopover>

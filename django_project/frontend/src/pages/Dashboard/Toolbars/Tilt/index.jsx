@@ -19,6 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
@@ -27,6 +28,7 @@ import "./style.scss";
 
 /** Tilt control */
 export default function Tilt() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { position, is3dMode } = useSelector(
     // @ts-ignore
@@ -58,9 +60,7 @@ export default function Tilt() {
   return (
     <Plugin className={"TiltControl"}>
       <PluginChild
-        title={
-          "Reset tilt. Hold left Ctrl and click left mouse button on a map and move the cursor up/down to change tilt"
-        }
+        title={t("dashboardPage.toolbars.tilt.tooltip")}
         onClick={() => {
           const degree = pitch;
           if (degree === 60) {

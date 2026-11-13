@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { FormGroup } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -79,6 +80,7 @@ export default function RelatedTableLayerConfig({
   layer,
   onUpdate,
 }) {
+  const { t } = useTranslation();
   const prevState = useRef();
 
   /** Default data **/
@@ -276,7 +278,7 @@ export default function RelatedTableLayerConfig({
             setOpen(false);
           }}
         >
-          Setup Related Table Layer
+          {t('admin.indicatorLayers.relatedTable.setupTitle')}
         </ModalHeader>
         <ModalContent className="Gray">
           <div className="SaveButton-Section">
@@ -296,7 +298,7 @@ export default function RelatedTableLayerConfig({
                     {/* STYLE DATA */}
                     {!data.style_type ? (
                       <span className="form-helptext error">
-                        Style is not configured.
+                        {t('admin.indicatorLayers.relatedTable.styleNotConfigured')}
                       </span>
                     ) : null}
                     <LayerNameDescription
@@ -347,7 +349,7 @@ export default function RelatedTableLayerConfig({
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label required">
-                          Related Table
+                          {t('admin.indicatorLayers.relatedTable.relatedTable')}
                         </label>
                       </div>
                       <SelectWithList
@@ -370,7 +372,7 @@ export default function RelatedTableLayerConfig({
                     <div className="BasicFormSection">
                       <div>
                         <label className="form-label required">
-                          Related field as geometry code
+                          {t('admin.indicatorLayers.relatedTable.relatedFieldAsGeoCode')}
                         </label>
                       </div>
                       <SelectWithList
@@ -385,8 +387,7 @@ export default function RelatedTableLayerConfig({
                         value={relatedTableConfig.geography_code_field_name}
                       />
                       <span className="form-helptext">
-                        Related field as geography code. Change it on related
-                        tables section.
+                        {t('admin.indicatorLayers.relatedTable.relatedFieldHelp')}
                       </span>
                     </div>
                     <div className="BasicFormSection">
@@ -446,13 +447,13 @@ export default function RelatedTableLayerConfig({
                           },
                           {
                             field: "ucode",
-                            headerName: "Ucode",
+                            headerName: t('admin.indicatorLayers.relatedTable.columns.ucode'),
                             flex: 1,
                           },
-                          { field: "value", headerName: "Value", flex: 1 },
+                          { field: "value", headerName: t('admin.indicatorLayers.relatedTable.columns.value'), flex: 1 },
                           {
                             field: "date",
-                            headerName: "Date",
+                            headerName: t('admin.indicatorLayers.relatedTable.columns.date'),
                             flex: 1,
                             renderCell: (params) => {
                               return parseDateTime(params.value);
@@ -507,7 +508,7 @@ export default function RelatedTableLayerConfig({
                           data.raw_data_popup_enable = evt.target.checked;
                           updateData();
                         }}
-                        label={"Enable popup for Related Records"}
+                        label={t('admin.indicatorLayers.relatedTable.enableRelatedRecordsPopup')}
                       />
                     </div>
                     <FieldConfig

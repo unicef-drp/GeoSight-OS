@@ -43,7 +43,7 @@
   "Widget panel toggle": "Widget panel toggle",
   "Write": "Write",
   "Write Data": "Write Data",
-  "You haven’t selected a view yet": "You haven’t selected a view yet",
+  "You haven't selected a view yet": "You haven't selected a view yet",
   "Zonal analysis": "Zonal analysis",
   "admin": {
     "access": "ACCESS",
@@ -76,6 +76,22 @@
     },
     "complexColorValueDetected": "Complex color value detected. Please edit in raw input mode.",
     "confirm": "Confirm",
+    "contextLayer": {
+      "arcgis": {
+        "borderColor": "Border Color",
+        "borderWeight": "Border Weight",
+        "fillColor": "Fill Color",
+        "point": {
+          "icon": "Icon",
+          "radius": "Radius",
+          "size": "Size"
+        }
+      },
+      "vectorStyle": {
+        "loadingAttributes": "Loading attributes...",
+        "stylesHeading": "Styles"
+      }
+    },
     "contextLayers": "Context Layers",
     "create": {
       "basemap": "Create New Basemap",
@@ -106,9 +122,71 @@
     "edit": "Edit",
     "fetchingProjectData": "Fetching Project Data...",
     "help": "Help",
+    "importer": {
+      "filter": {
+        "modalTitle": "Change filter for the data."
+      }
+    },
     "importers": "Importers",
+    "indicator": {
+      "inputFile": {
+        "areaCode": "Area Code",
+        "chooseSpreadsheet": "Choose spreadsheet to refill automatically...",
+        "modalTitle": "Using excel to fill all inputs",
+        "step1": "1. Create a spreadsheet with at least 2 columns.",
+        "step1Help": "You can add optional extra columns for extra values.",
+        "step2": "2. Select the spreadsheet.",
+        "step3": "3. Choose the sheet.",
+        "step4": "4. Choose area code column.",
+        "step5": "5. Choose value column.",
+        "step6": "6. Choose extra columns."
+      }
+    },
+    "indicatorLayers": {
+      "multiIndicator": {
+        "chartType": "Chart Type",
+        "createTitle": "Create Multi Indicator Layer",
+        "editTitle": "Change Layer {{name}}",
+        "max": "Max :",
+        "min": "Min :",
+        "mode": "Mode",
+        "size": "Size",
+        "symbolSize": "Symbol Size"
+      },
+      "popupConfig": {
+        "exampleContextDescription": "Example context. Select admin level and the geometry to fetch the actual context."
+      },
+      "relatedTable": {
+        "columns": {
+          "date": "Date",
+          "ucode": "Ucode",
+          "value": "Value"
+        },
+        "dataSlicers": "Data Slicers",
+        "enableRelatedRecordsPopup": "Enable popup for Related Records",
+        "relatedFieldAsGeoCode": "Related field as geometry code",
+        "relatedFieldHelp": "Related field as geography code. Change it on related tables section.",
+        "relatedTable": "Related Table",
+        "setupTitle": "Setup Related Table Layer",
+        "styleNotConfigured": "Style is not configured."
+      }
+    },
     "indicators": "Indicators",
+    "labelStyle": {
+      "fontColor": "Font Color",
+      "fontFamily": "Font Family",
+      "fontSize": "Font Size",
+      "fontWeight": "Font Weight",
+      "haloColor": "Halo Color",
+      "haloWeight": "Halo Weight",
+      "preview": "Preview",
+      "visibleZoom": "Visible Zoom"
+    },
     "language": "Language",
+    "loading": "Loading",
+    "multiSelector": {
+      "filterData": "Filter data"
+    },
     "noDataTable": "No data available.",
     "numberOfItemsSelected": "{{numberOfItems}} items on this list are selected.",
     "oneItemSelected": "1 item on this list is selected.",
@@ -205,6 +283,20 @@
         "usersAndGroups": "User and Group"
       }
     },
+    "permission": {
+      "add": "Add {{label}}s",
+      "changePermission": "Change permission",
+      "deleteConfirmationMessage": "Do you want to delete the selected {{label}}s?",
+      "groupAccess": "Group Access",
+      "groupName": "Group name",
+      "listOf": "List of {{label}}",
+      "publicAccess": "Public Access",
+      "removeConfirmationMessage": "Do you want to remove this {{label}}?",
+      "search": "Search {{label}}",
+      "shareModal": "Share '{{name}}'",
+      "updatePermission": "Update permission",
+      "userAccess": "User Access"
+    },
     "profile": "Profile",
     "project": "Project",
     "referenceDatasets": "REFERENCE DATASETS",
@@ -214,7 +306,36 @@
     "requestRejected": "Request is Rejected",
     "searchPlaceholder": "Search {{pageName}}",
     "showSelected": "Show selected",
+    "style": {
+      "changeStyle": "Change style",
+      "dynamic": {
+        "applyWhenFiltering": "Apply when filtering",
+        "outline": "Outline",
+        "syncFillOutlineColor": "Sync fill and Outline Color"
+      },
+      "rules": {
+        "addNewRule": "Add New Rule",
+        "assignAllOutlineColor": "Assign all outline color",
+        "assignAllWidth": "Assign all width",
+        "assignColors": "Assign colors",
+        "colorHeader": "Color",
+        "fillColorHelp": "Used for filling the geometry. Put the hex color with # (e.g. #ffffff).",
+        "nameHeader": "Name",
+        "noOptionsCreateNew": "No options, write to create new option.",
+        "outlineColorHeader": "Outline Color",
+        "outlineColorHelp": "Used for coloring the outline of the geometry. Put the hex color with # (e.g. #ffffff).",
+        "outlineWidthHeader": "Outline Width",
+        "outlineWidthHelp": "Change width of the outline (in px)",
+        "ruleHeader": "Rule"
+      },
+      "selectStyle": "Select style",
+      "style": "Style",
+      "styleType": "Style type"
+    },
     "styles": "Styles",
+    "table": {
+      "noResultsFound": "No results found"
+    },
     "tableError": "Oops! Something went wrong while loading data.",
     "user": "USER",
     "usersAndGroups": "Users and groups",
@@ -222,6 +343,115 @@
     "visualization": "VISUALIZATION"
   },
   "category": "Category",
+  "components": {
+    "copyToClipboard": {
+      "copied": "Copied"
+    },
+    "imageInput": {
+      "browseFile": "Browse File"
+    },
+    "selectWithSearch": {
+      "allSelected": "All selected",
+      "blank": "Blank",
+      "nSelected": "{{count}} selected",
+      "selectAll": "Select all",
+      "selectOneOption": "Select 1 option"
+    },
+    "whereInput": {
+      "last": "Last",
+      "next": "Next",
+      "pickATime": "Pick a time",
+      "pickAnOperation": "Pick an operation",
+      "pickTheField": "Pick the field",
+      "putTheValue": "Put the value"
+    },
+    "whereInputModal": {
+      "apply": "Apply",
+      "defaultLabel": "Change filter for the data.",
+      "sqlFilterPlaceholder": "SQL Filter"
+    },
+    "filter": {
+      "applyFilters": "Apply Filters",
+      "deleteFilter": {
+        "title": "Delete Group"
+      },
+      "editor": {
+        "allowModify": "Allow users to modify filter parameters (values)",
+        "createFilter": "Create filter",
+        "createRule": "Create rule",
+        "creatingNewFilter": "Creating new filter",
+        "descriptionLabel": "Description",
+        "filterDescriptionPlaceholder": "Filter description",
+        "filterNameLabel": "Filter Name*",
+        "filterNamePlaceholder": "Filter name",
+        "updateFilter": "Update filter",
+        "updatingNewFilter": "Updating new filter"
+      },
+      "group": {
+        "addNewFilter": "Add New Filter",
+        "addNewGroup": "Add New Group",
+        "deleteGroupConfirm": "Are you sure want to delete this group?"
+      }
+    },
+    "whereQueryGenerator": {
+      "noFilter": "No filter"
+    },
+    "widget": {
+      "form": {
+        "changeTitle": "Change {{name}}",
+        "newTitle": "New {{title}} Widget",
+        "summary": "Summary",
+        "timeSeries": "Time Series",
+        "widgetDescription": "Widget description",
+        "widgetName": "Widget name"
+      },
+      "generic": {
+        "description": "A generic widget.",
+        "title": "Generic Widget"
+      },
+      "selection": {
+        "addNewWidget": "Add new widget",
+        "generic": "Generic",
+        "timeSeries": "Time Series"
+      },
+      "summaryEditor": {
+        "apply": "Apply",
+        "changeTitle": "Change {{name}}",
+        "datetime": "Datetime",
+        "layerType": "Layer Type",
+        "maxDateHelp": "Make the max date empty to make the data filtered up to `today`.",
+        "newTitle": "New {{title}}",
+        "noFilter": "No filter (global latest values will be used)",
+        "operation": "Operation",
+        "sourceLayer": "Source Layer",
+        "sourceValue": "Source Value",
+        "unit": "Unit",
+        "useCustomFilter": "Use custom datetime filter.",
+        "useGlobalFilter": "Use datetime filter from Dashboard level.",
+        "widgetDescription": "Widget description",
+        "widgetName": "Widget name"
+      }
+    },
+    "zonalAnalysisTool": {
+      "add": "Add",
+      "aggregation": "Aggregation",
+      "buffer": "Buffer:",
+      "bufferTooltip": "Geometries will be simplified before buffer is applied",
+      "cancel": "Cancel",
+      "clear": "Clear",
+      "clickFeature": "Click a feature on the map",
+      "clickToSelect": "Click to select",
+      "contextLayerNotSetup": "Context layer is not setup",
+      "draw": "Draw",
+      "drawInstructions": "Draw on map and finish by double click.",
+      "field": "Field",
+      "loading": "Loading",
+      "runAnalysis": "Run analysis",
+      "selectionMode": "Selection mode:",
+      "sourceLayer": "Source layer",
+      "value": "Value"
+    }
+  },
   "dashboardPage": {
     "adminPanelButton": "Admin panel",
     "contextLayerErrorDelete": "It seems this layer already being deleted",
@@ -234,14 +464,89 @@
     "indicatorLayerNotFound": "There is no indicator found for this layer. Please ask admin to fix this.",
     "indicatorSearch": "Search Indicators",
     "indicators": "Indicators",
+    "layerInfo": {
+      "description": "Description:",
+      "lastUpdate": "Last Update:",
+      "source": "Source:",
+      "unit": "Unit:"
+    },
     "layers": "Layers",
     "loadingDashboardData": "Loading Dashboard Data...",
     "projectOverview": "Project Overview",
     "projectOverviewClose": "Close",
     "projectOverviewNoShow": "Do not show this again!",
     "relatedTableNotConfigured": "Related table does not configured properly",
+    "projectOverviewNoInfo": "There is no information for this project.",
     "searchGeographyEntity": "Search Geography Entity",
-    "searchGeographyEntityLoading": "Loading...."
+    "searchGeographyEntityLoading": "Loading....",
+    "toolbars": {
+      "bookmark": {
+        "bookmarkName": "Bookmark Name",
+        "loading": "Loading",
+        "saveAs": "Save As...",
+        "saveBookmark": "Save bookmark {{name}}",
+        "saveBookmarkAs": "Save bookmark as",
+        "saveCurrentBookmark": "Save current selection and extent to {{name}}.",
+        "saveCurrentBookmarkAs": "Save current selection and extent as new bookmark.",
+        "submit": "Submit",
+        "title": "Bookmark"
+      },
+      "dataDownloader": {
+        "adminLevel": "Admin level",
+        "download": "Download",
+        "downloading": "Downloading",
+        "excludeEmptyValue": "Exclude records without indicator values",
+        "format": "Format",
+        "geographicalExtent": "Geographical extent",
+        "indicator": "Indicator",
+        "preparingData": "Preparing Data",
+        "timeFilter": "Time filter",
+        "title": "Download Data"
+      },
+      "embed": {
+        "copyEmbedCode": "Copy embed code",
+        "createSnippet": "Create embed snippet for this map.",
+        "filterTab": "Filter Tab",
+        "generate": "Generate",
+        "layerTab": "Layer Tab",
+        "map": "Map",
+        "widgetTab": "Widget Tab"
+      },
+      "mapMode": {
+        "threeDLayer": "3D layer",
+        "turnOffSideBySideView": "Turn off side by side view",
+        "turnOffSyncMovement": "Turn off sync movement",
+        "turnOnSideBySideView": "Turn on side by side view",
+        "turnOnSyncMovement": "Turn on sync movement"
+      },
+      "measurement": {
+        "addNewMeasurement": "Add new measurement",
+        "cancel": "Cancel",
+        "clear": "Clear",
+        "deleteSelected": "Delete selected",
+        "drawInstructions": "Draw on map and finish by double click.",
+        "measureDistancesAreas": "Measure distances and areas",
+        "meters": "Meters",
+        "miles": "Miles",
+        "sqMeters": "Sq Meters",
+        "startMeasurement": "Start Measurement"
+      },
+      "referenceLayers": {
+        "title": "Reference Layer selection"
+      },
+      "sdmx": {
+        "createLayer": "Create SDMX layer"
+      },
+      "tilt": {
+        "tooltip": "Reset tilt. Hold left Ctrl and click left mouse button on a map and move the cursor up/down to change tilt"
+      },
+      "togglePanel": {
+        "title": "Toggle Panel"
+      },
+      "zonalAnalysis": {
+        "title": "Zonal Analysis"
+      }
+    }
   },
   "featured": "Featured",
   "featured projects": "Featured Projects",

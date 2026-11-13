@@ -38,8 +38,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Command handler."""
-        for fixture in self.fixtures:
-            call_command('loaddata', fixture)
+        from django.db.models.signals import post_save
+        from django.contrib.auth.models import User
+        from core.models.profile import create_user_profile
+        post_save.disconnect(create_user_profile, sender=User)
+        try:
+            for fixture in self.fixtures:
+                call_command('loaddata', fixture)
+        finally:
+            post_save.connect(create_user_profile, sender=User)
         if settings.CLOUD_NATIVE_GIS_ENABLED:
             self.cloud_native_gis_fixtures()
 

@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import ColorizeIcon from '@mui/icons-material/Colorize';
 import Checkbox from '@mui/material/Checkbox';
@@ -75,6 +76,7 @@ const ruleTypeNumber = 'Number'
 export function Rule(
   { rule, idx, onDelete, onChange, type, codesChoices }
 ) {
+  const { t } = useTranslation();
   const ruleNameName = 'rule_name_' + idx;
   const ruleNameRule = 'rule_rule_' + idx;
   const ruleNameColor = 'rule_color_' + idx;
@@ -226,7 +228,7 @@ export function Rule(
                   <Creatable
                     menuPlacement={"top"}
                     className='RuleSectionSelection RuleSectionSelectionCategory'
-                    noOptionsMessage={() => 'No options, write to create new option.'}
+                    noOptionsMessage={() => t('admin.style.rules.noOptionsCreateNew')}
                     options={codesChoices}
                     isMulti
                     value={
@@ -483,6 +485,7 @@ export default function StyleRules(
     defaultCodeChoices = []
   }
 ) {
+  const { t } = useTranslation();
 
   /** Update rule for adding NO DATA RULE and OTHER RULE **/
   const updateStyleRules = (oldStyleRules) => {
@@ -675,11 +678,11 @@ export default function StyleRules(
       <thead>
       <tr className="RuleTable-Header">
         <th colSpan="2"></th>
-        <th valign="top">Name</th>
-        <th valign="top">Rule</th>
-        <th valign="top">Color</th>
-        <th valign="top">Outline Color</th>
-        <th valign="top">Outline Width</th>
+        <th valign="top">{t('admin.style.rules.nameHeader')}</th>
+        <th valign="top">{t('admin.style.rules.ruleHeader')}</th>
+        <th valign="top">{t('admin.style.rules.colorHeader')}</th>
+        <th valign="top">{t('admin.style.rules.outlineColorHeader')}</th>
+        <th valign="top">{t('admin.style.rules.outlineWidthHeader')}</th>
       </tr>
       <tr className="RuleTable-Help">
         <th valign="top" colSpan="2"></th>
@@ -712,8 +715,7 @@ export default function StyleRules(
         </th>
         <th valign="top">
           <span className='ColorConfigLabel'>
-              Used for filling the geometry.
-              Put the hex color with # (e.g. #ffffff).
+            {t('admin.style.rules.fillColorHelp')}
           </span>
           <ColorPalettePopover
             anchorOrigin={{
@@ -726,7 +728,7 @@ export default function StyleRules(
             }}
             Button={
               <div className='StylePopoverButton'>
-                <ColorizeIcon fontSize={"small"}/> Assign colors
+                <ColorizeIcon fontSize={"small"}/> {t('admin.style.rules.assignColors')}
               </div>
             }
             onSelected={(colorPalette) => {
@@ -749,8 +751,7 @@ export default function StyleRules(
         </th>
         <th valign="top">
           <span className='ColorConfigLabel'>
-              Used for coloring the outline of the geometry.
-              Put the hex color with # (e.g. #ffffff).
+            {t('admin.style.rules.outlineColorHelp')}
           </span>
           <CustomPopover
             anchorOrigin={{
@@ -763,7 +764,7 @@ export default function StyleRules(
             }}
             Button={
               <div className='StylePopoverButton'>
-                <ColorizeIcon fontSize={"small"}/> Assign all outline color
+                <ColorizeIcon fontSize={"small"}/> {t('admin.style.rules.assignAllOutlineColor')}
               </div>
             }
           >
@@ -787,7 +788,7 @@ export default function StyleRules(
         </th>
         <th valign="top">
           <span>
-              Change width of the outline (in px)
+            {t('admin.style.rules.outlineWidthHelp')}
           </span>
           <CustomPopover
             anchorOrigin={{
@@ -800,7 +801,7 @@ export default function StyleRules(
             }}
             Button={
               <div className='StylePopoverButton'>
-                <ColorizeIcon fontSize={"small"}/> Assign all width
+                <ColorizeIcon fontSize={"small"}/> {t('admin.style.rules.assignAllWidth')}
               </div>
             }
           >
@@ -877,7 +878,7 @@ export default function StyleRules(
         <td colSpan={7}>
           <AddButton
             variant="primary"
-            text="Add New Rule"
+            text={t('admin.style.rules.addNewRule')}
             onClick={addNewRule}
           />
         </td>
