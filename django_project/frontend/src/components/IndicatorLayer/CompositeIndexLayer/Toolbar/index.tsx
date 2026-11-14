@@ -19,6 +19,7 @@
 
 import React from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Variables } from "../../../../utils/Variables";
 import {
   Plugin,
@@ -36,6 +37,7 @@ import "./style.scss";
  * Composite index layer toolbar component.
  */
 export default function CompositeIndexLayerToolbar() {
+  const { t } = useTranslation();
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
   return (
@@ -47,10 +49,7 @@ export default function CompositeIndexLayerToolbar() {
       >
         {/* @ts-ignore */}
         <PluginChild
-          title={
-            (compositeMode ? "Deactivate" : "Activate") +
-            " composite index layer"
-          }
+          title={compositeMode ? t('components.compositeIndexLayer.deactivate') : t('components.compositeIndexLayer.activate')}
         >
           <CompositeIndexLayerToggler
             ActiveIcon={<CompositeIndexLayerActiveIcon />}

@@ -19,6 +19,7 @@
 
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import Slider from "@mui/material/Slider";
 import Switch from "@mui/material/Switch";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -54,6 +55,7 @@ import { selectIndicatorLayers } from "../../../../selectors/indicatorLayers";
  * Indicator data.
  */
 export default function GlobalDateSelector() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { globalDateSelectorOpened } = useSelector(
     (state) => state.globalState,
@@ -648,7 +650,7 @@ export default function GlobalDateSelector() {
                   ) : (
                     "-"
                   )}
-                  <div>Active Window Start</div>
+                  <div>{t('dashboardPage.globalDateSelector.activeWindowStart')}</div>
                 </div>
                 <div className="UpperSectionMiddle">
                   <div style={{ display: "flex" }}>
@@ -696,12 +698,12 @@ export default function GlobalDateSelector() {
                       true,
                     )}
                   </b>
-                  <div>Active Window End</div>
+                  <div>{t('dashboardPage.globalDateSelector.activeWindowEnd')}</div>
                 </div>
               </div>
               <div className="GlobalDateSelectionSliderWrapper">
                 <div className="TimeSelection">
-                  <div style={{ textAlign: "left" }}>Range Start</div>
+                  <div style={{ textAlign: "left" }}>{t('dashboardPage.globalDateSelector.rangeStart')}</div>
                   <SelectWithList
                     tabIndex="-1"
                     className="Selection"
@@ -734,7 +736,7 @@ export default function GlobalDateSelector() {
                             }}
                           />
                         }
-                        label="Fit to current indicator range"
+                        label={t('dashboardPage.globalDateSelector.fitToCurrentIndicatorRange')}
                       />
                     </FormGroup>
                     <FormGroup>
@@ -750,7 +752,7 @@ export default function GlobalDateSelector() {
                             }}
                           />
                         }
-                        label="Show last known value in range"
+                        label={t('dashboardPage.globalDateSelector.showLastKnownValueInRange')}
                       />
                     </FormGroup>
                     <div className="Separator" />
@@ -794,7 +796,7 @@ export default function GlobalDateSelector() {
                   </div>
                 </div>
                 <div className="TimeSelection">
-                  <div style={{ textAlign: "right" }}>Range End</div>
+                  <div style={{ textAlign: "right" }}>{t('dashboardPage.globalDateSelector.rangeEnd')}</div>
                   <SelectWithList
                     tabIndex="-1"
                     className="Selection"

@@ -2,6 +2,7 @@
   "(from)": "(from)",
   "(to)": "(to)",
   "3D view": "3D view",
+  "Aggregation": "Aggregation",
   "Apply Changes": "Apply Changes",
   "Back to home": "Back to home",
   "Back to Home": "Back to home",
@@ -13,16 +14,21 @@
   "Context layers": "Context layers",
   "Context layers tab only": "Context layers tab only",
   "Data download": "Data download",
+  "Date/time range": "Date/time range",
   "Delete": "Delete",
   "Embed tool": "Embed tool",
   "Entity search box": "Entity search box",
   "Feature it": "Feature it",
   "Featured": "Featured",
   "Filter": "Filter",
+  "From ": "From ",
+  "Geographic unit": "Geographic unit",
+  "Group by": "Group by",
   "Homepage": "Homepage",
   "Indicator data": "Indicator data",
   "Indicator layers tab only": "Indicator layers tab only",
   "Indicators": "Indicators",
+  "Last known data": "Last known data",
   "Left panel toggle": "Left panel toggle",
   "Level selector": "Level selector",
   "List": "List",
@@ -37,6 +43,8 @@
   "SDMX Indicators Layer Configurations": "SDMX Indicators Layer Configurations",
   "Share": "Share",
   "Show both tabs": "Show both tabs",
+  "Sort by": "Sort by",
+  "Sync with map": "Sync with map",
   "Show map toolbar": "Show map toolbar",
   "Spatial bookmark": "Spatial bookmark",
   "Widget": "Widget",
@@ -344,6 +352,10 @@
   },
   "category": "Category",
   "components": {
+    "compositeIndexLayer": {
+      "activate": "Activate composite index layer",
+      "deactivate": "Deactivate composite index layer"
+    },
     "copyToClipboard": {
       "copied": "Copied"
     },
@@ -450,6 +462,9 @@
       "selectionMode": "Selection mode:",
       "sourceLayer": "Source layer",
       "value": "Value"
+    },
+    "navbar": {
+      "editProject": "Edit project"
     }
   },
   "dashboardPage": {
@@ -460,6 +475,15 @@
     "contextLayers": "Context Layers",
     "filterNote": "There is no filter for this group.",
     "filters": "Filters",
+    "getEmbedCode": "Get embed code",
+    "globalDateSelector": {
+      "activeWindowEnd": "Active Window End",
+      "activeWindowStart": "Active Window Start",
+      "fitToCurrentIndicatorRange": "Fit to current indicator range",
+      "rangeEnd": "Range End",
+      "rangeStart": "Range Start",
+      "showLastKnownValueInRange": "Show last known value in range"
+    },
     "indicatorLayerErrorPermission": "You don't have permission to access this resource",
     "indicatorLayerNotFound": "There is no indicator found for this layer. Please ask admin to fix this.",
     "indicatorSearch": "Search Indicators",
@@ -502,6 +526,17 @@
         "preparingData": "Preparing Data",
         "timeFilter": "Time filter",
         "title": "Download Data"
+      },
+      "fullScreen": {
+        "enter": "Enter fullscreen",
+        "exit": "Exit fullscreen"
+      },
+      "globalDateSelector": {
+        "showGlobalTimeConfiguration": "Show global time configuration"
+      },
+      "labelToggler": {
+        "hideMapLabels": "Hide map labels",
+        "showMapLabels": "Show map labels"
       },
       "embed": {
         "copyEmbedCode": "Copy embed code",

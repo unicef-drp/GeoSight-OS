@@ -2,6 +2,7 @@
   "(from)": "(desde)",
   "(to)": "(hasta)",
   "3D view": "Vista 3D",
+  "Aggregation": "Agregación",
   "Apply Changes": "Aplicar cambios",
   "Back to home": "Volver a inicio",
   "Back to Home": "Volver a inicio",
@@ -13,16 +14,21 @@
   "Context layers": "Capas de contexto",
   "Context layers tab only": "Solo pestaña de capas de contexto",
   "Data download": "Descarga de datos",
+  "Date/time range": "Rango de fecha/hora",
   "Delete": "Eliminar",
   "Embed tool": "Herramienta de incrustar",
   "Entity search box": "Caja de búsqueda de entidad",
   "Feature it": "Destacar",
   "Featured": "Destacado",
   "Filter": "Filtro",
+  "From ": "Desde ",
+  "Geographic unit": "Unidad geográfica",
+  "Group by": "Agrupar por",
   "Homepage": "Página de inicio",
   "Indicator data": "Datos de indicador",
   "Indicator layers tab only": "Solo pestaña de capas de indicadores",
   "Indicators": "Indicadores",
+  "Last known data": "Últimos datos conocidos",
   "Left panel toggle": "Alternar panel izquierdo",
   "Level selector": "Selector de nivel",
   "List": "Lista",
@@ -37,6 +43,8 @@
   "SDMX Indicators Layer Configurations": "Configuraciones de Capas de Indicadores SDMX",
   "Share": "Compartir",
   "Show both tabs": "Mostrar ambas pestañas",
+  "Sort by": "Ordenar por",
+  "Sync with map": "Sincronizar con el mapa",
   "Show map toolbar": "Mostrar barra del mapa",
   "Spatial bookmark": "Marcador espacial",
   "Widget": "Widget",
@@ -450,6 +458,13 @@
       "selectionMode": "Modo de selección:",
       "sourceLayer": "Capa fuente",
       "value": "Valor"
+    },
+    "compositeIndexLayer": {
+      "activate": "Activar capa de índice compuesto",
+      "deactivate": "Desactivar capa de índice compuesto"
+    },
+    "navbar": {
+      "editProject": "Editar proyecto"
     }
   },
   "dashboardPage": {
@@ -460,6 +475,15 @@
     "contextLayers": "Capas de contexto",
     "filterNote": "No hay filtros para este grupo.",
     "filters": "Filtros",
+    "getEmbedCode": "Obtener código de incrustación",
+    "globalDateSelector": {
+      "activeWindowEnd": "Fin de ventana activa",
+      "activeWindowStart": "Inicio de ventana activa",
+      "fitToCurrentIndicatorRange": "Ajustar al rango del indicador actual",
+      "rangeEnd": "Fin del rango",
+      "rangeStart": "Inicio del rango",
+      "showLastKnownValueInRange": "Mostrar el último valor conocido en el rango"
+    },
     "indicatorLayerErrorPermission": "No tienes permiso para acceder a este recurso",
     "indicatorLayerNotFound": "No se encontró ningún indicador para esta capa. Por favor, pide al administrador que lo solucione.",
     "indicatorSearch": "Buscar indicadores",
@@ -502,6 +526,17 @@
         "preparingData": "Preparando datos",
         "timeFilter": "Filtro de tiempo",
         "title": "Descargar datos"
+      },
+      "fullScreen": {
+        "enter": "Pantalla completa",
+        "exit": "Salir de pantalla completa"
+      },
+      "globalDateSelector": {
+        "showGlobalTimeConfiguration": "Mostrar configuración de tiempo global"
+      },
+      "labelToggler": {
+        "hideMapLabels": "Ocultar etiquetas del mapa",
+        "showMapLabels": "Mostrar etiquetas del mapa"
       },
       "embed": {
         "copyEmbedCode": "Copiar código de incrustación",

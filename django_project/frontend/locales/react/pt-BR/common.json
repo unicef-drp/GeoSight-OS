@@ -2,6 +2,7 @@
   "(from)": "(de)",
   "(to)": "(até)",
   "3D view": "Visualização 3D",
+  "Aggregation": "Agregação",
   "Apply Changes": "Aplicar alterações",
   "Back to home": "Voltar para início",
   "Back to Home": "Voltar para início",
@@ -13,16 +14,21 @@
   "Context layers": "Camadas de contexto",
   "Context layers tab only": "Somente aba de camadas de contexto",
   "Data download": "Download de dados",
+  "Date/time range": "Intervalo de data/hora",
   "Delete": "Excluir",
   "Embed tool": "Ferramenta de incorporação",
   "Entity search box": "Caixa de pesquisa de entidade",
   "Feature it": "Destacar",
   "Featured": "Destacado",
   "Filter": "Filtro",
+  "From ": "De ",
+  "Geographic unit": "Unidade geográfica",
+  "Group by": "Agrupar por",
   "Homepage": "Página inicial",
   "Indicator data": "Dados do indicador",
   "Indicator layers tab only": "Somente aba de camadas de indicadores",
   "Indicators": "Indicadores",
+  "Last known data": "Últimos dados conhecidos",
   "Left panel toggle": "Alternar painel esquerdo",
   "Level selector": "Seletor de nível",
   "List": "Lista",
@@ -37,6 +43,8 @@
   "SDMX Indicators Layer Configurations": "Configurações de camada de indicadores SDMX",
   "Share": "Compartilhar",
   "Show both tabs": "Mostrar ambas as abas",
+  "Sort by": "Ordenar por",
+  "Sync with map": "Sincronizar com o mapa",
   "Show map toolbar": "Mostrar barra de ferramentas do mapa",
   "Spatial bookmark": "Marcador espacial",
   "Widget": "Widget",
@@ -450,6 +458,13 @@
       "selectionMode": "Modo de seleção:",
       "sourceLayer": "Camada fonte",
       "value": "Valor"
+    },
+    "compositeIndexLayer": {
+      "activate": "Ativar camada de índice composto",
+      "deactivate": "Desativar camada de índice composto"
+    },
+    "navbar": {
+      "editProject": "Editar projeto"
     }
   },
   "dashboardPage": {
@@ -460,6 +475,15 @@
     "contextLayers": "Camadas de contexto",
     "filterNote": "Não há filtros para este grupo.",
     "filters": "Filtros",
+    "getEmbedCode": "Obter código de incorporação",
+    "globalDateSelector": {
+      "activeWindowEnd": "Fim da janela ativa",
+      "activeWindowStart": "Início da janela ativa",
+      "fitToCurrentIndicatorRange": "Ajustar ao intervalo do indicador atual",
+      "rangeEnd": "Fim do intervalo",
+      "rangeStart": "Início do intervalo",
+      "showLastKnownValueInRange": "Mostrar o último valor conhecido no intervalo"
+    },
     "indicatorLayerErrorPermission": "Você não tem permissão para acessar este recurso",
     "indicatorLayerNotFound": "Nenhum indicador encontrado para esta camada. Por favor, peça ao administrador para corrigir isso.",
     "indicatorSearch": "Pesquisar indicadores",
@@ -502,6 +526,17 @@
         "preparingData": "Preparando dados",
         "timeFilter": "Filtro de tempo",
         "title": "Baixar dados"
+      },
+      "fullScreen": {
+        "enter": "Tela cheia",
+        "exit": "Sair da tela cheia"
+      },
+      "globalDateSelector": {
+        "showGlobalTimeConfiguration": "Mostrar configuração de tempo global"
+      },
+      "labelToggler": {
+        "hideMapLabels": "Ocultar rótulos do mapa",
+        "showMapLabels": "Mostrar rótulos do mapa"
       },
       "embed": {
         "copyEmbedCode": "Copiar código de incorporação",

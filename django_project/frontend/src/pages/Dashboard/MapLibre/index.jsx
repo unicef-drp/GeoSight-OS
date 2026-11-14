@@ -19,6 +19,7 @@
 
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "./utils/Plugin";
 
 // Toolbars
@@ -57,6 +58,7 @@ import "./style.scss";
  * MapLibre component.
  */
 export default function Map({ leftPanelProps, rightPanelProps }) {
+  const { t } = useTranslation();
   const drawingRef = useRef(null);
 
   // This is for mainMap, which is the first map
@@ -113,7 +115,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
               className="Active"
               data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
             >
-              <PluginChild title={"Get embed code"}>
+              <PluginChild title={t('dashboardPage.getEmbedCode')}>
                 <EmbedControl map={mainMap} />
               </PluginChild>
             </div>

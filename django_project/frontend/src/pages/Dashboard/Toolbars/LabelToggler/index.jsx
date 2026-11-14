@@ -19,6 +19,7 @@
 
 import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import { LabelOffIcon, LabelOnIcon } from "../../../../components/Icons";
@@ -32,6 +33,7 @@ import "./style.scss";
  */
 export function LabelToggler() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const enabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.MAP_LABEL_TOGGLE),
@@ -50,7 +52,7 @@ export function LabelToggler() {
         data-tool={Variables.DASHBOARD.TOOL.MAP_LABEL_TOGGLE}
       >
         <PluginChild
-          title={(showIndicatorMapLabel ? "Hide" : "Show") + " map labels"}
+          title={showIndicatorMapLabel ? t('dashboardPage.toolbars.labelToggler.hideMapLabels') : t('dashboardPage.toolbars.labelToggler.showMapLabels')}
         >
           {showIndicatorMapLabel ? (
             <LabelOnIcon

@@ -19,6 +19,7 @@
 
 import React from 'react';
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next';
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { ExpandIcon, ShrinkIcon } from '../../../../components/Icons'
 
@@ -28,6 +29,7 @@ import './style.scss';
  * FullScreen component.
  */
 export default function FullScreen() {
+  const { t } = useTranslation();
   const isFullScreen = window.fullScreen
   const [fullScreen, setFullScreen] = useState(isFullScreen)
 
@@ -35,7 +37,7 @@ export default function FullScreen() {
     <Plugin className='FullScreen Fullscreen'>
       <div>
         <PluginChild
-          title={(fullScreen ? 'Exit' : 'Enter') + ' fullscreen'}
+          title={fullScreen ? t('dashboardPage.toolbars.fullScreen.exit') : t('dashboardPage.toolbars.fullScreen.enter')}
           onClick={() => {
             fullScreen ? document.exitFullscreen() : document.body.requestFullscreen()
             setFullScreen(!fullScreen)

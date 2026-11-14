@@ -2,6 +2,7 @@
   "(from)": "(de)",
   "(to)": "(à)",
   "3D view": "Vue 3D",
+  "Aggregation": "Agrégation",
   "Apply Changes": "Appliquer les modifications",
   "Back to home": "Retour à l'accueil",
   "Back to Home": "Retour à l'accueil",
@@ -13,16 +14,21 @@
   "Context layers": "Couches de contexte",
   "Context layers tab only": "Onglet des couches de contexte uniquement",
   "Data download": "Téléchargement de données",
+  "Date/time range": "Plage date/heure",
   "Delete": "Supprimer",
   "Embed tool": "Outil d'intégration",
   "Entity search box": "Champ de recherche d'entité",
   "Feature it": "Mettre en avant",
   "Featured": "En vedette",
   "Filter": "Filtre",
+  "From ": "Du ",
+  "Geographic unit": "Unité géographique",
+  "Group by": "Grouper par",
   "Homepage": "Page d'accueil",
   "Indicator data": "Données de l'indicateur",
   "Indicator layers tab only": "Onglet des couches d'indicateurs uniquement",
   "Indicators": "Indicateurs",
+  "Last known data": "Dernières données connues",
   "Left panel toggle": "Basculer le panneau gauche",
   "Level selector": "Sélecteur de niveau",
   "List": "Liste",
@@ -37,6 +43,8 @@
   "SDMX Indicators Layer Configurations": "Configurations de la couche d'indicateurs SDMX",
   "Share": "Partager",
   "Show both tabs": "Afficher les deux onglets",
+  "Sort by": "Trier par",
+  "Sync with map": "Synchroniser avec la carte",
   "Show map toolbar": "Afficher la barre d'outils de la carte",
   "Spatial bookmark": "Signet spatial",
   "Widget": "Widget",
@@ -450,6 +458,13 @@
       "selectionMode": "Mode de sélection :",
       "sourceLayer": "Couche source",
       "value": "Valeur"
+    },
+    "compositeIndexLayer": {
+      "activate": "Activer la couche d'index composite",
+      "deactivate": "Désactiver la couche d'index composite"
+    },
+    "navbar": {
+      "editProject": "Modifier le projet"
     }
   },
   "dashboardPage": {
@@ -460,6 +475,15 @@
     "contextLayers": "Couches de contexte",
     "filterNote": "Il n'y a pas de filtre pour ce groupe.",
     "filters": "Filtres",
+    "getEmbedCode": "Obtenir le code d'intégration",
+    "globalDateSelector": {
+      "activeWindowEnd": "Fin de la fenêtre active",
+      "activeWindowStart": "Début de la fenêtre active",
+      "fitToCurrentIndicatorRange": "Ajuster à la plage de l'indicateur actuel",
+      "rangeEnd": "Fin de la plage",
+      "rangeStart": "Début de la plage",
+      "showLastKnownValueInRange": "Afficher la dernière valeur connue dans la plage"
+    },
     "indicatorLayerErrorPermission": "Vous n'avez pas la permission d'accéder à cette ressource",
     "indicatorLayerNotFound": "Aucun indicateur trouvé pour cette couche. Veuillez demander à l'administrateur de corriger cela.",
     "indicatorSearch": "Rechercher des indicateurs",
@@ -502,6 +526,17 @@
         "preparingData": "Préparation des données",
         "timeFilter": "Filtre temporel",
         "title": "Télécharger les données"
+      },
+      "fullScreen": {
+        "enter": "Plein écran",
+        "exit": "Quitter le plein écran"
+      },
+      "globalDateSelector": {
+        "showGlobalTimeConfiguration": "Afficher la configuration de temps globale"
+      },
+      "labelToggler": {
+        "hideMapLabels": "Masquer les étiquettes de la carte",
+        "showMapLabels": "Afficher les étiquettes de la carte"
       },
       "embed": {
         "copyEmbedCode": "Copier le code d'intégration",

@@ -162,7 +162,7 @@ export default function NavBar({ minified }) {
             <div
               className="LinkButton AdminLinkButton EditProjectLinkButton"
               style={{ marginRight: "1rem" }}
-              title="Edit project"
+              title={t('components.navbar.editProject')}
             >
               <a href={dashboardEditUrl}>
                 <EditIcon />
