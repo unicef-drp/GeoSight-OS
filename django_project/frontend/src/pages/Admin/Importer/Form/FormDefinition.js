@@ -72,6 +72,27 @@ export const _scheduleTypes = {
   ScheduledImport: 'Scheduled Import'
 }
 
+export const _importTypeLabels = {
+  [_importTypes.IndicatorValue]: 'admin.importer.importTypes.indicatorValue',
+  [_importTypes.RelatedTables]: 'admin.importer.importTypes.relatedTables',
+}
+export const _inputFormatLabels = {
+  [_inputFormats.APILongFormat]: 'admin.importer.inputFormats.apiLongFormat',
+  [_inputFormats.APIWideFormat]: 'admin.importer.inputFormats.apiWideFormat',
+  [_inputFormats.ExcelLongFormat]: 'admin.importer.inputFormats.excelLongFormat',
+  [_inputFormats.ExcelWideFormat]: 'admin.importer.inputFormats.excelWideFormat',
+  [_inputFormats.SharePointLongFormat]: 'admin.importer.inputFormats.sharePointLongFormat',
+  [_inputFormats.SharePointWideFormat]: 'admin.importer.inputFormats.sharePointWideFormat',
+  [_inputFormats.VectorContextLayerFormat]: 'admin.importer.inputFormats.vectorContextLayerFormat',
+  [_inputFormats.SDMXFormat]: 'admin.importer.inputFormats.sdmxFormat',
+  [_inputFormats.RelatedTableFormat]: 'admin.importer.inputFormats.relatedTableFormat',
+  [_inputFormats.FormulaBased]: 'admin.importer.inputFormats.formulaBased',
+}
+export const _scheduleTypeLabels = {
+  [_scheduleTypes.SingleImport]: 'admin.importer.scheduleTypes.singleImport',
+  [_scheduleTypes.ScheduledImport]: 'admin.importer.scheduleTypes.scheduledImport',
+}
+
 export const Forms = {
   [_importTypes.IndicatorValue]: {
     [_inputFormats.APILongFormat]: {

@@ -109,6 +109,11 @@
     "createNew": "Criar novo {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Habilitar caixa de pesquisa de entidade geográfica",
+      "form": {
+        "general": {
+          "thumbnail": "Miniatura"
+        }
+      },
       "hideContextLayerTab": "Ocultar aba de camada de contexto",
       "mappingIndicatorsUsing": "Mapeando indicadores usando",
       "nameExample": "Exemplo: Painel de Risco do Afeganistão",
@@ -131,8 +136,63 @@
     "fetchingProjectData": "Obtendo dados do projeto...",
     "help": "Ajuda",
     "importer": {
+      "columns": {
+        "dataSaved": "Dados salvos",
+        "importType": "Tipo de importação",
+        "importTime": "Hora de importação",
+        "importedBy": "Importado por",
+        "inputFormat": "Formato de entrada",
+        "isActive": "Ativo",
+        "jobName": "Nome do trabalho",
+        "lastRun": "Última execução",
+        "lastRunResult": "Resultado da última execução",
+        "status": "Status",
+        "view": "Ver"
+      },
+      "fetchingData": "Obtendo dados...",
       "filter": {
         "modalTitle": "Alterar filtro dos dados."
+      },
+      "form": {
+        "importType": "Tipo de importação",
+        "inputFormat": "Formato de entrada"
+      },
+      "importData": "Importar dados",
+      "importTypes": {
+        "indicatorValue": "Valor do indicador",
+        "relatedTables": "Tabelas relacionadas"
+      },
+      "inputFormats": {
+        "apiLongFormat": "API com geografia em formato longo",
+        "apiWideFormat": "API com geografia em formato largo",
+        "excelLongFormat": "Formato longo do Excel",
+        "excelWideFormat": "Formato largo do Excel",
+        "formulaBased": "Baseado em fórmulas de outros indicadores",
+        "relatedTableFormat": "Formato de tabela relacionada",
+        "sdmxFormat": "Formato SDMX",
+        "sharePointLongFormat": "Formato longo do SharePoint",
+        "sharePointWideFormat": "Formato largo do SharePoint",
+        "vectorContextLayerFormat": "Formato de camada de contexto vetorial"
+      },
+      "logs": {
+        "browseData": "Explorar dados"
+      },
+      "scheduleTypes": {
+        "scheduledImport": "Importação agendada",
+        "singleImport": "Importação única"
+      },
+      "scheduledJobs": {
+        "pauseJob": "Pausar o trabalho",
+        "pauseSelected": "Pausar selecionados",
+        "resumeJob": "Retomar o trabalho",
+        "resumeSelected": "Retomar selecionados"
+      },
+      "tabs": {
+        "aggregations": "Agregações",
+        "attributes": "Atributos",
+        "general": "Geral",
+        "refLayerTime": "Camada de referência e tempo",
+        "schedule": "Agendamento"
       }
     },
     "importers": "Importadores",

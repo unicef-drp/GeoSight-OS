@@ -524,7 +524,7 @@ const GeneralForm = memo(({}: Props) => {
             <Grid item xs={6}>
               <FormControl className="IconInput">
                 <label className="form-label" htmlFor="name">
-                  Icon
+                  {t('admin.dashboard.form.general.thumbnail')}
                 </label>
                 <ImageInput
                   id="GeneralIcon"

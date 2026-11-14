@@ -109,6 +109,11 @@
     "createNew": "Crear Nuevo {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Habilitar cuadro de búsqueda de entidades geográficas",
+      "form": {
+        "general": {
+          "thumbnail": "Miniatura"
+        }
+      },
       "hideContextLayerTab": "Ocultar pestaña de capa de contexto",
       "mappingIndicatorsUsing": "Mapeo de Indicadores Usando",
       "nameExample": "Ejemplo: Panel de Riesgo de Afganistán",
@@ -131,8 +136,63 @@
     "fetchingProjectData": "Obteniendo datos del proyecto...",
     "help": "Ayuda",
     "importer": {
+      "columns": {
+        "dataSaved": "Datos guardados",
+        "importType": "Tipo de importación",
+        "importTime": "Hora de importación",
+        "importedBy": "Importado por",
+        "inputFormat": "Formato de entrada",
+        "isActive": "Activo",
+        "jobName": "Nombre del trabajo",
+        "lastRun": "Última ejecución",
+        "lastRunResult": "Resultado de la última ejecución",
+        "status": "Estado",
+        "view": "Ver"
+      },
+      "fetchingData": "Obteniendo datos...",
       "filter": {
         "modalTitle": "Cambiar filtro de los datos."
+      },
+      "form": {
+        "importType": "Tipo de importación",
+        "inputFormat": "Formato de entrada"
+      },
+      "importData": "Importar datos",
+      "importTypes": {
+        "indicatorValue": "Valor del indicador",
+        "relatedTables": "Tablas relacionadas"
+      },
+      "inputFormats": {
+        "apiLongFormat": "API con geografía en formato largo",
+        "apiWideFormat": "API con geografía en formato ancho",
+        "excelLongFormat": "Formato largo de Excel",
+        "excelWideFormat": "Formato ancho de Excel",
+        "formulaBased": "Basado en fórmulas sobre otros indicadores",
+        "relatedTableFormat": "Formato de tabla relacionada",
+        "sdmxFormat": "Formato SDMX",
+        "sharePointLongFormat": "Formato largo de SharePoint",
+        "sharePointWideFormat": "Formato ancho de SharePoint",
+        "vectorContextLayerFormat": "Formato de capa de contexto vectorial"
+      },
+      "logs": {
+        "browseData": "Explorar datos"
+      },
+      "scheduleTypes": {
+        "scheduledImport": "Importación programada",
+        "singleImport": "Importación única"
+      },
+      "scheduledJobs": {
+        "pauseJob": "Pausar el trabajo",
+        "pauseSelected": "Pausar seleccionados",
+        "resumeJob": "Reanudar el trabajo",
+        "resumeSelected": "Reanudar seleccionados"
+      },
+      "tabs": {
+        "aggregations": "Agregaciones",
+        "attributes": "Atributos",
+        "general": "General",
+        "refLayerTime": "Capa de referencia y tiempo",
+        "schedule": "Programación"
       }
     },
     "importers": "Importadores",

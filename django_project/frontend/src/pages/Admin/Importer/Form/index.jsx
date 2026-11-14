@@ -15,6 +15,7 @@
 
 /** Specifically for Cron Input */
 import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 import {
   FormControl,
@@ -41,7 +42,9 @@ import { urlParams } from "../../../../utils/main";
 import { updateDataWithSetState } from "./utils";
 import {
   _importTypes,
+  _importTypeLabels,
   _inputFormats,
+  _inputFormatLabels,
   _scheduleTypes,
   Forms
 } from './FormDefinition'
@@ -59,17 +62,18 @@ const defaultData = {
   run_on_create: true
 }
 
-const tabs = {
-  FormType: 'Form Type',
+const IMPORTER_TABS = {
+  General: 'General',
+  Attributes: 'Attributes',
+  RefLayerTime: 'Reference Layer & Time',
   Schedule: 'Schedule',
-  RefLayerTime: 'Reference_Layer_Time',
-  Other: 'Other',
   Aggregations: 'Aggregations',
 }
 /**
  * Importer Form App
  */
 export default function ImporterForm() {
+  const { t } = useTranslation();
   /** Setup default data **/
   const setupDefaultData = () => {
     return Object.assign({}, defaultData, urlParams(window.location.href))
@@ -229,11 +233,11 @@ export default function ImporterForm() {
   // Check disabled tabs
   let disabledTabs = []
   if (data.import_type === _importTypes.RelatedTables) {
-    disabledTabs.push('Aggregations')
-    disabledTabs.push('Reference Layer & Time')
+    disabledTabs.push(IMPORTER_TABS.Aggregations)
+    disabledTabs.push(IMPORTER_TABS.RefLayerTime)
   }
   if (scheduleTypes.length <= 1) {
-    disabledTabs.push('Schedule')
+    disabledTabs.push(IMPORTER_TABS.Schedule)
   }
   return (
     <Fragment>
@@ -245,7 +249,7 @@ export default function ImporterForm() {
                 <div className='AdminLoadingSection'>
                   <CircularProgress/>
                   <div>
-                    Fetching data...
+                    {t('admin.importer.fetchingData')}
                   </div>
                 </div>
               </div>
@@ -272,99 +276,120 @@ export default function ImporterForm() {
                 <AdminForm
                   isWizard={true}
                   disabledTabs={disabledTabs}
-                  forms={{
-                    'General': (
-                      <div>
-                        {/* Import type selector */}
-                        <FormControl className="BasicFormSection">
-                          <label className="form-label required">
-                            Import type
-                          </label>
-                          <RadioGroup
-                            name="import_type"
-                            value={data.import_type}
-                            onChange={evt => {
-                              data.import_type = evt.target.value
-                              setData({ ...data })
-                            }}
-                          >
-                            <Grid container spacing={2}>
-                              {
-                                importTypes.map(type => (
-                                  <Grid item xs={2} key={type}>
-                                    <FormControlLabel
-                                      value={type} control={<Radio/>}
-                                      label={type}/>
-                                  </Grid>
-                                ))
-                              }
-                            </Grid>
-                          </RadioGroup>
-                        </FormControl>
+                  forms={[
+                    {
+                      id: IMPORTER_TABS.General,
+                      label: 'admin.importer.tabs.general',
+                      component: (
+                        <div>
+                          {/* Import type selector */}
+                          <FormControl className="BasicFormSection">
+                            <label className="form-label required">
+                              {t('admin.importer.form.importType')}
+                            </label>
+                            <RadioGroup
+                              name="import_type"
+                              value={data.import_type}
+                              onChange={evt => {
+                                data.import_type = evt.target.value
+                                setData({ ...data })
+                              }}
+                            >
+                              <Grid container spacing={2}>
+                                {
+                                  importTypes.map(type => (
+                                    <Grid item xs={2} key={type}>
+                                      <FormControlLabel
+                                        value={type} control={<Radio/>}
+                                        label={t(_importTypeLabels[type] || type)}/>
+                                    </Grid>
+                                  ))
+                                }
+                              </Grid>
+                            </RadioGroup>
+                          </FormControl>
 
-                        {/* Input format selector */}
-                        <FormControl className="BasicFormSection">
-                          <label className="form-label required">
-                            Input format
-                          </label>
-                          <RadioGroup
-                            name="input_format"
-                            value={data.input_format}
-                            onChange={evt => {
-                              data.input_format = evt.target.value
-                              setData({ ...data })
-                            }}
-                          >
-                            <Grid container spacing={2}>
-                              {
-                                inputFormatsDefault.map(type => (
-                                  <Grid item xs={6} key={type}>
-                                    <FormControlLabel
-                                      disabled={!inputFormats.includes(type)}
-                                      value={type} control={<Radio/>}
-                                      label={type}/>
-                                  </Grid>
-                                ))
-                              }
-                            </Grid>
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
-                    ),
-                    "Attributes": (
-                      <div>
-                        {renderExtension()}
-                      </div>
-                    ),
-                    "Reference Layer & Time": <div></div>,
-                    "Schedule":
-                      <ScheduledInput
-                        data={data} setData={setData}
-                        _scheduleTypes={_scheduleTypes}
-                        scheduleTypesDefault={scheduleTypesDefault}
-                        scheduleTypes={scheduleTypes}
-                        ref={scheduledRef}
-                      />,
-                    "Aggregations":
-                      <div>
-                        <AggregationsMultiValueInput
+                          {/* Input format selector */}
+                          <FormControl className="BasicFormSection">
+                            <label className="form-label required">
+                              {t('admin.importer.form.inputFormat')}
+                            </label>
+                            <RadioGroup
+                              name="input_format"
+                              value={data.input_format}
+                              onChange={evt => {
+                                data.input_format = evt.target.value
+                                setData({ ...data })
+                              }}
+                            >
+                              <Grid container spacing={2}>
+                                {
+                                  inputFormatsDefault.map(type => (
+                                    <Grid item xs={6} key={type}>
+                                      <FormControlLabel
+                                        disabled={!inputFormats.includes(type)}
+                                        value={type} control={<Radio/>}
+                                        label={t(_inputFormatLabels[type] || type)}/>
+                                    </Grid>
+                                  ))
+                                }
+                              </Grid>
+                            </RadioGroup>
+                          </FormControl>
+                        </div>
+                      )
+                    },
+                    {
+                      id: IMPORTER_TABS.Attributes,
+                      label: 'admin.importer.tabs.attributes',
+                      component: (
+                        <div>
+                          {renderExtension()}
+                        </div>
+                      )
+                    },
+                    {
+                      id: IMPORTER_TABS.RefLayerTime,
+                      label: 'admin.importer.tabs.refLayerTime',
+                      component: <div></div>
+                    },
+                    {
+                      id: IMPORTER_TABS.Schedule,
+                      label: 'admin.importer.tabs.schedule',
+                      component: (
+                        <ScheduledInput
                           data={data} setData={setData}
-                          ref={aggregationRef}
+                          _scheduleTypes={_scheduleTypes}
+                          scheduleTypesDefault={scheduleTypesDefault}
+                          scheduleTypes={scheduleTypes}
+                          ref={scheduledRef}
                         />
-
-                        <AggregationsAdminLevelInput
-                          data={data} setData={setData}
-                          ref={aggregationRef}
-                        />
-                      </div>,
-                  }}
+                      )
+                    },
+                    {
+                      id: IMPORTER_TABS.Aggregations,
+                      label: 'admin.importer.tabs.aggregations',
+                      component: (
+                        <div>
+                          <AggregationsMultiValueInput
+                            data={data} setData={setData}
+                            ref={aggregationRef}
+                          />
+                          <AggregationsAdminLevelInput
+                            data={data} setData={setData}
+                            ref={aggregationRef}
+                          />
+                        </div>
+                      )
+                    },
+                  ]}
                 /> :
                 <div className='AdminForm'>
                   <div className='AdminFormLoading'>
                     <div className='AdminFormLoadingSection'>
                       <CircularProgress/>
                       <div>
-                        Fetching data...
+                        {t('admin.importer.fetchingData')}
                       </div>
                     </div>
                   </div>

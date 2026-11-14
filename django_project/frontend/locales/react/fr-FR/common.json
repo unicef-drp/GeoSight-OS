@@ -109,6 +109,11 @@
     "createNew": "Créer un nouveau {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Activer la boîte de recherche d'entité géographique",
+      "form": {
+        "general": {
+          "thumbnail": "Vignette"
+        }
+      },
       "hideContextLayerTab": "Masquer l'onglet des couches de contexte",
       "mappingIndicatorsUsing": "Cartographier les indicateurs avec",
       "nameExample": "Exemple : Tableau de bord des risques en Afghanistan",
@@ -131,8 +136,63 @@
     "fetchingProjectData": "Récupération des données du projet...",
     "help": "Aide",
     "importer": {
+      "columns": {
+        "dataSaved": "Données enregistrées",
+        "importType": "Type d'importation",
+        "importTime": "Heure d'importation",
+        "importedBy": "Importé par",
+        "inputFormat": "Format d'entrée",
+        "isActive": "Actif",
+        "jobName": "Nom du travail",
+        "lastRun": "Dernière exécution",
+        "lastRunResult": "Résultat de la dernière exécution",
+        "status": "Statut",
+        "view": "Voir"
+      },
+      "fetchingData": "Récupération des données...",
       "filter": {
         "modalTitle": "Modifier le filtre des données."
+      },
+      "form": {
+        "importType": "Type d'importation",
+        "inputFormat": "Format d'entrée"
+      },
+      "importData": "Importer des données",
+      "importTypes": {
+        "indicatorValue": "Valeur de l'indicateur",
+        "relatedTables": "Tables liées"
+      },
+      "inputFormats": {
+        "apiLongFormat": "API avec géographie en format long",
+        "apiWideFormat": "API avec géographie en format large",
+        "excelLongFormat": "Format long Excel",
+        "excelWideFormat": "Format large Excel",
+        "formulaBased": "Basé sur des formules d'autres indicateurs",
+        "relatedTableFormat": "Format de table liée",
+        "sdmxFormat": "Format SDMX",
+        "sharePointLongFormat": "Format long SharePoint",
+        "sharePointWideFormat": "Format large SharePoint",
+        "vectorContextLayerFormat": "Format de couche de contexte vectoriel"
+      },
+      "logs": {
+        "browseData": "Parcourir les données"
+      },
+      "scheduleTypes": {
+        "scheduledImport": "Importation planifiée",
+        "singleImport": "Importation unique"
+      },
+      "scheduledJobs": {
+        "pauseJob": "Suspendre le travail",
+        "pauseSelected": "Suspendre la sélection",
+        "resumeJob": "Reprendre le travail",
+        "resumeSelected": "Reprendre la sélection"
+      },
+      "tabs": {
+        "aggregations": "Agrégations",
+        "attributes": "Attributs",
+        "general": "Général",
+        "refLayerTime": "Couche de référence et temps",
+        "schedule": "Planification"
       }
     },
     "importers": "Importateurs",

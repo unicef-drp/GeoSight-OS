@@ -21,6 +21,7 @@ import React, {
   useState
 } from 'react';
 import $ from 'jquery';
+import { useTranslation } from "react-i18next";
 import PermissionFormAdmin from "./PermissionFormAdmin"
 
 import './style.scss';
@@ -50,6 +51,7 @@ export const AdminForm = forwardRef(
       ...props
     }, ref
   ) => {
+    const { t } = useTranslation();
 
     // Notification
     const notificationRef = useRef(null);
@@ -73,9 +75,17 @@ export const AdminForm = forwardRef(
       }
     }));
 
+    // Support both formats:
+    // - Object format (legacy): { 'Tab Name': <Component /> }
+    // - Array format (new): [{ id: 'tab_id', label: 'i18n.key', component: <Component /> }]
+    const tabList = Array.isArray(forms)
+      ? forms
+      : Object.entries(forms).map(([key, component]) => ({ id: key, label: key, component }));
+
     let defaultTab = window.location.hash.replace('#', '').replaceAll('%20', ' ')
-    if (!Object.keys(forms).includes(defaultTab)) {
-      defaultTab = Object.keys(forms)[0]
+    const tabIds = tabList.map(item => item.id)
+    if (!tabIds.includes(defaultTab)) {
+      defaultTab = tabIds[0]
     }
     const [tab, setTab] = useState(props.defaultTab ? props.defaultTab : defaultTab);
 
@@ -84,7 +94,6 @@ export const AdminForm = forwardRef(
       if (onTabChanges) {
         onTabChanges(tab)
       }
-
       window.location.hash = tab
     }, [tab]);
 
@@ -100,26 +109,27 @@ export const AdminForm = forwardRef(
     }
 
     /*** Create tab of forms ***/
-    function Tab({ tabName, disabled = false }) {
+    function Tab({ tabId, tabLabel, disabled = false }) {
+      const displayLabel = tabLabel.includes('.')
+        ? t(tabLabel)
+        : tabLabel.replaceAll('-', ' ')
       return <div
-        key={tabName}
+        key={tabId}
         onClick={_ => {
           if (!disabled) {
             try {
               $("#Form").removeClass(tab)
-              $("#Form").addClass(tabName)
-            }catch (e) {
-
-            }
-            setTab(tabName)
+              $("#Form").addClass(tabId)
+            } catch (e) {}
+            setTab(tabId)
           }
         }}
         className={
-          (tab === tabName ? 'Selected ' : '') +
+          (tab === tabId ? 'Selected ' : '') +
           (disabled ? 'Disabled' : '')
         }
       >
-        {tabName.replaceAll('-', ' ')}
+        {displayLabel}
       </div>
     }
 
@@ -131,13 +141,13 @@ export const AdminForm = forwardRef(
         {/* --------------------  TAB -------------------- */}
         <div className={'TabPrimary ' + tab}>
           {
-            Object.keys(forms).map(key =>
-              <Tab key={key} tabName={key}
-                   disabled={disabledTabs.includes(key)}
+            tabList.map(item =>
+              <Tab key={item.id} tabId={item.id} tabLabel={item.label}
+                   disabled={disabledTabs.includes(item.id)}
               />
             )
           }
-          {permissionApi ? <Tab tabName={ShareTab}/> : null}
+          {permissionApi ? <Tab tabId={ShareTab} tabLabel={ShareTab}/> : null}
         </div>
         {/* --------------------  CONTENT -------------------- */}
         <form
@@ -148,11 +158,11 @@ export const AdminForm = forwardRef(
           onSubmit={e => e.preventDefault()}
         >
           {
-            Object.keys(forms).map(key => {
+            tabList.map(item => {
               return <div
-                key={key}
-                className={key + " " + (tab !== key ? 'Hidden' : "")}>
-                {forms[key]}
+                key={item.id}
+                className={item.id + " " + (tab !== item.id ? 'Hidden' : "")}>
+                {item.component}
               </div>
             })
           }

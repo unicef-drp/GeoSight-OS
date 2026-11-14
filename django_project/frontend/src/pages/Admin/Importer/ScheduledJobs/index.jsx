@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import $ from "jquery";
 import axios from "axios";
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -37,7 +38,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 const { search } = urlParams()
 
-export function resourceActions(params, notify, updateData) {
+export function resourceActions(params, notify, updateData, t) {
   const data = params.row
   const actions = COLUMNS_ACTION(
     params, urls.admin.dataManagement + '#Scheduled%20Jobs', urls.api.scheduledJobs.edit, urls.api.scheduledJobs.detail
@@ -47,7 +48,7 @@ export function resourceActions(params, notify, updateData) {
       icon={
         user.is_admin || params.row.creator === user.id ?
           <Tooltip
-            title={data.job_active ? `Pause the job` : 'Resume the job'}>
+            title={t ? (data.job_active ? t('admin.importer.scheduledJobs.pauseJob') : t('admin.importer.scheduledJobs.resumeJob')) : (data.job_active ? 'Pause the job' : 'Resume the job')}>
             <a
               onClick={(e) => {
                 axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
@@ -95,6 +96,7 @@ export function resourceActions(params, notify, updateData) {
  * Indicator List App
  */
 export default function ScheduledJobs({ ...props }) {
+  const { t } = useTranslation();
   const [selectionModel, setSelectionModel] = useState([]);
   const listRef = useRef(null);
   // Notification
@@ -106,6 +108,7 @@ export default function ScheduledJobs({ ...props }) {
   const columns = [
     COLUMNS.ID,
     Object.assign({}, COLUMNS.JOB_NAME, {
+      headerName: t('admin.importer.columns.jobName'),
       renderCell: (params) => {
         return <a
           className='MuiButtonLike CellLink'
@@ -114,16 +117,16 @@ export default function ScheduledJobs({ ...props }) {
         </a>
       }
     }),
-    COLUMNS.IMPORT_TYPE,
-    COLUMNS.INPUT_FORMAT,
+    Object.assign({}, COLUMNS.IMPORT_TYPE, { headerName: t('admin.importer.columns.importType') }),
+    Object.assign({}, COLUMNS.INPUT_FORMAT, { headerName: t('admin.importer.columns.inputFormat') }),
     COLUMNS.REFERENCE_DATASET,
-    COLUMNS.LAST_RUN,
-    COLUMNS.LAST_RUN_RESULT,
-    COLUMNS.JOB_ACTIVE,
+    Object.assign({}, COLUMNS.LAST_RUN, { headerName: t('admin.importer.columns.lastRun') }),
+    Object.assign({}, COLUMNS.LAST_RUN_RESULT, { headerName: t('admin.importer.columns.lastRunResult') }),
+    Object.assign({}, COLUMNS.JOB_ACTIVE, { headerName: t('admin.importer.columns.isActive') }),
     Object.assign({}, COLUMNS.ACTIONS, {
       width: 200,
       getActions: (params) => {
-        return resourceActions(params, notify)
+        return resourceActions(params, notify, null, t)
       },
     })
   ];
@@ -170,7 +173,7 @@ export default function ScheduledJobs({ ...props }) {
                 beforeSend: beforeAjaxSend
               });
             }}>
-            <PauseIcon/> Pause Selected
+            <PauseIcon/> {t('admin.importer.scheduledJobs.pauseSelected')}
           </ThemeButton>
           <ThemeButton
             variant="primary Basic"
@@ -196,12 +199,12 @@ export default function ScheduledJobs({ ...props }) {
                 beforeSend: beforeAjaxSend
               });
             }}>
-            <PlayArrowIcon/> Resume Selected
+            <PlayArrowIcon/> {t('admin.importer.scheduledJobs.resumeSelected')}
           </ThemeButton>
           <a
             href={urls.admin.importer}>
             <ThemeButton variant="primary">
-              <UploadIcon/> Import Data
+              <UploadIcon/> {t('admin.importer.importData')}
             </ThemeButton>
           </a>
         </Fragment>

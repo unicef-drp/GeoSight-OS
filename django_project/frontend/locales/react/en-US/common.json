@@ -109,6 +109,11 @@
     "createNew": "Create New {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Enable geography entity search box",
+      "form": {
+        "general": {
+          "thumbnail": "Thumbnail"
+        }
+      },
       "hideContextLayerTab": "Hide context layer tab",
       "mappingIndicatorsUsing": "Mapping Indicators Using",
       "nameExample": "Example: Afghanistan Risk Dashboard",
@@ -131,8 +136,63 @@
     "fetchingProjectData": "Fetching Project Data...",
     "help": "Help",
     "importer": {
+      "columns": {
+        "dataSaved": "Data Saved",
+        "importType": "Import Type",
+        "importTime": "Import Time",
+        "importedBy": "Imported By",
+        "inputFormat": "Input Format",
+        "isActive": "Is Active",
+        "jobName": "Job Name",
+        "lastRun": "Last Run",
+        "lastRunResult": "Last Run Result",
+        "status": "Status",
+        "view": "View"
+      },
+      "fetchingData": "Fetching data...",
       "filter": {
         "modalTitle": "Change filter for the data."
+      },
+      "form": {
+        "importType": "Import type",
+        "inputFormat": "Input format"
+      },
+      "tabs": {
+        "aggregations": "Aggregations",
+        "attributes": "Attributes",
+        "general": "General",
+        "refLayerTime": "Reference Layer & Time",
+        "schedule": "Schedule"
+      },
+      "importData": "Import Data",
+      "importTypes": {
+        "indicatorValue": "Indicator Value",
+        "relatedTables": "Related Tables"
+      },
+      "inputFormats": {
+        "apiLongFormat": "API With Geography Long Format",
+        "apiWideFormat": "API With Geography Wide Format",
+        "excelLongFormat": "Excel Long Format",
+        "excelWideFormat": "Excel Wide Format",
+        "formulaBased": "Formula Based on Other Indicators",
+        "relatedTableFormat": "Related Table Format",
+        "sdmxFormat": "SDMX Format",
+        "sharePointLongFormat": "SharePoint Long Format",
+        "sharePointWideFormat": "SharePoint Wide Format",
+        "vectorContextLayerFormat": "Vector Context Layer Format"
+      },
+      "logs": {
+        "browseData": "Browse data"
+      },
+      "scheduleTypes": {
+        "scheduledImport": "Scheduled Import",
+        "singleImport": "Single Import"
+      },
+      "scheduledJobs": {
+        "pauseJob": "Pause the job",
+        "pauseSelected": "Pause Selected",
+        "resumeJob": "Resume the job",
+        "resumeSelected": "Resume Selected"
       }
     },
     "importers": "Importers",
