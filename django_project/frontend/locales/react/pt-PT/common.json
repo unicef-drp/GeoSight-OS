@@ -1,0 +1,1009 @@
+{
+  "(from)": "(de)",
+  "(to)": "(até)",
+  "3D view": "Visualização 3D",
+  "Aggregation": "Agregação",
+  "Apply Changes": "Aplicar alterações",
+  "Back to home": "Voltar para início",
+  "Back to Home": "Voltar para início",
+  "Compare layers": "Comparar camadas",
+  "Config": "Configuração",
+  "Context Layers": "Camadas de contexto",
+  "Context and indicator layer tabs visibility": "Visibilidade das abas de camadas de contexto e indicadores",
+  "Context layer data": "Dados da camada de contexto",
+  "Context layers": "Camadas de contexto",
+  "Context layers tab only": "Somente aba de camadas de contexto",
+  "Data download": "Download de dados",
+  "Date/time range": "Intervalo de data/hora",
+  "Delete": "Excluir",
+  "Embed tool": "Ferramenta de incorporação",
+  "Entity search box": "Caixa de pesquisa de entidade",
+  "Feature it": "Destacar",
+  "Featured": "Destacado",
+  "Filter": "Filtro",
+  "From ": "De ",
+  "Geographic unit": "Unidade geográfica",
+  "Group by": "Agrupar por",
+  "Homepage": "Página inicial",
+  "Indicator data": "Dados do indicador",
+  "Indicator layers tab only": "Somente aba de camadas de indicadores",
+  "Indicators": "Indicadores",
+  "Last known data": "Últimos dados conhecidos",
+  "Left panel toggle": "Alternar painel esquerdo",
+  "Level selector": "Seletor de nível",
+  "List": "Lista",
+  "Map": "Mapa",
+  "Map label toggle": "Alternar rótulo do mapa",
+  "Measurement": "Medição",
+  "No featured projects available": "Nenhum projeto destacado disponível",
+  "Permission": "Permissão",
+  "Read": "Leitura",
+  "Read Data": "Ler dados",
+  "Remove from featured": "Remover dos destaques",
+  "SDMX Indicators Layer Configurations": "Configurações de camada de indicadores SDMX",
+  "Share": "Compartilhar",
+  "Show both tabs": "Mostrar ambas as abas",
+  "Sort by": "Ordenar por",
+  "Sync with map": "Sincronizar com o mapa",
+  "Show map toolbar": "Mostrar barra de ferramentas do mapa",
+  "Spatial bookmark": "Marcador espacial",
+  "Widget": "Widget",
+  "Widget panel toggle": "Alternar painel de widgets",
+  "Write": "Escrita",
+  "Write Data": "Gravar dados",
+  "You haven't selected a view yet": "Você ainda não selecionou uma visualização",
+  "Zonal analysis": "Análise zonal",
+  "admin": {
+    "access": "ACESSO",
+    "accessRequest": "Solicitação de acesso",
+    "accessRequestList": {
+      "briefDescription": "Breve descrição da sua solicitação",
+      "confirmEmail": "Confirmar e-mail",
+      "confirmEmailAddress": "Confirme seu endereço de e-mail",
+      "createNewRequest": "Criar nova solicitação",
+      "emailInvalid": "E-mail inválido",
+      "name": "Nome",
+      "requestSubmitted": "Solicitação enviada",
+      "requesterEmail": "E-mail do solicitante",
+      "status": "Status",
+      "submittedDate": "Data de envio"
+    },
+    "actions": {
+      "changeShareConfig": "Alterar configuração de compartilhamento",
+      "goToMap": "Ir para o mapa",
+      "needReselectReferenceLayer": "É necessário resseletar a camada de referência",
+      "previewDashboard": "Pré-visualizar painel",
+      "preview": "Pré-visualizar",
+      "livePreview": "Pré-visualização ao vivo",
+      "previewTooltip": "Para pré-visualizar o projeto, salve as alterações primeiro e atualize a página de pré-visualização para ver as atualizações."
+    },
+    "add": {
+      "basemap": "Adicionar mapa base",
+      "contextLayer": "Adicionar camada de contexto",
+      "indicator": "Adicionar indicador",
+      "indicatorLayer": "Adicionar camada de indicador",
+      "relatedTable": "Adicionar tabela relacionada",
+      "widget": "Adicionar widget"
+    },
+    "basemaps": "Mapas base",
+    "cancel": "Cancelar",
+    "clearSelection": "Limpar seleção",
+    "columns": {
+      "category": "Categoria",
+      "createdAt": "Criado em",
+      "createdBy": "Criado por",
+      "description": "Descrição",
+      "modifiedAt": "Modificado em",
+      "modifiedBy": "Modificado por",
+      "shortcode": "Código curto"
+    },
+    "components": {
+      "view": "Visualização",
+      "defaultLevel": "Nível padrão",
+      "availableLevels": "Níveis disponíveis",
+      "selectDefaultAdminLevel": "Selecionar nível administrativo padrão",
+      "selectAvailableLevels": "Selecionar níveis administrativos disponíveis",
+      "pleaseSelectView": "Por favor, selecione uma visualização primeiro",
+      "dateTimeSetting": {
+        "dataDrivenDate": "Data orientada por dados",
+        "nowCurrentDatetime": "Agora (data/hora atual da execução)"
+      },
+      "indicatorSetting": {
+        "dataDrivenIndicatorColumn": "Coluna de indicador orientada por dados"
+      }
+    },
+    "complexColorValueDetected": "Valor de cor complexo detectado. Por favor, edite no modo de entrada raw.",
+    "config": "Configuração",
+    "confirm": "Confirmar",
+    "contextLayer": {
+      "relatedTable": {
+        "latitudeField": "Campo de latitude",
+        "longitudeField": "Campo de longitude"
+      },
+      "arcgis": {
+        "borderColor": "Cor da borda",
+        "borderWeight": "Espessura da borda",
+        "fillColor": "Cor de preenchimento",
+        "point": {
+          "icon": "Ícone",
+          "radius": "Raio",
+          "size": "Tamanho"
+        }
+      },
+      "vectorStyle": {
+        "loadingAttributes": "Carregando atributos...",
+        "stylesHeading": "Estilos"
+      }
+    },
+    "contextLayers": "Camadas de contexto",
+    "create": {
+      "basemap": "Criar novo mapa base",
+      "contextLayer": "Criar nova camada de contexto",
+      "indicator": "Criar novo indicador"
+    },
+    "createNew": "Criar novo {{pageName}}",
+    "dashboard": {
+      "contextLayer": {
+        "aggregateFieldHelp": "Substituir o campo de agregação pelo nome do campo.",
+        "applyChanges": "Aplicar alterações",
+        "contextLayer": "Camada de contexto",
+        "filterHelptext": "Filtrar os dados da camada de contexto.",
+        "overrideAggregateByField": "Substituir agregação de dados por nome de campo",
+        "overrideLayerDescription": "Substituir a descrição da camada",
+        "overrideLayerName": "Substituir o nome da camada",
+        "overrideQuery": "Substituir a consulta",
+        "styleFor": "Estilo para {{name}}"
+      },
+      "enableGeographyEntitySearchBox": "Habilitar caixa de pesquisa de entidade geográfica",
+      "filters": {
+        "allowModify": "Permitir que os utilizadores modifiquem filtros no painel",
+        "autoZoom": "Aproximar automaticamente para a área filtrada",
+        "hideFilterSection": "Ocultar seção de filtros"
+      },
+      "form": {
+        "general": {
+          "thumbnail": "Miniatura",
+          "view": "Visualização",
+          "defaultTimeMode": "Modo de tempo padrão",
+          "useLastKnownValue": "Usar o último valor conhecido para todos os indicadores (desativa o controle deslizante de tempo)",
+          "fitToCurrentIndicatorRange": "Ajustar ao intervalo do indicador atual",
+          "showLastKnownValueInRange": "Mostrar o último valor conhecido no intervalo",
+          "defaultInterval": "Intervalo padrão",
+          "extent": "Extensão",
+          "projectOverview": "Visão geral do projeto"
+        },
+        "tabs": {
+          "general": "Geral",
+          "basemaps": "Mapas base",
+          "contextLayers": "Camadas de contexto",
+          "indicators": "Indicadores",
+          "indicatorLayers": "Camadas de indicadores",
+          "filters": "Filtros",
+          "widgets": "Widgets",
+          "relatedTables": "Tabelas relacionadas",
+          "tools": "Ferramentas",
+          "share": "Compartilhar"
+        },
+        "indicatorLayers": {
+          "overrideAdminLevel": "Substituir nível administrativo",
+          "customizePopup": "Personalizar popup",
+          "createDynamicLayer": "Criar camada de indicador dinâmico",
+          "changeLayer": "Alterar camada {{name}}",
+          "styleFor": "Estilo para {{name}}",
+          "overrideStyleFromIndicator": "Substituir estilo do indicador"
+        },
+        "sdmx": {
+          "columnGeographCode": "Coluna com código geográfico",
+          "valueColumn": "Coluna de valor",
+          "dateTimeColumnField": "Coluna/Campo de data e hora",
+          "dateTimeFormat": "Formato de data e hora",
+          "dateTimeFormatHelp": "Especificar formato de entrada de data/hora (ex: AAAA-MM-DD ou AAAA-MM). Excel geralmente converte tempo para o formato timestamp."
+        },
+        "listForm": {
+          "select": "Selecionar {{pageName}}{{groupName}}",
+          "for": " para {{groupName}}",
+          "applySelections": "Aplicar {{count}} seleção(ões)",
+          "addGroup": "Adicionar grupo"
+        }
+      },
+      "saveAs": {
+        "changeIfSameAsOrigin": "Altere-o se for igual ao original.",
+        "create": "Criar",
+        "creating": "Criando...",
+        "saveAs": "Guardar como",
+        "title": "Guardar projeto como..."
+      },
+      "hideContextLayerTab": "Ocultar aba de camada de contexto",
+      "indicatorLayers": {
+        "addNewLayer": "Adicionar nova camada de indicador",
+        "dynamicIndicatorsLayer": "Camada de Indicadores Dinâmicos",
+        "dynamicIndicatorsLayerHelp": "Cria uma camada de indicadores dinâmica usando uma expressão personalizada e feedback do utilizador.",
+        "multiIndicatorsLayer": "Camada de Múltiplos Indicadores",
+        "multiIndicatorsLayerHelp": "Selecione 2 ou mais indicadores e converta-os em uma única camada de indicador.",
+        "relatedTableLayer": "Camada de Tabela Relacionada",
+        "relatedTableLayerDisabled": "Está desabilitado, selecione a camada de referência para habilitá-lo.",
+        "relatedTableLayerHelp": "Cria uma camada de indicador a partir de uma tabela relacionada.",
+        "sdmxIndicatorsLayer": "Camada de Indicadores SDMX",
+        "sdmxIndicatorsLayerHelp": "Cria uma camada de indicadores dinâmica usando o fluxo de dados SDMX.",
+        "singleIndicatorLayer": "Camada de Indicador Único",
+        "singleIndicatorLayerHelp": "Selecione múltiplos indicadores da lista e converta cada um em uma camada de indicador único."
+      },
+      "mappingIndicatorsUsing": "Mapeando indicadores usando",
+      "nameExample": "Exemplo: Painel de Risco do Afeganistão",
+      "relatedTable": {
+        "filterTheData": "Filtrar os dados",
+        "geographyCodeField": "Campo de código geográfico",
+        "relatedFields": "Campos relacionados",
+        "typeOfGeoCode": "Tipo de código geográfico"
+      },
+      "showSplashScreenOnFirstOpen": "Mostrar como tela inicial ao abrir o projeto pela primeira vez",
+      "transparencyOfContextLayers": "Transparência das camadas de contexto",
+      "transparencyOfIndicatorLayers": "Transparência das camadas de indicadores",
+      "truncateLongIndicatorLayerName": "Truncar nome longo da camada de indicadores",
+      "urlShortcode": "Código de URL curto",
+      "urlShortcodeDescription": "URL do projeto em formato slug. Automaticamente substitui espaços por \"-\" e converte para minúsculas.\nSera gerado a partir do nome se deixado vazio.",
+      "zonalAnalysis": {
+        "aggregation": "Agregação",
+        "clickToSelect": "Clique para selecionar",
+        "draw": "Desenhar",
+        "selectionMode": "Modo de seleção",
+        "sourceLayer": "Camada fonte",
+        "targetLayer": "Camada de destino (das camadas de contexto):",
+        "title": "Configuração de análise zonal"
+      }
+    },
+    "data": "DADOS",
+    "dataBrowser": "Navegador de dados",
+    "dataManagement": "Gestão de dados",
+    "dataset": {
+      "addToNewProject": "Adicionar a novo projeto",
+      "addToNewProjectTooltip": "Habilite selecionando dados que contêm apenas 1 país.",
+      "browseData": "Explorar dados",
+      "changeShareConfig": "Alterar configuração de compartilhamento.",
+      "country": "País",
+      "dataCount": "Contagem de dados",
+      "deleteWarning": "ATENÇÃO! Deseja excluir os dados selecionados? Isso será aplicado diretamente ao banco de dados.",
+      "endDate": "Data de fim",
+      "filterByLevels": "Filtrar por nível(is)",
+      "groupAllAdminLevels": "Agrupar todos os níveis administrativos",
+      "indicator": "Indicador",
+      "level": "Nível",
+      "startDate": "Data de início"
+    },
+    "delete": "Excluir",
+    "deleteConfirmation": "Confirmação de exclusão",
+    "deleteConfirmationMessage": "Tem certeza que deseja excluir {{item}}?",
+    "deleteMultipleConfirmationInputText": "Por favor, insira '{{numberOfItems}}' abaixo para habilitar o botão de confirmar.",
+    "deleteMultipleConfirmationMessage": "Tem certeza que deseja excluir {{numberOfItems}} {{dataName}}?",
+    "description": "Descrição",
+    "edit": "Editar",
+    "fetchingProjectData": "Obtendo dados do projeto...",
+    "field": "Campo",
+    "filter": "Filtro",
+    "help": "Ajuda",
+    "importer": {
+      "columns": {
+        "dataSaved": "Dados salvos",
+        "importType": "Tipo de importação",
+        "importTime": "Hora de importação",
+        "importedBy": "Importado por",
+        "inputFormat": "Formato de entrada",
+        "isActive": "Ativo",
+        "jobName": "Nome do trabalho",
+        "lastRun": "Última execução",
+        "lastRunResult": "Resultado da última execução",
+        "status": "Status",
+        "view": "Ver"
+      },
+      "fetchingData": "Obtendo dados...",
+      "filter": {
+        "modalTitle": "Alterar filtro dos dados."
+      },
+      "form": {
+        "importType": "Tipo de importação",
+        "inputFormat": "Formato de entrada"
+      },
+      "importData": "Importar dados",
+      "importerDetail": {
+        "endTime": "Hora de fim",
+        "logs": "Registros",
+        "run": "Executar",
+        "savedData": "Dados salvos",
+        "startTime": "Hora de início",
+        "status": "Status"
+      },
+      "importTypes": {
+        "indicatorValue": "Valor do indicador",
+        "relatedTables": "Tabelas relacionadas"
+      },
+      "inputFormats": {
+        "apiLongFormat": "API com geografia em formato longo",
+        "apiWideFormat": "API com geografia em formato largo",
+        "excelLongFormat": "Formato longo do Excel",
+        "excelWideFormat": "Formato largo do Excel",
+        "formulaBased": "Baseado em fórmulas de outros indicadores",
+        "relatedTableFormat": "Formato de tabela relacionada",
+        "sdmxFormat": "Formato SDMX",
+        "sharePointLongFormat": "Formato longo do SharePoint",
+        "sharePointWideFormat": "Formato largo do SharePoint",
+        "vectorContextLayerFormat": "Formato de camada de contexto vetorial"
+      },
+      "logDetail": {
+        "active": "Ativo",
+        "adminLevel": "Nível administrativo",
+        "dateTimeColumnField": "Coluna/campo de data e hora",
+        "dateTimeFormat": "Formato de data e hora",
+        "dateTimeOfData": "Data e hora dos dados",
+        "dateTimeSetting": "Configuração de data e hora",
+        "dataDrivenIndicatorColumn": "Coluna de indicador guiada por dados",
+        "editAndRerun": "Editar e reexecutar",
+        "endAt": "Fim em",
+        "error": "Erro",
+        "importType": "Tipo de importação",
+        "indicator": "Indicador",
+        "indicatorColumn": "Coluna de indicador",
+        "indicatorNames": "Nomes dos indicadores",
+        "inputFormat": "Formato de entrada",
+        "isActive": "Ativo",
+        "jobName": "Nome do trabalho",
+        "note": "Nota",
+        "paused": "Pausado",
+        "referenceLayer": "Camada de referência",
+        "savedData": "Dados salvos",
+        "schedule": "Agendamento",
+        "scheduleType": "Tipo de agendamento",
+        "seeData": "Ver os dados",
+        "selectedDate": "Data selecionada",
+        "selectedIndicator": "Indicador selecionado",
+        "selectedIndicators": "Indicadores selecionados",
+        "startAt": "Início em",
+        "typeOfGeoCode": "Tipo de código geográfico"
+      },
+      "logs": {
+        "browseData": "Explorar dados"
+      },
+      "scheduleTypes": {
+        "scheduledImport": "Importação agendada",
+        "singleImport": "Importação única"
+      },
+      "scheduledInput": {
+        "addNewAlert": "Adicionar novo alerta",
+        "jobSchedule": "Agendamento do trabalho",
+        "onFailure": "Na falha",
+        "onStart": "No início",
+        "onSuccess": "No sucesso",
+        "runOnCreate": "Executar pela primeira vez após criar/editar o trabalho."
+      },
+      "scheduledJobs": {
+        "pauseJob": "Pausar o trabalho",
+        "pauseSelected": "Pausar selecionados",
+        "resumeJob": "Retomar o trabalho",
+        "resumeSelected": "Retomar selecionados"
+      },
+      "tabs": {
+        "aggregations": "Agregações",
+        "attributes": "Atributos",
+        "general": "Geral",
+        "refLayerTime": "Camada de referência e tempo",
+        "schedule": "Agendamento"
+      },
+      "geoCodeColumn": "Coluna de código geográfico",
+      "valueColumn": "Coluna de valor",
+      "columnGeographCode": "Coluna de código geográfico",
+      "handlingMultipleValues": "Tratamento de múltiplos valores",
+      "lastValue": "Último valor",
+      "aggregate": "Agregar",
+      "aggregateAdminLevel": "Agregar nível administrativo",
+      "dontAggregate": "Não agregar",
+      "aggregateUpToLevel": "Agregar até o nível",
+      "aggregateNLevelUp": "Agregar n níveis acima",
+      "useDefaultAggregation": "Usar a agregação padrão do indicador",
+      "useCustomAggregations": "Usar agregações personalizadas",
+      "numbers": "Números",
+      "categories": "Categorias"
+    },
+    "importers": "Importadores",
+    "indicator": {
+      "inputFile": {
+        "areaCode": "Código de área",
+        "chooseSpreadsheet": "Escolha uma planilha para preencher automaticamente...",
+        "modalTitle": "Usar Excel para preencher todos os campos",
+        "step1": "1. Crie uma planilha com pelo menos 2 colunas.",
+        "step1Help": "Você pode adicionar colunas extras opcionais para valores adicionais.",
+        "step2": "2. Selecione a planilha.",
+        "step3": "3. Escolha a planilha.",
+        "step4": "4. Escolha a coluna de código de área.",
+        "step5": "5. Escolha a coluna de valor.",
+        "step6": "6. Escolha as colunas extras."
+      }
+    },
+    "indicatorLayers": {
+      "multiIndicator": {
+        "chartType": "Tipo de gráfico",
+        "createTitle": "Criar camada de múltiplos indicadores",
+        "editTitle": "Alterar camada {{name}}",
+        "max": "Máx:",
+        "min": "Mín:",
+        "mode": "Modo",
+        "size": "Tamanho",
+        "symbolSize": "Tamanho do símbolo"
+      },
+      "popupConfig": {
+        "exampleContextDescription": "Exemplo de contexto. Selecione o nível administrativo e a geometria para buscar o contexto real."
+      },
+      "relatedTable": {
+        "columns": {
+          "date": "Data",
+          "ucode": "Ucode",
+          "value": "Valor"
+        },
+        "dataSlicers": "Fatias de dados",
+        "enableRelatedRecordsPopup": "Habilitar popup para registros relacionados",
+        "relatedFieldAsGeoCode": "Campo relacionado como código de geometria",
+        "relatedFieldHelp": "Campo relacionado como código de geografia. Altere na seção de tabelas relacionadas.",
+        "relatedTable": "Tabela relacionada",
+        "setupTitle": "Configurar camada de tabela relacionada",
+        "styleNotConfigured": "O estilo não está configurado."
+      }
+    },
+    "indicators": "Indicadores",
+    "labelStyle": {
+      "fontColor": "Cor da fonte",
+      "fontFamily": "Família da fonte",
+      "fontSize": "Tamanho da fonte",
+      "fontWeight": "Peso da fonte",
+      "haloColor": "Cor do halo",
+      "haloWeight": "Espessura do halo",
+      "preview": "Pré-visualização",
+      "visibleZoom": "Zoom visível"
+    },
+    "language": "Idioma",
+    "loading": "Carregando",
+    "logData": {
+      "dataset": "Conjunto de dados",
+      "filterByGeoCodes": "Filtrar por código(s) geográfico(s)",
+      "filterByStatus": "Filtrar por status",
+      "filterFrom": "Filtrar de",
+      "filterTo": "Filtrar até",
+      "geoCode": "Código geográfico",
+      "inReview": "Em revisão, não salvo no banco de dados",
+      "savedToDatabase": "Salvo no banco de dados",
+      "time": "Hora",
+      "value": "Valor"
+    },
+    "multiSelector": {
+      "filterData": "Filtrar dados"
+    },
+    "name": "Nome",
+    "noDataTable": "Nenhum dado disponível.",
+    "numberOfItemsSelected": "{{numberOfItems}} itens nesta lista estão selecionados.",
+    "oneItemSelected": "1 item nesta lista está selecionado.",
+    "pageNameFormats": {
+      "names": {
+        "Basemaps": "Nome do mapa base",
+        "Group": "Nome do grupo",
+        "Groups": "Nome do grupo",
+        "Indicator Layers": "Nome do indicador",
+        "User": "Nome do utilizador",
+        "Users": "Nome do utilizador",
+        "accessRequest": "Nome da solicitação de acesso",
+        "accessRequestPermissionDetail": "Nome do detalhe de permissão da solicitação",
+        "accessRequestUserDetail": "Nome do detalhe do novo utilizador da solicitação",
+        "basemaps": "Nome do mapa base",
+        "contextLayer": "Nome da camada de contexto",
+        "dashboard": "Nome do projeto",
+        "dataManagement": "Nome de gestão de dados",
+        "dataset": "Nome do navegador de dados",
+        "importer": "Nome do importador de dados",
+        "indicators": "Nome do indicador",
+        "logs": "Nome do log",
+        "newUsers": "Nome do novo utilizador",
+        "permissionRequests": "Nome da solicitação de permissão",
+        "referenceDatasetImporter": "Nome do importador de conjunto de dados de referência",
+        "referenceLayerView": "Nome do conjunto de dados de referência",
+        "relatedTables": "Nome da tabela relacionada",
+        "relatedTablesData": "Nome dos dados da tabela relacionada",
+        "scheduledJobs": "Nome do trabalho agendado",
+        "styles": "Nome do estilo",
+        "userProfile": "Nome do perfil do utilizador",
+        "usersAndGroups": "Nome do utilizador e do grupo"
+      },
+      "plural": {
+        "Group": "Grupos",
+        "Groups": "Grupos",
+        "User": "Utilizadores",
+        "Users": "Utilizadores",
+        "accessRequest": "Solicitações de acesso",
+        "accessRequestPermissionDetail": "Detalhes de permissão da solicitação",
+        "accessRequestUserDetail": "Detalhes do novo utilizador da solicitação",
+        "basemap": "Mapas base",
+        "basemaps": "Mapas base",
+        "contextLayer": "Camadas de contexto",
+        "dashboard": "Projetos",
+        "dataManagement": "Gestão de dados",
+        "dataset": "Navegadores de dados",
+        "importer": "Importadores de dados",
+        "indicator": "Indicadores",
+        "indicators": "Indicadores",
+        "logs": "Logs",
+        "newUsers": "Novos utilizadores",
+        "permissionRequests": "Solicitações de permissão",
+        "referenceDatasetImporter": "Importadores de conjunto de dados de referência",
+        "referenceLayerView": "Conjuntos de dados de referência",
+        "relatedTable": "Tabelas relacionadas",
+        "relatedTables": "Tabelas relacionadas",
+        "relatedTablesData": "Dados das tabelas relacionadas",
+        "scheduledJobs": "Trabalhos agendados",
+        "style": "Estilos",
+        "styles": "Estilos",
+        "userProfile": "Perfis de utilizador",
+        "usersAndGroups": "Utilizadores e grupos"
+      },
+      "singular": {
+        "Group": "Grupo",
+        "Groups": "Grupo",
+        "User": "Utilizador",
+        "Users": "Utilizador",
+        "accessRequest": "Solicitação de acesso",
+        "accessRequestPermissionDetail": "Detalhe de permissão da solicitação",
+        "accessRequestUserDetail": "Detalhe do novo utilizador da solicitação",
+        "basemap": "Mapa base",
+        "basemaps": "Mapa base",
+        "contextLayer": "Camada de contexto",
+        "dashboard": "Projeto",
+        "dataManagement": "Gestão de dados",
+        "dataset": "Navegador de dados",
+        "importer": "Importador de dados",
+        "indicator": "Indicador",
+        "indicators": "Indicador",
+        "logs": "Log",
+        "newUsers": "Novo utilizador",
+        "permissionRequests": "Solicitação de permissão",
+        "referenceDatasetImporter": "Importador de conjunto de dados de referência",
+        "referenceLayerView": "Conjunto de dados de referência",
+        "relatedTable": "Tabela relacionada",
+        "relatedTables": "Tabela relacionada",
+        "relatedTablesData": "Dados da tabela relacionada",
+        "scheduledJobs": "Trabalho agendado",
+        "style": "Estilo",
+        "styles": "Estilo",
+        "userProfile": "Perfil do utilizador",
+        "usersAndGroups": "Utilizador e grupo"
+      }
+    },
+    "permission": {
+      "add": "Adicionar {{label}}s",
+      "changePermission": "Alterar permissão",
+      "deleteConfirmationMessage": "Deseja excluir os {{label}}s selecionados?",
+      "groupAccess": "Acesso do grupo",
+      "groupName": "Nome do grupo",
+      "listOf": "Lista de {{label}}",
+      "publicAccess": "Acesso público",
+      "removeConfirmationMessage": "Deseja remover este {{label}}?",
+      "search": "Pesquisar {{label}}",
+      "shareModal": "Compartilhar '{{name}}'",
+      "updatePermission": "Atualizar permissão",
+      "userAccess": "Acesso do utilizador"
+    },
+    "profile": "Perfil",
+    "project": "Projeto",
+    "excelInput": {
+      "excelFile": "Ficheiro Excel",
+      "rowNumberOfHeader": "Número da linha do cabeçalho",
+      "sheetName": "Nome da planilha"
+    },
+    "indicatorMapping": {
+      "addNewMapping": "Adicionar novo mapeamento",
+      "columnFromExcel": "Coluna do Excel"
+    },
+    "referenceDataset": {
+      "importedBy": "Importado por",
+      "general": "Geral",
+      "level": "Nível",
+      "levelName": "Nome do nível",
+      "addNewLevel": "Adicionar novo nível",
+      "submit": "Enviar"
+    },
+    "referenceLayerInput": {
+      "anyLevel": "Qualquer nível (orientado por dados)",
+      "codeTypeHelp": "O tipo de código usado nos dados.",
+      "selectAdminLevel": "Selecionar nível administrativo",
+      "selectCodeType": "Selecionar tipo de código",
+      "specificLevel": "Nível específico",
+      "template": "Modelo"
+    },
+    "referenceDatasets": "CONJUNTOS DE DADOS DE REFERÊNCIA",
+    "referenceDatasetsLower": "Conjuntos de dados de referência",
+    "relatedTables": "Tabelas relacionadas",
+    "requestApproved": "Solicitação aprovada",
+    "requestRejected": "Solicitação rejeitada",
+    "searchPlaceholder": "Pesquisar {{pageName}}",
+    "save": "Guardar",
+    "select": "Selecionar...",
+    "styleConfig": {
+      "overrideStyle": "Substituir estilo padrão"
+    },
+    "showSelected": "Mostrar selecionados",
+    "style": {
+      "changeStyle": "Alterar estilo",
+      "dynamic": {
+        "applyWhenFiltering": "Aplicar ao filtrar",
+        "outline": "Contorno",
+        "syncFillOutlineColor": "Sincronizar cor de preenchimento e contorno"
+      },
+      "rules": {
+        "addNewRule": "Adicionar nova regra",
+        "assignAllOutlineColor": "Atribuir cor de contorno a todos",
+        "assignAllWidth": "Atribuir largura a todos",
+        "assignColors": "Atribuir cores",
+        "colorHeader": "Cor",
+        "fillColorHelp": "Usado para preencher a geometria. Coloque a cor hex com # (ex: #ffffff).",
+        "nameHeader": "Nome",
+        "noOptionsCreateNew": "Sem opções, escreva para criar uma nova opção.",
+        "outlineColorHeader": "Cor do contorno",
+        "outlineColorHelp": "Usado para colorir o contorno da geometria. Coloque a cor hex com # (ex: #ffffff).",
+        "outlineWidthHeader": "Largura do contorno",
+        "outlineWidthHelp": "Alterar a largura do contorno (em px)",
+        "ruleHeader": "Regra"
+      },
+      "selectStyle": "Selecionar estilo",
+      "style": "Estilo",
+      "styleType": "Tipo de estilo"
+    },
+    "styles": "Estilos",
+    "table": {
+      "noResultsFound": "Nenhum resultado encontrado"
+    },
+    "tableError": "Ops! Algo deu errado ao carregar os dados.",
+    "user": "UTILIZADOR",
+    "userAndGroup": {
+      "apiKey": {
+        "active": "Ativo",
+        "copiedToClipboard": "Chave API copiada para a área de transferência",
+        "createError": "Erro ao criar a chave API",
+        "createdAt": "Criada em",
+        "createdSuccess": "Chave API criada com sucesso",
+        "deleteApiKey": "Excluir chave API",
+        "deleteConfirmBody": "Deseja excluir esta chave API?",
+        "deleteConfirmHeader": "Excluir chave API",
+        "deleteError": "Erro ao excluir a chave API",
+        "deletedSuccess": "Chave API excluída com sucesso",
+        "expiry": "Expiração",
+        "forgotKeyWarning": "Se você esqueceu sua chave API anterior, precisará gerar uma nova.",
+        "generateApiKey": "Gerar chave API",
+        "generateConfirmBody": "Deseja gerar uma nova chave API? Isso invalidará a chave anterior.",
+        "generateConfirmHeader": "Gerar chave API",
+        "inactive": "Inativo",
+        "inactiveWarning": "Esta conta está inativa. Entre em contato com o administrador.",
+        "personalWarning": "Esta chave API é pessoal. Não a compartilhe com ninguém.",
+        "platform": "Plataforma",
+        "status": "Status"
+      },
+      "batchUserForm": {
+        "csvFile": "Ficheiro CSV",
+        "csvHelp": "Você pode obter o ficheiro csv em",
+        "goBackToForm": "Voltar ao formulário",
+        "here": "aqui",
+        "reloadData": "Recarregar dados",
+        "title": "Atualizar utilizador para {{name}} em lote usando ficheiro csv.",
+        "update": "Atualizar",
+        "updated": "Atualizado",
+        "updating": "Atualizando..."
+      },
+      "changePassword": {
+        "allFieldsRequired": "Todos os campos são obrigatórios.",
+        "failedToChange": "Falha ao alterar a senha.",
+        "newPassword": "Nova senha",
+        "oldPassword": "Senha antiga",
+        "passwordsDoNotMatch": "As novas senhas não coincidem.",
+        "repeatNewPassword": "Repetir nova senha",
+        "title": "Alterar senha"
+      },
+      "group": {
+        "members": "Membros"
+      },
+      "user": {
+        "backendAdmin": "Administrador backend (Django Staff)",
+        "receiveEmailNotification": "Receber e-mail para notificações de administrador."
+      }
+    },
+    "usersAndGroups": "Utilizadores e grupos",
+    "viewAllDashboards": "Ver todos os painéis",
+    "visualization": "VISUALIZAÇÃO",
+    "saving": "A guardar...",
+    "sortableTree": {
+      "addToGroup": "Adicionar ao grupo",
+      "removeGroup": "Remover grupo"
+    }
+  },
+  "category": "Categoria",
+  "components": {
+    "copyToClipboard": {
+      "copied": "Copiado"
+    },
+    "filter": {
+      "applyFilters": "Aplicar filtros",
+      "deleteFilter": {
+        "title": "Excluir filtro"
+      },
+      "editor": {
+        "allowModify": "Permitir que os utilizadores modifiquem os parâmetros do filtro (valores)",
+        "createFilter": "Criar filtro",
+        "createRule": "Criar regra",
+        "creatingNewFilter": "Criar novo filtro",
+        "descriptionLabel": "Descrição",
+        "filterDescriptionPlaceholder": "Descrição do filtro",
+        "filterNameLabel": "Nome do filtro*",
+        "filterNamePlaceholder": "Nome do filtro",
+        "updateFilter": "Atualizar filtro",
+        "updatingNewFilter": "Atualizando filtro"
+      },
+      "group": {
+        "addNewFilter": "Adicionar novo filtro",
+        "addNewGroup": "Adicionar novo grupo",
+        "deleteGroupConfirm": "Tem certeza que deseja excluir este grupo?"
+      }
+    },
+    "imageInput": {
+      "browseFile": "Procurar ficheiro"
+    },
+    "selectWithSearch": {
+      "allSelected": "Todos selecionados",
+      "blank": "Em branco",
+      "nSelected": "{{count}} selecionados",
+      "selectAll": "Selecionar todos",
+      "selectOneOption": "Selecionar 1 opção"
+    },
+    "whereInput": {
+      "last": "Último",
+      "next": "Próximo",
+      "pickATime": "Selecionar um horário",
+      "pickAnOperation": "Selecionar uma operação",
+      "pickTheField": "Selecionar o atributo",
+      "putTheValue": "Inserir o valor"
+    },
+    "whereInputModal": {
+      "apply": "Aplicar",
+      "defaultLabel": "Alterar filtro dos dados.",
+      "sqlFilterPlaceholder": "Filtro SQL"
+    },
+    "whereQueryGenerator": {
+      "noFilter": "Sem filtro"
+    },
+    "widget": {
+      "form": {
+        "changeTitle": "Alterar {{name}}",
+        "newTitle": "Novo widget de {{title}}",
+        "summary": "Resumo",
+        "timeSeries": "Série temporal",
+        "widgetDescription": "Descrição do widget",
+        "widgetName": "Nome do widget"
+      },
+      "generic": {
+        "description": "Um widget genérico.",
+        "title": "Widget genérico"
+      },
+      "selection": {
+        "addNewWidget": "Adicionar novo widget",
+        "generic": "Genérico",
+        "timeSeries": "Série temporal"
+      },
+      "summaryEditor": {
+        "apply": "Aplicar",
+        "changeTitle": "Alterar {{name}}",
+        "datetime": "Data e hora",
+        "layerType": "Tipo de camada",
+        "maxDateHelp": "Deixe a data máxima vazia para filtrar os dados até `hoje`.",
+        "newTitle": "Novo {{title}}",
+        "noFilter": "Sem filtro (serão usados os últimos valores globais).",
+        "operation": "Operação",
+        "sourceLayer": "Camada fonte",
+        "sourceValue": "Valor fonte",
+        "unit": "Unidade",
+        "useCustomFilter": "Usar filtro de data e hora personalizado.",
+        "useGlobalFilter": "Usar filtro de data e hora do nível do painel.",
+        "widgetDescription": "Descrição do widget",
+        "widgetName": "Nome do widget"
+      }
+    },
+    "zonalAnalysisTool": {
+      "add": "Adicionar",
+      "aggregation": "Agregação",
+      "buffer": "Buffer:",
+      "bufferTooltip": "As geometrias serão simplificadas antes de aplicar o buffer",
+      "cancel": "Cancelar",
+      "clear": "Limpar",
+      "clickFeature": "Clique em uma feição no mapa",
+      "clickToSelect": "Clique para selecionar",
+      "contextLayerNotSetup": "A camada de contexto não está configurada",
+      "draw": "Desenhar",
+      "drawInstructions": "Desenhe no mapa e finalize com duplo clique.",
+      "field": "Campo",
+      "loading": "Carregando",
+      "runAnalysis": "Executar análise",
+      "selectionMode": "Modo de seleção:",
+      "sourceLayer": "Camada fonte",
+      "value": "Valor"
+    },
+    "compositeIndexLayer": {
+      "activate": "Ativar camada de índice composto",
+      "deactivate": "Desativar camada de índice composto"
+    },
+    "navbar": {
+      "editProject": "Editar projeto"
+    }
+  },
+  "dashboardPage": {
+    "adminPanelButton": "Painel de administração",
+    "contextLayerErrorDelete": "Parece que esta camada já foi excluída",
+    "contextLayerErrorPermission": "Você não tem permissão para acessar este recurso",
+    "contextLayerSearch": "Pesquisar camadas de contexto",
+    "contextLayers": "Camadas de contexto",
+    "filterNote": "Não há filtros para este grupo.",
+    "filters": "Filtros",
+    "getEmbedCode": "Obter código de incorporação",
+    "globalDateSelector": {
+      "activeWindowEnd": "Fim da janela ativa",
+      "activeWindowStart": "Início da janela ativa",
+      "fitToCurrentIndicatorRange": "Ajustar ao intervalo do indicador atual",
+      "rangeEnd": "Fim do intervalo",
+      "rangeStart": "Início do intervalo",
+      "showLastKnownValueInRange": "Mostrar o último valor conhecido no intervalo"
+    },
+    "playControl": {
+      "start": "Início",
+      "previous": "Anterior",
+      "play": "Reproduzir",
+      "stop": "Parar",
+      "next": "Próximo",
+      "end": "Final"
+    },
+    "compareLayer": {
+      "turnOn": "Ativar comparar camadas",
+      "turnOff": "Desativar comparar camadas"
+    },
+    "indicatorLayerErrorPermission": "Você não tem permissão para acessar este recurso",
+    "indicatorLayerNotFound": "Nenhum indicador encontrado para esta camada. Por favor, peça ao administrador para corrigir isso.",
+    "indicatorSearch": "Pesquisar indicadores",
+    "indicators": "Indicadores",
+    "layerInfo": {
+      "description": "Descrição:",
+      "lastUpdate": "Última atualização:",
+      "source": "Fonte:",
+      "unit": "Unidade:"
+    },
+    "layers": "Camadas",
+    "loadingDashboardData": "Carregando dados do painel...",
+    "projectOverview": "Visão geral do projeto",
+    "projectOverviewClose": "Fechar",
+    "projectOverviewNoInfo": "Não há informações para este projeto.",
+    "projectOverviewNoShow": "Não mostrar novamente!",
+    "relatedTableNotConfigured": "A tabela relacionada não está configurada corretamente",
+    "searchGeographyEntity": "Pesquisar entidade geográfica",
+    "searchGeographyEntityLoading": "Carregando...",
+    "toolbars": {
+      "bookmark": {
+        "bookmarkName": "Nome do marcador",
+        "loading": "Carregando",
+        "saveAs": "Guardar como...",
+        "saveBookmark": "Guardar marcador {{name}}",
+        "saveBookmarkAs": "Guardar marcador como",
+        "saveCurrentBookmark": "Guardar seleção e extensão atuais em {{name}}.",
+        "saveCurrentBookmarkAs": "Guardar seleção e extensão atuais como novo marcador.",
+        "submit": "Enviar",
+        "title": "Marcador"
+      },
+      "dataDownloader": {
+        "adminLevel": "Nível administrativo",
+        "download": "Baixar",
+        "downloading": "Baixando",
+        "excludeEmptyValue": "Excluir registros sem valores de indicador",
+        "format": "Formato",
+        "geographicalExtent": "Extensão geográfica",
+        "indicator": "Indicador",
+        "preparingData": "Preparando dados",
+        "timeFilter": "Filtro de tempo",
+        "title": "Baixar dados"
+      },
+      "fullScreen": {
+        "enter": "Tela cheia",
+        "exit": "Sair da tela cheia"
+      },
+      "globalDateSelector": {
+        "showGlobalTimeConfiguration": "Mostrar configuração de tempo global"
+      },
+      "labelToggler": {
+        "hideMapLabels": "Ocultar rótulos do mapa",
+        "showMapLabels": "Mostrar rótulos do mapa"
+      },
+      "embed": {
+        "copyEmbedCode": "Copiar código de incorporação",
+        "createSnippet": "Criar snippet de incorporação para este mapa.",
+        "filterTab": "Aba de filtros",
+        "generate": "Gerar",
+        "layerTab": "Aba de camadas",
+        "map": "Mapa",
+        "widgetTab": "Aba de widgets"
+      },
+      "mapMode": {
+        "threeDLayer": "Camada 3D",
+        "turnOffSideBySideView": "Desativar visualização lado a lado",
+        "turnOffSyncMovement": "Desativar movimento sincronizado",
+        "turnOnSideBySideView": "Ativar visualização lado a lado",
+        "turnOnSyncMovement": "Ativar movimento sincronizado"
+      },
+      "measurement": {
+        "addNewMeasurement": "Adicionar nova medição",
+        "cancel": "Cancelar",
+        "clear": "Limpar",
+        "deleteSelected": "Excluir selecionado",
+        "drawInstructions": "Desenhe no mapa e finalize com duplo clique.",
+        "measureDistancesAreas": "Medir distâncias e áreas",
+        "meters": "Metros",
+        "miles": "Milhas",
+        "sqMeters": "Metros quadrados",
+        "startMeasurement": "Iniciar medição"
+      },
+      "referenceLayers": {
+        "title": "Seleção de camada de referência"
+      },
+      "sdmx": {
+        "createLayer": "Criar camada SDMX"
+      },
+      "tilt": {
+        "tooltip": "Redefinir inclinação. Segure Ctrl esquerdo e clique com o botão esquerdo do mouse no mapa e mova o cursor para cima/baixo para alterar a inclinação"
+      },
+      "togglePanel": {
+        "title": "Alternar painel"
+      },
+      "zonalAnalysis": {
+        "title": "Análise zonal"
+      }
+    }
+  },
+  "featured": "Destaque",
+  "featured projects": "Projetos em destaque",
+  "loggedAs": "Conectado como",
+  "logout": "Sair",
+  "mapboxStyleInformation": "Informações de estilo do Mapbox.",
+  "aggregation": "Agregação",
+  "description": "Descrição",
+  "edit": "Editar",
+  "loading": "Carregando",
+  "name": "Nome",
+  "source": "Fonte",
+  "native": {
+    "flag": "🇵🇹",
+    "name": "Português (Portugal)"
+  },
+  "navbar": {
+    "apiDocumentation": "Documentação da API",
+    "authorizedToGeoRepo": "Autorizado ao GeoRepo.",
+    "djangoAdmin": "Admin do Django"
+  },
+  "seeMapboxDocumentationForMoreDetail": "Veja a documentação do Mapbox para mais detalhes.",
+  "thereAreSomeInformationToControlTheLegend": "Há algumas informações para controlar a legenda.",
+  "Users": "Utilizadores",
+  "Groups": "Grupos",
+  "Username": "Nome de utilizador",
+  "Email address": "Endereço de e-mail",
+  "First name": "Nome",
+  "Last name": "Sobrenome",
+  "Role": "Função",
+  "Is django staff": "É staff do Django",
+  "Receive notification": "Receber notificação",
+  "Email": "E-mail",
+  "Decimal places": "Casas decimais",
+  "Auto units": "Unidades automáticas",
+  "None": "Nenhum",
+  "Group By": "Agrupar por",
+  "Series": "Séries",
+  "Apply": "Aplicar",
+  "Geographical units": "Unidades geográficas",
+  "Date/Time": "Data/Hora",
+  "Predefined list": "Lista predefinida",
+  "Sync with the current map": "Sincronizar com o mapa atual",
+  "Predefined start/end date": "Data de início/fim predefinida",
+  "Sync with dashboard": "Sincronizar com o painel",
+  "SDMX layer": "Camada SDMX"
+}

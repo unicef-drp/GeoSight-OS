@@ -89,7 +89,8 @@ SOUTH_TESTS_MIGRATE = False
 LANGUAGES = (
     ('en-us', _('English')),
     ('es-es', _('Spanish')),
-    ('pt-br', _('Portuguese')),
+    ('pt-br', _('Portuguese (Brazil)')),
+    ('pt-pt', _('Portuguese (Portugal)')),
     ('fr-fr', _('French')),
 )
 

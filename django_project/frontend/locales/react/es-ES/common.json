@@ -780,7 +780,10 @@
         "filterName": "Nombre del filtro",
         "filterNamePlaceholder": "Nombre del filtro",
         "updateFilter": "Actualizar filtro",
-        "updatingNewFilter": "Actualizar filtro"
+        "updatingNewFilter": "Actualizar filtro",
+        "descriptionLabel": "Descripción",
+        "filterDescriptionPlaceholder": "Descripción del filtro",
+        "filterNameLabel": "Nombre del filtro"
       },
       "group": {
         "addNewFilter": "Agregar nuevo filtro",

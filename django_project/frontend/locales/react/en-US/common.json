@@ -1010,5 +1010,7 @@
     "djangoAdmin": "Django admin"
   },
   "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
-  "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend."
+  "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
+  "Sync with dashboard": "Sync with dashboard",
+  "SDMX layer": "SDMX layer"
 }
