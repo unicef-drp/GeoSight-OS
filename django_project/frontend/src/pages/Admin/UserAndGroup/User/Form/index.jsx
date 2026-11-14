@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import $ from "jquery";
 import { Checkbox, FormControlLabel, IconButton } from "@mui/material";
 
@@ -49,6 +50,7 @@ import "./style.scss";
  * Indicator Form App
  */
 export default function UserForm() {
+  const { t } = useTranslation();
   const useAzureLogin = useAzureAuth;
   const formRef = useRef(null);
   const { success } = urlParams();
@@ -136,7 +138,7 @@ export default function UserForm() {
                 onChange={(evt) => {
                   setIsStaff((val) => !val);
                 }}
-                label={"Backend admin (Django Staff)"}
+                label={t('admin.userAndGroup.user.backendAdmin')}
               />
               <div className="form-helptext">
                 Designates whether the user can access the backend (Django)
@@ -151,7 +153,7 @@ export default function UserForm() {
                 onChange={(evt) => {
                   setReceiveNotification((val) => !val);
                 }}
-                label={"Receive email for admin notification."}
+                label={t('admin.userAndGroup.user.receiveEmailNotification')}
               />
               <div className="form-helptext">
                 Designates whether the user receive notification.

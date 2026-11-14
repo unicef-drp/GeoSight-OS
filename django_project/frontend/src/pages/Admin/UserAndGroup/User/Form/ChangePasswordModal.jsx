@@ -14,6 +14,7 @@
  */
 
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Modal, {
   ModalContent,
   ModalFooter,
@@ -24,6 +25,7 @@ import { PasswordInput } from "../../../../../components/Input/PasswordInput";
 import { DjangoRequests } from "../../../../../Requests";
 
 export default function ChangePasswordModal({ open, onClosed }) {
+  const { t } = useTranslation();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -44,11 +46,11 @@ export default function ChangePasswordModal({ open, onClosed }) {
 
   const handleSubmit = async () => {
     if (!oldPassword || !newPassword || !repeatPassword) {
-      setError("All fields are required.");
+      setError(t('admin.userAndGroup.changePassword.allFieldsRequired'));
       return;
     }
     if (newPassword !== repeatPassword) {
-      setError("New passwords do not match.");
+      setError(t('admin.userAndGroup.changePassword.passwordsDoNotMatch'));
       return;
     }
     setError("");
@@ -61,7 +63,7 @@ export default function ChangePasswordModal({ open, onClosed }) {
       reset();
       onClosed(true);
     } catch (err) {
-      setError(err?.response?.data?.detail || "Failed to change password.");
+      setError(err?.response?.data?.detail || t('admin.userAndGroup.changePassword.failedToChange'));
     } finally {
       setSubmitting(false);
     }
@@ -69,11 +71,11 @@ export default function ChangePasswordModal({ open, onClosed }) {
 
   return (
     <Modal open={open} onClosed={handleClose} className="ChangePasswordModal">
-      <ModalHeader onClosed={handleClose}>Change Password</ModalHeader>
+      <ModalHeader onClosed={handleClose}>{t('admin.userAndGroup.changePassword.title')}</ModalHeader>
       <ModalContent>
         <div className="BasicForm">
           <div className="BasicFormSection">
-            <label>Old Password</label>
+            <label>{t('admin.userAndGroup.changePassword.oldPassword')}</label>
             <PasswordInput
               fullWidth
               value={oldPassword}
@@ -81,7 +83,7 @@ export default function ChangePasswordModal({ open, onClosed }) {
             />
           </div>
           <div className="BasicFormSection">
-            <label>New Password</label>
+            <label>{t('admin.userAndGroup.changePassword.newPassword')}</label>
             <PasswordInput
               fullWidth
               value={newPassword}
@@ -89,7 +91,7 @@ export default function ChangePasswordModal({ open, onClosed }) {
             />
           </div>
           <div className="BasicFormSection">
-            <label>Repeat New Password</label>
+            <label>{t('admin.userAndGroup.changePassword.repeatNewPassword')}</label>
             <PasswordInput
               fullWidth
               value={repeatPassword}
@@ -102,7 +104,7 @@ export default function ChangePasswordModal({ open, onClosed }) {
       <ModalFooter>
         <SaveButton
           variant="primary"
-          text="Change Password"
+          text={t('admin.userAndGroup.changePassword.title')}
           disabled={submitting}
           onClick={handleSubmit}
         />

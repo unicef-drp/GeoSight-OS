@@ -158,6 +158,14 @@
         "inputFormat": "Formato de entrada"
       },
       "importData": "Importar datos",
+      "importerDetail": {
+        "endTime": "Hora de fin",
+        "logs": "Registros",
+        "run": "Ejecutar",
+        "savedData": "Datos guardados",
+        "startTime": "Hora de inicio",
+        "status": "Estado"
+      },
       "importTypes": {
         "indicatorValue": "Valor del indicador",
         "relatedTables": "Tablas relacionadas"
@@ -173,6 +181,37 @@
         "sharePointLongFormat": "Formato largo de SharePoint",
         "sharePointWideFormat": "Formato ancho de SharePoint",
         "vectorContextLayerFormat": "Formato de capa de contexto vectorial"
+      },
+      "logDetail": {
+        "active": "Activo",
+        "adminLevel": "Nivel administrativo",
+        "dateTimeColumnField": "Columna/campo de fecha y hora",
+        "dateTimeFormat": "Formato de fecha y hora",
+        "dateTimeOfData": "Fecha y hora de los datos",
+        "dateTimeSetting": "Configuración de fecha y hora",
+        "dataDrivenIndicatorColumn": "Columna de indicador guiada por datos",
+        "editAndRerun": "Editar y reejecutar",
+        "endAt": "Fin en",
+        "error": "Error",
+        "importType": "Tipo de importación",
+        "indicator": "Indicador",
+        "indicatorColumn": "Columna de indicador",
+        "indicatorNames": "Nombres de indicadores",
+        "inputFormat": "Formato de entrada",
+        "isActive": "Activo",
+        "jobName": "Nombre del trabajo",
+        "note": "Nota",
+        "paused": "Pausado",
+        "referenceLayer": "Capa de referencia",
+        "savedData": "Datos guardados",
+        "schedule": "Programación",
+        "scheduleType": "Tipo de programación",
+        "seeData": "Ver los datos",
+        "selectedDate": "Fecha seleccionada",
+        "selectedIndicator": "Indicador seleccionado",
+        "selectedIndicators": "Indicadores seleccionados",
+        "startAt": "Inicio en",
+        "typeOfGeoCode": "Tipo de código geográfico"
       },
       "logs": {
         "browseData": "Explorar datos"
@@ -406,6 +445,21 @@
     },
     "tableError": "¡Vaya! Ocurrió un error al cargar los datos.",
     "user": "USUARIO",
+    "userAndGroup": {
+      "changePassword": {
+        "allFieldsRequired": "Todos los campos son obligatorios.",
+        "failedToChange": "Error al cambiar la contraseña.",
+        "newPassword": "Nueva contraseña",
+        "oldPassword": "Contraseña antigua",
+        "passwordsDoNotMatch": "Las nuevas contraseñas no coinciden.",
+        "repeatNewPassword": "Repetir nueva contraseña",
+        "title": "Cambiar contraseña"
+      },
+      "user": {
+        "backendAdmin": "Administrador backend (Django Staff)",
+        "receiveEmailNotification": "Recibir correo para notificaciones de administrador."
+      }
+    },
     "usersAndGroups": "Usuarios y grupos",
     "viewAllDashboards": "Ver todos los paneles",
     "visualization": "VISUALIZACIÓN"

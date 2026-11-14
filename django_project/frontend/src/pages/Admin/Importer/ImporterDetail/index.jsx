@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import $ from "jquery";
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
@@ -38,6 +39,7 @@ import './style.scss';
  * Importer  Detail
  */
 export default function ImporterDetail() {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
 
   // Notification
@@ -70,7 +72,7 @@ export default function ImporterDetail() {
           <div className='AdminLoadingSection'>
             <CircularProgress/>
             <div>
-              Fetching data...
+              {t('admin.importer.fetchingData')}
             </div>
           </div>
         </div>
@@ -126,12 +128,12 @@ export default function ImporterDetail() {
               }
             })
           }}>
-          <PlayArrowIcon/> Run
+          <PlayArrowIcon/> {t('admin.importer.importerDetail.run')}
         </ThemeButton>
         <a
           href={data.urls.edit}>
           <ThemeButton variant="primary Basic">
-            <EditIcon/> Edit
+            <EditIcon/> {t('admin.edit')}
           </ThemeButton>
         </a>
         <ThemeButton
@@ -150,7 +152,7 @@ export default function ImporterDetail() {
               return false;
             }
           }}>
-          <DeleteIcon/> Delete
+          <DeleteIcon/> {t('admin.delete')}
         </ThemeButton>
       </Fragment>
     }
@@ -163,7 +165,7 @@ export default function ImporterDetail() {
         {
           data.logs ?
             <Grid item xs={3} className={'Detail SidePanel'}>
-              <div className={'SidePanelTitle'}>Logs</div>
+              <div className={'SidePanelTitle'}>{t('admin.importer.importerDetail.logs')}</div>
               {
                 data.logs.map(log => {
                   return <div className={'SidePanelSection Link'}
@@ -172,19 +174,19 @@ export default function ImporterDetail() {
                               }}>
                     <table>
                       <tr>
-                        <td>Status</td>
+                        <td>{t('admin.importer.importerDetail.status')}</td>
                         <td>{log.status}</td>
                       </tr>
                       <tr>
-                        <td>Start Time</td>
+                        <td>{t('admin.importer.importerDetail.startTime')}</td>
                         <td>{log.start_time ? formatDateTime(new Date(log.start_time)) : '-'}</td>
                       </tr>
                       <tr>
-                        <td>End Time</td>
+                        <td>{t('admin.importer.importerDetail.endTime')}</td>
                         <td>{log.end_time ? formatDateTime(new Date(log.end_time)) : '-'}</td>
                       </tr>
                       <tr>
-                        <td>Saved data</td>
+                        <td>{t('admin.importer.importerDetail.savedData')}</td>
                         <td>{log.saved_data}/{log.count_data}</td>
                       </tr>
                     </table>

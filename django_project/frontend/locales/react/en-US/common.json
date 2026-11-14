@@ -165,6 +165,14 @@
         "schedule": "Schedule"
       },
       "importData": "Import Data",
+      "importerDetail": {
+        "endTime": "End Time",
+        "logs": "Logs",
+        "run": "Run",
+        "savedData": "Saved data",
+        "startTime": "Start Time",
+        "status": "Status"
+      },
       "importTypes": {
         "indicatorValue": "Indicator Value",
         "relatedTables": "Related Tables"
@@ -180,6 +188,37 @@
         "sharePointLongFormat": "SharePoint Long Format",
         "sharePointWideFormat": "SharePoint Wide Format",
         "vectorContextLayerFormat": "Vector Context Layer Format"
+      },
+      "logDetail": {
+        "active": "Active",
+        "adminLevel": "Admin Level",
+        "dateTimeColumnField": "Date Time Column/Field",
+        "dateTimeFormat": "Date Time Format",
+        "dateTimeOfData": "Date Time of Data",
+        "dateTimeSetting": "Date Time Setting",
+        "dataDrivenIndicatorColumn": "Data-Driven Indicator Column",
+        "editAndRerun": "Edit and rerun",
+        "endAt": "End At",
+        "error": "Error",
+        "importType": "Import Type",
+        "indicator": "Indicator",
+        "indicatorColumn": "Indicator Column",
+        "indicatorNames": "Indicator Names",
+        "inputFormat": "Input Format",
+        "isActive": "Is Active",
+        "jobName": "Job Name",
+        "note": "Note",
+        "paused": "Paused",
+        "referenceLayer": "Reference Layer",
+        "savedData": "Saved Data",
+        "schedule": "Schedule",
+        "scheduleType": "Schedule Type",
+        "seeData": "See the data",
+        "selectedDate": "Selected Date",
+        "selectedIndicator": "Selected indicator",
+        "selectedIndicators": "Selected Indicators",
+        "startAt": "Start At",
+        "typeOfGeoCode": "Type of Geo Code"
       },
       "logs": {
         "browseData": "Browse data"
@@ -406,6 +445,21 @@
     },
     "tableError": "Oops! Something went wrong while loading data.",
     "user": "USER",
+    "userAndGroup": {
+      "changePassword": {
+        "allFieldsRequired": "All fields are required.",
+        "failedToChange": "Failed to change password.",
+        "newPassword": "New Password",
+        "oldPassword": "Old Password",
+        "passwordsDoNotMatch": "New passwords do not match.",
+        "repeatNewPassword": "Repeat New Password",
+        "title": "Change Password"
+      },
+      "user": {
+        "backendAdmin": "Backend admin (Django Staff)",
+        "receiveEmailNotification": "Receive email for admin notification."
+      }
+    },
     "usersAndGroups": "Users and groups",
     "viewAllDashboards": "View all dashboard(s)",
     "visualization": "VISUALIZATION"

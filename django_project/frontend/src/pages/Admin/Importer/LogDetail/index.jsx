@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -78,6 +79,7 @@ export function filterAttributes(attributes) {
 
 /** Importer detail section */
 export function ImporterDetailSection({ inputData }) {
+  const { t } = useTranslation();
   const [data, setData] = useState(inputData);
   const isIndicatorValue = data.import_type === "Indicator Value"
 
@@ -96,13 +98,13 @@ export function ImporterDetailSection({ inputData }) {
     <Grid container spacing={2}>
       <Grid item xs={3}>
         <div className='DetailSection'>
-          <div>Import Type</div>
+          <div>{t('admin.importer.logDetail.importType')}</div>
           <div>{data.import_type}</div>
         </div>
       </Grid>
       <Grid item xs={3}>
         <div className='DetailSection'>
-          <div>Input Format</div>
+          <div>{t('admin.importer.logDetail.inputFormat')}</div>
           <div>{data.input_format}</div>
         </div>
       </Grid>
@@ -112,22 +114,22 @@ export function ImporterDetailSection({ inputData }) {
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Indicator</div>
-              <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
+              <div>{t('admin.importer.logDetail.indicator')}</div>
+              <div>{data.attributes.indicator_data_type === 'By Value' ? t('admin.importer.logDetail.selectedIndicator') : t('admin.importer.logDetail.dataDrivenIndicatorColumn')}</div>
             </div>
           </Grid>
           {
             data.attributes.indicator_data_type !== 'By Value' ?
               <Grid item xs={3}>
                 <div className='DetailSection'>
-                  <div>Indicator Column</div>
+                  <div>{t('admin.importer.logDetail.indicatorColumn')}</div>
                   <div>{data.attributes.indicator_data_field}</div>
                 </div>
               </Grid> : null
           }
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Indicator Names</div>
+              <div>{t('admin.importer.logDetail.indicatorNames')}</div>
               <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
             </div>
           </Grid>
@@ -138,13 +140,13 @@ export function ImporterDetailSection({ inputData }) {
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Schedule Type</div>
+              <div>{t('admin.importer.logDetail.scheduleType')}</div>
               <div>{data.schedule_type}</div>
             </div>
           </Grid>
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Job Name</div>
+              <div>{t('admin.importer.logDetail.jobName')}</div>
               <div>{
                 data.job_name ?
                   <a
@@ -157,13 +159,13 @@ export function ImporterDetailSection({ inputData }) {
           </Grid>
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Is Active</div>
-              <div>{data.job_active ? 'Active' : 'Paused'}</div>
+              <div>{t('admin.importer.logDetail.isActive')}</div>
+              <div>{data.job_active ? t('admin.importer.logDetail.active') : t('admin.importer.logDetail.paused')}</div>
             </div>
           </Grid>
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Schedule</div>
+              <div>{t('admin.importer.logDetail.schedule')}</div>
               <div>{data.schedule ? getScheduleText(data.schedule) : '-'}</div>
             </div>
           </Grid>
@@ -176,7 +178,7 @@ export function ImporterDetailSection({ inputData }) {
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Reference Layer</div>
+                <div>{t('admin.importer.logDetail.referenceLayer')}</div>
                 <div>
                   {formatData(data.reference_layer_name)}
                 </div>
@@ -184,7 +186,7 @@ export function ImporterDetailSection({ inputData }) {
             </Grid>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Type of Geo Code</div>
+                <div>{t('admin.importer.logDetail.typeOfGeoCode')}</div>
                 <div>
                   {formatData(data.admin_code_type)}
                 </div>
@@ -193,9 +195,9 @@ export function ImporterDetailSection({ inputData }) {
             {
               data.attributes?.admin_level_type ? <Grid item xs={3}>
                 <div className='DetailSection'>
-                  <div>Admin Level</div>
+                  <div>{t('admin.importer.logDetail.adminLevel')}</div>
                   <div>
-                    {data.attributes?.admin_level_type === 'Specific Level' ? 'Loading' : formatData(data.attributes?.admin_level_type)}
+                    {data.attributes?.admin_level_type === 'Specific Level' ? t('admin.loading') : formatData(data.attributes?.admin_level_type)}
                   </div>
                 </div>
               </Grid> : null
@@ -204,9 +206,9 @@ export function ImporterDetailSection({ inputData }) {
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Date Time Setting</div>
+                <div>{t('admin.importer.logDetail.dateTimeSetting')}</div>
                 <div>
-                  <div>{data.attributes.date_time_data_type === 'By Value' ? 'Selected Date' : formatData(data.attributes.date_time_data_type)}</div>
+                  <div>{data.attributes.date_time_data_type === 'By Value' ? t('admin.importer.logDetail.selectedDate') : formatData(data.attributes.date_time_data_type)}</div>
                 </div>
               </div>
             </Grid>
@@ -215,7 +217,7 @@ export function ImporterDetailSection({ inputData }) {
                 <Fragment>
                   <Grid item xs={3}>
                     <div className='DetailSection'>
-                      <div>Date Time Column/Field</div>
+                      <div>{t('admin.importer.logDetail.dateTimeColumnField')}</div>
                       {
                         formatData(data.attributes.date_time_data_field)
                       }
@@ -223,7 +225,7 @@ export function ImporterDetailSection({ inputData }) {
                   </Grid>
                   <Grid item xs={3}>
                     <div className='DetailSection'>
-                      <div>Date Time Format</div>
+                      <div>{t('admin.importer.logDetail.dateTimeFormat')}</div>
                       {
                         formatData(
                           data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
@@ -234,7 +236,7 @@ export function ImporterDetailSection({ inputData }) {
                 </Fragment> : data.attributes.date_time_data_type === 'Now' ? null :
                   <Grid item xs={3}>
                     <div className='DetailSection'>
-                      <div>Date Time of Data</div>
+                      <div>{t('admin.importer.logDetail.dateTimeOfData')}</div>
                       {
                         formatData(formatDateTime(new Date(data.attributes.date_time_data_value), false, true))
                       }
@@ -252,7 +254,7 @@ export function ImporterDetailSection({ inputData }) {
         data.attributes.selected_indicators_data ?
           <Grid item xs={3}>
             <div className='DetailSection'>
-              <div>Selected Indicators</div>
+              <div>{t('admin.importer.logDetail.selectedIndicators')}</div>
               <div
                 title={formatData(data.attributes.selected_indicators_data)}>
                 {formatData(data.attributes.selected_indicators_data)}
@@ -321,6 +323,7 @@ export function ImporterDetailSection({ inputData }) {
  * Importer Log Detail
  */
 export default function ImporterLogDetail() {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
 
   /** Call API
@@ -388,7 +391,7 @@ export default function ImporterLogDetail() {
             variant="primary"
             disabled={!isEnded}
           >
-            Edit and rerun
+            {t('admin.importer.logDetail.editAndRerun')}
           </ThemeButton>
         </a>
       </Fragment>
@@ -413,13 +416,13 @@ export default function ImporterLogDetail() {
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <div className='DetailSection'>
-            <div>Start At</div>
+            <div>{t('admin.importer.logDetail.startAt')}</div>
             <div>{formatDateTime(new Date(data.start_time))}</div>
           </div>
         </Grid>
         <Grid item xs={3}>
           <div className='DetailSection'>
-            <div>End At</div>
+            <div>{t('admin.importer.logDetail.endAt')}</div>
             <div>
               {data.end_time ? formatDateTime(new Date(data.end_time)) : null}
             </div>
@@ -431,17 +434,17 @@ export default function ImporterLogDetail() {
               <div className='DetailSection'>
                 {
                   note ? <Fragment>
-                    <div>Note</div>
+                    <div>{t('admin.importer.logDetail.note')}</div>
                     <div
                       dangerouslySetInnerHTML={{ __html: replaceWithBr(note) }}/>
                   </Fragment> : null
                 }
-                <div className='title'>Saved Data</div>
+                <div className='title'>{t('admin.importer.logDetail.savedData')}</div>
                 <div className='DetailDataFound'>
                   <div>{data.saved_data} / {data.count_data}</div>
                   <a href={data.browse_url}>
                     <ThemeButton variant="primary">
-                      See the data
+                      {t('admin.importer.logDetail.seeData')}
                     </ThemeButton>
                   </a>
                 </div>
@@ -452,7 +455,7 @@ export default function ImporterLogDetail() {
           data.status === 'Failed' ?
             <Grid item xs={6}>
               <div className='DetailSection'>
-                <div>Error</div>
+                <div>{t('admin.importer.logDetail.error')}</div>
                 <div className='DetailDataFound'>
                   <div className='DetailDataFoundError'>
                     <div
@@ -463,7 +466,7 @@ export default function ImporterLogDetail() {
                     <a href={urls.api.dataView + '?status=Warning and Error'}>
                       <ThemeButton
                         variant="primary">
-                        See the data
+                        {t('admin.importer.logDetail.seeData')}
                       </ThemeButton>
                     </a>
                   </div>

@@ -158,6 +158,14 @@
         "inputFormat": "Format d'entrée"
       },
       "importData": "Importer des données",
+      "importerDetail": {
+        "endTime": "Heure de fin",
+        "logs": "Journaux",
+        "run": "Exécuter",
+        "savedData": "Données enregistrées",
+        "startTime": "Heure de début",
+        "status": "Statut"
+      },
       "importTypes": {
         "indicatorValue": "Valeur de l'indicateur",
         "relatedTables": "Tables liées"
@@ -173,6 +181,37 @@
         "sharePointLongFormat": "Format long SharePoint",
         "sharePointWideFormat": "Format large SharePoint",
         "vectorContextLayerFormat": "Format de couche de contexte vectoriel"
+      },
+      "logDetail": {
+        "active": "Actif",
+        "adminLevel": "Niveau administratif",
+        "dateTimeColumnField": "Colonne/champ date et heure",
+        "dateTimeFormat": "Format de date et heure",
+        "dateTimeOfData": "Date et heure des données",
+        "dateTimeSetting": "Paramètre de date et heure",
+        "dataDrivenIndicatorColumn": "Colonne d'indicateur basée sur les données",
+        "editAndRerun": "Modifier et relancer",
+        "endAt": "Fin à",
+        "error": "Erreur",
+        "importType": "Type d'importation",
+        "indicator": "Indicateur",
+        "indicatorColumn": "Colonne d'indicateur",
+        "indicatorNames": "Noms des indicateurs",
+        "inputFormat": "Format d'entrée",
+        "isActive": "Actif",
+        "jobName": "Nom du travail",
+        "note": "Note",
+        "paused": "Suspendu",
+        "referenceLayer": "Couche de référence",
+        "savedData": "Données enregistrées",
+        "schedule": "Planification",
+        "scheduleType": "Type de planification",
+        "seeData": "Voir les données",
+        "selectedDate": "Date sélectionnée",
+        "selectedIndicator": "Indicateur sélectionné",
+        "selectedIndicators": "Indicateurs sélectionnés",
+        "startAt": "Début à",
+        "typeOfGeoCode": "Type de code géographique"
       },
       "logs": {
         "browseData": "Parcourir les données"
@@ -406,6 +445,21 @@
     },
     "tableError": "Oups ! Un problème est survenu lors du chargement des données.",
     "user": "UTILISATEUR",
+    "userAndGroup": {
+      "changePassword": {
+        "allFieldsRequired": "Tous les champs sont obligatoires.",
+        "failedToChange": "Échec du changement de mot de passe.",
+        "newPassword": "Nouveau mot de passe",
+        "oldPassword": "Ancien mot de passe",
+        "passwordsDoNotMatch": "Les nouveaux mots de passe ne correspondent pas.",
+        "repeatNewPassword": "Répéter le nouveau mot de passe",
+        "title": "Changer le mot de passe"
+      },
+      "user": {
+        "backendAdmin": "Administrateur backend (Django Staff)",
+        "receiveEmailNotification": "Recevoir un e-mail pour les notifications d'administration."
+      }
+    },
     "usersAndGroups": "Utilisateurs et groupes",
     "viewAllDashboards": "Voir tous les tableaux de bord",
     "visualization": "VISUALISATION"
