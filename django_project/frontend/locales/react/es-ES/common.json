@@ -56,6 +56,18 @@
   "admin": {
     "access": "ACCESO",
     "accessRequest": "Solicitud de acceso",
+    "accessRequestList": {
+      "briefDescription": "Descripción breve de tu solicitud",
+      "confirmEmail": "Confirmar correo",
+      "confirmEmailAddress": "Confirma tu dirección de correo electrónico",
+      "createNewRequest": "Crear nueva solicitud",
+      "emailInvalid": "El correo electrónico no es válido",
+      "name": "Nombre",
+      "requestSubmitted": "La solicitud ha sido enviada",
+      "requesterEmail": "Correo del solicitante",
+      "status": "Estado",
+      "submittedDate": "Fecha de envío"
+    },
     "actions": {
       "changeShareConfig": "Cambiar configuración de compartir",
       "goToMap": "Ir al mapa",
@@ -83,6 +95,7 @@
       "shortcode": "Código corto"
     },
     "complexColorValueDetected": "Valor de color complejo detectado. Por favor edite en modo de entrada sin procesar.",
+    "config": "Configuración",
     "confirm": "Confirmar",
     "contextLayer": {
       "arcgis": {
@@ -108,6 +121,17 @@
     },
     "createNew": "Crear Nuevo {{pageName}}",
     "dashboard": {
+      "contextLayer": {
+        "aggregateFieldHelp": "El campo utilizado para agregar datos y agrupar puntos en el mapa.",
+        "applyChanges": "Aplicar cambios",
+        "contextLayer": "Capa de contexto",
+        "filterHelptext": "Se aplica como filtro de datos predeterminado. También crea un selector en el panel que permite a los usuarios ajustar el filtro.",
+        "overrideAggregateByField": "Sobrescribir la agregación de datos por nombre de campo",
+        "overrideLayerDescription": "Sobrescribir la descripción de la capa.",
+        "overrideLayerName": "Sobrescribir el nombre de la capa.",
+        "overrideQuery": "Sobrescribir la consulta",
+        "styleFor": "Estilo para {{name}}"
+      },
       "enableGeographyEntitySearchBox": "Habilitar cuadro de búsqueda de entidades geográficas",
       "filters": {
         "allowModify": "Permitir a los usuarios modificar los filtros en el panel",
@@ -127,25 +151,72 @@
         "title": "Guardar proyecto como..."
       },
       "hideContextLayerTab": "Ocultar pestaña de capa de contexto",
+      "indicatorLayers": {
+        "addNewLayer": "Agregar nueva capa de indicador",
+        "dynamicIndicatorsLayer": "Capa de Indicadores Dinámicos",
+        "dynamicIndicatorsLayerHelp": "Crea una capa de indicadores dinámica usando una expresión personalizada y retroalimentación del usuario.",
+        "multiIndicatorsLayer": "Capa de Múltiples Indicadores",
+        "multiIndicatorsLayerHelp": "Selecciona 2 o más indicadores y conviértelos todos en una sola capa de indicador.",
+        "relatedTableLayer": "Capa de Tabla Relacionada",
+        "relatedTableLayerDisabled": "Está deshabilitado, selecciona la capa de referencia para habilitarlo.",
+        "relatedTableLayerHelp": "Crea una capa de indicador a partir de una tabla relacionada.",
+        "sdmxIndicatorsLayer": "Capa de Indicadores SDMX",
+        "sdmxIndicatorsLayerHelp": "Crea una capa de indicadores dinámica usando el flujo de datos SDMX.",
+        "singleIndicatorLayer": "Capa de Indicador Único",
+        "singleIndicatorLayerHelp": "Selecciona múltiples indicadores de la lista y convierte cada uno en una capa de indicador único."
+      },
       "mappingIndicatorsUsing": "Mapeo de Indicadores Usando",
+      "relatedTable": {
+        "filterTheData": "Filtrar los datos",
+        "geographyCodeField": "Campo de código geográfico",
+        "relatedFields": "Campos relacionados",
+        "typeOfGeoCode": "Tipo de código geográfico"
+      },
       "nameExample": "Ejemplo: Panel de Riesgo de Afganistán",
       "showSplashScreenOnFirstOpen": "Mostrar como pantalla de bienvenida al abrir el proyecto por primera vez",
       "transparencyOfContextLayers": "Transparencia de las Capas de Contexto",
       "transparencyOfIndicatorLayers": "Transparencia de las Capas de Indicadores",
       "truncateLongIndicatorLayerName": "Truncar nombre largo de la capa de indicador",
       "urlShortcode": "Código Corto de URL",
-      "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío."
+      "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío.",
+      "zonalAnalysis": {
+        "aggregation": "Agregación",
+        "clickToSelect": "Clic para seleccionar",
+        "draw": "Dibujar",
+        "selectionMode": "Modo de selección",
+        "sourceLayer": "Capa fuente",
+        "targetLayer": "Capa de destino (de capas de contexto):",
+        "title": "Configuración de análisis zonal"
+      }
     },
     "data": "DATOS",
     "dataBrowser": "Explorador de datos",
     "dataManagement": "Gestión de datos",
+    "dataset": {
+      "addToNewProject": "Agregar a nuevo proyecto",
+      "addToNewProjectTooltip": "Habilítalo seleccionando datos que contengan solo 1 país.",
+      "browseData": "Explorar datos",
+      "changeShareConfig": "Cambiar configuración de compartir.",
+      "country": "País",
+      "dataCount": "Recuento de datos",
+      "deleteWarning": "¡ADVERTENCIA! ¿Deseas eliminar los datos seleccionados? Esto se aplicará directamente a la base de datos.",
+      "endDate": "Fecha de fin",
+      "filterByLevels": "Filtrar por nivel(es)",
+      "groupAllAdminLevels": "Agrupar todos los niveles administrativos",
+      "indicator": "Indicador",
+      "level": "Nivel",
+      "startDate": "Fecha de inicio"
+    },
     "delete": "Eliminar",
     "deleteConfirmation": "Confirmación de eliminación",
     "deleteConfirmationMessage": "¿Estás seguro de querer eliminar {{item}}?",
     "deleteMultipleConfirmationInputText": "Por favor, introduce '{{numberOfItems}}' a continuación para habilitar el botón de confirmación.",
     "deleteMultipleConfirmationMessage": "¿Estás seguro de querer eliminar {{numberOfItems}} {{dataName}}?",
+    "description": "Descripción",
     "edit": "Editar",
     "fetchingProjectData": "Obteniendo datos del proyecto...",
+    "field": "Campo",
+    "filter": "Filtro",
     "help": "Ayuda",
     "importer": {
       "columns": {
@@ -306,6 +377,7 @@
     "multiSelector": {
       "filterData": "Filtrar datos"
     },
+    "name": "Nombre",
     "noDataTable": "No hay datos disponibles.",
     "numberOfItemsSelected": "{{numberOfItems}} elementos en esta lista están seleccionados.",
     "oneItemSelected": "1 elemento en esta lista está seleccionado.",
@@ -418,12 +490,16 @@
     },
     "profile": "Perfil",
     "project": "Proyecto",
+    "referenceDataset": {
+      "importedBy": "Importado por"
+    },
     "referenceDatasets": "CONJUNTOS DE DATOS DE REFERENCIA",
     "referenceDatasetsLower": "Conjuntos de datos de referencia",
     "relatedTables": "Tablas relacionadas",
     "requestApproved": "La solicitud ha sido aprobada",
     "requestRejected": "La solicitud ha sido rechazada",
     "searchPlaceholder": "Buscar {{pageName}}",
+    "select": "Seleccionar...",
     "showSelected": "Mostrar seleccionados",
     "style": {
       "changeStyle": "Cambiar estilo",
@@ -458,6 +534,28 @@
     "tableError": "¡Vaya! Ocurrió un error al cargar los datos.",
     "user": "USUARIO",
     "userAndGroup": {
+      "apiKey": {
+        "active": "Activo",
+        "copiedToClipboard": "Clave API copiada al portapapeles",
+        "createError": "Error al crear la clave API",
+        "createdAt": "Creada el",
+        "createdSuccess": "Clave API creada correctamente",
+        "deleteApiKey": "Eliminar clave API",
+        "deleteConfirmBody": "¿Deseas eliminar esta clave API?",
+        "deleteConfirmHeader": "Eliminar clave API",
+        "deleteError": "Error al eliminar la clave API",
+        "deletedSuccess": "Clave API eliminada correctamente",
+        "expiry": "Expiración",
+        "forgotKeyWarning": "Si olvidaste tu clave API anterior, tendrás que generar una nueva.",
+        "generateApiKey": "Generar clave API",
+        "generateConfirmBody": "¿Deseas generar una nueva clave API? Esto invalidará la clave anterior.",
+        "generateConfirmHeader": "Generar clave API",
+        "inactive": "Inactivo",
+        "inactiveWarning": "Esta cuenta está inactiva. Contacta al administrador.",
+        "personalWarning": "Esta clave API es personal. No la compartas con nadie.",
+        "platform": "Plataforma",
+        "status": "Estado"
+      },
       "batchUserForm": {
         "csvFile": "Archivo CSV",
         "csvHelp": "Puedes obtener el archivo csv en",

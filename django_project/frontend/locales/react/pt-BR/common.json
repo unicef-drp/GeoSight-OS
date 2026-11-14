@@ -56,6 +56,18 @@
   "admin": {
     "access": "ACESSO",
     "accessRequest": "Solicitação de acesso",
+    "accessRequestList": {
+      "briefDescription": "Breve descrição da sua solicitação",
+      "confirmEmail": "Confirmar e-mail",
+      "confirmEmailAddress": "Confirme seu endereço de e-mail",
+      "createNewRequest": "Criar nova solicitação",
+      "emailInvalid": "E-mail inválido",
+      "name": "Nome",
+      "requestSubmitted": "Solicitação enviada",
+      "requesterEmail": "E-mail do solicitante",
+      "status": "Status",
+      "submittedDate": "Data de envio"
+    },
     "actions": {
       "changeShareConfig": "Alterar configuração de compartilhamento",
       "goToMap": "Ir para o mapa",
@@ -83,6 +95,7 @@
       "shortcode": "Código curto"
     },
     "complexColorValueDetected": "Valor de cor complexo detectado. Por favor, edite no modo de entrada raw.",
+    "config": "Configuração",
     "confirm": "Confirmar",
     "contextLayer": {
       "arcgis": {
@@ -108,6 +121,17 @@
     },
     "createNew": "Criar novo {{pageName}}",
     "dashboard": {
+      "contextLayer": {
+        "aggregateFieldHelp": "Substituir o campo de agregação pelo nome do campo.",
+        "applyChanges": "Aplicar alterações",
+        "contextLayer": "Camada de contexto",
+        "filterHelptext": "Filtrar os dados da camada de contexto.",
+        "overrideAggregateByField": "Substituir agregação de dados por nome de campo",
+        "overrideLayerDescription": "Substituir a descrição da camada",
+        "overrideLayerName": "Substituir o nome da camada",
+        "overrideQuery": "Substituir a consulta",
+        "styleFor": "Estilo para {{name}}"
+      },
       "enableGeographyEntitySearchBox": "Habilitar caixa de pesquisa de entidade geográfica",
       "filters": {
         "allowModify": "Permitir que os usuários modifiquem filtros no painel",
@@ -127,25 +151,72 @@
         "title": "Salvar projeto como..."
       },
       "hideContextLayerTab": "Ocultar aba de camada de contexto",
+      "indicatorLayers": {
+        "addNewLayer": "Adicionar nova camada de indicador",
+        "dynamicIndicatorsLayer": "Camada de Indicadores Dinâmicos",
+        "dynamicIndicatorsLayerHelp": "Cria uma camada de indicadores dinâmica usando uma expressão personalizada e feedback do usuário.",
+        "multiIndicatorsLayer": "Camada de Múltiplos Indicadores",
+        "multiIndicatorsLayerHelp": "Selecione 2 ou mais indicadores e converta-os em uma única camada de indicador.",
+        "relatedTableLayer": "Camada de Tabela Relacionada",
+        "relatedTableLayerDisabled": "Está desabilitado, selecione a camada de referência para habilitá-lo.",
+        "relatedTableLayerHelp": "Cria uma camada de indicador a partir de uma tabela relacionada.",
+        "sdmxIndicatorsLayer": "Camada de Indicadores SDMX",
+        "sdmxIndicatorsLayerHelp": "Cria uma camada de indicadores dinâmica usando o fluxo de dados SDMX.",
+        "singleIndicatorLayer": "Camada de Indicador Único",
+        "singleIndicatorLayerHelp": "Selecione múltiplos indicadores da lista e converta cada um em uma camada de indicador único."
+      },
       "mappingIndicatorsUsing": "Mapeando indicadores usando",
       "nameExample": "Exemplo: Painel de Risco do Afeganistão",
+      "relatedTable": {
+        "filterTheData": "Filtrar os dados",
+        "geographyCodeField": "Campo de código geográfico",
+        "relatedFields": "Campos relacionados",
+        "typeOfGeoCode": "Tipo de código geográfico"
+      },
       "showSplashScreenOnFirstOpen": "Mostrar como tela inicial ao abrir o projeto pela primeira vez",
       "transparencyOfContextLayers": "Transparência das camadas de contexto",
       "transparencyOfIndicatorLayers": "Transparência das camadas de indicadores",
       "truncateLongIndicatorLayerName": "Truncar nome longo da camada de indicadores",
       "urlShortcode": "Código de URL curto",
-      "urlShortcodeDescription": "URL do projeto em formato slug. Automaticamente substitui espaços por \"-\" e converte para minúsculas.\nSera gerado a partir do nome se deixado vazio."
+      "urlShortcodeDescription": "URL do projeto em formato slug. Automaticamente substitui espaços por \"-\" e converte para minúsculas.\nSera gerado a partir do nome se deixado vazio.",
+      "zonalAnalysis": {
+        "aggregation": "Agregação",
+        "clickToSelect": "Clique para selecionar",
+        "draw": "Desenhar",
+        "selectionMode": "Modo de seleção",
+        "sourceLayer": "Camada fonte",
+        "targetLayer": "Camada de destino (das camadas de contexto):",
+        "title": "Configuração de análise zonal"
+      }
     },
     "data": "DADOS",
     "dataBrowser": "Navegador de dados",
     "dataManagement": "Gestão de dados",
+    "dataset": {
+      "addToNewProject": "Adicionar a novo projeto",
+      "addToNewProjectTooltip": "Habilite selecionando dados que contêm apenas 1 país.",
+      "browseData": "Explorar dados",
+      "changeShareConfig": "Alterar configuração de compartilhamento.",
+      "country": "País",
+      "dataCount": "Contagem de dados",
+      "deleteWarning": "ATENÇÃO! Deseja excluir os dados selecionados? Isso será aplicado diretamente ao banco de dados.",
+      "endDate": "Data de fim",
+      "filterByLevels": "Filtrar por nível(is)",
+      "groupAllAdminLevels": "Agrupar todos os níveis administrativos",
+      "indicator": "Indicador",
+      "level": "Nível",
+      "startDate": "Data de início"
+    },
     "delete": "Excluir",
     "deleteConfirmation": "Confirmação de exclusão",
     "deleteConfirmationMessage": "Tem certeza que deseja excluir {{item}}?",
     "deleteMultipleConfirmationInputText": "Por favor, insira '{{numberOfItems}}' abaixo para habilitar o botão de confirmar.",
     "deleteMultipleConfirmationMessage": "Tem certeza que deseja excluir {{numberOfItems}} {{dataName}}?",
+    "description": "Descrição",
     "edit": "Editar",
     "fetchingProjectData": "Obtendo dados do projeto...",
+    "field": "Campo",
+    "filter": "Filtro",
     "help": "Ajuda",
     "importer": {
       "columns": {
@@ -306,6 +377,7 @@
     "multiSelector": {
       "filterData": "Filtrar dados"
     },
+    "name": "Nome",
     "noDataTable": "Nenhum dado disponível.",
     "numberOfItemsSelected": "{{numberOfItems}} itens nesta lista estão selecionados.",
     "oneItemSelected": "1 item nesta lista está selecionado.",
@@ -418,12 +490,16 @@
     },
     "profile": "Perfil",
     "project": "Projeto",
+    "referenceDataset": {
+      "importedBy": "Importado por"
+    },
     "referenceDatasets": "CONJUNTOS DE DADOS DE REFERÊNCIA",
     "referenceDatasetsLower": "Conjuntos de dados de referência",
     "relatedTables": "Tabelas relacionadas",
     "requestApproved": "Solicitação aprovada",
     "requestRejected": "Solicitação rejeitada",
     "searchPlaceholder": "Pesquisar {{pageName}}",
+    "select": "Selecionar...",
     "showSelected": "Mostrar selecionados",
     "style": {
       "changeStyle": "Alterar estilo",
@@ -458,6 +534,28 @@
     "tableError": "Ops! Algo deu errado ao carregar os dados.",
     "user": "USUÁRIO",
     "userAndGroup": {
+      "apiKey": {
+        "active": "Ativo",
+        "copiedToClipboard": "Chave API copiada para a área de transferência",
+        "createError": "Erro ao criar a chave API",
+        "createdAt": "Criada em",
+        "createdSuccess": "Chave API criada com sucesso",
+        "deleteApiKey": "Excluir chave API",
+        "deleteConfirmBody": "Deseja excluir esta chave API?",
+        "deleteConfirmHeader": "Excluir chave API",
+        "deleteError": "Erro ao excluir a chave API",
+        "deletedSuccess": "Chave API excluída com sucesso",
+        "expiry": "Expiração",
+        "forgotKeyWarning": "Se você esqueceu sua chave API anterior, precisará gerar uma nova.",
+        "generateApiKey": "Gerar chave API",
+        "generateConfirmBody": "Deseja gerar uma nova chave API? Isso invalidará a chave anterior.",
+        "generateConfirmHeader": "Gerar chave API",
+        "inactive": "Inativo",
+        "inactiveWarning": "Esta conta está inativa. Entre em contato com o administrador.",
+        "personalWarning": "Esta chave API é pessoal. Não a compartilhe com ninguém.",
+        "platform": "Plataforma",
+        "status": "Status"
+      },
       "batchUserForm": {
         "csvFile": "Arquivo CSV",
         "csvHelp": "Você pode obter o arquivo csv em",

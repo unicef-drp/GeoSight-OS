@@ -14,6 +14,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { AdminListContent } from "../../AdminList";
 import { formatDateTime } from "../../../../utils/main";
 
@@ -21,11 +22,12 @@ import { formatDateTime } from "../../../../utils/main";
  * Access Request Permission
  */
 export default function AccessRequestUserList({ ...props }) {
+  const { t } = useTranslation();
   return <AdminListContent
     columns={[
       { field: 'id', headerName: 'id', hide: true },
       {
-        field: 'name', headerName: 'Name', flex: 1,
+        field: 'name', headerName: t('admin.accessRequestList.name'), flex: 1,
         renderCell: (params) => {
           return <a
             className='MuiButtonLike CellLink'
@@ -34,10 +36,10 @@ export default function AccessRequestUserList({ ...props }) {
           </a>
         }
       },
-      { field: 'requester_email', headerName: 'Requester Email', flex: 1 },
-      { field: 'status', headerName: 'Status', flex: 1 },
+      { field: 'requester_email', headerName: t('admin.accessRequestList.requesterEmail'), flex: 1 },
+      { field: 'status', headerName: t('admin.accessRequestList.status'), flex: 1 },
       {
-        field: 'submitted_date', headerName: 'Submitted Date', flex: 1,
+        field: 'submitted_date', headerName: t('admin.accessRequestList.submittedDate'), flex: 1,
         renderCell: (params) => {
           return formatDateTime(new Date(params.value))
         }

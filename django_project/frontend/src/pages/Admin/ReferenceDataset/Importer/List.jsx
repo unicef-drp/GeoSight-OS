@@ -14,6 +14,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from "react-i18next";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -28,12 +29,13 @@ import './style.scss';
  * ReferenceLayerView App
  */
 export default function ImporterEntityList() {
+  const { t } = useTranslation();
   const pageName = pageNames.referenceDatesetImporter
   const LOG_COLUMNS = [
     COLUMNS.ID,
     {
       field: 'created_by',
-      headerName: 'Imported By',
+      headerName: t('admin.referenceDataset.importedBy'),
       flex: 0.5,
       renderCell: (params) => {
         const urlDetail = params.row.urls.detail

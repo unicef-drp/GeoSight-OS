@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import {
   Notification,
   NotificationStatus
@@ -31,6 +32,7 @@ import { ThemeButton } from "../../../../components/Elements/Button";
  * Access Request Permission
  */
 export default function AccessRequestPermissionList({ ...props }) {
+  const { t } = useTranslation();
   const dialogRef = useRef(null);
 
   const [description, setDescription] = useState("");
@@ -49,7 +51,7 @@ export default function AccessRequestPermissionList({ ...props }) {
       columns={[
         { field: 'id', headerName: 'id', hide: true },
         {
-          field: 'name', headerName: 'Name', flex: 1,
+          field: 'name', headerName: t('admin.accessRequestList.name'), flex: 1,
           renderCell: (params) => {
             return <a
               className='MuiButtonLike CellLink'
@@ -58,10 +60,10 @@ export default function AccessRequestPermissionList({ ...props }) {
             </a>
           }
         },
-        { field: 'requester_email', headerName: 'Requester Email', flex: 1 },
-        { field: 'status', headerName: 'Status', flex: 1 },
+        { field: 'requester_email', headerName: t('admin.accessRequestList.requesterEmail'), flex: 1 },
+        { field: 'status', headerName: t('admin.accessRequestList.status'), flex: 1 },
         {
-          field: 'submitted_date', headerName: 'Submitted Date', flex: 1,
+          field: 'submitted_date', headerName: t('admin.accessRequestList.submittedDate'), flex: 1,
           renderCell: (params) => {
             return formatDateTime(new Date(params.value))
           }
@@ -91,7 +93,7 @@ export default function AccessRequestPermissionList({ ...props }) {
           'X-CSRFToken': csrfmiddlewaretoken
         }
       }).then(response => {
-        notify('Request has been submitted', NotificationStatus.SUCCESS)
+        notify(t('admin.accessRequestList.requestSubmitted'), NotificationStatus.SUCCESS)
         window.location.reload();
       }).catch(error => {
         setSubmitted(false)
@@ -109,7 +111,7 @@ export default function AccessRequestPermissionList({ ...props }) {
         columns={[
           { field: 'id', headerName: 'id', hide: true },
           {
-            field: 'submitted_date', headerName: 'Submitted Date', flex: 1,
+            field: 'submitted_date', headerName: t('admin.accessRequestList.submittedDate'), flex: 1,
             renderCell: (params) => {
               return <a className='MuiButtonLike CellLink'
                         href={urls.api.permission.detail.replace('/0', `/${params.id}`)}>
@@ -117,14 +119,14 @@ export default function AccessRequestPermissionList({ ...props }) {
               </a>
             }
           },
-          { field: 'status', headerName: 'Status', flex: 1 }
+          { field: 'status', headerName: t('admin.accessRequestList.status'), flex: 1 }
         ]}
         listUrl={urls.api.permission.list}
         rightHeader={
           <Fragment>
             {/* APPROVE */}
             <ConfirmDialog
-              header='Create new request'
+              header={t('admin.accessRequestList.createNewRequest')}
               onConfirmed={() => {
                 post(true)
               }}
@@ -132,7 +134,7 @@ export default function AccessRequestPermissionList({ ...props }) {
               disabledConfirm={!(description && email && !emailError)}
             >
               <div>
-                Brief description of your request
+                {t('admin.accessRequestList.briefDescription')}
               </div>
               <br/>
               <textarea
@@ -145,17 +147,17 @@ export default function AccessRequestPermissionList({ ...props }) {
               <br/>
               <br/>
               <div>
-                Confirm your email address
+                {t('admin.accessRequestList.confirmEmailAddress')}
               </div>
               <br/>
               <FormControl>
-                <InputLabel>Confirm email</InputLabel>
+                <InputLabel>{t('admin.accessRequestList.confirmEmail')}</InputLabel>
                 <Input
                   type="email"
                   style={{ width: "100%" }}
                   onChange={(event) => {
                     if (!isValidEmail(event.target.value)) {
-                      setEmailError('Email is invalid');
+                      setEmailError(t('admin.accessRequestList.emailInvalid'));
                     } else {
                       setEmailError(null);
                     }
@@ -171,7 +173,7 @@ export default function AccessRequestPermissionList({ ...props }) {
               onClick={() => {
                 dialogRef?.current?.open()
               }}>
-              Create new request
+              {t('admin.accessRequestList.createNewRequest')}
             </ThemeButton>
           </Fragment>
         }

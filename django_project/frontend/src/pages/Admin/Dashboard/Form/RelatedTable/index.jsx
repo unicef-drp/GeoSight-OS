@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import ListForm from "../ListForm";
 import { Actions } from "../../../../../store/dashboard";
@@ -39,6 +40,7 @@ import { useResourceMeta } from "../../../../../components/AdminList";
  * Related table configuration
  */
 function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
+  const { t } = useTranslation();
   const prevState = useRef();
   const dispatch = useDispatch();
   const [relatedTableData, setRelatedTableData] = useState(null);
@@ -86,7 +88,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
     <div className="BasicForm">
       <div className="RelatedTableConfiguration">
         <div className="GeographyCodeField">
-          <div>Geography Code Field</div>
+          <div>{t('admin.dashboard.relatedTable.geographyCodeField')}</div>
           <SelectWithSearch
             value={data.geography_code_field_name}
             onChangeFn={(evt) => {
@@ -98,7 +100,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
           />
         </div>
         <div className="GeographyCodeField">
-          <div>Type of Geo Code</div>
+          <div>{t('admin.dashboard.relatedTable.typeOfGeoCode')}</div>
           <SelectWithSearch
             value={
               data.geography_code_type ? data.geography_code_type : "ucode"
@@ -112,7 +114,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
           />
         </div>
         <div className="GeographyCodeField">
-          <div>Related Fields</div>
+          <div>{t('admin.dashboard.relatedTable.relatedFields')}</div>
           <MultipleSelectWithSearch
             value={
               data.selected_related_fields
@@ -140,7 +142,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
           data.query = val;
           dispatch(Actions.RelatedTable.update(data));
         }}
-        title={"Filter the Data"}
+        title={t('admin.dashboard.relatedTable.filterTheData')}
       />
     </div>
   );

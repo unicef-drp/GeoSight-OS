@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
@@ -48,6 +49,7 @@ import "./style.scss";
  * Context Layer Style
  */
 function ContextLayerStyle({ contextLayer }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(false);
@@ -143,13 +145,13 @@ function ContextLayerStyle({ contextLayer }) {
             setOpen(false);
           }}
         >
-          Style for {contextLayer.name}
+          {t('admin.dashboard.contextLayer.styleFor', { name: contextLayer.name })}
         </ModalHeader>
         <ModalContent className="Gray">
           <div className="SaveButton-Section">
             <SaveButton
               variant="primary"
-              text={"Apply Changes"}
+              text={t('admin.dashboard.contextLayer.applyChanges')}
               disabled={JSON.stringify(contextLayer) === JSON.stringify(data)}
               onClick={apply}
             />
@@ -161,7 +163,7 @@ function ContextLayerStyle({ contextLayer }) {
                   <div>
                     <div className="BasicFormSection">
                       <div>
-                        <label className="form-label">Context layer</label>
+                        <label className="form-label">{t('admin.dashboard.contextLayer.contextLayer')}</label>
                       </div>
                       <input
                         disabled
@@ -180,11 +182,11 @@ function ContextLayerStyle({ contextLayer }) {
                     </div>
                     <div className="BasicFormSection">
                       <div>
-                        <label className="form-label">Name</label>
+                        <label className="form-label">{t('admin.name')}</label>
                       </div>
                       <div style={{ display: "flex" }}>
                         <Checkbox
-                          title={"Override the name of the layer."}
+                          title={t('admin.dashboard.contextLayer.overrideLayerName')}
                           className="LayerNameInputCheckbox"
                           onClick={(evt) => {
                             updateData({
@@ -211,12 +213,12 @@ function ContextLayerStyle({ contextLayer }) {
                     </div>
                     <div className="BasicFormSection">
                       <div>
-                        <label className="form-label">Description</label>
+                        <label className="form-label">{t('admin.description')}</label>
                       </div>
                       <div style={{ display: "flex" }}>
                         <Checkbox
                           className="LayerDescriptionInputCheckbox"
-                          title={"Override the description of the layer."}
+                          title={t('admin.dashboard.contextLayer.overrideLayerDescription')}
                           onClick={(evt) => {
                             updateData({
                               ...data,
@@ -260,7 +262,7 @@ function ContextLayerStyle({ contextLayer }) {
                               }
                             />
                           }
-                          label="Override the query"
+                          label={t('admin.dashboard.contextLayer.overrideQuery')}
                         />
                       </FormGroup>
                       {override_query ? (
@@ -277,14 +279,11 @@ function ContextLayerStyle({ contextLayer }) {
                                 },
                               });
                             }}
-                            title={"Filter"}
+                            title={t('admin.filter')}
                           />
                           <div>
                             <span className="form-helptext">
-                              Applied as the default data filter.
-                              <br />
-                              Also creates a slicer on the dashboard that allows
-                              users to adjust the filter.
+                              {t('admin.dashboard.contextLayer.filterHelptext')}
                             </span>
                           </div>
                         </div>
@@ -313,7 +312,7 @@ function ContextLayerStyle({ contextLayer }) {
                               }
                             />
                           }
-                          label="Override aggregate data by field name"
+                          label={t('admin.dashboard.contextLayer.overrideAggregateByField')}
                         />
                       </FormGroup>
                       {override_field_aggregation ? (
@@ -327,7 +326,7 @@ function ContextLayerStyle({ contextLayer }) {
                               ...fieldOptions,
                             ]}
                             placeholder={
-                              !relatedFields ? "Loading" : "Select.."
+                              !relatedFields ? t('admin.loading') : t('admin.select')
                             }
                             value={field_aggregation ? field_aggregation : null}
                             isDisabled={!data.data_fields}
@@ -343,8 +342,7 @@ function ContextLayerStyle({ contextLayer }) {
                           />
                           <div>
                             <span className="form-helptext">
-                              The field used to aggregate data and cluster
-                              points on the map.
+                              {t('admin.dashboard.contextLayer.aggregateFieldHelp')}
                             </span>
                           </div>
                         </>
@@ -365,7 +363,7 @@ function ContextLayerStyle({ contextLayer }) {
           setOpen(true);
         }}
       >
-        <CogIcon /> Config
+        <CogIcon /> {t('admin.config')}
       </ThemeButton>
     </Fragment>
   );

@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import $ from "jquery";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import Switch from "@mui/material/Switch";
@@ -44,10 +45,8 @@ import { removeElement } from "../../../utils/Array";
 
 import './style.scss'
 
-/*** Data Browser admin */
-const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
-
 export default function DatasetAdmin() {
+  const { t } = useTranslation();
   const prevFilters = useRef();
 
   const tableRef = useRef(null);
@@ -101,36 +100,36 @@ export default function DatasetAdmin() {
     { field: 'id', headerName: 'id', hide: true },
     {
       field: 'indicator_name',
-      headerName: 'Indicator',
+      headerName: t('admin.dataset.indicator'),
       flex: 0.5,
       disabledFilter: true
     },
     {
       field: 'country_name',
-      headerName: 'Country',
+      headerName: t('admin.dataset.country'),
       flex: 1,
       disabledFilter: true
     },
     {
       field: 'admin_level',
-      headerName: 'Level',
+      headerName: t('admin.dataset.level'),
       width: 80,
       disabledFilter: true
     },
     {
       field: 'start_date',
-      headerName: 'Start date',
+      headerName: t('admin.dataset.startDate'),
       width: 130,
       type: 'date'
     },
     {
       field: 'end_date',
-      headerName: 'End date', width: 130,
+      headerName: t('admin.dataset.endDate'), width: 130,
       type: 'date'
     },
     {
       field: 'data_count',
-      headerName: 'Data count',
+      headerName: t('admin.dataset.dataCount'),
       width: 80,
       disabledFilter: true
     },
@@ -144,7 +143,7 @@ export default function DatasetAdmin() {
         const actions = [
           <GridActionsCellItem
             icon={
-              <Tooltip title={`Browse data`}>
+              <Tooltip title={t('admin.dataset.browseData')}>
                 <a href={params.row.browse_url}>
                   <div className='ButtonIcon'>
                     <DataBrowserActiveIcon/>
@@ -152,7 +151,7 @@ export default function DatasetAdmin() {
                 </a>
               </Tooltip>
             }
-            label="Browse data"
+            label={t('admin.dataset.browseData')}
           />
         ]
         // Unshift before more & edit action
@@ -167,7 +166,7 @@ export default function DatasetAdmin() {
                     urlData={`/api/permission/dataset/${params.row.indicator_id}/${params.row.reference_layer_id}`}/>
                 </a>
               }
-              label="Change Share Configuration."
+              label={t('admin.dataset.changeShareConfig')}
             />)
         }
         if (permission.delete) {
@@ -178,7 +177,7 @@ export default function DatasetAdmin() {
                   className='DeleteButton'/>
               }
               onClick={() => {
-                if (confirm(deleteWarning) === true) {
+                if (confirm(t('admin.dataset.deleteWarning')) === true) {
                   $.ajax({
                     url: urls.api.datasetApi,
                     method: 'DELETE',
@@ -196,7 +195,7 @@ export default function DatasetAdmin() {
                   return false;
                 }
               }}
-              label="Delete"
+              label={t('admin.delete')}
             />
           )
         }
@@ -256,7 +255,7 @@ export default function DatasetAdmin() {
         <FormGroup>
           <FormControlLabel
             control={<Switch checked={filters.groupAdminLevel}/>}
-            label="Group all admin levels"
+            label={t('admin.dataset.groupAllAdminLevels')}
             onChange={(evt) => {
               setFilters({
                 ...filters,
@@ -276,9 +275,9 @@ export default function DatasetAdmin() {
             }
             window.location.href = url;
           }}
-          title={'Enable this by selecting data contain just 1 country.'}
+          title={t('admin.dataset.addToNewProjectTooltip')}
         >
-          <AddIcon/> Add to New Project
+          <AddIcon/> {t('admin.dataset.addToNewProject')}
         </ThemeButton>
         &nbsp;&nbsp;&nbsp;
         <IndicatorFilterSelector
@@ -298,7 +297,7 @@ export default function DatasetAdmin() {
           filter={quickData.countries}
         />
         <MultipleSelectWithSearch
-          placeholder={'Filter by Level(s)'}
+          placeholder={t('admin.dataset.filterByLevels')}
           options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
           value={filters.levels}
           onChangeFn={evt => {

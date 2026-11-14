@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import {
@@ -31,6 +32,7 @@ import { IconTextField } from "../../../../../components/Elements/Input";
 import { formatDateTime } from "../../../../../utils/main";
 
 function ApiKeyDetail({ apiKey, onDelete, onError }) {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const confirmDialogRef = useRef(null);
 
@@ -45,30 +47,19 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
       apiKey.is_active ? <Fragment>
           <Alert style={{ textAlign: 'left' }} severity='warning'>
             <AlertTitle>
-              This API Key is personal and please do not share
-              it with other people. If we notice suspect behavior, your API Key
-              can
-              be
-              deleted and your account suspended.
+              {t('admin.userAndGroup.apiKey.personalWarning')}
             </AlertTitle>
           </Alert>
           <br/>
           <Alert style={{ textAlign: 'left' }} severity='warning'>
             <AlertTitle>
-              If you forgot your API Key, you must delete the
-              existing one and regenerate a new API Key. The GeoSight team is not
-              able
-              to retrieve your API Key. After generating a new API Key, please
-              make
-              sure you update your applications with the newly generated API Key!
+              {t('admin.userAndGroup.apiKey.forgotKeyWarning')}
             </AlertTitle>
           </Alert>
         </Fragment> :
         <Alert style={{ textAlign: 'left' }} severity='warning'>
           <AlertTitle>
-            Your API Key is inactive.<br/>
-            In order to obtain more information or to reactivate your API KEY,
-            please contact an administrator.
+            {t('admin.userAndGroup.apiKey.inactiveWarning')}
           </AlertTitle>
         </Alert>
     }
@@ -78,14 +69,14 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
         <DeleteButton
           disabled={submitted}
           variant="Error Reverse"
-          text={"Delete Api Key"}
+          text={t('admin.userAndGroup.apiKey.deleteApiKey')}
           onClick={() => {
             confirmDialogRef?.current?.open()
           }}
         /> : null
     }
     <ConfirmDialog
-      header='Are you sure you want to delete this API Key?'
+      header={t('admin.userAndGroup.apiKey.deleteConfirmHeader')}
       onConfirmed={() => {
         setSubmitted(true)
         DjangoRequests.delete(`/api/user/${user.id}/token`).then(
@@ -98,10 +89,7 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
       }}
       ref={confirmDialogRef}
     >
-      <div>
-        Any applications or scripts using this API Key will no longer be able
-        to access the GeoSight API. You cannot undo this action.
-      </div>
+      <div>{t('admin.userAndGroup.apiKey.deleteConfirmBody')}</div>
     </ConfirmDialog>
 
     <div className='Detail'>
@@ -114,7 +102,7 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
                 style={{ cursor: "pointer" }}
                 onClick={_ => {
                   navigator.clipboard.writeText(apiKey.api_key);
-                  notify("API Key copied to clipboard", NotificationStatus.SUCCESS);
+                  notify(t('admin.userAndGroup.apiKey.copiedToClipboard'), NotificationStatus.SUCCESS);
                 }}>
               </CopyIcon>
             }
@@ -122,11 +110,11 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
             value={apiKey.api_key}
           /> : null
       }
-      <div>Created At : {formatDateTime(new Date(apiKey.created))}</div>
-      <div>Platform : {apiKey.platform}</div>
-      <div>Status : {apiKey.is_active ? 'Active' : 'Inactive'}</div>
+      <div>{t('admin.userAndGroup.apiKey.createdAt')} : {formatDateTime(new Date(apiKey.created))}</div>
+      <div>{t('admin.userAndGroup.apiKey.platform')} : {apiKey.platform}</div>
+      <div>{t('admin.userAndGroup.apiKey.status')} : {apiKey.is_active ? t('admin.userAndGroup.apiKey.active') : t('admin.userAndGroup.apiKey.inactive')}</div>
       <div>
-        Expiry
+        {t('admin.userAndGroup.apiKey.expiry')}
         : {!apiKey.expiry ? '-' : formatDateTime(new Date(apiKey.expiry))}
       </div>
     </div>
@@ -135,12 +123,13 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
 }
 
 function ApiKeyUserCreate({ onCreated, onError }) {
+  const { t } = useTranslation();
   const [platform, setPlatform] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const confirmDialogRef = useRef(null);
 
   return <div className="BasicFormSection">
-    <label className="form-label required">Platform</label>
+    <label className="form-label required">{t('admin.userAndGroup.apiKey.platform')}</label>
     <input
       type="text"
       disabled={submitted}
@@ -152,14 +141,14 @@ function ApiKeyUserCreate({ onCreated, onError }) {
     <br/>
     <SaveButton
       variant="primary"
-      text="Generate API Key"
+      text={t('admin.userAndGroup.apiKey.generateApiKey')}
       onClick={() => {
         confirmDialogRef?.current?.open()
       }}
       disabled={submitted || !platform}
     />
     <ConfirmDialog
-      header='Generating new API Key'
+      header={t('admin.userAndGroup.apiKey.generateConfirmHeader')}
       onConfirmed={() => {
         setSubmitted(true)
         DjangoRequests.post(
@@ -183,16 +172,13 @@ function ApiKeyUserCreate({ onCreated, onError }) {
       }}
       ref={confirmDialogRef}
     >
-      <div>
-        This API Key is personal and please do not share it with other people.
-        If we notice suspect behavior, your API Key can be deleted and your
-        account suspended.
-      </div>
+      <div>{t('admin.userAndGroup.apiKey.generateConfirmBody')}</div>
     </ConfirmDialog>
   </div>
 }
 
 export default function ApiKeyUser() {
+  const { t } = useTranslation();
   const [init, setInit] = useState(true);
   const [apiKey, setApiKey] = useState(null);
 
@@ -221,20 +207,20 @@ export default function ApiKeyUser() {
               <ApiKeyUserCreate
                 onCreated={(apiKey) => {
                   setApiKey(apiKey)
-                  notify('The API Key has been successfully created!', NotificationStatus.SUCCESS)
+                  notify(t('admin.userAndGroup.apiKey.createdSuccess'), NotificationStatus.SUCCESS)
                 }}
                 onError={() => {
-                  notify('Error when creating API Key!', NotificationStatus.ERROR)
+                  notify(t('admin.userAndGroup.apiKey.createError'), NotificationStatus.ERROR)
                 }}
               /> :
               <ApiKeyDetail
                 apiKey={apiKey}
                 onDelete={() => {
                   setApiKey(null)
-                  notify('The API Key has been successfully deleted!', NotificationStatus.SUCCESS)
+                  notify(t('admin.userAndGroup.apiKey.deletedSuccess'), NotificationStatus.SUCCESS)
                 }}
                 onError={() => {
-                  notify('Error when deleting API Key!', NotificationStatus.ERROR)
+                  notify(t('admin.userAndGroup.apiKey.deleteError'), NotificationStatus.ERROR)
                 }}
               />
           }

@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 
 import './style.scss';
 import {
@@ -63,6 +64,7 @@ interface Props {
 export function ZonalAnalysisConfiguration(
   { config, setConfig }: Props
 ) {
+  const { t } = useTranslation();
   const [data, setData] = useState<ZonalAnalysisDashboardConfiguration>(
     {
       selectionModes: [SELECTION_MODE.SELECT_ADMIN, SELECTION_MODE.MANUAL],
@@ -256,7 +258,7 @@ export function ZonalAnalysisConfiguration(
       <ModalHeader onClosed={() => {
         setOpen(false)
       }}>
-        Zonal analysis configuration
+        {t('admin.dashboard.zonalAnalysis.title')}
       </ModalHeader>
       <ModalContent className='White'>
 
@@ -265,7 +267,7 @@ export function ZonalAnalysisConfiguration(
         <div className='Creator'>
           <FormControl style={{ minWidth: "200px" }}>
             <FormLabel className="MuiInputLabel-root">
-              Target layer (from context layers):
+              {t('admin.dashboard.zonalAnalysis.targetLayer')}
             </FormLabel>
             <SelectWithList
               isMulti={false}
@@ -280,7 +282,7 @@ export function ZonalAnalysisConfiguration(
             />
           </FormControl>
           <FormControl style={{ minWidth: "120px" }}>
-            <FormLabel className="MuiInputLabel-root">Aggregation:</FormLabel>
+            <FormLabel className="MuiInputLabel-root">{t('admin.dashboard.zonalAnalysis.aggregation')}:</FormLabel>
             <SelectWithList
               isMulti={false}
               value={newLayer.aggregation}
@@ -295,7 +297,7 @@ export function ZonalAnalysisConfiguration(
           {
             newLayer.aggregation === AGGREGATION_TYPES.COUNT ? null :
               <FormControl>
-                <FormLabel className="MuiInputLabel-root">Field:</FormLabel>
+                <FormLabel className="MuiInputLabel-root">{t('admin.field')}:</FormLabel>
                 <SelectWithList
                   isMulti={false}
                   value={newLayer.aggregatedField}
@@ -344,9 +346,9 @@ export function ZonalAnalysisConfiguration(
         <div className='LayerList'>
           <table>
             <tr>
-              <th>Source layer</th>
-              <th>Aggregation</th>
-              <th>Field</th>
+              <th>{t('admin.dashboard.zonalAnalysis.sourceLayer')}</th>
+              <th>{t('admin.dashboard.zonalAnalysis.aggregation')}</th>
+              <th>{t('admin.field')}</th>
               <th></th>
             </tr>
             {
@@ -379,7 +381,7 @@ export function ZonalAnalysisConfiguration(
             alignItems: "center",
             marginBottom: "1rem"
           }}>
-            <div>Selection mode:</div>
+            <div>{t('admin.dashboard.zonalAnalysis.selectionMode')}:</div>
             {
               [SELECTION_MODE.SELECT_ADMIN, SELECTION_MODE.MANUAL].map(mode => {
                 return <FormControlLabel
@@ -396,7 +398,7 @@ export function ZonalAnalysisConfiguration(
                     }
                     setData({ ...data })
                   }}
-                  label={mode === SELECTION_MODE.SELECT_ADMIN ? 'Click to select' : 'Draw'}/>
+                  label={mode === SELECTION_MODE.SELECT_ADMIN ? t('admin.dashboard.zonalAnalysis.clickToSelect') : t('admin.dashboard.zonalAnalysis.draw')}/>
               })
             }
           </div>
@@ -404,7 +406,7 @@ export function ZonalAnalysisConfiguration(
         <div className='SaveButton-Section'>
           <SaveButton
             variant="primary"
-            text={"Apply Changes"}
+            text={t('admin.dashboard.contextLayer.applyChanges')}
             onClick={apply}/>
         </div>
       </ModalContent>

@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
@@ -54,6 +55,7 @@ export function IndicatorLayerConfig({
   relatedTables,
   referenceLayer,
 }) {
+  const { t } = useTranslation();
   const onClosed = () => {
     setOpen(false);
   };
@@ -65,7 +67,7 @@ export function IndicatorLayerConfig({
         onClosed={onClosed}
         className="ModalSelection IndicatorLayerCreateTypeSelection"
       >
-        <ModalHeader onClosed={onClosed}>Add new indicator layer</ModalHeader>
+        <ModalHeader onClosed={onClosed}>{t('admin.dashboard.indicatorLayers.addNewLayer')}</ModalHeader>
         <ModalContent>
           <div
             className={
@@ -79,10 +81,9 @@ export function IndicatorLayerConfig({
               }
             }}
           >
-            <b className="light">Single Indicator Layer</b>
+            <b className="light">{t('admin.dashboard.indicatorLayers.singleIndicatorLayer')}</b>
             <div className="helptext">
-              Select multiple indicator on the list and turn each of it as
-              single indicator layer.
+              {t('admin.dashboard.indicatorLayers.singleIndicatorLayerHelp')}
             </div>
           </div>
           <div
@@ -97,10 +98,9 @@ export function IndicatorLayerConfig({
               }
             }}
           >
-            <b className="light">Multi Indicators Layer</b>
+            <b className="light">{t('admin.dashboard.indicatorLayers.multiIndicatorsLayer')}</b>
             <div className="helptext">
-              Select 2 or more indicators and turn all of it as single indicator
-              layer.
+              {t('admin.dashboard.indicatorLayers.multiIndicatorsLayerHelp')}
             </div>
           </div>
           <div
@@ -117,16 +117,16 @@ export function IndicatorLayerConfig({
               }
             }}
           >
-            <b className="light">Related Table Layer</b>
+            <b className="light">{t('admin.dashboard.indicatorLayers.relatedTableLayer')}</b>
             {referenceLayer.identifier ? (
               ""
             ) : (
               <div className="helptext error">
-                This is disabled, please select reference layer to enable it.
+                {t('admin.dashboard.indicatorLayers.relatedTableLayerDisabled')}
               </div>
             )}
             <div className="helptext">
-              Create indicator layer from related table.
+              {t('admin.dashboard.indicatorLayers.relatedTableLayerHelp')}
             </div>
           </div>
           <div
@@ -140,10 +140,9 @@ export function IndicatorLayerConfig({
               }
             }}
           >
-            <b className="light">Dynamic Indicators Layer</b>
+            <b className="light">{t('admin.dashboard.indicatorLayers.dynamicIndicatorsLayer')}</b>
             <div className="helptext">
-              Create dynamic indicator layer using custom expression and user
-              feedback.
+              {t('admin.dashboard.indicatorLayers.dynamicIndicatorsLayerHelp')}
             </div>
           </div>
           <div
@@ -153,9 +152,9 @@ export function IndicatorLayerConfig({
               onClosed();
             }}
           >
-            <b className="light">SDMX Indicators Layer</b>
+            <b className="light">{t('admin.dashboard.indicatorLayers.sdmxIndicatorsLayer')}</b>
             <div className="helptext">
-              Create dynamic indicator layer using SDMX dataflow.
+              {t('admin.dashboard.indicatorLayers.sdmxIndicatorsLayerHelp')}
             </div>
           </div>
         </ModalContent>
