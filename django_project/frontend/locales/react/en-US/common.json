@@ -371,6 +371,14 @@
         "scheduledImport": "Scheduled Import",
         "singleImport": "Single Import"
       },
+      "scheduledInput": {
+        "addNewAlert": "Add new Alert",
+        "jobSchedule": "Job Schedule",
+        "onFailure": "On Failure",
+        "onStart": "On Start",
+        "onSuccess": "On Success",
+        "runOnCreate": "Run for the first time after creating/editing the job."
+      },
       "scheduledJobs": {
         "pauseJob": "Pause the job",
         "pauseSelected": "Pause Selected",
@@ -435,6 +443,18 @@
     },
     "language": "Language",
     "loading": "Loading",
+    "logData": {
+      "dataset": "Dataset",
+      "filterByGeoCodes": "Filter by Geo Code(s)",
+      "filterByStatus": "Filter by status(s)",
+      "filterFrom": "Filter from",
+      "filterTo": "Filter to",
+      "geoCode": "Geo Code",
+      "inReview": "In review, not saved to database",
+      "savedToDatabase": "Saved to database",
+      "time": "Time",
+      "value": "Value"
+    },
     "multiSelector": {
       "filterData": "Filter data"
     },
@@ -583,10 +603,31 @@
       "style": "Style",
       "styleType": "Style type"
     },
+    "excelInput": {
+      "excelFile": "Excel file",
+      "rowNumberOfHeader": "Row number of the header",
+      "sheetName": "Sheet name"
+    },
+    "indicatorMapping": {
+      "addNewMapping": "Add new mapping",
+      "columnFromExcel": "Column From Excel"
+    },
     "referenceDataset": {
       "importedBy": "Imported By"
     },
+    "referenceLayerInput": {
+      "anyLevel": "Any Level (Data Driven)",
+      "codeTypeHelp": "The code type that being used on the data.",
+      "selectAdminLevel": "Select admin level",
+      "selectCodeType": "Select code type",
+      "specificLevel": "Specific Level",
+      "template": "Template"
+    },
+    "save": "Save",
     "select": "Select...",
+    "styleConfig": {
+      "overrideStyle": "Override style from default"
+    },
     "styles": "Styles",
     "table": {
       "noResultsFound": "No results found"

@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import Grid from '@mui/material/Grid';
 import CircularProgress from "@mui/material/CircularProgress";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
@@ -36,6 +37,7 @@ export default function ExcelInput(
     setFileChanged
   }
 ) {
+  const { t } = useTranslation();
   const [reading, setReading] = useState(false);
   const [state, setState] = useState({
     sheets: [],
@@ -113,7 +115,7 @@ export default function ExcelInput(
       <Grid item xs={6}>
         <div className="BasicFormSection">
           <label className="form-label required" htmlFor="group">
-            Excel file
+            {t('admin.excelInput.excelFile')}
             {
               reading ?
                 <Fragment>&nbsp;<CircularProgress size={10}/></Fragment> : null
@@ -127,7 +129,7 @@ export default function ExcelInput(
       <Grid item xs={3}>
         <div className="BasicFormSection">
           <label className="form-label required" htmlFor="group">
-            Sheet name
+            {t('admin.excelInput.sheetName')}
           </label>
           <SelectWithList
             list={sheets}
@@ -138,7 +140,7 @@ export default function ExcelInput(
       <Grid item xs={3}>
         <div className="BasicFormSection">
           <label className="form-label required" htmlFor="group">
-            Row number of the header
+            {t('admin.excelInput.rowNumberOfHeader')}
           </label>
           <input
             type='number'

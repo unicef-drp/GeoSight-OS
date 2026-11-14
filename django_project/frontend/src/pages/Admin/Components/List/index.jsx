@@ -408,6 +408,7 @@ export const List = forwardRef(
   ) => {
     const listRef = useRef(null);
     const [search, setSearch] = useState(searchDefault);
+    const { t } = useTranslation();
 
     // Refresh changed
     useImperativeHandle(ref, () => ({
@@ -421,7 +422,7 @@ export const List = forwardRef(
       <Fragment>
         <div className="AdminBaseInput Indicator-Search">
           <IconTextField
-            placeholder={"Search " + pageName}
+            placeholder={t('admin.searchPlaceholder', { pageName })}
             defaultValue={search ? search : ""}
             iconEnd={<MagnifyIcon />}
             onChange={(evt) => setSearch(evt.target.value.toLowerCase())}

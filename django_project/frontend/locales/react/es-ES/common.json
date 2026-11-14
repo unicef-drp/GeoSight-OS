@@ -363,6 +363,14 @@
         "scheduledImport": "Importación programada",
         "singleImport": "Importación única"
       },
+      "scheduledInput": {
+        "addNewAlert": "Agregar nueva alerta",
+        "jobSchedule": "Horario del trabajo",
+        "onFailure": "En fallo",
+        "onStart": "Al inicio",
+        "onSuccess": "En éxito",
+        "runOnCreate": "Ejecutar por primera vez después de crear/editar el trabajo."
+      },
       "scheduledJobs": {
         "pauseJob": "Pausar el trabajo",
         "pauseSelected": "Pausar seleccionados",
@@ -434,6 +442,18 @@
     },
     "language": "Idioma",
     "loading": "Cargando",
+    "logData": {
+      "dataset": "Conjunto de datos",
+      "filterByGeoCodes": "Filtrar por código(s) geográfico(s)",
+      "filterByStatus": "Filtrar por estado(s)",
+      "filterFrom": "Filtrar desde",
+      "filterTo": "Filtrar hasta",
+      "geoCode": "Código geográfico",
+      "inReview": "En revisión, no guardado en la base de datos",
+      "savedToDatabase": "Guardado en la base de datos",
+      "time": "Hora",
+      "value": "Valor"
+    },
     "multiSelector": {
       "filterData": "Filtrar datos"
     },
@@ -550,8 +570,25 @@
     },
     "profile": "Perfil",
     "project": "Proyecto",
+    "excelInput": {
+      "excelFile": "Archivo Excel",
+      "rowNumberOfHeader": "Número de fila del encabezado",
+      "sheetName": "Nombre de hoja"
+    },
+    "indicatorMapping": {
+      "addNewMapping": "Agregar nuevo mapeo",
+      "columnFromExcel": "Columna de Excel"
+    },
     "referenceDataset": {
       "importedBy": "Importado por"
+    },
+    "referenceLayerInput": {
+      "anyLevel": "Cualquier nivel (basado en datos)",
+      "codeTypeHelp": "El tipo de código utilizado en los datos.",
+      "selectAdminLevel": "Seleccionar nivel administrativo",
+      "selectCodeType": "Seleccionar tipo de código",
+      "specificLevel": "Nivel específico",
+      "template": "Plantilla"
     },
     "referenceDatasets": "CONJUNTOS DE DATOS DE REFERENCIA",
     "referenceDatasetsLower": "Conjuntos de datos de referencia",
@@ -559,7 +596,11 @@
     "requestApproved": "La solicitud ha sido aprobada",
     "requestRejected": "La solicitud ha sido rechazada",
     "searchPlaceholder": "Buscar {{pageName}}",
+    "save": "Guardar",
     "select": "Seleccionar...",
+    "styleConfig": {
+      "overrideStyle": "Reemplazar estilo por defecto"
+    },
     "showSelected": "Mostrar seleccionados",
     "style": {
       "changeStyle": "Cambiar estilo",

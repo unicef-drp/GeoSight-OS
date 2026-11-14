@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Checkbox,
@@ -58,6 +59,7 @@ export default function StyleConfig({
   useOverrideLabel = true,
   children,
 }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [layer, setLayer] = useState(null);
   const [error, setError] = useState(null);
@@ -215,7 +217,7 @@ export default function StyleConfig({
                           }
                         />
                       }
-                      label="Override style from default"
+                      label={t('admin.styleConfig.overrideStyle')}
                     />
                   </FormGroup>
                 ) : null}
@@ -232,7 +234,7 @@ export default function StyleConfig({
                       setError={setError}
                     />
                   ) : (
-                    <div>Loading</div>
+                    <div>{t('admin.loading')}</div>
                   )
                 ) : null}
 

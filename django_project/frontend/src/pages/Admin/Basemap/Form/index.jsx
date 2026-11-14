@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -30,6 +31,7 @@ import './style.scss';
  * Indicator Form App
  */
 export default function BasemapForm() {
+  const { t } = useTranslation();
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
   const selectableInput = batch !== null
@@ -52,7 +54,7 @@ export default function BasemapForm() {
           }
           <SaveButton
             variant="primary"
-            text="Save"
+            text={t('admin.save')}
             onClick={() => {
               formRef.current.submit(true)
               setSubmitted(true)

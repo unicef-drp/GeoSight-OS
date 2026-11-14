@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import {
   LocalizationProvider
 } from '@mui/x-date-pickers/LocalizationProvider';
@@ -68,6 +69,7 @@ let inProgress = false
 
 /*** Importer log data */
 export default function ImporterLogData() {
+  const { t } = useTranslation();
   const tableRef = useRef(null);
   // Notification
   const notificationRef = useRef(null);
@@ -117,7 +119,7 @@ export default function ImporterLogData() {
               break
             case 'Saved':
               Button = <CheckIcon fontSize={"small"} className='Success'/>
-              Text = 'Saved to database'
+              Text = t('admin.logData.savedToDatabase')
               Color = 'success.main'
               break
             case 'Warning':
@@ -128,7 +130,7 @@ export default function ImporterLogData() {
               break
             default:
               Button = <QuestionMarkIcon fontSize={"small"}/>
-              Text = 'In review, not saved to database'
+              Text = t('admin.logData.inReview')
               Color = 'info.main'
               break
           }
@@ -154,27 +156,27 @@ export default function ImporterLogData() {
 
     if (isIndicatorValue) {
       columnsByDict['indicator_name'] = {
-        field: 'indicator_name', headerName: 'Indicator',
+        field: 'indicator_name', headerName: t('admin.importer.logDetail.indicator'),
         flex: 1, minWidth: 100
       }
       columnsByDict['reference_layer_name'] = {
-        field: 'reference_layer_name', headerName: 'Dataset',
+        field: 'reference_layer_name', headerName: t('admin.logData.dataset'),
         flex: 0.5, minWidth: 100
       }
       columnsByDict['admin_level'] = {
         field: 'admin_level',
-        headerName: 'Level',
+        headerName: t('admin.dataset.level'),
         width: 80,
         minWidth: 80
       }
       columnsByDict['geo_code'] = {
-        field: 'geo_code', headerName: 'Geo Code', minWidth: 200, flex: 1
+        field: 'geo_code', headerName: t('admin.logData.geoCode'), minWidth: 200, flex: 1
       }
       columnsByDict['date_time'] = {
-        field: 'date_time', headerName: 'Time', minWidth: 200
+        field: 'date_time', headerName: t('admin.logData.time'), minWidth: 200
       }
       columnsByDict['value'] = {
-        field: 'value', headerName: 'Value', minWidth: 100
+        field: 'value', headerName: t('admin.logData.value'), minWidth: 100
       }
       columnsByDict['PCode'] = {
         field: 'PCode', headerName: 'PCode', minWidth: 100,
@@ -188,7 +190,7 @@ export default function ImporterLogData() {
         },
       }
       columnsByDict['description'] = {
-        field: 'description', headerName: 'Description', minWidth: 200,
+        field: 'description', headerName: t('admin.columns.description'), minWidth: 200,
         renderCell: (params) => {
           const value = params.row.data?.description
           return <div
@@ -367,7 +369,7 @@ export default function ImporterLogData() {
         <div className='SaveButtonOnTable'>
           <SaveButton
             variant="primary Reverse"
-            text={"Save"}
+            text={t('admin.save')}
             disabled={!selectionModel.length || progress < 100}
             style={{ marginLeft: 0, marginBottom: 0 }}
             onClick={() => {
@@ -408,7 +410,7 @@ export default function ImporterLogData() {
       otherFilters={
         <div className='ListAdminFilters'>
           <MultipleSelectWithSearch
-            placeholder={'Filter by status(s)'}
+            placeholder={t('admin.logData.filterByStatus')}
             options={['Warning and Error']}
             value={filters.status ? filters.status : []}
             onChangeFn={newFilter => setFilters({
@@ -429,14 +431,14 @@ export default function ImporterLogData() {
               datasets: newFilter
             })}/>
           <MultipleCreatableFilter
-            title={'Filter by Level(s)'}
+            title={t('admin.dataset.filterByLevels')}
             data={filters.levels}
             setData={newFilter => setFilters({
               ...filters,
               levels: newFilter
             })}/>
           <MultipleCreatableFilter
-            title={'Filter by Geo Code(s)'}
+            title={t('admin.logData.filterByGeoCodes')}
             data={filters.geographies}
             setData={newFilter => setFilters({
               ...filters,
@@ -444,7 +446,7 @@ export default function ImporterLogData() {
             })}/>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
-              label="Filter from"
+              label={t('admin.logData.filterFrom')}
               inputFormat="YYYY-MM-DD"
               maxDate={filters.toTime}
               value={filters.fromTime}
@@ -455,7 +457,7 @@ export default function ImporterLogData() {
               renderInput={(params) => <TextField {...params} />}
             />
             <DesktopDatePicker
-              label="Filter to"
+              label={t('admin.logData.filterTo')}
               inputFormat="YYYY-MM-DD"
               minDate={filters.fromTime}
               value={filters.toTime}

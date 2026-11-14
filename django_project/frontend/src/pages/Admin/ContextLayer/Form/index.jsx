@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import $ from "jquery";
 import { Checkbox } from "@mui/material";
 
@@ -38,6 +39,7 @@ let init = false;
  * Context Layer Form App
  */
 export default function ContextLayerForm() {
+  const { t } = useTranslation();
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
   const [data, setData] = useState({});
@@ -243,7 +245,7 @@ export default function ContextLayerForm() {
             : null}
           <SaveButton
             variant="primary"
-            text="Save"
+            text={t('admin.save')}
             onClick={() => {
               formRef.current.submit(true);
               setSubmitted(true);

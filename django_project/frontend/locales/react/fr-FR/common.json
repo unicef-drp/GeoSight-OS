@@ -363,6 +363,14 @@
         "scheduledImport": "Importation planifiée",
         "singleImport": "Importation unique"
       },
+      "scheduledInput": {
+        "addNewAlert": "Ajouter une nouvelle alerte",
+        "jobSchedule": "Planification du travail",
+        "onFailure": "En cas d'échec",
+        "onStart": "Au démarrage",
+        "onSuccess": "En cas de succès",
+        "runOnCreate": "Exécuter pour la première fois après la création/modification du travail."
+      },
       "scheduledJobs": {
         "pauseJob": "Suspendre le travail",
         "pauseSelected": "Suspendre la sélection",
@@ -434,6 +442,18 @@
     },
     "language": "Langue",
     "loading": "Chargement",
+    "logData": {
+      "dataset": "Jeu de données",
+      "filterByGeoCodes": "Filtrer par code(s) géographique(s)",
+      "filterByStatus": "Filtrer par statut(s)",
+      "filterFrom": "Filtrer depuis",
+      "filterTo": "Filtrer jusqu'à",
+      "geoCode": "Code géographique",
+      "inReview": "En révision, non enregistré dans la base de données",
+      "savedToDatabase": "Enregistré dans la base de données",
+      "time": "Heure",
+      "value": "Valeur"
+    },
     "multiSelector": {
       "filterData": "Filtrer les données"
     },
@@ -550,8 +570,25 @@
     },
     "profile": "Profil",
     "project": "Projet",
+    "excelInput": {
+      "excelFile": "Fichier Excel",
+      "rowNumberOfHeader": "Numéro de ligne de l'en-tête",
+      "sheetName": "Nom de la feuille"
+    },
+    "indicatorMapping": {
+      "addNewMapping": "Ajouter un nouveau mappage",
+      "columnFromExcel": "Colonne d'Excel"
+    },
     "referenceDataset": {
       "importedBy": "Importé par"
+    },
+    "referenceLayerInput": {
+      "anyLevel": "Tout niveau (piloté par les données)",
+      "codeTypeHelp": "Le type de code utilisé dans les données.",
+      "selectAdminLevel": "Sélectionner le niveau administratif",
+      "selectCodeType": "Sélectionner le type de code",
+      "specificLevel": "Niveau spécifique",
+      "template": "Modèle"
     },
     "referenceDatasets": "JEUX DE DONNÉES DE RÉFÉRENCE",
     "referenceDatasetsLower": "Jeux de données de référence",
@@ -559,7 +596,11 @@
     "requestApproved": "La demande est approuvée",
     "requestRejected": "La demande est rejetée",
     "searchPlaceholder": "Rechercher {{pageName}}",
+    "save": "Enregistrer",
     "select": "Sélectionner...",
+    "styleConfig": {
+      "overrideStyle": "Remplacer le style par défaut"
+    },
     "showSelected": "Afficher la sélection",
     "style": {
       "changeStyle": "Modifier le style",

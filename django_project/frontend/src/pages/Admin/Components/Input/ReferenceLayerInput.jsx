@@ -20,6 +20,7 @@ import React, {
   useImperativeHandle,
   useState
 } from 'react';
+import { useTranslation } from "react-i18next";
 import Grid from '@mui/material/Grid';
 import {
   Button,
@@ -65,6 +66,7 @@ export const ReferenceLayerInput = forwardRef(
       }
     }));
 
+    const { t } = useTranslation();
     const [references, setReferences] = useState([])
     const [templateDownloading, setTemplateDownloading] = useState(false)
 
@@ -229,7 +231,7 @@ export const ReferenceLayerInput = forwardRef(
         <Grid item xs={6}>
           <div className="BasicFormSection ReferenceLayerInputSelectorWrapper">
             <label className="form-label required" htmlFor="group">
-              Reference Layer
+              {t('admin.importer.logDetail.referenceLayer')}
             </label>
             <FormControl className='InputControl'>
               <DatasetViewSelector
@@ -269,7 +271,7 @@ export const ReferenceLayerInput = forwardRef(
               >
                 {
                   templateDownloading ? <>
-                    <CircularProgress/>Downloading</> : 'Template'
+                    <CircularProgress/>{t('dashboardPage.dataDownloader.downloading')}</> : t('admin.referenceLayerInput.template')
                 }
               </Button>
             </FormControl>
@@ -277,7 +279,7 @@ export const ReferenceLayerInput = forwardRef(
         </Grid>
         <Grid item xs={3}>
           <label className="form-label required" htmlFor="group">
-            Admin Level
+            {t('admin.importer.logDetail.adminLevel')}
           </label>
           <RadioGroup
             value={data?.admin_level_type ? data.admin_level_type : BY_VALUE}
@@ -288,10 +290,10 @@ export const ReferenceLayerInput = forwardRef(
             <FormControlLabel
               disabled={valueOnly}
               value={ANY_LEVEL} control={<Radio/>}
-              label={ANY_LEVEL}/>
+              label={t('admin.referenceLayerInput.anyLevel')}/>
             <FormControlLabel
               value={BY_VALUE} control={<Radio/>}
-              label={BY_VALUE}/>
+              label={t('admin.referenceLayerInput.specificLevel')}/>
           </RadioGroup>
           <div className="BasicFormSection" style={{ paddingTop: '2px' }}>
             {
@@ -299,7 +301,7 @@ export const ReferenceLayerInput = forwardRef(
                 <SelectWithList
                   name='admin_level'
                   required={true}
-                  placeholder={referenceLayer && referenceLayer.dataset_levels ? 'Select admin level' : 'Loading'}
+                  placeholder={referenceLayer && referenceLayer.dataset_levels ? t('admin.referenceLayerInput.selectAdminLevel') : t('admin.loading')}
                   list={referenceLayer && referenceLayer.dataset_levels}
                   value={data.admin_level_value}
                   onChange={evt => {
@@ -315,11 +317,11 @@ export const ReferenceLayerInput = forwardRef(
           props.noGeoCode ? null :
             <Grid item xs={3}>
               <label className="form-label required" htmlFor="group">
-                Type of Geo Code
+                {t('admin.importer.logDetail.typeOfGeoCode')}
               </label>
               <SelectWithList
                 required={true}
-                placeholder={referenceLayer?.possible_id_types?.length ? 'Select code type' : 'Loading'}
+                placeholder={referenceLayer?.possible_id_types?.length ? t('admin.referenceLayerInput.selectCodeType') : t('admin.loading')}
                 list={referenceLayer?.possible_id_types ? referenceLayer?.possible_id_types : []}
                 value={data.admin_code_type}
                 onChange={evt => {
@@ -328,7 +330,7 @@ export const ReferenceLayerInput = forwardRef(
                 }}
               />
               <span className={'form-helptext'}>
-                The code type that being used on the data.
+                {t('admin.referenceLayerInput.codeTypeHelp')}
               </span>
             </Grid>
         }

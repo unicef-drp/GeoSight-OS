@@ -21,6 +21,7 @@ import React, {
   useEffect,
   useImperativeHandle
 } from 'react';
+import { useTranslation } from "react-i18next";
 import {
   FormControl,
   FormControlLabel,
@@ -47,6 +48,7 @@ export const ScheduledInput = forwardRef(
      data, setData, _scheduleTypes, scheduleTypesDefault, scheduleTypes
    }, ref
   ) => {
+    const { t } = useTranslation();
     // Ready check
     useImperativeHandle(ref, () => ({
       isReady(data) {
@@ -86,7 +88,7 @@ export const ScheduledInput = forwardRef(
       <Fragment>
         <FormControl className="BasicFormSection">
           <label className="form-label required">
-            Import schedule
+            {t('admin.importer.logDetail.schedule')}
           </label>
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -117,13 +119,13 @@ export const ScheduledInput = forwardRef(
           data.schedule_type === _scheduleTypes.ScheduledImport ?
             <FormControl className="BasicFormSection">
               <label className="form-label required">
-                Job Name
+                {t('admin.importer.logDetail.jobName')}
               </label>
               <div>
                 <FormControl
                   className="BasicFormSection InputControl">
                   <input
-                    placeholder='Job Name'
+                    placeholder={t('admin.importer.logDetail.jobName')}
                     type='text'
                     value={data.job_name}
                     onChange={evt => {
@@ -135,7 +137,7 @@ export const ScheduledInput = forwardRef(
                 </FormControl>
               </div>
               <label className="form-label required">
-                Job Schedule
+                {t('admin.importer.scheduledInput.jobSchedule')}
               </label>
               <div>
                 <FormControl
@@ -152,7 +154,7 @@ export const ScheduledInput = forwardRef(
                       }}
                     />
                   }
-                  label="Run for the first time after creating/editing the job."
+                  label={t('admin.importer.scheduledInput.runOnCreate')}
                 />
               </div>
 
@@ -174,7 +176,7 @@ export const ScheduledInput = forwardRef(
                       setData({ ...data })
                     }}
                   >
-                    <AddCircleIcon/> Add new Alert
+                    <AddCircleIcon/> {t('admin.importer.scheduledInput.addNewAlert')}
                   </ThemeButton>
                 </div>
                 <table>
@@ -207,7 +209,7 @@ export const ScheduledInput = forwardRef(
                                       setData({ ...data })
                                     }}/>
                                 }
-                                label="On Start"/>
+                                label={t('admin.importer.scheduledInput.onStart')}/>
                               <FormControlLabel
                                 control={
                                   <Checkbox
@@ -217,7 +219,7 @@ export const ScheduledInput = forwardRef(
                                       setData({ ...data })
                                     }}/>
                                 }
-                                label="On Success"/>
+                                label={t('admin.importer.scheduledInput.onSuccess')}/>
                               <FormControlLabel
                                 control={
                                   <Checkbox
@@ -227,7 +229,7 @@ export const ScheduledInput = forwardRef(
                                       setData({ ...data })
                                     }}/>
                                 }
-                                label="On Failure"/>
+                                label={t('admin.importer.scheduledInput.onFailure')}/>
                             </FormGroup>
                           </th>
                           <th>

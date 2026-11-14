@@ -363,6 +363,14 @@
         "scheduledImport": "Importação agendada",
         "singleImport": "Importação única"
       },
+      "scheduledInput": {
+        "addNewAlert": "Adicionar novo alerta",
+        "jobSchedule": "Agendamento do trabalho",
+        "onFailure": "Na falha",
+        "onStart": "No início",
+        "onSuccess": "No sucesso",
+        "runOnCreate": "Executar pela primeira vez após criar/editar o trabalho."
+      },
       "scheduledJobs": {
         "pauseJob": "Pausar o trabalho",
         "pauseSelected": "Pausar selecionados",
@@ -434,6 +442,18 @@
     },
     "language": "Idioma",
     "loading": "Carregando",
+    "logData": {
+      "dataset": "Conjunto de dados",
+      "filterByGeoCodes": "Filtrar por código(s) geográfico(s)",
+      "filterByStatus": "Filtrar por status",
+      "filterFrom": "Filtrar de",
+      "filterTo": "Filtrar até",
+      "geoCode": "Código geográfico",
+      "inReview": "Em revisão, não salvo no banco de dados",
+      "savedToDatabase": "Salvo no banco de dados",
+      "time": "Hora",
+      "value": "Valor"
+    },
     "multiSelector": {
       "filterData": "Filtrar dados"
     },
@@ -550,8 +570,25 @@
     },
     "profile": "Perfil",
     "project": "Projeto",
+    "excelInput": {
+      "excelFile": "Arquivo Excel",
+      "rowNumberOfHeader": "Número da linha do cabeçalho",
+      "sheetName": "Nome da planilha"
+    },
+    "indicatorMapping": {
+      "addNewMapping": "Adicionar novo mapeamento",
+      "columnFromExcel": "Coluna do Excel"
+    },
     "referenceDataset": {
       "importedBy": "Importado por"
+    },
+    "referenceLayerInput": {
+      "anyLevel": "Qualquer nível (orientado por dados)",
+      "codeTypeHelp": "O tipo de código usado nos dados.",
+      "selectAdminLevel": "Selecionar nível administrativo",
+      "selectCodeType": "Selecionar tipo de código",
+      "specificLevel": "Nível específico",
+      "template": "Modelo"
     },
     "referenceDatasets": "CONJUNTOS DE DADOS DE REFERÊNCIA",
     "referenceDatasetsLower": "Conjuntos de dados de referência",
@@ -559,7 +596,11 @@
     "requestApproved": "Solicitação aprovada",
     "requestRejected": "Solicitação rejeitada",
     "searchPlaceholder": "Pesquisar {{pageName}}",
+    "save": "Salvar",
     "select": "Selecionar...",
+    "styleConfig": {
+      "overrideStyle": "Substituir estilo padrão"
+    },
     "showSelected": "Mostrar selecionados",
     "style": {
       "changeStyle": "Alterar estilo",

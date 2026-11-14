@@ -16,6 +16,7 @@
 /** Specifically for Reference Layer <> Level input */
 
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { FormControl } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
@@ -66,6 +67,7 @@ export default function IndicatorMapping(
     config, setConfig, attributes, indicatorList
   }
 ) {
+  const { t } = useTranslation();
   let { mapping } = config;
   if (!mapping) {
     mapping = []
@@ -93,7 +95,7 @@ export default function IndicatorMapping(
         }
       }}
     >
-      <AddCircleIcon/>Add new mapping
+      <AddCircleIcon/>{t('admin.indicatorMapping.addNewMapping')}
     </ThemeButton>
     {
       mapping && indicatorList.length ?
@@ -105,7 +107,7 @@ export default function IndicatorMapping(
               {
                 attributes.length ?
                   <SelectWithList
-                    placeholder={'Column From Excel'}
+                    placeholder={t('admin.indicatorMapping.columnFromExcel')}
                     showFloatingLabel={true}
                     list={
                       attributes.filter(
@@ -118,7 +120,7 @@ export default function IndicatorMapping(
                       setConfig({ ...config, mapping: mapping })
                     }}
                   /> : <input
-                    placeholder={'Column From Excel'}
+                    placeholder={t('admin.indicatorMapping.columnFromExcel')}
                     value={key}
                     onChange={evt => {
                       map.key = evt.target.value
@@ -129,7 +131,7 @@ export default function IndicatorMapping(
             </Grid>
             <Grid item xs={6}>
               <SelectWithList
-                placeholder={'Indicator'}
+                placeholder={t('admin.importer.logDetail.indicator')}
                 showFloatingLabel={true}
                 list={indicatorList}
                 value={value ? parseInt(value?.replace('indicator-', '')) : null}
