@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import {
@@ -33,6 +34,7 @@ import './style.scss';
 export default function Config(
   { indicator, indicators, update }
 ) {
+  const { t } = useTranslation();
   const [data, setData] = useState(indicator)
   const [open, setOpen] = useState(false);
 
@@ -65,9 +67,7 @@ export default function Config(
         <ModalHeader onClosed={() => {
           setOpen(false)
         }}>
-          {
-            'Style for ' + data.name
-          }
+          {t('admin.dashboard.form.indicatorLayers.styleFor', { name: data.name })}
         </ModalHeader>
         <ModalContent className='Gray'>
           <div className='SaveButton-Section'>
@@ -100,7 +100,7 @@ export default function Config(
                           updateData(data)
                         }}/>
                     }
-                    label={"Override style from indicator style"}/>
+                    label={t('admin.dashboard.form.indicatorLayers.overrideStyleFromIndicator')}/>
                 </FormGroup>
               </div>
               {

@@ -94,10 +94,29 @@
       "modifiedBy": "Modifié par",
       "shortcode": "Code court"
     },
+    "components": {
+      "view": "Vue",
+      "defaultLevel": "Niveau par défaut",
+      "availableLevels": "Niveaux disponibles",
+      "selectDefaultAdminLevel": "Sélectionner le niveau administratif par défaut",
+      "selectAvailableLevels": "Sélectionner les niveaux administratifs disponibles",
+      "pleaseSelectView": "Veuillez d'abord sélectionner une vue",
+      "dateTimeSetting": {
+        "dataDrivenDate": "Date pilotée par les données",
+        "nowCurrentDatetime": "Maintenant (date/heure actuelle de l'exécution)"
+      },
+      "indicatorSetting": {
+        "dataDrivenIndicatorColumn": "Colonne d'indicateur pilotée par les données"
+      }
+    },
     "complexColorValueDetected": "Valeur de couleur complexe détectée. Veuillez modifier en mode de saisie brute.",
     "config": "Configuration",
     "confirm": "Confirmer",
     "contextLayer": {
+      "relatedTable": {
+        "latitudeField": "Champ de latitude",
+        "longitudeField": "Champ de longitude"
+      },
       "arcgis": {
         "borderColor": "Couleur de bordure",
         "borderWeight": "Épaisseur de bordure",
@@ -140,7 +159,47 @@
       },
       "form": {
         "general": {
-          "thumbnail": "Vignette"
+          "thumbnail": "Vignette",
+          "view": "Vue",
+          "defaultTimeMode": "Mode de temps par défaut",
+          "useLastKnownValue": "Utiliser la dernière valeur connue pour tous les indicateurs (désactive le curseur de temps)",
+          "fitToCurrentIndicatorRange": "Ajuster à la plage de l'indicateur actuel",
+          "showLastKnownValueInRange": "Afficher la dernière valeur connue dans la plage",
+          "defaultInterval": "Intervalle par défaut",
+          "extent": "Étendue",
+          "projectOverview": "Aperçu du projet"
+        },
+        "tabs": {
+          "general": "Général",
+          "basemaps": "Fonds de carte",
+          "contextLayers": "Couches de contexte",
+          "indicators": "Indicateurs",
+          "indicatorLayers": "Couches d'indicateurs",
+          "filters": "Filtres",
+          "widgets": "Widgets",
+          "relatedTables": "Tables associées",
+          "tools": "Outils",
+          "share": "Partager"
+        },
+        "indicatorLayers": {
+          "overrideAdminLevel": "Remplacer le niveau administratif",
+          "customizePopup": "Personnaliser la fenêtre contextuelle",
+          "createDynamicLayer": "Créer une couche d'indicateur dynamique",
+          "changeLayer": "Modifier la couche {{name}}",
+          "styleFor": "Style pour {{name}}",
+          "overrideStyleFromIndicator": "Remplacer le style de l'indicateur"
+        },
+        "sdmx": {
+          "columnGeographCode": "Colonne avec le code géographique",
+          "valueColumn": "Colonne de valeur",
+          "dateTimeColumnField": "Colonne/Champ Date et Heure",
+          "dateTimeFormat": "Format Date et Heure",
+          "dateTimeFormatHelp": "Spécifier le format de date/heure d'entrée (ex: AAAA-MM-JJ ou AAAA-MM). Excel convertit généralement le temps au format timestamp."
+        },
+        "listForm": {
+          "select": "Sélectionner {{pageName}}{{groupName}}",
+          "for": " pour {{groupName}}",
+          "applySelections": "Appliquer {{count}} sélection(s)"
         }
       },
       "saveAs": {
@@ -730,6 +789,10 @@
       "next": "Suivant",
       "end": "Fin"
     },
+    "compareLayer": {
+      "turnOn": "Activer la comparaison de couches",
+      "turnOff": "Désactiver la comparaison de couches"
+    },
     "indicatorLayerErrorPermission": "Vous n'avez pas la permission d'accéder à cette ressource",
     "indicatorLayerNotFound": "Aucun indicateur trouvé pour cette couche. Veuillez demander à l'administrateur de corriger cela.",
     "indicatorSearch": "Rechercher des indicateurs",
@@ -834,7 +897,12 @@
   "loggedAs": "Connecté en tant que",
   "logout": "Déconnexion",
   "mapboxStyleInformation": "Informations sur le style Mapbox.",
+  "aggregation": "Agrégation",
+  "description": "Description",
+  "edit": "Modifier",
+  "loading": "Chargement",
   "name": "Nom",
+  "source": "Source",
   "native": {
     "flag": "🇫🇷",
     "name": "Français"

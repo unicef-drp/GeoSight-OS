@@ -287,7 +287,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                               />
                               <div className="BasicFormSection">
                                 <div>
-                                  <label className="form-label">Source</label>
+                                  <label className="form-label">{t('source')}</label>
                                 </div>
                                 <div className="ContextLayerConfig-IconSize">
                                   <input
@@ -324,7 +324,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                             >
                               <FormControl className="BasicFormSection">
                                 <label className="form-label required">
-                                  Column Geograph Code
+                                  {t('admin.dashboard.form.sdmx.columnGeographCode')}
                                 </label>
                                 {
                                   <SelectWithList
@@ -339,7 +339,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                               </FormControl>
                               <FormControl className="BasicFormSection">
                                 <label className="form-label required">
-                                  Value Column
+                                  {t('admin.dashboard.form.sdmx.valueColumn')}
                                 </label>
                                 <SelectWithList
                                   list={data?.config?.attributeKeys || []}
@@ -352,7 +352,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                               </FormControl>
                               <FormControl className="BasicFormSection">
                                 <label className={"form-label required"}>
-                                  Aggregation
+                                  {t('aggregation')}
                                 </label>
                                 <SelectWithList
                                   list={Object.keys(TYPES)}
@@ -368,12 +368,12 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                                   className="form-label required"
                                   htmlFor="group"
                                 >
-                                  Date Time Column/Field
+                                  {t('admin.dashboard.form.sdmx.dateTimeColumnField')}
                                 </label>
                                 {
                                   <SelectWithList
                                     menuPlacement={"top"}
-                                    placeholder={"Date Time Column/Field"}
+                                    placeholder={t('admin.dashboard.form.sdmx.dateTimeColumnField')}
                                     list={data?.config?.attributeKeys || []}
                                     value={data?.config?.dateTimeField}
                                     showFloatingLabel={true}
@@ -389,7 +389,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                                   className="form-label required"
                                   htmlFor="group"
                                 >
-                                  Date Time Format
+                                  {t('admin.dashboard.form.sdmx.dateTimeFormat')}
                                 </label>
                                 <SelectWithList
                                   menuPlacement={"top"}
@@ -402,9 +402,7 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                                   }}
                                 />
                                 <span className="form-helptext">
-                                  Specify input date/time format (e.g:
-                                  YYYY-MM-DD or YYYY-MM). Excel usually converts
-                                  time to timestamp format.
+                                  {t('admin.dashboard.form.sdmx.dateTimeFormatHelp')}
                                 </span>
                               </FormControl>
                             </div>

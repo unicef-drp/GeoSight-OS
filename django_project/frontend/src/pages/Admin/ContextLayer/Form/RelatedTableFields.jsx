@@ -15,6 +15,7 @@
 
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
+import { useTranslation } from "react-i18next";
 
 import {
   SelectWithSearch
@@ -34,6 +35,7 @@ import RelatedTableSelector
  * @param {boolean} checkConfig Checking config.
  */
 export default function RelatedTableFields({ data, onSetData }) {
+  const { t } = useTranslation();
   let fieldErrors;
   try {
     fieldErrors = errors;
@@ -117,7 +119,7 @@ export default function RelatedTableFields({ data, onSetData }) {
       <div className="BasicFormSection">
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <div className="form-label">Latitude Field</div>
+            <div className="form-label">{t('admin.contextLayer.relatedTable.latitudeField')}</div>
             <div className="InputInLine">
               <SelectWithSearch
                 value={latitude_field ? latitude_field : ""}
@@ -141,7 +143,7 @@ export default function RelatedTableFields({ data, onSetData }) {
             </div>
           </Grid>
           <Grid item xs={6}>
-            <div className="form-label">Longitude Field</div>
+            <div className="form-label">{t('admin.contextLayer.relatedTable.longitudeField')}</div>
             <div className="InputInLine">
               <SelectWithSearch
                 value={longitude_field ? longitude_field : ""}
@@ -188,7 +190,7 @@ export default function RelatedTableFields({ data, onSetData }) {
         </div>
       </div>
       <div className="BasicFormSection Aggregation">
-        <label className="form-label">Aggregate data by field name</label>
+        <label className="form-label">{t('admin.dashboard.contextLayer.overrideAggregateByField')}</label>
         <SelectWithList
           list={[
             {
@@ -197,7 +199,7 @@ export default function RelatedTableFields({ data, onSetData }) {
             },
             ...fieldOptions,
           ]}
-          placeholder={!relatedFields ? "Loading" : "Select.."}
+          placeholder={!relatedFields ? t('loading') : t('admin.select')}
           value={field_aggregation ? field_aggregation : null}
           isDisabled={!data.data_fields}
           onChange={(evt) => {

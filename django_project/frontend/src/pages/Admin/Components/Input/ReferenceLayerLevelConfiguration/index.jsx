@@ -17,6 +17,7 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import Checkbox from "@mui/material/Checkbox";
 import {
   MultipleSelectWithSearch,
@@ -46,6 +47,7 @@ export const ViewLevelConfiguration = forwardRef(
     ref,
   ) => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [overrideView, setOverrideView] = useState(!!data.referenceLayer);
     if (overrideView) {
       referenceLayer = data.referenceLayer
@@ -119,7 +121,7 @@ export const ViewLevelConfiguration = forwardRef(
         {ableToSelectReferenceLayer ? (
           <div className="ReferenceLayerLevelConfigurationView">
             <label className="form-label" htmlFor="group">
-              View
+              {t('admin.components.view')}
             </label>
             <Grid
               container
@@ -192,12 +194,12 @@ export const ViewLevelConfiguration = forwardRef(
           <Grid item xs={6}>
             <div className="BasicFormSection">
               <label className="form-label" htmlFor="group">
-                Default Level
+                {t('admin.components.defaultLevel')}
               </label>
               <SelectWithSearch
                 name="default_admin"
                 placeholder={
-                  datasetLevels ? "Select default admin level" : "Loading"
+                  datasetLevels ? t('admin.components.selectDefaultAdminLevel') : t('loading')
                 }
                 options={levels}
                 value={defaultLevel ? defaultLevel : ""}
@@ -220,15 +222,15 @@ export const ViewLevelConfiguration = forwardRef(
           >
             <div className="BasicFormSection">
               <label className="form-label" htmlFor="group">
-                Available Levels
+                {t('admin.components.availableLevels')}
               </label>
               <MultipleSelectWithSearch
                 placeholder={
                   datasetLevels
-                    ? "Select available levels"
+                    ? t('admin.components.selectAvailableLevels')
                     : !referenceLayer?.identifier
-                      ? "Please select a view"
-                      : "Loading"
+                      ? t('admin.components.pleaseSelectView')
+                      : t('loading')
                 }
                 options={levels}
                 value={availableLayers ? availableLayers : []}

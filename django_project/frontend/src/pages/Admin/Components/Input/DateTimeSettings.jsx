@@ -29,6 +29,7 @@ import {
   RadioGroup,
 } from "@mui/material";
 import Grid from '@mui/material/Grid';
+import { useTranslation } from "react-i18next";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import Match from "../../../../utils/Match";
 import DateTimeInput from "./DateTimeInput";
@@ -59,6 +60,7 @@ export const dateTimeFormats = [
 export function DateTimeDataFieldSetting(
   { attributes, field, fieldChanged, format, formatChanged }
 ) {
+  const { t } = useTranslation();
 
   // Set default field
   useEffect(
@@ -85,12 +87,12 @@ export function DateTimeDataFieldSetting(
     <Grid item xs={6}>
       <label
         className="form-label required" htmlFor="group">
-        Date Time Column/Field
+        {t('admin.importer.logDetail.dateTimeColumnField')}
       </label>
       {
         attributes?.length ?
           <SelectWithList
-            placeholder={'Date Time Column/Field'}
+            placeholder={t('admin.importer.logDetail.dateTimeColumnField')}
             list={attributes}
             value={field}
             showFloatingLabel={true}
@@ -100,7 +102,7 @@ export function DateTimeDataFieldSetting(
           /> :
           <input
             type={'text'}
-            placeholder={'Field for the date'}
+            placeholder={t('admin.importer.logDetail.dateTimeColumnField')}
             value={field}
             onChange={evt => {
               fieldChanged(evt.target.value)
@@ -111,7 +113,7 @@ export function DateTimeDataFieldSetting(
     <Grid item xs={6}>
       <label
         className="form-label required" htmlFor="group">
-        Date Time Format
+        {t('admin.importer.logDetail.dateTimeFormat')}
       </label>
       <SelectWithList
         list={dateTimeFormats}
@@ -122,8 +124,7 @@ export function DateTimeDataFieldSetting(
         }}
       />
       <span className='form-helptext'>
-        Specify input date/time format (e.g: YYYY-MM-DD or YYYY-MM).
-        Excel usually converts time to timestamp format.
+        {t('admin.dashboard.form.sdmx.dateTimeFormatHelp')}
       </span>
     </Grid>
   </Grid>
@@ -141,6 +142,7 @@ export const DateTimeSettings = forwardRef(
      data, setData, attributes, valueOnly, drivenOnly
    }, ref
   ) => {
+    const { t } = useTranslation();
     const prevState = useRef()
     const [error, setError] = useState('');
     // Ready check
@@ -212,7 +214,7 @@ export const DateTimeSettings = forwardRef(
             <FormControl className="BasicFormSection">
               <div>
                 <label className="form-label required">
-                  Date Time Setting
+                  {t('admin.importer.logDetail.dateTimeSetting')}
                 </label>
               </div>
               <Grid container spacing={2}>
@@ -227,15 +229,15 @@ export const DateTimeSettings = forwardRef(
                     <FormControlLabel
                       disabled={drivenOnly}
                       value={'By Value'} control={<Radio/>}
-                      label={'Selected Date'}/>
+                      label={t('admin.importer.logDetail.selectedDate')}/>
                     <FormControlLabel
                       disabled={valueOnly}
                       value={'Data Driven'} control={<Radio/>}
-                      label={'Data-Driven Date'}/>
+                      label={t('admin.components.dateTimeSetting.dataDrivenDate')}/>
                     <FormControlLabel
                       disabled={drivenOnly}
                       value={'Now'} control={<Radio/>}
-                      label={'Now (Current date/time of the run)'}/>
+                      label={t('admin.components.dateTimeSetting.nowCurrentDatetime')}/>
                   </RadioGroup>
                 </Grid>
 
@@ -243,7 +245,7 @@ export const DateTimeSettings = forwardRef(
                   data.date_time_data_type === 'By Value' ?
                     <Grid item xs={6}>
                       <DateTimeInput
-                        label="Date Time of Data"
+                        label={t('admin.importer.logDetail.dateTimeOfData')}
                         value={data.date_time_data_value}
                         onChange={({ value, error }) => {
                           if (!error) {

@@ -215,7 +215,7 @@ const GeneralForm = memo(({}: Props) => {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <label className="form-label" htmlFor="name">
-                View
+                {t('admin.dashboard.form.general.view')}
               </label>
               <div className="ReferenceDatasetSection">
                 <DatasetViewSelector
@@ -393,7 +393,7 @@ const GeneralForm = memo(({}: Props) => {
                 <Grid item xs={8}>
                   <FormControl>
                     <label className="form-label" htmlFor="name">
-                      Default time mode
+                      {t('admin.dashboard.form.general.defaultTimeMode')}
                     </label>
                     <FormControlLabel
                       control={
@@ -421,9 +421,7 @@ const GeneralForm = memo(({}: Props) => {
                           }}
                         />
                       }
-                      label={
-                        "Use last know value for all indicators (disables time slider)"
-                      }
+                      label={t('admin.dashboard.form.general.useLastKnownValue')}
                     />
                     <FormControlLabel
                       control={
@@ -444,7 +442,7 @@ const GeneralForm = memo(({}: Props) => {
                           disabled={use_only_last_known_value}
                         />
                       }
-                      label={"Fit to current indicator range"}
+                      label={t('admin.dashboard.form.general.fitToCurrentIndicatorRange')}
                     />
                     <FormControlLabel
                       control={
@@ -465,14 +463,14 @@ const GeneralForm = memo(({}: Props) => {
                           disabled={use_only_last_known_value}
                         />
                       }
-                      label={"Show last known value in range"}
+                      label={t('admin.dashboard.form.general.showLastKnownValueInRange')}
                     />
                   </FormControl>
                 </Grid>
                 <Grid item xs={4}>
                   <FormControl>
                     <label className="form-label" htmlFor="name">
-                      Default interval
+                      {t('admin.dashboard.form.general.defaultInterval')}
                     </label>
                     <SelectWithList
                       id="default_interval"
@@ -508,7 +506,7 @@ const GeneralForm = memo(({}: Props) => {
             <Grid item xs={6}>
               <FormControl className="IconInput">
                 <label className="form-label" htmlFor="name">
-                  Description
+                  {t('description')}
                 </label>
                 <textarea
                   id="GeneralDescription"
@@ -687,7 +685,7 @@ const GeneralForm = memo(({}: Props) => {
         <div className="BasicFormSection">
           <div>
             <label className="form-label required" htmlFor="name">
-              Extent
+              {t('admin.dashboard.form.general.extent')}
             </label>
           </div>
           <MapConfig />
@@ -697,7 +695,7 @@ const GeneralForm = memo(({}: Props) => {
         <div className="BasicFormSection">
           <div>
             <label className="form-label required" htmlFor="name">
-              Project overview
+              {t('admin.dashboard.form.general.projectOverview')}
             </label>
           </div>
           <OverviewForm

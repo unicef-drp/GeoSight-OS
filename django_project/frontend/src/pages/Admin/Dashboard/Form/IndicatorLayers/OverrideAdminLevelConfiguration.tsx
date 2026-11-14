@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
@@ -22,6 +23,7 @@ export default function OverrideAdminLevelConfiguration({
   onChange,
   referenceLayer,
 }: Props) {
+  const { t } = useTranslation();
   const isEnabled = !!(levelConfig && Object.keys(levelConfig).length);
 
   return (
@@ -43,7 +45,7 @@ export default function OverrideAdminLevelConfiguration({
               }}
             />
           }
-          label={"Override admin level configuration"}
+          label={t('admin.dashboard.form.indicatorLayers.overrideAdminLevel')}
         />
       </FormGroup>
       {isEnabled ? (

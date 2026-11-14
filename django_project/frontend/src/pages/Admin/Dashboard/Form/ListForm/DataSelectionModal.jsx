@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { Checkbox } from "@mui/material";
 
@@ -41,6 +42,7 @@ export default function DataSelectionModal(
     open, setOpen,
     applyData, initColumns
   }) {
+  const { t } = useTranslation();
   const selectedDataList = JSON.parse(JSON.stringify(selectedData))
   const [groupSelectedDataIds, setGroupSelectedDataIds] = useState([]);
   const [groupSelectedData, setGroupSelectedData] = useState([]);
@@ -119,7 +121,7 @@ export default function DataSelectionModal(
               }}
             />
           }
-          label="Edit"
+          label={t('edit')}
         />
       ]
     },
@@ -156,7 +158,7 @@ export default function DataSelectionModal(
     <ModalHeader onClosed={() => {
       setOpen(false)
     }}>
-      Select {pageName} {groupName ? "For " + groupName : ""}
+      {t('admin.dashboard.form.listForm.select', { pageName, groupName: groupName ? t('admin.dashboard.form.listForm.for', { groupName }) : '' })}
     </ModalHeader>
     <div className='AdminContent'>
       <List
@@ -174,7 +176,7 @@ export default function DataSelectionModal(
       <div className='Save-Button'>
         <SaveButton
           variant="primary"
-          text={"Apply Selections : Selected (" + groupSelectedDataIds.length + ")"}
+          text={t('admin.dashboard.form.listForm.applySelections', { count: groupSelectedDataIds.length })}
           onClick={apply}/>
       </div>
     </div>

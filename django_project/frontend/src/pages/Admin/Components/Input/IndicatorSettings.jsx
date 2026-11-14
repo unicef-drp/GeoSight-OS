@@ -23,6 +23,7 @@ import {
   RadioGroup
 } from "@mui/material";
 import Grid from '@mui/material/Grid';
+import { useTranslation } from "react-i18next";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import Match from "../../../../utils/Match";
 import { optionsToList } from "../../../../utils/main";
@@ -42,6 +43,7 @@ export const IndicatorSettings = forwardRef(
      data, setData, attributes, indicatorList, valueOnly
    }, ref
   ) => {
+    const { t } = useTranslation();
     // Ready check
     useImperativeHandle(ref, () => ({
       isReady(data) {
@@ -112,7 +114,7 @@ export const IndicatorSettings = forwardRef(
             <FormControl className="BasicFormSection IndicatorSetting">
               <div>
                 <label className="form-label required">
-                  Indicator
+                  {t('admin.importer.logDetail.indicator')}
                 </label>
               </div>
               <Grid container spacing={2}>
@@ -126,11 +128,11 @@ export const IndicatorSettings = forwardRef(
                   >
                     <FormControlLabel
                       value={'By Value'} control={<Radio/>}
-                      label={'Selected Indicator'}/>
+                      label={t('admin.importer.logDetail.selectedIndicator')}/>
                     <FormControlLabel
                       disabled={valueOnly}
                       value={'Data Driven'} control={<Radio/>}
-                      label={'Data-Driven Indicator Column'}/>
+                      label={t('admin.components.indicatorSetting.dataDrivenIndicatorColumn')}/>
                   </RadioGroup>
                 </Grid>
                 <Grid item xs={6}>
@@ -148,7 +150,7 @@ export const IndicatorSettings = forwardRef(
                       data.indicator_data_type === 'Data Driven' ?
                         attributes.length ?
                           <SelectWithList
-                            placeholder={'Field for the indicator key'}
+                            placeholder={t('admin.components.indicatorSetting.dataDrivenIndicatorColumn')}
                             list={attributes}
                             value={data.indicator_data_field}
                             showFloatingLabel={true}
@@ -159,7 +161,7 @@ export const IndicatorSettings = forwardRef(
                           /> :
                           <input
                             type={'text'}
-                            placeholder={'Field for the indicator key'}
+                            placeholder={t('admin.components.indicatorSetting.dataDrivenIndicatorColumn')}
                             value={data.indicator_data_field}
                             onChange={evt => {
                               data.indicator_data_field = evt.target.value

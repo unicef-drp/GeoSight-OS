@@ -15,6 +15,7 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import OverrideAdminLevelConfiguration from "../OverrideAdminLevelConfiguration";
 
 import {
@@ -69,6 +70,7 @@ export default function DynamicIndicatorConfig({
     };
   };
 
+  const { t } = useTranslation();
   const { referenceLayer } = useSelector((state) => state.dashboard.data);
   const [data, setData] = useState(defaultData());
   const [open, setOpen] = useState(false);
@@ -121,8 +123,8 @@ export default function DynamicIndicatorConfig({
           }}
         >
           {!indicatorLayer
-            ? "Create Dynamic Indicator Layer"
-            : "Change Layer " + indicatorLayer.name}
+            ? t('admin.dashboard.form.indicatorLayers.createDynamicLayer')
+            : t('admin.dashboard.form.indicatorLayers.changeLayer', { name: indicatorLayer.name })}
         </ModalHeader>
         <ModalContent className="Gray">
           <div className="SaveButton-Section">

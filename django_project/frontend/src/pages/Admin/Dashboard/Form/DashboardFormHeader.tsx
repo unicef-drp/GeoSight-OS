@@ -16,6 +16,7 @@
 import React, { memo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+
 import { PAGES } from "./types.d";
 
 export interface Props {
@@ -104,33 +105,34 @@ export const DashboardFormHeader = memo(({ page, setPage }: Props) => {
     // @ts-ignore
     (state) => state.dashboard?.data?.user_permission,
   );
+  const { t } = useTranslation();
   return (
     <div className="DashboardFormHeader TabPrimary">
       <DashboardFormHeaderButtonWithNoData
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.GENERAL}
-        title={"General"}
+        title={t('admin.dashboard.form.tabs.general')}
       />
       <DashboardFormHeaderButtonWithData
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.BASEMAPS}
-        title={"Basemaps"}
+        title={t('admin.dashboard.form.tabs.basemaps')}
         dataKey={"basemapsLayers"}
       />
       <DashboardFormHeaderButtonWithData
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.CONTEXT_LAYERS}
-        title={"Context Layers"}
+        title={t('admin.dashboard.form.tabs.contextLayers')}
         dataKey={"contextLayers"}
       />
       <DashboardFormHeaderButtonWithData
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.INDICATORS}
-        title={"Indicators"}
+        title={t('admin.dashboard.form.tabs.indicators')}
         dataKey={"indicators"}
         disable={!referenceLayer?.identifier}
       />
@@ -138,7 +140,7 @@ export const DashboardFormHeader = memo(({ page, setPage }: Props) => {
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.INDICATOR_LAYERS}
-        title={"Indicator Layers"}
+        title={t('admin.dashboard.form.tabs.indicatorLayers')}
         dataKey={"indicatorLayers"}
         disable={!referenceLayer?.identifier}
       />
@@ -146,14 +148,14 @@ export const DashboardFormHeader = memo(({ page, setPage }: Props) => {
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.FILTERS}
-        title={"Filters"}
+        title={t('admin.dashboard.form.tabs.filters')}
         disable={!referenceLayer?.identifier}
       />
       <DashboardFormHeaderButtonWithData
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.WIDGETS}
-        title={"Widgets"}
+        title={t('admin.dashboard.form.tabs.widgets')}
         dataKey={"widgets"}
         disable={!referenceLayer?.identifier}
       />
@@ -161,7 +163,7 @@ export const DashboardFormHeader = memo(({ page, setPage }: Props) => {
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.RELATED_TABLES}
-        title={"Related Tables"}
+        title={t('admin.dashboard.form.tabs.relatedTables')}
         dataKey={"relatedTables"}
         disable={!referenceLayer?.identifier}
       />
@@ -169,14 +171,14 @@ export const DashboardFormHeader = memo(({ page, setPage }: Props) => {
         page={page}
         setPage={setPageCallback}
         targetPage={PAGES.TOOLS}
-        title={"Tools"}
+        title={t('admin.dashboard.form.tabs.tools')}
       />
       {user_permission?.share && (
         <DashboardFormHeaderButtonWithNoData
           page={page}
           setPage={setPageCallback}
           targetPage={PAGES.SHARE}
-          title={"Share"}
+          title={t('admin.dashboard.form.tabs.share')}
         />
       )}
     </div>

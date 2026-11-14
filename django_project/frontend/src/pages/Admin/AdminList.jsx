@@ -129,7 +129,7 @@ export const AdminListContent = forwardRef(
           <DeleteButton
             disabled={isDeleting || !selectedIds.length}
             variant="Error Reverse"
-            text={"Delete"}
+            text={t('admin.delete')}
             onClick={() => {
               deleteDialogRef?.current?.open()
             }}
@@ -157,8 +157,10 @@ export const AdminListContent = forwardRef(
             ref={deleteDialogRef}
           >
             <div>
-              Are you sure want to
-              delete {selectedIds.length} {dataName.toLowerCase() + (selectedIds.length > 1 ? 's' : '')}?
+              {t('admin.deleteMultipleConfirmationMessage', {
+                numberOfItems: selectedIds.length,
+                dataName: dataName.toLowerCase() + (selectedIds.length > 1 ? 's' : '')
+              })}
             </div>
           </ConfirmDialog>
         </Fragment>
@@ -183,7 +185,7 @@ export const AdminListContent = forwardRef(
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
-            <EditIcon/>Edit
+            <EditIcon/>{t('admin.edit')}
           </ThemeButton>
         </a>
       }

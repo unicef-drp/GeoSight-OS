@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { fetchJSON } from "../../../../Requests";
 import { PermissionForm } from "../../Permission";
 import { Checkbox, FormControlLabel } from "@mui/material";
@@ -25,6 +26,7 @@ import './style.scss';
  * PermissionForm
  */
 export default function PermissionFormAdmin({ permissionApi }) {
+  const { t } = useTranslation();
   const selectableInput = batch !== null
   const [selectableInputState, setSelectableInputState] = useState({});
   const [data, setData] = useState(null)
@@ -75,7 +77,7 @@ export default function PermissionFormAdmin({ permissionApi }) {
                 selectableInputState['permission_config'] = !selectableInputStateOutput('permission_config')[0]
                 setSelectableInputState({ ...selectableInputState })
               }}
-              label={'Change permission'}/>
+              label={t('admin.permission.changePermission')}/>
           </div> : null
       }
       {
@@ -90,7 +92,7 @@ export default function PermissionFormAdmin({ permissionApi }) {
               <PermissionForm
                 data={data} setData={setData} selectableInput={selectableInput}
               />
-            </Fragment> : <div>Loading</div> : null
+            </Fragment> : <div>{t('admin.loading')}</div> : null
       }
     </Fragment>
   );

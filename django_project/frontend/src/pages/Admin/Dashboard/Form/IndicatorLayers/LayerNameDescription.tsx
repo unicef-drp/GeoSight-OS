@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   name: string;
@@ -17,11 +18,12 @@ export default function LayerNameDescription({
   nameHelp,
   descriptionHelp,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="BasicFormSection">
         <div>
-          <label className="form-label required">Name</label>
+          <label className="form-label required">{t('name')}</label>
         </div>
         <div className="ContextLayerConfig-IconSize">
           <input
@@ -36,7 +38,7 @@ export default function LayerNameDescription({
       </div>
       <div className="BasicFormSection">
         <div>
-          <label className="form-label">Description</label>
+          <label className="form-label">{t('description')}</label>
         </div>
         <div className="ContextLayerConfig-IconSize">
           <textarea

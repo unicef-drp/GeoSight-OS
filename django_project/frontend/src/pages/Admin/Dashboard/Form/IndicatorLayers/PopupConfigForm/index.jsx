@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import NunjucksConfig from "../../../../../../components/Nunjucks/Config";
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -30,6 +31,7 @@ import './style.scss';
 
 /*** Popup Config Form ***/
 export default function PopupConfigForm({ indicator, setIndicator }) {
+  const { t } = useTranslation();
   const examplePopup = getDefaultPopup(indicator)
   const { popup_type } = indicator
 
@@ -114,7 +116,7 @@ export default function PopupConfigForm({ indicator, setIndicator }) {
             popup_type: evt.target.checked ? 'Custom' : 'Simplified'
           })
         }}
-        label={'Customize popup'}/>
+        label={t('admin.dashboard.form.indicatorLayers.customizePopup')}/>
     </div>
     {
       indicator.popup_type !== 'Custom' ?

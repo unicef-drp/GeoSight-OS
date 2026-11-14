@@ -94,10 +94,29 @@
       "modifiedBy": "Modificado por",
       "shortcode": "Código curto"
     },
+    "components": {
+      "view": "Visualização",
+      "defaultLevel": "Nível padrão",
+      "availableLevels": "Níveis disponíveis",
+      "selectDefaultAdminLevel": "Selecionar nível administrativo padrão",
+      "selectAvailableLevels": "Selecionar níveis administrativos disponíveis",
+      "pleaseSelectView": "Por favor, selecione uma visualização primeiro",
+      "dateTimeSetting": {
+        "dataDrivenDate": "Data orientada por dados",
+        "nowCurrentDatetime": "Agora (data/hora atual da execução)"
+      },
+      "indicatorSetting": {
+        "dataDrivenIndicatorColumn": "Coluna de indicador orientada por dados"
+      }
+    },
     "complexColorValueDetected": "Valor de cor complexo detectado. Por favor, edite no modo de entrada raw.",
     "config": "Configuração",
     "confirm": "Confirmar",
     "contextLayer": {
+      "relatedTable": {
+        "latitudeField": "Campo de latitude",
+        "longitudeField": "Campo de longitude"
+      },
       "arcgis": {
         "borderColor": "Cor da borda",
         "borderWeight": "Espessura da borda",
@@ -140,7 +159,47 @@
       },
       "form": {
         "general": {
-          "thumbnail": "Miniatura"
+          "thumbnail": "Miniatura",
+          "view": "Visualização",
+          "defaultTimeMode": "Modo de tempo padrão",
+          "useLastKnownValue": "Usar o último valor conhecido para todos os indicadores (desativa o controle deslizante de tempo)",
+          "fitToCurrentIndicatorRange": "Ajustar ao intervalo do indicador atual",
+          "showLastKnownValueInRange": "Mostrar o último valor conhecido no intervalo",
+          "defaultInterval": "Intervalo padrão",
+          "extent": "Extensão",
+          "projectOverview": "Visão geral do projeto"
+        },
+        "tabs": {
+          "general": "Geral",
+          "basemaps": "Mapas base",
+          "contextLayers": "Camadas de contexto",
+          "indicators": "Indicadores",
+          "indicatorLayers": "Camadas de indicadores",
+          "filters": "Filtros",
+          "widgets": "Widgets",
+          "relatedTables": "Tabelas relacionadas",
+          "tools": "Ferramentas",
+          "share": "Compartilhar"
+        },
+        "indicatorLayers": {
+          "overrideAdminLevel": "Substituir nível administrativo",
+          "customizePopup": "Personalizar popup",
+          "createDynamicLayer": "Criar camada de indicador dinâmico",
+          "changeLayer": "Alterar camada {{name}}",
+          "styleFor": "Estilo para {{name}}",
+          "overrideStyleFromIndicator": "Substituir estilo do indicador"
+        },
+        "sdmx": {
+          "columnGeographCode": "Coluna com código geográfico",
+          "valueColumn": "Coluna de valor",
+          "dateTimeColumnField": "Coluna/Campo de data e hora",
+          "dateTimeFormat": "Formato de data e hora",
+          "dateTimeFormatHelp": "Especificar formato de entrada de data/hora (ex: AAAA-MM-DD ou AAAA-MM). Excel geralmente converte tempo para o formato timestamp."
+        },
+        "listForm": {
+          "select": "Selecionar {{pageName}}{{groupName}}",
+          "for": " para {{groupName}}",
+          "applySelections": "Aplicar {{count}} seleção(ões)"
         }
       },
       "saveAs": {
@@ -730,6 +789,10 @@
       "next": "Próximo",
       "end": "Final"
     },
+    "compareLayer": {
+      "turnOn": "Ativar comparar camadas",
+      "turnOff": "Desativar comparar camadas"
+    },
     "indicatorLayerErrorPermission": "Você não tem permissão para acessar este recurso",
     "indicatorLayerNotFound": "Nenhum indicador encontrado para esta camada. Por favor, peça ao administrador para corrigir isso.",
     "indicatorSearch": "Pesquisar indicadores",
@@ -834,7 +897,12 @@
   "loggedAs": "Conectado como",
   "logout": "Sair",
   "mapboxStyleInformation": "Informações de estilo do Mapbox.",
+  "aggregation": "Agregação",
+  "description": "Descrição",
+  "edit": "Editar",
+  "loading": "Carregando",
   "name": "Nome",
+  "source": "Fonte",
   "native": {
     "flag": "🇧🇷",
     "name": "Português (Brasil)"

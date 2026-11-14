@@ -94,10 +94,29 @@
       "modifiedBy": "Modificado por",
       "shortcode": "Código corto"
     },
+    "components": {
+      "view": "Vista",
+      "defaultLevel": "Nivel predeterminado",
+      "availableLevels": "Niveles disponibles",
+      "selectDefaultAdminLevel": "Seleccionar nivel administrativo predeterminado",
+      "selectAvailableLevels": "Seleccionar niveles administrativos disponibles",
+      "pleaseSelectView": "Por favor seleccione una vista primero",
+      "dateTimeSetting": {
+        "dataDrivenDate": "Fecha guiada por datos",
+        "nowCurrentDatetime": "Ahora (fecha/hora actual de la ejecución)"
+      },
+      "indicatorSetting": {
+        "dataDrivenIndicatorColumn": "Columna de indicador guiada por datos"
+      }
+    },
     "complexColorValueDetected": "Valor de color complejo detectado. Por favor edite en modo de entrada sin procesar.",
     "config": "Configuración",
     "confirm": "Confirmar",
     "contextLayer": {
+      "relatedTable": {
+        "latitudeField": "Campo de latitud",
+        "longitudeField": "Campo de longitud"
+      },
       "arcgis": {
         "borderColor": "Color de borde",
         "borderWeight": "Grosor de borde",
@@ -140,7 +159,47 @@
       },
       "form": {
         "general": {
-          "thumbnail": "Miniatura"
+          "thumbnail": "Miniatura",
+          "view": "Vista",
+          "defaultTimeMode": "Modo de tiempo predeterminado",
+          "useLastKnownValue": "Usar el último valor conocido para todos los indicadores (desactiva el control deslizante de tiempo)",
+          "fitToCurrentIndicatorRange": "Ajustar al rango del indicador actual",
+          "showLastKnownValueInRange": "Mostrar el último valor conocido en el rango",
+          "defaultInterval": "Intervalo predeterminado",
+          "extent": "Extensión",
+          "projectOverview": "Descripción general del proyecto"
+        },
+        "tabs": {
+          "general": "General",
+          "basemaps": "Mapas base",
+          "contextLayers": "Capas de contexto",
+          "indicators": "Indicadores",
+          "indicatorLayers": "Capas de indicadores",
+          "filters": "Filtros",
+          "widgets": "Widgets",
+          "relatedTables": "Tablas relacionadas",
+          "tools": "Herramientas",
+          "share": "Compartir"
+        },
+        "indicatorLayers": {
+          "overrideAdminLevel": "Anular nivel administrativo",
+          "customizePopup": "Personalizar ventana emergente",
+          "createDynamicLayer": "Crear capa de indicador dinámico",
+          "changeLayer": "Cambiar capa {{name}}",
+          "styleFor": "Estilo para {{name}}",
+          "overrideStyleFromIndicator": "Anular estilo del indicador"
+        },
+        "sdmx": {
+          "columnGeographCode": "Columna con código geográfico",
+          "valueColumn": "Columna de valor",
+          "dateTimeColumnField": "Columna/Campo de fecha y hora",
+          "dateTimeFormat": "Formato de fecha y hora",
+          "dateTimeFormatHelp": "Especificar formato de entrada de fecha/hora (ej: AAAA-MM-DD o AAAA-MM). Excel generalmente convierte el tiempo al formato timestamp."
+        },
+        "listForm": {
+          "select": "Seleccionar {{pageName}}{{groupName}}",
+          "for": " para {{groupName}}",
+          "applySelections": "Aplicar {{count}} selección(es)"
         }
       },
       "saveAs": {
@@ -730,6 +789,10 @@
       "next": "Siguiente",
       "end": "Final"
     },
+    "compareLayer": {
+      "turnOn": "Activar comparar capas",
+      "turnOff": "Desactivar comparar capas"
+    },
     "indicatorLayerErrorPermission": "No tienes permiso para acceder a este recurso",
     "indicatorLayerNotFound": "No se encontró ningún indicador para esta capa. Por favor, pide al administrador que lo solucione.",
     "indicatorSearch": "Buscar indicadores",
@@ -834,7 +897,12 @@
   "loggedAs": "Conectado como",
   "logout": "Cerrar sesión",
   "mapboxStyleInformation": "Información de estilo de Mapbox.",
+  "aggregation": "Agregación",
+  "description": "Descripción",
+  "edit": "Editar",
+  "loading": "Cargando",
   "name": "Nombre",
+  "source": "Fuente",
   "native": {
     "flag": "🇪🇸",
     "name": "Español"

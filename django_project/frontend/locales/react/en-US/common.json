@@ -94,10 +94,29 @@
       "modifiedBy": "Modified By",
       "shortcode": "Shortcode"
     },
+    "components": {
+      "view": "View",
+      "defaultLevel": "Default Level",
+      "availableLevels": "Available Levels",
+      "selectDefaultAdminLevel": "Select default admin level",
+      "selectAvailableLevels": "Select available admin levels",
+      "pleaseSelectView": "Please select a view first",
+      "dateTimeSetting": {
+        "dataDrivenDate": "Data-Driven Date",
+        "nowCurrentDatetime": "Now (Current date/time of the run)"
+      },
+      "indicatorSetting": {
+        "dataDrivenIndicatorColumn": "Data-Driven Indicator Column"
+      }
+    },
     "complexColorValueDetected": "Complex color value detected. Please edit in raw input mode.",
     "config": "Config",
     "confirm": "Confirm",
     "contextLayer": {
+      "relatedTable": {
+        "latitudeField": "Latitude Field",
+        "longitudeField": "Longitude Field"
+      },
       "arcgis": {
         "borderColor": "Border Color",
         "borderWeight": "Border Weight",
@@ -140,7 +159,47 @@
       },
       "form": {
         "general": {
-          "thumbnail": "Thumbnail"
+          "thumbnail": "Thumbnail",
+          "view": "View",
+          "defaultTimeMode": "Default time mode",
+          "useLastKnownValue": "Use last know value for all indicators (disables time slider)",
+          "fitToCurrentIndicatorRange": "Fit to current indicator range",
+          "showLastKnownValueInRange": "Show last known value in range",
+          "defaultInterval": "Default interval",
+          "extent": "Extent",
+          "projectOverview": "Project overview"
+        },
+        "tabs": {
+          "general": "General",
+          "basemaps": "Basemaps",
+          "contextLayers": "Context Layers",
+          "indicators": "Indicators",
+          "indicatorLayers": "Indicator Layers",
+          "filters": "Filters",
+          "widgets": "Widgets",
+          "relatedTables": "Related Tables",
+          "tools": "Tools",
+          "share": "Share"
+        },
+        "indicatorLayers": {
+          "overrideAdminLevel": "Override Admin Level",
+          "customizePopup": "Customize popup",
+          "createDynamicLayer": "Create Dynamic Indicator Layer",
+          "changeLayer": "Change Layer {{name}}",
+          "styleFor": "Style for {{name}}",
+          "overrideStyleFromIndicator": "Override style from indicator"
+        },
+        "sdmx": {
+          "columnGeographCode": "Column with Geography Code",
+          "valueColumn": "Value Column",
+          "dateTimeColumnField": "Date Time Column/Field",
+          "dateTimeFormat": "Date Time Format",
+          "dateTimeFormatHelp": "Specify input date/time format (e.g: YYYY-MM-DD or YYYY-MM). Excel usually converts time to timestamp format."
+        },
+        "listForm": {
+          "select": "Select {{pageName}}{{groupName}}",
+          "for": " for {{groupName}}",
+          "applySelections": "Apply {{count}} Selection(s)"
         }
       },
       "saveAs": {
@@ -730,6 +789,10 @@
       "next": "Next",
       "end": "End"
     },
+    "compareLayer": {
+      "turnOn": "Turn on compare Layers",
+      "turnOff": "Turn off compare Layers"
+    },
     "indicatorLayerErrorPermission": "You don't have permission to access this resource",
     "indicatorLayerNotFound": "There is no indicator found for this layer. Please ask admin to fix this.",
     "indicatorSearch": "Search Indicators",
@@ -834,7 +897,12 @@
   "loggedAs": "Logged as",
   "logout": "Logout",
   "mapboxStyleInformation": "Mapbox style information.",
+  "aggregation": "Aggregation",
+  "description": "Description",
+  "edit": "Edit",
+  "loading": "Loading",
   "name": "Name",
+  "source": "Source",
   "native": {
     "flag": "🇺🇸",
     "name": "English"

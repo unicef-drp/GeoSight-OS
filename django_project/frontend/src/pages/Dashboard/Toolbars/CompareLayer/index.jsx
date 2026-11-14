@@ -19,6 +19,7 @@
 
 import React, { memo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import {
@@ -35,6 +36,7 @@ import "./style.scss";
  */
 export function CompareLayer({ disabled = false }) {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const compareMode = useSelector((state) => state.mapMode?.compareMode);
   const enabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPARE_LAYERS),
@@ -59,7 +61,7 @@ export function CompareLayer({ disabled = false }) {
         data-tool={Variables.DASHBOARD.TOOL.COMPARE_LAYERS}
       >
         <PluginChild
-          title={(compareMode ? "Turn off" : "Turn on") + " compare Layers"}
+          title={compareMode ? t('dashboardPage.compareLayer.turnOff') : t('dashboardPage.compareLayer.turnOn')}
           disabled={disabled}
           onClick={() => {
             if (!disabled) {

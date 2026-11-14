@@ -15,6 +15,7 @@
 
 import React, { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import DynamicFormIcon from "@mui/icons-material/DynamicForm";
@@ -41,6 +42,7 @@ import IndicatorSelector
  * Basemaps dashboard
  */
 export default function IndicatorsForm() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [selectionModel, setSelectionModel] = useState([]);
   const [search, setSearch] = useState('');
@@ -149,7 +151,7 @@ export default function IndicatorsForm() {
     return <DeleteButton
       disabled={!selectionModel.length}
       variant="Error Reverse"
-      text={"Delete"}
+      text={t('admin.delete')}
       onClick={() => {
         dispatch(Actions.Indicators.batchRemove(selectionModel))
         setSelectionModel([])
@@ -179,7 +181,7 @@ export default function IndicatorsForm() {
     otherHeaders={
       <Fragment>
         <IconTextField
-          placeholder={"Search " + pageName}
+          placeholder={t('admin.searchPlaceholder', { pageName: t('admin.indicators').toLowerCase() })}
           iconEnd={<MagnifyIcon/>}
           onChange={evt => setSearch(evt.target.value.toLowerCase())}
         />
