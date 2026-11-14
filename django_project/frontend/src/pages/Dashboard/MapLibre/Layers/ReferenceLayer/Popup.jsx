@@ -23,8 +23,8 @@ import { capitalize } from "../../../../../utils/main";
 import { Session } from "../../../../../utils/Sessions";
 import { RelatedTableLayerType } from "../../../../../utils/indicatorLayer";
 import { queryData } from "../../../../../utils/queryExtraction";
-import {
 import i18n from "i18next";
+import {
   cleanWhereQuery,
   updateWhereQuery,
 } from "../../../../../utils/relatedTable";

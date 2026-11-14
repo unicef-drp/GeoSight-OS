@@ -76,7 +76,7 @@ export default function ProjectOverview() {
   return (
     <Plugin className="ProjectOverview-Button">
       <div className={open ? "Active" : "Inactive"}>
-        <PluginChild title={t(dashboardPage.projectOverview)}>
+        <PluginChild title={t('dashboardPage.projectOverview')}>
           <InfoFillIcon onClick={(_) => setOpen(true)} />
           <Modal
             className="ProjectOverview"
