@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { render } from '../../../../../app';
@@ -40,6 +41,7 @@ import './style.scss';
  * Indicator Form App
  */
 export default function GroupForm() {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [usersGroup, setUsersGroup] = useState(null);
   const [open, setOpen] = useState(false)
@@ -90,7 +92,7 @@ export default function GroupForm() {
 
       <AdminForm isSubmitted={submitted}>
         <div className='MembersLabel'>
-          <label className="form-label required" htmlFor="name">Members</label>
+          <label className="form-label required" htmlFor="name">{t('admin.userAndGroup.group.members')}</label>
           <UserSelector
             initData={usersGroup ? usersGroup : []}
             dataSelected={setUsersGroup}

@@ -458,6 +458,17 @@
     "tableError": "Ops! Algo deu errado ao carregar os dados.",
     "user": "USUÁRIO",
     "userAndGroup": {
+      "batchUserForm": {
+        "csvFile": "Arquivo CSV",
+        "csvHelp": "Você pode obter o arquivo csv em",
+        "goBackToForm": "Voltar ao formulário",
+        "here": "aqui",
+        "reloadData": "Recarregar dados",
+        "title": "Atualizar usuário para {{name}} em lote usando arquivo csv.",
+        "update": "Atualizar",
+        "updated": "Atualizado",
+        "updating": "Atualizando..."
+      },
       "changePassword": {
         "allFieldsRequired": "Todos os campos são obrigatórios.",
         "failedToChange": "Falha ao alterar a senha.",
@@ -466,6 +477,9 @@
         "passwordsDoNotMatch": "As novas senhas não coincidem.",
         "repeatNewPassword": "Repetir nova senha",
         "title": "Alterar senha"
+      },
+      "group": {
+        "members": "Membros"
       },
       "user": {
         "backendAdmin": "Administrador backend (Django Staff)",
@@ -609,6 +623,14 @@
       "rangeEnd": "Fim do intervalo",
       "rangeStart": "Início do intervalo",
       "showLastKnownValueInRange": "Mostrar o último valor conhecido no intervalo"
+    },
+    "playControl": {
+      "start": "Início",
+      "previous": "Anterior",
+      "play": "Reproduzir",
+      "stop": "Parar",
+      "next": "Próximo",
+      "end": "Final"
     },
     "indicatorLayerErrorPermission": "Você não tem permissão para acessar este recurso",
     "indicatorLayerNotFound": "Nenhum indicador encontrado para esta camada. Por favor, peça ao administrador para corrigir isso.",

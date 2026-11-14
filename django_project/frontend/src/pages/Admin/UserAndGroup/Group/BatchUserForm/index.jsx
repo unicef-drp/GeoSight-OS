@@ -14,6 +14,7 @@
  */
 
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import $ from "jquery";
 import { FormControl } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -32,6 +33,7 @@ export const BatchUserForm = forwardRef(
   (
     { data }, ref
   ) => {
+    const { t } = useTranslation();
     const [state, setState] = useState()
     const [open, setOpen] = useState(false)
     const [updating, setUpdating] = useState(false)
@@ -77,10 +79,10 @@ export const BatchUserForm = forwardRef(
       <ModalHeader onClosed={() => {
         setOpen(false)
       }}>
-        Update user for {data.name} in batch using csv file.
+        {t('admin.userAndGroup.batchUserForm.title', { name: data.name })}
         <br/>
         <span className='helptext'>
-          You can get the csv file in <a href={urls.statics.sample}>here</a>.
+          {t('admin.userAndGroup.batchUserForm.csvHelp')} <a href={urls.statics.sample}>{t('admin.userAndGroup.batchUserForm.here')}</a>.
         </span>
       </ModalHeader>
       <div className='AdminContent'>
@@ -99,32 +101,32 @@ export const BatchUserForm = forwardRef(
                   setUpdated(false);
                   setError('');
                 }
-              }>Go back to form</span>
+              }>{t('admin.userAndGroup.batchUserForm.goBackToForm')}</span>
             </div>
           </div> : updated ? <div>
             <div className='LoadingElement Updated'>
               <div className='Throbber'>
                 <CheckCircleOutlineIcon/>
               </div>
-              <div>Updated</div>
+              <div>{t('admin.userAndGroup.batchUserForm.updated')}</div>
             </div>
             <div className="GoBack">
               <span onClick={
                 () => {
                   location.reload()
                 }
-              }>Reload data</span>
+              }>{t('admin.userAndGroup.batchUserForm.reloadData')}</span>
             </div>
           </div> : updating ? <div className='LoadingElement Updating'>
             <div className='Throbber'>
               <CircularProgress size="3rem"/>
             </div>
-            <div>Updating...</div>
+            <div>{t('admin.userAndGroup.batchUserForm.updating')}</div>
           </div> : <>
             <div className='BasicForm'>
               <div className="BasicFormSection">
                 <div>
-                  <label className="form-label">CSV File</label>
+                  <label className="form-label">{t('admin.userAndGroup.batchUserForm.csvFile')}</label>
                 </div>
                 <div>
                   <FormControl className='BasicForm'>
@@ -143,7 +145,7 @@ export const BatchUserForm = forwardRef(
             <div className='Save-Button'>
               <SaveButton
                 variant="primary"
-                text={'Update'}
+                text={t('admin.userAndGroup.batchUserForm.update')}
                 disabled={!payload.file}
                 onClick={() => submit()}
               />

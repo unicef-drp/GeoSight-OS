@@ -458,6 +458,17 @@
     "tableError": "Oops! Something went wrong while loading data.",
     "user": "USER",
     "userAndGroup": {
+      "batchUserForm": {
+        "csvFile": "CSV File",
+        "csvHelp": "You can get the csv file in",
+        "goBackToForm": "Go back to form",
+        "here": "here",
+        "reloadData": "Reload data",
+        "title": "Update user for {{name}} in batch using csv file.",
+        "update": "Update",
+        "updated": "Updated",
+        "updating": "Updating..."
+      },
       "changePassword": {
         "allFieldsRequired": "All fields are required.",
         "failedToChange": "Failed to change password.",
@@ -466,6 +477,9 @@
         "passwordsDoNotMatch": "New passwords do not match.",
         "repeatNewPassword": "Repeat New Password",
         "title": "Change Password"
+      },
+      "group": {
+        "members": "Members"
       },
       "user": {
         "backendAdmin": "Backend admin (Django Staff)",
@@ -609,6 +623,14 @@
       "rangeEnd": "Range End",
       "rangeStart": "Range Start",
       "showLastKnownValueInRange": "Show last known value in range"
+    },
+    "playControl": {
+      "start": "Start",
+      "previous": "Previous",
+      "play": "Play",
+      "stop": "Stop",
+      "next": "Next",
+      "end": "End"
     },
     "indicatorLayerErrorPermission": "You don't have permission to access this resource",
     "indicatorLayerNotFound": "There is no indicator found for this layer. Please ask admin to fix this.",

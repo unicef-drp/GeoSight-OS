@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
@@ -39,6 +40,7 @@ let playControlTimeout = null
 export default function PlayControl(
   { dates, selectedDatePoint, setSelectedDatePoint, children }
 ) {
+  const { t } = useTranslation();
   const {
     filters,
     referenceLayer,
@@ -121,7 +123,7 @@ export default function PlayControl(
   return <div className='GlobalDatePlaysControl'>
     <ThemeButton
       tabIndex="-1"
-      title={'Start'}
+      title={t('dashboardPage.playControl.start')}
       variant={'secondary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
@@ -132,7 +134,7 @@ export default function PlayControl(
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
-      title={'Previous'}
+      title={t('dashboardPage.playControl.previous')}
       variant={'secondary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
@@ -144,21 +146,21 @@ export default function PlayControl(
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
-      title={'Play'}
+      title={t('dashboardPage.playControl.play')}
       variant={'secondary Basic ' + (!isPlay ? 'Reverse' : '')}
       disabled={disabled} onClick={play}>
       <PlayArrowIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
-      title={'Stop'}
+      title={t('dashboardPage.playControl.stop')}
       variant={'secondary Basic Reverse'}
       disabled={disabled || !isPlay} onClick={stop}>
       <StopIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
-      title={'Next'}
+      title={t('dashboardPage.playControl.next')}
       variant={'secondary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
@@ -169,7 +171,7 @@ export default function PlayControl(
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
-      title={'End'}
+      title={t('dashboardPage.playControl.end')}
       variant={'secondary Basic Reverse'}
       disabled={disabled}
       onClick={() => {

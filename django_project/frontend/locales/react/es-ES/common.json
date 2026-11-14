@@ -458,6 +458,17 @@
     "tableError": "¡Vaya! Ocurrió un error al cargar los datos.",
     "user": "USUARIO",
     "userAndGroup": {
+      "batchUserForm": {
+        "csvFile": "Archivo CSV",
+        "csvHelp": "Puedes obtener el archivo csv en",
+        "goBackToForm": "Volver al formulario",
+        "here": "aquí",
+        "reloadData": "Recargar datos",
+        "title": "Actualizar usuario para {{name}} en lote usando archivo csv.",
+        "update": "Actualizar",
+        "updated": "Actualizado",
+        "updating": "Actualizando..."
+      },
       "changePassword": {
         "allFieldsRequired": "Todos los campos son obligatorios.",
         "failedToChange": "Error al cambiar la contraseña.",
@@ -466,6 +477,9 @@
         "passwordsDoNotMatch": "Las nuevas contraseñas no coinciden.",
         "repeatNewPassword": "Repetir nueva contraseña",
         "title": "Cambiar contraseña"
+      },
+      "group": {
+        "members": "Miembros"
       },
       "user": {
         "backendAdmin": "Administrador backend (Django Staff)",
@@ -609,6 +623,14 @@
       "rangeEnd": "Fin del rango",
       "rangeStart": "Inicio del rango",
       "showLastKnownValueInRange": "Mostrar el último valor conocido en el rango"
+    },
+    "playControl": {
+      "start": "Inicio",
+      "previous": "Anterior",
+      "play": "Reproducir",
+      "stop": "Detener",
+      "next": "Siguiente",
+      "end": "Final"
     },
     "indicatorLayerErrorPermission": "No tienes permiso para acceder a este recurso",
     "indicatorLayerNotFound": "No se encontró ningún indicador para esta capa. Por favor, pide al administrador que lo solucione.",

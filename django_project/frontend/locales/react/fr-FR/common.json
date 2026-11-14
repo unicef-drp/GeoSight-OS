@@ -458,6 +458,17 @@
     "tableError": "Oups ! Un problème est survenu lors du chargement des données.",
     "user": "UTILISATEUR",
     "userAndGroup": {
+      "batchUserForm": {
+        "csvFile": "Fichier CSV",
+        "csvHelp": "Vous pouvez obtenir le fichier csv en",
+        "goBackToForm": "Retour au formulaire",
+        "here": "ici",
+        "reloadData": "Recharger les données",
+        "title": "Mettre à jour l'utilisateur pour {{name}} en lot via un fichier csv.",
+        "update": "Mettre à jour",
+        "updated": "Mis à jour",
+        "updating": "Mise à jour en cours..."
+      },
       "changePassword": {
         "allFieldsRequired": "Tous les champs sont obligatoires.",
         "failedToChange": "Échec du changement de mot de passe.",
@@ -466,6 +477,9 @@
         "passwordsDoNotMatch": "Les nouveaux mots de passe ne correspondent pas.",
         "repeatNewPassword": "Répéter le nouveau mot de passe",
         "title": "Changer le mot de passe"
+      },
+      "group": {
+        "members": "Membres"
       },
       "user": {
         "backendAdmin": "Administrateur backend (Django Staff)",
@@ -609,6 +623,14 @@
       "rangeEnd": "Fin de la plage",
       "rangeStart": "Début de la plage",
       "showLastKnownValueInRange": "Afficher la dernière valeur connue dans la plage"
+    },
+    "playControl": {
+      "start": "Début",
+      "previous": "Précédent",
+      "play": "Lecture",
+      "stop": "Arrêt",
+      "next": "Suivant",
+      "end": "Fin"
     },
     "indicatorLayerErrorPermission": "Vous n'avez pas la permission d'accéder à cette ressource",
     "indicatorLayerNotFound": "Aucun indicateur trouvé pour cette couche. Veuillez demander à l'administrateur de corriger cela.",
