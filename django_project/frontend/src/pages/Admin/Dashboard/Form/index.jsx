@@ -14,6 +14,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
@@ -62,6 +63,7 @@ import DashboardHistory from "./History";
  */
 
 export function DashboardSaveAsForm({ submitted, onSaveAs }) {
+  const { t } = useTranslation();
   const [openSaveAs, setOpenSaveAs] = useState(false);
   const [nameData, setNameData] = useState("");
   const [slugInput, setSlugInput] = useState("");
@@ -99,14 +101,14 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             setOpenSaveAs(false);
           }}
         >
-          <b>Save project as...</b>
+          <b>{t('admin.dashboard.saveAs.title')}</b>
         </ModalHeader>
         <ModalContent>
           <div className="BasicForm">
             <div className="BasicFormSection">
               <div>
                 <label className="form-label required" htmlFor="name">
-                  Name
+                  {t('name')}
                 </label>
               </div>
               <div>
@@ -116,7 +118,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
                     type="text"
                     name="name"
                     required={true}
-                    placeholder="Example: Afghanistan Risk Dashboard"
+                    placeholder={t('admin.dashboard.nameExample')}
                     value={nameData}
                     onChange={(event) => {
                       setNameData(event.target.value);
@@ -127,7 +129,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
               </div>
               <br />
               <label className="form-label" htmlFor="name">
-                URL Shortcode
+                {t('admin.dashboard.urlShortcode')}
               </label>
               <div>
                 <span className="form-input">
@@ -143,10 +145,9 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
                 </span>
               </div>
               <span className="form-helptext">
-                Url of project in slug format. It will auto change space to "-"
-                and to lowercase. It will be generated from name if empty.
+                {t('admin.dashboard.urlShortcodeDescription')}
                 <br />
-                Please change it if it is same with the origin one.
+                {t('admin.dashboard.saveAs.changeIfSameAsOrigin')}
               </span>
             </div>
           </div>
@@ -160,11 +161,11 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
                 setOpenSaveAs(false);
               }}
             >
-              Cancel
+              {t('admin.cancel')}
             </ThemeButton>
             <SaveButton
               variant="primary"
-              text="Create"
+              text={t('admin.dashboard.saveAs.create')}
               onClick={() => {
                 onSaveAs();
               }}
@@ -174,7 +175,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
       </Modal>
       <SaveButton
         variant="primary"
-        text={submitted ? "Creating..." : "Save as"}
+        text={submitted ? t('admin.dashboard.saveAs.creating') : t('admin.dashboard.saveAs.saveAs')}
         onClick={() => {
           setOpenSaveAs(true);
         }}

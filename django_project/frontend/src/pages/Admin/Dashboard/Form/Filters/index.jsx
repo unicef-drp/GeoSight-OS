@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -23,6 +24,7 @@ import { Actions } from "../../../../../store/dashboard/index";
 import "./style.scss";
 
 export function FiltersBeingHidden() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { id, filters, filtersBeingHidden } = useSelector(
     (state) => state.dashboard.data,
@@ -47,13 +49,14 @@ export function FiltersBeingHidden() {
         setEdited(true);
         dispatch(Actions.Dashboard.updateFiltersBeingHidden());
       }}
-      label={"Hide filter section"}
+      label={t('admin.dashboard.filters.hideFilterSection')}
     />
   );
 }
 
 /** Filters dashboard */
 export default function FiltersForm() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const filtersAllowModify = useSelector(
     (state) => state.dashboard.data?.filtersAllowModify,
@@ -72,7 +75,7 @@ export default function FiltersForm() {
           onChange={(evt) => {
             dispatch(Actions.Dashboard.updateFiltersAllowModify());
           }}
-          label={"Allow users to modify filters in dashboard"}
+          label={t('admin.dashboard.filters.allowModify')}
         />
       </div>
       <FormControlLabel
@@ -81,7 +84,7 @@ export default function FiltersForm() {
         onChange={(evt) => {
           dispatch(Actions.Dashboard.updateAutoZoomToFilter());
         }}
-        label={"Zoom in automatically to filtered area"}
+        label={t('admin.dashboard.filters.autoZoom')}
       />
       <FiltersAccordion isAdmin={true} />
     </div>

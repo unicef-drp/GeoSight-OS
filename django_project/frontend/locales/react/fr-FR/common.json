@@ -109,10 +109,22 @@
     "createNew": "Créer un nouveau {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Activer la boîte de recherche d'entité géographique",
+      "filters": {
+        "allowModify": "Autoriser les utilisateurs à modifier les filtres dans le tableau de bord",
+        "autoZoom": "Zoomer automatiquement sur la zone filtrée",
+        "hideFilterSection": "Masquer la section des filtres"
+      },
       "form": {
         "general": {
           "thumbnail": "Vignette"
         }
+      },
+      "saveAs": {
+        "changeIfSameAsOrigin": "Veuillez le modifier s'il est identique à l'original.",
+        "create": "Créer",
+        "creating": "Création...",
+        "saveAs": "Enregistrer sous",
+        "title": "Enregistrer le projet sous..."
       },
       "hideContextLayerTab": "Masquer l'onglet des couches de contexte",
       "mappingIndicatorsUsing": "Cartographier les indicateurs avec",

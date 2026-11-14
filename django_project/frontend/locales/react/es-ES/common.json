@@ -109,10 +109,22 @@
     "createNew": "Crear Nuevo {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Habilitar cuadro de búsqueda de entidades geográficas",
+      "filters": {
+        "allowModify": "Permitir a los usuarios modificar los filtros en el panel",
+        "autoZoom": "Acercar automáticamente al área filtrada",
+        "hideFilterSection": "Ocultar sección de filtros"
+      },
       "form": {
         "general": {
           "thumbnail": "Miniatura"
         }
+      },
+      "saveAs": {
+        "changeIfSameAsOrigin": "Cámbialo si es igual al original.",
+        "create": "Crear",
+        "creating": "Creando...",
+        "saveAs": "Guardar como",
+        "title": "Guardar proyecto como..."
       },
       "hideContextLayerTab": "Ocultar pestaña de capa de contexto",
       "mappingIndicatorsUsing": "Mapeo de Indicadores Usando",

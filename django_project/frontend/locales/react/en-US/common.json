@@ -109,10 +109,22 @@
     "createNew": "Create New {{pageName}}",
     "dashboard": {
       "enableGeographyEntitySearchBox": "Enable geography entity search box",
+      "filters": {
+        "allowModify": "Allow users to modify filters in dashboard",
+        "autoZoom": "Zoom in automatically to filtered area",
+        "hideFilterSection": "Hide filter section"
+      },
       "form": {
         "general": {
           "thumbnail": "Thumbnail"
         }
+      },
+      "saveAs": {
+        "changeIfSameAsOrigin": "Please change it if it is same with the origin one.",
+        "create": "Create",
+        "creating": "Creating...",
+        "saveAs": "Save as",
+        "title": "Save project as..."
       },
       "hideContextLayerTab": "Hide context layer tab",
       "mappingIndicatorsUsing": "Mapping Indicators Using",
