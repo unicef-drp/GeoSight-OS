@@ -14,6 +14,7 @@
  */
 
 import React, {useEffect, useState, useMemo} from 'react';
+import { useTranslation } from 'react-i18next';
 import { debounce } from '@mui/material/utils';
 import {FormControl} from "@mui/material";
 import Grid from '@mui/material/Grid';
@@ -63,6 +64,7 @@ export default function RasterCogLayer(
   }
 ) {
   const newData = dictDeepCopy(data);
+  const { t } = useTranslation();
   const styles = constructStyle(newData.styles);
 
   const [value, setValue] = useState(styles);
@@ -134,7 +136,7 @@ export default function RasterCogLayer(
         >
           <Grid item md={4} xl={4} lg={4}>
             <div>
-              <div>NoData Value</div>
+              <div>{t("admin.contextLayer.noDataValue")}</div>
               <input
                 placeholder='NoData Value' type='text'
                 value={styles.nodata}
@@ -144,7 +146,7 @@ export default function RasterCogLayer(
           </Grid>
           <Grid item md={4} xl={4} lg={4}>
             <div>
-              <div>Additional NoData</div>
+              <div>{t("admin.contextLayer.additionalNoData")}</div>
               <input
                 placeholder='Additional NoData' type='number'
                 value={styles.additional_nodata}
@@ -162,7 +164,7 @@ export default function RasterCogLayer(
           </Grid>
           <Grid item md={4} xl={4} lg={4}>
             <div>
-              <div>NoData Color</div>
+              <div>{t("admin.contextLayer.noDataColor")}</div>
               <ColorPickerWithAlpha
                 color={styles.nodata_color}
                 opacity={styles.nodata_opacity}

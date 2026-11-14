@@ -76,7 +76,7 @@ export default function IndicatorsForm() {
                 </a>
               </Tooltip>
             }
-            label="Edit"
+            label={t("admin.edit")}
           />)
       }
       if (permission.edit) {
@@ -92,7 +92,7 @@ export default function IndicatorsForm() {
                 </a>
               </Tooltip>
             }
-            label="Management Form"
+            label={t("admin.indicator.managementForm")}
           />)
       }
       if (permission.edit) {
@@ -115,7 +115,7 @@ export default function IndicatorsForm() {
                 </a>
               </Tooltip>
             }
-            label="Import data"
+            label={t("admin.indicator.importData")}
           />
         )
       }
@@ -138,7 +138,7 @@ export default function IndicatorsForm() {
                 </a>
               </Tooltip>
             }
-            label="Value List"
+            label={t("admin.indicator.valueList")}
           />
         )
       }

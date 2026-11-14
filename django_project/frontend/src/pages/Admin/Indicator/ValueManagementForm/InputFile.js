@@ -162,7 +162,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
               <thead>
               <tr>
                 <th>{t('admin.indicator.inputFile.areaCode')}</th>
-                <th>Value</th>
+                <th>{t("admin.logData.value")}</th>
               </tr>
               </thead>
               <tbody>

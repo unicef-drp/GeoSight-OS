@@ -24,6 +24,7 @@ import { Session } from "../../../../../utils/Sessions";
 import { RelatedTableLayerType } from "../../../../../utils/indicatorLayer";
 import { queryData } from "../../../../../utils/queryExtraction";
 import {
+import i18n from "i18next";
   cleanWhereQuery,
   updateWhereQuery,
 } from "../../../../../utils/relatedTable";
@@ -601,8 +602,8 @@ export function popup(
       });
       header = `
         <div class="maplibregl-popup-content-tabs">
-            <div class="maplibregl-popup-content-tab selected" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'block'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'none';">Main</div>
-            <div class="maplibregl-popup-content-tab" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'none'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'block';">Related Records</div>
+            <div class="maplibregl-popup-content-tab selected" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'block'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'none';">${i18n.t("dashboardPage.popup.mainTab")}</div>
+            <div class="maplibregl-popup-content-tab" onclick="document.querySelectorAll('.maplibregl-popup-content-tab').forEach(t=>t.classList.remove('selected')); this.classList.add('selected'); document.querySelector('.maplibregl-popup-content-main .content').style.display = 'none'; document.querySelector('.maplibregl-popup-content-raw-data').style.display = 'block';">${i18n.t("dashboardPage.popup.relatedRecordsTab")}</div>
         </div>
       `;
       rawDataContent += `        

@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { Fragment, memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { HomeIcon } from "../../../../components/Icons";
 
@@ -29,6 +30,7 @@ import { Actions } from "../../../../store/dashboard";
 /** Home button to back to the default extent*/
 export function HomeButton() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const enable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.BACK_TO_HOME),
   );
@@ -43,7 +45,7 @@ export function HomeButton() {
           data-tool={Variables.DASHBOARD.TOOL.BACK_TO_HOME}
         >
           <PluginChild
-            title={Variables.DASHBOARD.TOOL.BACK_TO_HOME}
+            title={t("dashboardPage.toolbars.homeButton.backToHome")}
             disabled={!extent}
             onClick={() => {
               dispatch(

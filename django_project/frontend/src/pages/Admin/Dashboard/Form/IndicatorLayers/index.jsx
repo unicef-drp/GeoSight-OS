@@ -293,7 +293,7 @@ export default function IndicatorLayersForm() {
               <>
                 <div className="OtherActionIndicator">
                   <div className="Separator"></div>
-                  <div className="LayerCountIndicator">SDMX</div>
+                  <div className="LayerCountIndicator">{t("admin.indicatorLayers.type.sdmx")}</div>
                 </div>
                 <SDMXLayerConfig
                   key={layer.id}
@@ -309,7 +309,7 @@ export default function IndicatorLayersForm() {
               <>
                 <div className="OtherActionIndicator">
                   <div className="Separator"></div>
-                  <div className="LayerCountIndicator">Dynamic</div>
+                  <div className="LayerCountIndicator">{t("admin.indicatorLayers.type.dynamic")}</div>
                 </div>
                 <DynamicIndicatorConfig
                   key={layer.id}
@@ -331,7 +331,7 @@ export default function IndicatorLayersForm() {
                 <>
                   <div className="OtherActionIndicator">
                     <div className="Separator"></div>
-                    <div className="LayerCountIndicator">Single</div>
+                    <div className="LayerCountIndicator">{t("admin.indicatorLayers.type.single")}</div>
                   </div>
                   <IndicatorStyle
                     indicator={indicator}
@@ -350,7 +350,7 @@ export default function IndicatorLayersForm() {
                 <>
                   <div className="OtherActionIndicator">
                     <div className="Separator"></div>
-                    <div className="LayerCountIndicator">Related Table</div>
+                    <div className="LayerCountIndicator">{t("admin.indicatorLayers.type.relatedTable")}</div>
                   </div>
                   <RelatedTableLayerConfig
                     key={layer.id}

@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -32,10 +33,11 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 
 export function ExposedVariable({ data, setData, remove }) {
+  const { t } = useTranslation();
   return <div className='BasicFormSection'>
     <div className="InputInLine">
       <FormControl className='BasicForm'>
-        <InputLabel>Variable</InputLabel>
+        <InputLabel>{t("admin.dynamicIndicator.variable")}</InputLabel>
         <Input
           value={data.field}
           onChange={(evt) => {
@@ -89,7 +91,7 @@ export function ExposedVariable({ data, setData, remove }) {
           /> :
           <Fragment>
             <FormControl className='BasicForm'>
-              <InputLabel>Minimum value</InputLabel>
+              <InputLabel>{t("admin.dynamicIndicator.minimumValue")}</InputLabel>
               <Input
                 type='number'
                 value={data.values[0]}
@@ -100,7 +102,7 @@ export function ExposedVariable({ data, setData, remove }) {
               />
             </FormControl>
             <FormControl className='BasicForm'>
-              <InputLabel>Maximum value</InputLabel>
+              <InputLabel>{t("admin.dynamicIndicator.maximumValue")}</InputLabel>
               <Input
                 type='number'
                 value={data.values[1]}
@@ -112,7 +114,7 @@ export function ExposedVariable({ data, setData, remove }) {
             </FormControl>
           </Fragment>
       }
-      <div style={{ padding: "1rem 0.5rem" }}>QUERY</div>
+      <div style={{ padding: "1rem 0.5rem" }}>{t("admin.dynamicIndicator.query")}</div>
       <WhereInput
         where={data}
         upperWhere={null}
@@ -137,6 +139,7 @@ export function ExposedVariable({ data, setData, remove }) {
 }
 
 export default function Expression({ indicators, data, setData }) {
+  const { t } = useTranslation();
   let context = {}
   data.exposedVariables?.map(variable => {
     context[variable.field] = variable.value;
@@ -147,7 +150,7 @@ export default function Expression({ indicators, data, setData }) {
   context = { context: { values: context } };
 
   return <Fragment>
-    <div className='Title'>Expression</div>
+    <div className='Title'>{t('admin.dynamicIndicator.expression')}</div>
     <div className='form-helptext'>
       Context below is the example of context for each of geometry.
     </div>
@@ -177,7 +180,7 @@ export default function Expression({ indicators, data, setData }) {
           })
           setData(data)
         }}>
-        <div className='Title'>Exposed Variables</div>
+        <div className='Title'>{t('admin.dynamicIndicator.exposedVariables')}</div>
         <AddCircleIcon className='AddButton'/>
       </ThemeButton>
       {

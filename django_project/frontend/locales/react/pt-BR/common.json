@@ -130,7 +130,12 @@
       "vectorStyle": {
         "loadingAttributes": "Carregando atributos...",
         "stylesHeading": "Estilos"
-      }
+      },
+      "noDataValue": "NoData Value",
+      "additionalNoData": "Additional NoData",
+      "noDataColor": "NoData Color",
+      "overrideLabelConfig": "Override label config from context layer",
+      "labelText": "Text"
     },
     "contextLayers": "Camadas de contexto",
     "create": {
@@ -398,7 +403,10 @@
         "step4": "4. Escolha a coluna de código de área.",
         "step5": "5. Escolha a coluna de valor.",
         "step6": "6. Escolha as colunas extras."
-      }
+      },
+      "managementForm": "Management Form",
+      "importData": "Import data",
+      "valueList": "Value List"
     },
     "indicatorLayers": {
       "multiIndicator": {
@@ -427,6 +435,12 @@
         "relatedTable": "Tabela relacionada",
         "setupTitle": "Configurar camada de tabela relacionada",
         "styleNotConfigured": "O estilo não está configurado."
+      },
+      "type": {
+        "sdmx": "SDMX",
+        "dynamic": "Dynamic",
+        "single": "Single",
+        "relatedTable": "Related Table"
       }
     },
     "indicators": "Indicadores",
@@ -626,7 +640,9 @@
       },
       "selectStyle": "Selecionar estilo",
       "style": "Estilo",
-      "styleType": "Tipo de estilo"
+      "styleType": "Tipo de estilo",
+      "classification": "Classification",
+      "numberOfClasses": "Number of Classes"
     },
     "styles": "Estilos",
     "table": {
@@ -682,12 +698,41 @@
       },
       "user": {
         "backendAdmin": "Administrador backend (Django Staff)",
-        "receiveEmailNotification": "Receber e-mail para notificações de administrador."
+        "receiveEmailNotification": "Receber e-mail para notificações de administrador.",
+        "geoRepoApiKey": "GeoRepo API Key"
       }
     },
     "usersAndGroups": "Usuários e grupos",
     "viewAllDashboards": "Ver todos os painéis",
-    "visualization": "VISUALIZAÇÃO"
+    "visualization": "VISUALIZAÇÃO",
+    "approveRequestButton": "Approve",
+    "approveRequestHeader": "Approve Request",
+    "approveRequestNewUser": "New User",
+    "approveRequestPermission": "Permission",
+    "approveRequestQuery": "Are you sure you want to approve this request?",
+    "approveRequestRemarks": "Remarks",
+    "dataApprovedAt": "Approved At",
+    "dataApprovedBy": "Approved By",
+    "dataDescriptionSection": "Description",
+    "dataEmailSection": "Email",
+    "dataNameSection": "Name",
+    "dataRejectedAt": "Rejected At",
+    "dataRejectedBy": "Rejected By",
+    "dataRemarks": "Remarks",
+    "dataStatusSection": "Status",
+    "dataSubmittedAtSection": "Submitted At",
+    "rejectRequestButton": "Reject",
+    "rejectRequestHeader": "Reject Request",
+    "rejectRequestQuery": "Are you sure you want to reject this request?",
+    "rejectRequestRemarks": "Remarks",
+    "dynamicIndicator": {
+      "variable": "Variable",
+      "minimumValue": "Minimum value",
+      "maximumValue": "Maximum value",
+      "query": "QUERY",
+      "expression": "Expression",
+      "exposedVariables": "Exposed Variables"
+    }
   },
   "category": "Categoria",
   "components": {
@@ -931,7 +976,17 @@
       },
       "zonalAnalysis": {
         "title": "Análise zonal"
+      },
+      "homeButton": {
+        "backToHome": "Back to Home"
       }
+    },
+    "dataDownloader": {
+      "downloading": "Downloading..."
+    },
+    "popup": {
+      "mainTab": "Main",
+      "relatedRecordsTab": "Related Records"
     }
   },
   "featured": "Destaque",

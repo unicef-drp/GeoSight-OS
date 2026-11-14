@@ -14,6 +14,7 @@
  */
 
 import React from "react";
+import { useTranslation } from 'react-i18next';
 
 import ColorPaletteSelector
   from "../../../../../components/Input/ColorPaletteSelector";
@@ -38,6 +39,7 @@ export default function ColorPaletteStyleConfig(
     options = dynamicClassificationChoices
   }
 ) {
+  const { t } = useTranslation()
   const classification = options.find(type => type.value === styleConfig.dynamic_classification)
   return <>
     <ColorPaletteSelector
@@ -57,7 +59,7 @@ export default function ColorPaletteStyleConfig(
     />
     <div hidden={styleType === QUALITATIVE_TYPE}>
       <div className="BasicFormSection">
-        <div className='RuleTable-Title'>Classification</div>
+        <div className='RuleTable-Title'>{t('admin.style.classification')}</div>
         <Select
           options={options}
           value={classification ? classification : options.find(type => type.label === 'Equidistant')}
@@ -70,7 +72,7 @@ export default function ColorPaletteStyleConfig(
         />
       </div>
       <div className="BasicFormSection">
-        <div className='RuleTable-Title'>Number of Classes</div>
+        <div className='RuleTable-Title'>{t('admin.style.numberOfClasses')}</div>
         <input
           type='number' min='1' value={styleConfig.dynamic_class_num}
           name='dynamic_class_num'

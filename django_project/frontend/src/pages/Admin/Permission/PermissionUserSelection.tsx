@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AddButton } from "../../../components/Elements/Button";
 import { FormControl } from "@mui/material";
 import Select from "@mui/material/Select";
@@ -31,6 +32,7 @@ export function PermissionUserSelection(
     permissionChoices, setData
   }: Props
 ) {
+  const { t } = useTranslation();
   const [permissionChoice, setPermissionChoice] = useState(permissionChoices[0][0])
 
   return <UserSelector
@@ -59,7 +61,7 @@ export function PermissionUserSelection(
         >
           <div className="BasicFormSection" style={{ marginBottom: 0 }}>
             <div>
-              <label className="form-label">Permission</label>
+              <label className="form-label">{t("Permission")}</label>
             </div>
             <div>
               <FormControl className='BasicForm'>

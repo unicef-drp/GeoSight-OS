@@ -165,7 +165,7 @@ export default function UserForm() {
           <div className="ApiKeySection">
             {preferences.georepo_using_user_api_key ? (
               <div className="BasicFormSection">
-                <div>GeoRepo API Key</div>
+                <div>{t("admin.userAndGroup.user.geoRepoApiKey")}</div>
                 <div
                   className={
                     "InputInLine " +

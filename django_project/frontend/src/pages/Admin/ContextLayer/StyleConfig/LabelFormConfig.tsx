@@ -14,6 +14,7 @@
  */
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import LabelStyle from "../../LabelStyle";
 import TextField from "@mui/material/TextField";
@@ -35,7 +36,8 @@ export default function LabelFormConfig({
   setOriginalData,
   useOverride,
 }: Props) {
-  const data = JSON.parse(JSON.stringify(originalData));
+  const { t } = useTranslation();
+    const data = JSON.parse(JSON.stringify(originalData));
   if (!Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type)) {
     return null;
   }
@@ -68,7 +70,7 @@ export default function LabelFormConfig({
                 }
               />
             }
-            label="Override label config from context layer"
+            label={t("admin.contextLayer.overrideLabelConfig")}
           />
         </FormGroup>
       ) : null}
@@ -94,7 +96,7 @@ export default function LabelFormConfig({
           />
           <div className="BasicFormSection"></div>
           <div className="BasicFormSection">
-            <label className="form-label">Text</label>
+            <label className="form-label">{t("admin.contextLayer.labelText")}</label>
             <TextField
               multiline={true}
               value={data.label_config?.text ? data.label_config?.text : ""}

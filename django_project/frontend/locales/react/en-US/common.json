@@ -130,7 +130,12 @@
       "vectorStyle": {
         "loadingAttributes": "Loading attributes...",
         "stylesHeading": "Styles"
-      }
+      },
+      "noDataValue": "NoData Value",
+      "additionalNoData": "Additional NoData",
+      "noDataColor": "NoData Color",
+      "overrideLabelConfig": "Override label config from context layer",
+      "labelText": "Text"
     },
     "contextLayers": "Context Layers",
     "create": {
@@ -399,7 +404,10 @@
         "step4": "4. Choose area code column.",
         "step5": "5. Choose value column.",
         "step6": "6. Choose extra columns."
-      }
+      },
+      "managementForm": "Management Form",
+      "importData": "Import data",
+      "valueList": "Value List"
     },
     "indicatorLayers": {
       "multiIndicator": {
@@ -428,6 +436,12 @@
         "relatedTable": "Related Table",
         "setupTitle": "Setup Related Table Layer",
         "styleNotConfigured": "Style is not configured."
+      },
+      "type": {
+        "sdmx": "SDMX",
+        "dynamic": "Dynamic",
+        "single": "Single",
+        "relatedTable": "Related Table"
       }
     },
     "indicators": "Indicators",
@@ -601,7 +615,9 @@
       },
       "selectStyle": "Select style",
       "style": "Style",
-      "styleType": "Style type"
+      "styleType": "Style type",
+      "classification": "Classification",
+      "numberOfClasses": "Number of Classes"
     },
     "excelInput": {
       "excelFile": "Excel file",
@@ -682,12 +698,41 @@
       },
       "user": {
         "backendAdmin": "Backend admin (Django Staff)",
-        "receiveEmailNotification": "Receive email for admin notification."
+        "receiveEmailNotification": "Receive email for admin notification.",
+        "geoRepoApiKey": "GeoRepo API Key"
       }
     },
     "usersAndGroups": "Users and groups",
     "viewAllDashboards": "View all dashboard(s)",
-    "visualization": "VISUALIZATION"
+    "visualization": "VISUALIZATION",
+    "approveRequestButton": "Approve",
+    "approveRequestHeader": "Approve Request",
+    "approveRequestNewUser": "New User",
+    "approveRequestPermission": "Permission",
+    "approveRequestQuery": "Are you sure you want to approve this request?",
+    "approveRequestRemarks": "Remarks",
+    "dataApprovedAt": "Approved At",
+    "dataApprovedBy": "Approved By",
+    "dataDescriptionSection": "Description",
+    "dataEmailSection": "Email",
+    "dataNameSection": "Name",
+    "dataRejectedAt": "Rejected At",
+    "dataRejectedBy": "Rejected By",
+    "dataRemarks": "Remarks",
+    "dataStatusSection": "Status",
+    "dataSubmittedAtSection": "Submitted At",
+    "rejectRequestButton": "Reject",
+    "rejectRequestHeader": "Reject Request",
+    "rejectRequestQuery": "Are you sure you want to reject this request?",
+    "rejectRequestRemarks": "Remarks",
+    "dynamicIndicator": {
+      "variable": "Variable",
+      "minimumValue": "Minimum value",
+      "maximumValue": "Maximum value",
+      "query": "QUERY",
+      "expression": "Expression",
+      "exposedVariables": "Exposed Variables"
+    }
   },
   "category": "Category",
   "components": {
@@ -931,7 +976,17 @@
       },
       "zonalAnalysis": {
         "title": "Zonal Analysis"
+      },
+      "homeButton": {
+        "backToHome": "Back to Home"
       }
+    },
+    "dataDownloader": {
+      "downloading": "Downloading..."
+    },
+    "popup": {
+      "mainTab": "Main",
+      "relatedRecordsTab": "Related Records"
     }
   },
   "featured": "Featured",
