@@ -323,7 +323,7 @@ export default function ListForm({
                 <AddButton
                   className="AddGroupButton"
                   variant="primary"
-                  text={"Add Group"}
+                  text={t('admin.dashboard.form.listForm.addGroup')}
                   onClick={addGroup}
                 />
               ) : (

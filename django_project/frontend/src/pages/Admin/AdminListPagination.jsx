@@ -23,6 +23,7 @@ import React, {
 } from 'react';
 import $ from "jquery";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTranslation } from "react-i18next";
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
 import {
   Notification,
@@ -55,6 +56,7 @@ export const AdminListPagination = forwardRef(
       }
     }));
 
+    const { t } = useTranslation();
     const deleteDialogRef = useRef(null);
     const prev = useRef();
 
@@ -224,7 +226,7 @@ export const AdminListPagination = forwardRef(
               <DeleteButton
                 disabled={!selectionModel.length || disabled}
                 variant="Error Reverse"
-                text={"Delete"}
+                text={t('admin.delete')}
                 onClick={() => {
                   deleteDialogRef?.current?.open()
                 }}
@@ -253,7 +255,7 @@ export const AdminListPagination = forwardRef(
                 ref={deleteDialogRef}
               >
                 <div>
-                  Are you sure want to delete {selectionModel.length} data.
+                  {t('admin.deleteMultipleConfirmationMessage', { numberOfItems: selectionModel.length, dataName: 'data' })}
                 </div>
               </ConfirmDialog>
             </Fragment>

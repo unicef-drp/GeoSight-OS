@@ -199,7 +199,8 @@
         "listForm": {
           "select": "Select {{pageName}}{{groupName}}",
           "for": " for {{groupName}}",
-          "applySelections": "Apply {{count}} Selection(s)"
+          "applySelections": "Apply {{count}} Selection(s)",
+          "addGroup": "Add Group"
         }
       },
       "saveAs": {

@@ -15,6 +15,7 @@
 
 import React, { forwardRef, Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import {
@@ -49,6 +50,7 @@ export const IndicatorStyle = forwardRef(
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const { referenceLayer } = useSelector((state) => state.dashboard.data);
     const [dataLayer, setDataLayer] = useState(indicatorLayer);
@@ -114,7 +116,7 @@ export const IndicatorStyle = forwardRef(
                     <div>
                       <div className="BasicFormSection">
                         <div>
-                          <label className="form-label">Indicator</label>
+                          <label className="form-label">{t('admin.importer.logDetail.indicator')}</label>
                         </div>
                         <div>
                           <input
@@ -134,7 +136,7 @@ export const IndicatorStyle = forwardRef(
                       </div>
                       <div className="BasicFormSection">
                         <div>
-                          <label className="form-label">Name</label>
+                          <label className="form-label">{t('name')}</label>
                         </div>
                         <div style={{ display: "flex" }}>
                           <Checkbox
@@ -162,7 +164,7 @@ export const IndicatorStyle = forwardRef(
                       </div>
                       <div className="BasicFormSection">
                         <div>
-                          <label className="form-label">Description</label>
+                          <label className="form-label">{t('description')}</label>
                         </div>
                         <div style={{ display: "flex" }}>
                           <Checkbox
