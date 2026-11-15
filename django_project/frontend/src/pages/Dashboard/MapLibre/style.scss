@@ -612,3 +612,31 @@ $nav-disabled-color: '%23CCCCCC';
     margin-left: -15px;
   }
 }
+/* v1 icon state model ---------------------------------------------------- */
+/* Normalize all toolbar icons: 20×20 SVG in a flexbox-centered hit area */
+.MapLibreMap .Toolbar .ToolbarChild > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 4px;
+  color: var(--primary-color);
+}
+.MapLibreMap .Toolbar .ToolbarChild > a svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0;
+}
+.MapLibreMap .Toolbar .ToolbarChild > a:hover {
+  background-color: color-mix(in srgb, var(--primary-color) 22%, transparent);
+}
+.MapLibreMap .Toolbar .Active .ToolbarChild > a,
+.MapLibreMap .Toolbar .Active.Selected .ToolbarChild > a {
+  background-color: var(--primary-color);
+  color: var(--anti-primary-color);
+}
+/* SDMX icon: fill-based, must inherit current color */
+.MapLibreMap .Toolbar .ToolbarChild > a svg[fill="currentColor"] path {
+  fill: currentColor;
+}
+/* end v1 icon state model ------------------------------------------------ */

@@ -22,10 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from 'react-i18next';
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from '../../../../store/dashboard'
-import {
-  TimeCheckedIcon,
-  TimeUncheckedIcon
-} from "../../../../components/Icons";
+import { TimeIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -73,8 +70,7 @@ export default function GlobalDateSelector() {
             )
           }}>
           {
-            globalDateSelectorOpened ? <TimeCheckedIcon/> :
-              <TimeUncheckedIcon/>
+            <TimeIcon/>
           }
         </PluginChild>
       </div>

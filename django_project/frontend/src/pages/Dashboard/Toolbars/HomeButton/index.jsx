@@ -35,6 +35,7 @@ export function HomeButton() {
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.BACK_TO_HOME),
   );
   const extent = useSelector((state) => state.dashboard.data?.extent);
+  const validExtent = extent && extent.length === 4 && extent.every((v) => !isNaN(v));
 
   if (!enable) return null;
   return (
@@ -46,14 +47,9 @@ export function HomeButton() {
         >
           <PluginChild
             title={t("dashboardPage.toolbars.homeButton.backToHome")}
-            disabled={!extent}
+            disabled={!validExtent}
             onClick={() => {
-              dispatch(
-                Actions.Map.updateExtent([
-                  [extent[0], extent[1]],
-                  [extent[2], extent[3]],
-                ]),
-              );
+              dispatch(Actions.Map.updateExtent(extent));
             }}
           >
             <HomeIcon />

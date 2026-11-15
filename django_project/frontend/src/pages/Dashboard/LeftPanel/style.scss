@@ -471,6 +471,12 @@
     padding: 0 !important;
     min-height: unset !important;
   }
+
+  /* Increase tab icon size for Layers / Filters tabs */
+  svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
 }
 
 .dashboard__content-wrapper__inner {

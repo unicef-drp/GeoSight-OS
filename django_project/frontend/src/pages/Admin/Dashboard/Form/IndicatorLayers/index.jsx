@@ -203,6 +203,7 @@ export default function IndicatorLayersForm() {
     useState(false);
 
   const sdmxConfigRef = useRef(null);
+  const { t } = useTranslation();
 
   // When the indicator layer type selected
   const IndicatorLayerTypeSelection = (type) => {

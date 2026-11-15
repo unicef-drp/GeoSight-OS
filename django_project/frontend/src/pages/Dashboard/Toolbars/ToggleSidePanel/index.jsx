@@ -23,10 +23,8 @@ import { useTranslation } from "react-i18next";
 
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import {
-  GraphCheckedIcon,
-  GraphUncheckedIcon,
-  LeftPanelCheckedIcon,
-  LeftPanelUncheckedIcon,
+  PanelLeftIcon,
+  ChartPanelIcon,
 } from "../../../../components/Icons/index";
 import { LEFT, RIGHT } from "../../../../components/ToggleButton";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
@@ -104,15 +102,9 @@ export default function ToggleSidePanel({
           }}
         >
           {props.className === "LeftButton" ? (
-            active === "Active" ? (
-              <LeftPanelCheckedIcon />
-            ) : (
-              <LeftPanelUncheckedIcon />
-            )
-          ) : active === "Active" ? (
-            <GraphCheckedIcon />
+            <PanelLeftIcon />
           ) : (
-            <GraphUncheckedIcon />
+            <ChartPanelIcon />
           )}
         </PluginChild>
       </div>

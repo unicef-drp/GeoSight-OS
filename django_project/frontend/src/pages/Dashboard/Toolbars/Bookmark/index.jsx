@@ -27,8 +27,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import {
   EditIcon,
-  StarOffIcon,
-  StarOnIcon,
+  BookmarkIcon,
 } from "../../../../components/Icons";
 import { DjangoRequests, fetchingData } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
@@ -183,7 +182,7 @@ export default function Bookmark({ map }) {
             >
               <PluginChild title={t("dashboardPage.toolbars.bookmark.title")}>
                 <a>
-                  <StarOffIcon />
+                  <BookmarkIcon />
                 </a>
               </PluginChild>
             </div>
@@ -232,7 +231,7 @@ export default function Bookmark({ map }) {
                             }}
                           >
                             <td>
-                              <StarOnIcon className="StarIcon" />
+                              <BookmarkIcon className="StarIcon" />
                             </td>
                             <td>
                               <div>{bookmark.name}</div>

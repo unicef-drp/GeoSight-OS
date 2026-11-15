@@ -34,8 +34,7 @@ import { ThemeButton } from "../../../../components/Elements/Button";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import {
   DeleteIcon,
-  MeasurementOffIcon,
-  MeasurementOnIcon,
+  MeasureIcon,
 } from "../../../../components/Icons";
 import { MaplibreDrawingTools } from "../../../../utils/MaplibreDrawingTools";
 import { Variables } from "../../../../utils/Variables";
@@ -128,7 +127,7 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
             }
           }}
         >
-          {start ? <MeasurementOnIcon /> : <MeasurementOffIcon />}
+          <MeasureIcon />
         </PluginChild>
       </div>
       {start ? (

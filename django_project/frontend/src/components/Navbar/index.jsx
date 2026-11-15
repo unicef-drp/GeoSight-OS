@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 
 import User from "./User";
 import { EmbedConfig } from "../../utils/embed";
-import { CogIcon, EditIcon, GlobeIcon, HelpIcon } from "../Icons";
+import { CogIcon, EditIcon, HeaderGlobeIcon, HeaderHelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import { HelpCenter } from "../HelpCenter";
 import NotificationBadge from "../NotificationBadge";
@@ -188,7 +188,7 @@ export default function NavBar({ minified }) {
               className="AdminLinkButton LanguageSelector"
               style={{ marginRight: "1rem", cursor: "pointer" }}
             >
-              <GlobeIcon />
+              <HeaderGlobeIcon />
             </div>
           </LanguageSelector>
           <div className="HelpButton SvgButton">
@@ -198,7 +198,7 @@ export default function NavBar({ minified }) {
                 helpPageRef?.current.open();
               }}
             >
-              <HelpIcon />
+              <HeaderHelpIcon />
             </a>
           </div>
           <User />

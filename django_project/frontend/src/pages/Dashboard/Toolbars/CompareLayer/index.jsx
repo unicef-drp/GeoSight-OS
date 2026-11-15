@@ -22,10 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
-import {
-  CompareCheckedIcon,
-  CompareUncheckedIcon,
-} from "../../../../components/Icons";
+import { CompareSwipeIcon } from "../../../../components/Icons";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
@@ -69,7 +66,7 @@ export function CompareLayer({ disabled = false }) {
             }
           }}
         >
-          {compareMode ? <CompareCheckedIcon /> : <CompareUncheckedIcon />}
+          <CompareSwipeIcon />
         </PluginChild>
       </div>
     </Plugin>

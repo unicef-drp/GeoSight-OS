@@ -26,12 +26,10 @@ import { CompareLayer } from "../index";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import {
-  ChainOffIcon,
-  ChainOnIcon,
-  SideBySideOffIcon,
-  SideBySideOnIcon,
-  ThreeDimensionOffIcon,
-  ThreeDimensionOnIcon,
+  LinkMapsIcon,
+  LinkMapsOpenIcon,
+  MultiMapIcon,
+  ThreeDIcon,
 } from "../../../../components/Icons";
 import maplibregl from "maplibre-gl";
 
@@ -93,7 +91,7 @@ export default function MapModeToolbars({ map }: Props) {
               dispatch(Actions.MapMode.toggleSideBySideView());
             }}
           >
-            {sideBySideViewMode ? <SideBySideOnIcon /> : <SideBySideOffIcon />}
+            <MultiMapIcon />
           </PluginChild>
         </div>
       </Plugin>
@@ -116,9 +114,9 @@ export default function MapModeToolbars({ map }: Props) {
               }}
             >
               {sideBySideViewModeSync ? (
-                <ChainOnIcon />
+                <LinkMapsIcon />
               ) : (
-                <ChainOffIcon />
+                <LinkMapsOpenIcon />
               )}
             </PluginChild>
           </div>
@@ -140,7 +138,7 @@ export default function MapModeToolbars({ map }: Props) {
               dispatch(Actions.Map.change3DMode(!is3dMode));
             }}
           >
-            {is3dMode ? <ThreeDimensionOnIcon /> : <ThreeDimensionOffIcon />}
+            <ThreeDIcon />
           </PluginChild>
         </div>
       </Plugin>

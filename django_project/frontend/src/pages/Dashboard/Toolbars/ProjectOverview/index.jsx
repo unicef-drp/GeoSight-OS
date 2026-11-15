@@ -35,7 +35,7 @@ import Modal, {
 } from "../../../../components/Modal";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { CloseButton } from "../../../../components/Elements/Button";
-import { InfoFillIcon } from "../../../../components/Icons";
+import { InfoIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -77,7 +77,7 @@ export default function ProjectOverview() {
     <Plugin className="ProjectOverview-Button">
       <div className={open ? "Active" : "Inactive"}>
         <PluginChild title={t('dashboardPage.projectOverview')}>
-          <InfoFillIcon onClick={(_) => setOpen(true)} />
+          <InfoIcon onClick={(_) => setOpen(true)} />
           <Modal
             className="ProjectOverview"
             open={open}

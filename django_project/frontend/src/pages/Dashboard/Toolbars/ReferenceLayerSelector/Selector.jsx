@@ -21,7 +21,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from "../../../../store/dashboard";
-import { ArrowDownwardIcon } from "../../../../components/Icons";
+import { ChevronDownIcon } from "../../../../components/Icons";
 import { dictDeepCopy } from "../../../../utils/main";
 import { selectIndicatorLayerByIdx } from "../../../../selectors/indicatorLayers";
 
@@ -126,7 +126,7 @@ export default function ReferenceLayerSelector() {
             onClick={() => setOpen(!open)}
           >
             <div>{level.level_name}</div>
-            <ArrowDownwardIcon />
+            <ChevronDownIcon />
           </div>
           <div className="ReferenceLayerLevelOptions">
             {Object.keys(levels).map((level) => {

@@ -23,6 +23,7 @@ import { Variables } from "../../../../utils/Variables";
 import SDMXLayerConfig
   from "../../../Admin/Dashboard/Form/IndicatorLayers/SDMXLayer";
 import { SDMXIndicatorLayerType } from "../../../../utils/indicatorLayer";
+import { SdmxLayerIcon } from "../../../../components/Icons";
 
 import "./style.scss";
 
@@ -76,11 +77,7 @@ export function SDMXLayerCreation() {
               sdmxConfigRef.current.open();
             }}
           >
-            <img
-              src={staticUrl + "img/SDMX.icon.png"}
-              alt="SDMX"
-              height="100%"
-            />
+            <SdmxLayerIcon />
           </PluginChild>
         </div>
       </Plugin>

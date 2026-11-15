@@ -204,7 +204,7 @@
         "listForm": {
           "select": "Seleccionar {{pageName}}{{groupName}}",
           "for": " para {{groupName}}",
-          "applySelections": "Aplicar {{count}} selección(es)",
+          "applySelections": "Apply Selections : Selected ({{count}})",
           "addGroup": "Agregar grupo"
         }
       },
@@ -993,7 +993,7 @@
     }
   },
   "featured": "Destacado",
-  "featured projects": "Proyectos Destacados",
+  "featured projects": "Proyectos destacados",
   "loggedAs": "Conectado como",
   "logout": "Cerrar sesión",
   "mapboxStyleInformation": "Información de estilo de Mapbox.",

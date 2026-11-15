@@ -20,6 +20,7 @@ export const zoomToExtent = (
   extent: [number, number, number, number],
   id: number,
 ) => {
+  if (!extent || extent.length < 4 || extent.some((v) => isNaN(v))) return;
   setTimeout(function () {
     const rightContent = document.querySelector(
       ".RightContent .right",

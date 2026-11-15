@@ -20,14 +20,18 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import StopIcon from '@mui/icons-material/Stop';
+import {
+  TimeFirstIcon,
+  TimePreviousIcon,
+  TimePlayIcon,
+  TimeStopIcon,
+  TimeNextIcon,
+  TimeLastIcon,
+} from "../../../../../components/Icons";
 import { ThemeButton } from "../../../../../components/Elements/Button";
 import { allLayerDataIsReady } from "../../../../../utils/indicatorLayer";
 import { returnWhere } from "../../../../../utils/queryExtraction";
-import { NextEndIcon, PrevEndIcon } from "../../../../../components/Icons/svg";
+
 import { selectIndicatorLayers } from "../../../../../selectors/indicatorLayers";
 
 import './style.scss';
@@ -130,7 +134,7 @@ export default function PlayControl(
         stop()
         setNextIdx(0)
       }}>
-      <PrevEndIcon/>
+      <TimeFirstIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
@@ -142,21 +146,21 @@ export default function PlayControl(
         const nextIdx = (idx - 1) >= 0 ? idx - 1 : (dates.length - 1)
         setNextIdx(nextIdx)
       }}>
-      <SkipPreviousIcon/>
+      <TimePreviousIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
       title={t('dashboardPage.playControl.play')}
       variant={'secondary Basic ' + (!isPlay ? 'Reverse' : '')}
       disabled={disabled} onClick={play}>
-      <PlayArrowIcon/>
+      <TimePlayIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
       title={t('dashboardPage.playControl.stop')}
       variant={'secondary Basic Reverse'}
       disabled={disabled || !isPlay} onClick={stop}>
-      <StopIcon/>
+      <TimeStopIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
@@ -167,7 +171,7 @@ export default function PlayControl(
         stop()
         next()
       }}>
-      <SkipNextIcon/>
+      <TimeNextIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
@@ -178,7 +182,7 @@ export default function PlayControl(
         stop()
         setNextIdx(dates.length - 1)
       }}>
-      <NextEndIcon/>
+      <TimeLastIcon/>
     </ThemeButton>
     {children}
   </div>

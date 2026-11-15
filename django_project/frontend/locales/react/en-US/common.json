@@ -204,7 +204,7 @@
         "listForm": {
           "select": "Select {{pageName}}{{groupName}}",
           "for": " for {{groupName}}",
-          "applySelections": "Apply {{count}} Selection(s)",
+          "applySelections": "Apply Selections : Selected ({{count}})",
           "addGroup": "Add Group"
         }
       },

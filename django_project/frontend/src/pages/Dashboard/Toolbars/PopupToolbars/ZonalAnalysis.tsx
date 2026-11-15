@@ -26,10 +26,7 @@ import React, {
 import maplibregl from "maplibre-gl";
 import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
-import {
-  ZonalAnalysisOffIcon,
-  ZonalAnalysisOnIcon,
-} from "../../../../components/Icons";
+import { ZonalAnalysisIcon } from "../../../../components/Icons";
 import { ZonalAnalysisTool } from "../../../../components/ZonalAnalysisTool";
 
 import "./style.scss";
@@ -86,7 +83,7 @@ export const ZonalAnalysisComponent = forwardRef(
               }
             }}
           >
-            {active ? <ZonalAnalysisOnIcon /> : <ZonalAnalysisOffIcon />}
+            <ZonalAnalysisIcon />
           </PluginChild>
         </div>
         {active ? (

@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from "../../../../store/dashboard";
-import { LabelOffIcon, LabelOnIcon } from "../../../../components/Icons";
+import { LabelIcon } from "../../../../components/Icons";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
@@ -53,24 +53,14 @@ export function LabelToggler() {
       >
         <PluginChild
           title={showIndicatorMapLabel ? t('dashboardPage.toolbars.labelToggler.hideMapLabels') : t('dashboardPage.toolbars.labelToggler.showMapLabels')}
+          active={showIndicatorMapLabel}
+          onClick={() => {
+            dispatch(
+              Actions.GlobalState.update({ showIndicatorMapLabel: !showIndicatorMapLabel }),
+            );
+          }}
         >
-          {showIndicatorMapLabel ? (
-            <LabelOnIcon
-              onClick={() => {
-                dispatch(
-                  Actions.GlobalState.update({ showIndicatorMapLabel: false }),
-                );
-              }}
-            />
-          ) : (
-            <LabelOffIcon
-              onClick={() => {
-                dispatch(
-                  Actions.GlobalState.update({ showIndicatorMapLabel: true }),
-                );
-              }}
-            />
-          )}
+          <LabelIcon />
         </PluginChild>
       </div>
     </Plugin>
