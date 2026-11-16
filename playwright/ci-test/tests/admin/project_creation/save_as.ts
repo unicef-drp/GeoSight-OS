@@ -28,12 +28,12 @@ test.describe('Duplicate and save as project', () => {
       exact: true
     }).click();
     await page.getByRole('button', { name: 'Save as' }).click();
-    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill(name);
+    await page.getByRole('textbox', { name: 'Example: Afghanistan Risk Dashboard' }).fill(name);
     await page.getByRole('button', { name: 'Create' }).click();
 
     const editUrl = `${BASE_URL}/admin/project/test-project-save-as/edit`
     await page.waitForURL(editUrl)
-    await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue(name);
+    await expect(page.getByPlaceholder('Example: Afghanistan Risk Dashboard')).toHaveValue(name);
 
     // --------------------------------------------------------------
     // CHECK PREVIEW

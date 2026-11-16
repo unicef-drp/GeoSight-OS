@@ -10,7 +10,7 @@ export async function saveAsProject(page, inputName, outputName) {
   await page.goto(`/admin/project/${nameToSlug(inputName)}/edit`);
   await page.waitForURL(`${BASE_URL}/admin/project/${nameToSlug(inputName)}/edit`);
   await page.getByRole('button', { name: 'Save as' }).click();
-  await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill(outputName);
+  await page.getByRole('textbox', { name: 'Example: Afghanistan Risk Dashboard' }).fill(outputName);
   await page.getByRole('button', { name: 'Create' }).click();
   await page.waitForURL(`${BASE_URL}/admin/project/${nameToSlug(outputName)}/edit`);
   await expect(page.locator('div').getByText('Fetching Project Data...')).toBeHidden();
@@ -30,7 +30,7 @@ export async function editProject(page, name) {
 }
 
 export async function fillProjectName(page, name) {
-  await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).click();
+  await page.getByRole('textbox', { name: 'Example: Afghanistan Risk Dashboard' }).click();
   await page.keyboard.type(name);
   await delay(1000)
 }

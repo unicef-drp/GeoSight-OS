@@ -26,7 +26,7 @@ test.describe('Dashboard list admin', () => {
 
     const editUrl = `${BASE_URL}/admin/project/demo-geosight-project-1/edit`
     await page.waitForURL(editUrl)
-    await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue('Demo GeoSight Project 1');
+    await expect(page.getByPlaceholder('Example: Afghanistan Risk Dashboard')).toHaveValue('Demo GeoSight Project 1');
 
     // --------------------------------------------------------------
     // CHECK PREVIEW
