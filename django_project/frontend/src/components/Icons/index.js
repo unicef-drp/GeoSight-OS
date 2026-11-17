@@ -86,6 +86,7 @@ export { default as ThreeDimensionOffIcon } from "./three-dimension-off.svg";
 export { default as ThreeDimensionOnIcon } from "./three-dimension-on.svg";
 export { default as SideBySideOnIcon } from "./side-by-side-on.svg";
 export { default as SideBySideOffIcon } from "./side-by-side-off.svg";
+export { default as SdmxLayerIcon } from "./sdmx-layer.svg";
 export { default as ChainOnIcon } from "./chain-on.svg";
 export { default as ChainOffIcon } from "./chain-off.svg";
 export { default as TuneIcon } from "./tune.svg";
