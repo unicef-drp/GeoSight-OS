@@ -64,8 +64,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
       - name: Display branch
         run: git branch --show-current
 
@@ -151,8 +149,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
       - name: Display branch
         run: git branch --show-current
 
