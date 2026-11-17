@@ -22,13 +22,13 @@ on:
 jobs:
   flake8_py3:
     name: Python Lint
-    # Pinned: ubuntu-latest (26.04) has no Python 3.8.18 for setup-python
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8.18
+          # Same Python as the app image (Ubuntu 22.04 system Python 3.10)
+          python-version: "3.10"
           architecture: x64
       - name: Checkout Repository
         uses: actions/checkout@v3
