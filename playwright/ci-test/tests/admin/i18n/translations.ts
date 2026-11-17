@@ -17,21 +17,21 @@ test.describe('i18n translations', () => {
     await page.goto('/es-es/');
     await page.waitForSelector('.Home', { timeout: 10000 });
     await expect(page.getByText('Panel de administración')).toBeVisible();
-    await expect(page.getByText('Proyectos destacados')).toBeVisible();
+    await expect(page.getByText('Proyectos destacados', { exact: true })).toBeVisible();
   });
 
   test('Portuguese (pt-BR) - home page shows Portuguese strings', async ({ page }) => {
     await page.goto('/pt-br/');
     await page.waitForSelector('.Home', { timeout: 10000 });
     await expect(page.getByText('Painel de administração')).toBeVisible();
-    await expect(page.getByText('Projetos em destaque')).toBeVisible();
+    await expect(page.getByText('Projetos em destaque', { exact: true })).toBeVisible();
   });
 
   test('French (fr-FR) - home page shows French strings', async ({ page }) => {
     await page.goto('/fr-fr/');
     await page.waitForSelector('.Home', { timeout: 10000 });
     await expect(page.getByText("Panneau d'administration")).toBeVisible();
-    await expect(page.getByText('Projets en vedette')).toBeVisible();
+    await expect(page.getByText('Projets en vedette', { exact: true })).toBeVisible();
   });
 
   test('Spanish (es-ES) - project dashboard shows Spanish toolbar labels', async ({ page }) => {
@@ -64,7 +64,7 @@ test.describe('i18n translations', () => {
     await page.goto('/pt-pt/');
     await page.waitForSelector('.Home', { timeout: 10000 });
     await expect(page.getByText('Painel de administração')).toBeVisible();
-    await expect(page.getByText('Projetos em destaque')).toBeVisible();
+    await expect(page.getByText('Projetos em destaque', { exact: true })).toBeVisible();
   });
 
   test('locale JSON files exist for all supported languages', async ({ page }) => {

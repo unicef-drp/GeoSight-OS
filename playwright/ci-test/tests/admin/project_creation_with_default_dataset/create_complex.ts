@@ -138,7 +138,7 @@ test.describe('Create complex project', () => {
     await page.locator('label').filter({ hasText: 'Override admin level' }).click();
     await page.getByRole('combobox', { name: 'Select default admin level' }).click();
     await page.getByRole('option', { name: 'Admin Level 2' }).click();
-    await page.getByPlaceholder('Select available levels').click();
+    await page.getByPlaceholder('Select available admin levels').click();
     await page.getByRole('option', { name: 'Admin Level 2' }).click();
 
     await page.locator('.IndicatorLayerConfig .TabPrimary').getByText('Sample Data').click();

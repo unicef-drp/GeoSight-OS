@@ -24,9 +24,11 @@ import React, {
   useState,
 } from "react";
 import maplibregl from "maplibre-gl";
-import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
-import { ZonalAnalysisIcon } from "../../../../components/Icons";
+import {
+  ZonalAnalysisOffIcon,
+  ZonalAnalysisOnIcon,
+} from "../../../../components/Icons";
 import { ZonalAnalysisTool } from "../../../../components/ZonalAnalysisTool";
 
 import "./style.scss";
@@ -42,7 +44,6 @@ interface Props {
  */
 export const ZonalAnalysisComponent = forwardRef(
   ({ map, started }: Props, ref) => {
-    const { t } = useTranslation();
     const toolRef = useRef(null);
     const [active, setActive] = useState(false);
 
@@ -70,11 +71,10 @@ export const ZonalAnalysisComponent = forwardRef(
     return (
       <Plugin className="PopupToolbarIcon ZonalAnalysisIcon">
         <div
-          className="Active"
           data-tool={Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS}
         >
           <PluginChild
-            title={t("dashboardPage.toolbars.zonalAnalysis.title")}
+            title={"Zonal Analysis"}
             disabled={!map}
             active={active}
             onClick={() => {
@@ -83,7 +83,7 @@ export const ZonalAnalysisComponent = forwardRef(
               }
             }}
           >
-            <ZonalAnalysisIcon />
+            {active ? <ZonalAnalysisOnIcon /> : <ZonalAnalysisOffIcon />}
           </PluginChild>
         </div>
         {active ? (

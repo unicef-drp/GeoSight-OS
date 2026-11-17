@@ -153,11 +153,11 @@
 
     .EmbedControl {
       a {
-        width: 38px !important;
+        width: 34px !important;
       }
 
       svg {
-        width: 28px !important;
+        width: 24px !important;
       }
     }
 
@@ -189,12 +189,14 @@
     .Toolbar-Right {
       a {
         margin: 0 !important;
-        padding: 6px !important;
+        padding: 0 !important;
         line-height: unset !important;
+        width: 34px !important;
+        height: 34px !important;
 
         svg {
-          height: 16px;
-          width: 16px;
+          height: 24px;
+          width: 24px;
         }
       }
 
@@ -214,23 +216,6 @@
       flex-grow: 1;
       display: flex;
       flex-direction: row;
-
-      .CompareLayerComponent svg {
-        margin-top: -1px;
-        height: 18px;
-        width: 18px;
-      }
-
-      .MovementHistory svg {
-        height: 16px;
-        width: 16px;
-      }
-
-      .ExtrudedIcon svg {
-        margin-top: -2px;
-        height: 20px;
-        width: 20px;
-      }
     }
 
     .Disabled {
@@ -266,13 +251,13 @@
       float: unset;
       background: none;
       border-radius: 0;
-      height: 30px;
+      height: 34px;
 
       a {
         margin: 0 2px;
-        line-height: 30px;
-        width: 30px;
-        height: 30px;
+        line-height: 34px;
+        width: 34px;
+        height: 34px;
       }
 
       a, span {
@@ -298,26 +283,22 @@
       }
 
       &.LeftButton, &.GlobalDateSelector {
-        .Active {
-          a, span {
-            color: $primary-color !important;
-            background-color: rgba(0, 0, 0, 0) !important;
-          }
-        }
-
         a, span {
           color: $tab-inactive-color !important;
         }
 
         svg {
-          height: 28px;
-          width: 28px;
+          height: 24px;
+          width: 24px;
         }
       }
 
       &.ReferenceLayerToolbar {
-        a {
-          opacity: 1;
+        .ToolbarChild > a {
+          width: fit-content !important;
+          display: block !important;
+          padding: 0 !important;
+          line-height: 34px;
         }
       }
 
@@ -613,30 +594,51 @@ $nav-disabled-color: '%23CCCCCC';
   }
 }
 /* v1 icon state model ---------------------------------------------------- */
-/* Normalize all toolbar icons: 20×20 SVG in a flexbox-centered hit area */
-.MapLibreMap .Toolbar .ToolbarChild > a {
+/* Final authority: 24×24 SVG in a 34×34 flexbox-centered button */
+.DashboardMap .Toolbar .ToolbarChild > a {
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  border-radius: 4px;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
   color: var(--primary-color);
 }
-.MapLibreMap .Toolbar .ToolbarChild > a svg {
-  width: 20px !important;
-  height: 20px !important;
+.DashboardMap .Toolbar .ToolbarChild > a svg {
+  width: 24px !important;
+  height: 24px !important;
   flex-shrink: 0;
 }
-.MapLibreMap .Toolbar .ToolbarChild > a:hover {
+.DashboardMap .Toolbar .ToolbarChild > a:hover {
   background-color: color-mix(in srgb, var(--primary-color) 22%, transparent);
 }
-.MapLibreMap .Toolbar .Active .ToolbarChild > a,
-.MapLibreMap .Toolbar .Active.Selected .ToolbarChild > a {
-  background-color: var(--primary-color);
-  color: var(--anti-primary-color);
+.DashboardMap .Toolbar .ToolbarChild.Active > a {
+  background-color: color-mix(in srgb, var(--primary-color) 22%, transparent) !important;
+  color: var(--primary-color) !important;
+}
+/* span wrappers inside toolbar buttons (e.g. composite index toggler) */
+.DashboardMap .Toolbar .ToolbarChild > a span {
+  line-height: 0;
+  display: flex;
+  align-items: center;
+}
+/* CurrentDate text uses primary-color, not tab-inactive-color */
+.DashboardMap .Toolbar .CurrentDate .ToolbarChild > a {
+  color: var(--primary-color) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 /* SDMX icon: fill-based, must inherit current color */
-.MapLibreMap .Toolbar .ToolbarChild > a svg[fill="currentColor"] path {
+.DashboardMap .Toolbar .ToolbarChild > a svg[fill="currentColor"] path {
   fill: currentColor;
+}
+/* ToggleSidePanel (LeftButton/RightButton): fix gray inactive color */
+.DashboardMap .Toolbar .LeftButton .ToolbarChild > a,
+.DashboardMap .Toolbar .RightButton .ToolbarChild > a {
+  color: var(--primary-color) !important;
 }
 /* end v1 icon state model ------------------------------------------------ */

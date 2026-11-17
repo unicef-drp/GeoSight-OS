@@ -59,6 +59,7 @@ export function CompareLayer({ disabled = false }) {
       >
         <PluginChild
           title={compareMode ? t('dashboardPage.compareLayer.turnOff') : t('dashboardPage.compareLayer.turnOn')}
+          active={compareMode && !disabled}
           disabled={disabled}
           onClick={() => {
             if (!disabled) {

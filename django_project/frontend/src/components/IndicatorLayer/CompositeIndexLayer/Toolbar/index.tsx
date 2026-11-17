@@ -25,10 +25,7 @@ import {
   Plugin,
   PluginChild,
 } from "../../../../pages/Dashboard/MapLibre/utils/Plugin";
-import {
-  CompositeIndexLayerActiveIcon,
-  CompositeIndexLayerIcon,
-} from "../../../Icons";
+import { CompositeIndexIcon } from "../../../Icons";
 import CompositeIndexLayerToggler from "../Toggler";
 
 import "./style.scss";
@@ -44,16 +41,17 @@ export default function CompositeIndexLayerToolbar() {
     // @ts-ignore
     <Plugin>
       <div
-        className="Active CompositeIndexLayerToolbar"
+        className="CompositeIndexLayerToolbar"
         data-tool={Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER}
       >
         {/* @ts-ignore */}
         <PluginChild
           title={compositeMode ? t('components.compositeIndexLayer.deactivate') : t('components.compositeIndexLayer.activate')}
+          active={compositeMode}
         >
           <CompositeIndexLayerToggler
-            ActiveIcon={<CompositeIndexLayerActiveIcon />}
-            InactiveIcon={<CompositeIndexLayerIcon />}
+            ActiveIcon={<CompositeIndexIcon />}
+            InactiveIcon={<CompositeIndexIcon />}
           />
         </PluginChild>
       </div>
