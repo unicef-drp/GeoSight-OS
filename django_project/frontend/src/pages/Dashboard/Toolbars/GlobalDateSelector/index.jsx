@@ -64,7 +64,6 @@ export default function GlobalDateSelector() {
       <div className='GlobalDateSelector Active'>
         <PluginChild
           title={t('dashboardPage.toolbars.globalDateSelector.showGlobalTimeConfiguration')}
-          active={globalDateSelectorOpened}
           onClick={() => {
             dispatch(
               Actions.GlobalState.update({globalDateSelectorOpened: !globalDateSelectorOpened})

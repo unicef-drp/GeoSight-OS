@@ -97,7 +97,6 @@ export default function ToggleSidePanel({
       >
         <PluginChild
           title={t("dashboardPage.toolbars.togglePanel.title")}
-          active={active === "Active"}
           onClick={() => {
             change();
           }}
