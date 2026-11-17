@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoSight\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-11 14:52+0000\n"
+"POT-Creation-Date: 2026-11-17 23:42+0000\n"
 "PO-Revision-Date: 2024-03-21 12:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -17,190 +17,214 @@ msgstr ""
 
 #: azure_auth/backends.py:316 core/auth.py:74 core/auth.py:77
 msgid "Invalid token."
-msgstr ""
+msgstr "Token no válido."
 
 #: azure_auth/backends.py:319
 msgid "User inactive or deleted."
-msgstr ""
+msgstr "Usuario inactivo o eliminado."
 
 #: azure_auth/models.py:29
 msgid "Autoassign user under the domain to the group."
-msgstr ""
+msgstr "Asignar automáticamente al grupo los usuarios de este dominio."
 
-#: core/admin.py:225
+#: core/admin.py:267
 msgid "Personal info"
-msgstr ""
+msgstr "Información personal"
 
-#: core/admin.py:227
+#: core/admin.py:269
 msgid "Permissions"
-msgstr ""
+msgstr "Permisos"
 
-#: core/admin.py:233
+#: core/admin.py:275
 msgid "Important dates"
-msgstr ""
+msgstr "Fechas importantes"
 
 #: core/auth.py:46
 msgid "Invalid email!."
-msgstr ""
+msgstr "¡Correo electrónico no válido!"
 
 #: core/auth.py:114
 msgid "Invalid token header. No credentials provided."
-msgstr ""
+msgstr "Encabezado de token no válido. No se proporcionaron credenciales."
 
 #: core/auth.py:117
 msgid "Invalid token header. Token string should not contain spaces."
-msgstr ""
+msgstr "Encabezado de token no válido. El token no debe contener espacios."
 
 #: core/exceptions.py:35 geosight/permission/access/mixin.py:36
 #: geosight/permission/access/mixin.py:37
 msgid "You don't have permission to access this resource"
-msgstr ""
+msgstr "No tienes permiso para acceder a este recurso"
 
-#: core/forms/user.py:95
+#: core/forms/user.py:106
 msgid "Designates whether the user can access the backend (Django) admin site."
 msgstr ""
+"Indica si el usuario puede acceder al sitio de administración (Django)."
 
 #: core/models/access_request.py:30
 msgid "NEW_USER"
-msgstr ""
+msgstr "NUEVO USUARIO"
 
 #: core/models/access_request.py:31
 msgid "NEW_PERMISSIONS"
-msgstr ""
+msgstr "NUEVOS PERMISOS"
 
-#: core/models/access_request.py:36 geosight/data/models/context_layer.py:436
+#: core/models/access_request.py:36 geosight/data/models/context_layer.py:595
 msgid "PENDING"
-msgstr ""
+msgstr "PENDIENTE"
 
 #: core/models/access_request.py:37
 msgid "APPROVED"
-msgstr ""
+msgstr "APROBADO"
 
 #: core/models/access_request.py:38
 msgid "REJECTED"
-msgstr ""
+msgstr "RECHAZADO"
 
 #: core/models/api_key.py:56
 msgid "API Key"
-msgstr ""
+msgstr "Clave de API"
 
 #: core/models/api_key.py:57
 msgid "API Keys"
-msgstr ""
+msgstr "Claves de API"
 
-#: core/models/preferences.py:42
+#: core/models/preferences.py:48
 msgid "Staging"
-msgstr ""
+msgstr "Preproducción"
 
-#: core/models/preferences.py:43
+#: core/models/preferences.py:49
 msgid "Production"
-msgstr ""
+msgstr "Producción"
 
-#: core/models/preferences.py:138
+#: core/models/preferences.py:156
 msgid ""
 "Main color for the website. Put the hex color with # (e.g. #ffffff) or put "
 "the text of color. (e.g. blue)"
 msgstr ""
+"Color principal del sitio web. Introduce el color hexadecimal con # (p. ej. "
+"#ffffff) o el nombre del color (p. ej. blue)."
 
-#: core/models/preferences.py:147
+#: core/models/preferences.py:165
 msgid "Anti of primary color that used for text in primary color."
 msgstr ""
+"Color opuesto al principal, usado para el texto sobre el color principal."
 
-#: core/models/preferences.py:154
+#: core/models/preferences.py:172
 msgid "Secondary color that used for example for button. "
-msgstr ""
+msgstr "Color secundario, usado por ejemplo para los botones. "
 
-#: core/models/preferences.py:161
+#: core/models/preferences.py:179
 msgid "Anti of secondary color that used for text in primary color."
 msgstr ""
+"Color opuesto al secundario, usado para el texto sobre el color secundario."
 
-#: core/models/preferences.py:168
+#: core/models/preferences.py:186
 msgid "Tertiary color that used for example for some special place. "
-msgstr ""
+msgstr "Color terciario, usado por ejemplo en algunos lugares especiales. "
 
-#: core/models/preferences.py:175
+#: core/models/preferences.py:193
 msgid "Anti of tertiary color that used for text in primary color."
 msgstr ""
+"Color opuesto al terciario, usado para el texto sobre el color terciario."
 
-#: core/models/preferences.py:215
+#: core/models/preferences.py:241
 msgid "Default fill color for new rule style."
-msgstr ""
+msgstr "Color de relleno predeterminado para el estilo de una nueva regla."
 
-#: core/models/preferences.py:223
+#: core/models/preferences.py:249
 msgid "Default outline color for new rule style."
-msgstr ""
+msgstr "Color de contorno predeterminado para el estilo de una nueva regla."
 
-#: core/models/preferences.py:230
+#: core/models/preferences.py:256
 msgid "Default outline size for new rule style."
-msgstr ""
+msgstr "Grosor de contorno predeterminado para el estilo de una nueva regla."
 
-#: core/models/preferences.py:239
+#: core/models/preferences.py:265
 msgid "Default fill color for no data style."
-msgstr ""
+msgstr "Color de relleno predeterminado para el estilo sin datos."
 
-#: core/models/preferences.py:248
+#: core/models/preferences.py:274
 msgid "Default outline color for no data style."
-msgstr ""
+msgstr "Color de contorno predeterminado para el estilo sin datos."
 
-#: core/models/preferences.py:255
+#: core/models/preferences.py:281
 msgid "Default outline size for no data style."
-msgstr ""
+msgstr "Grosor de contorno predeterminado para el estilo sin datos."
 
-#: core/models/preferences.py:264
+#: core/models/preferences.py:290
 msgid "Default fill color for other data style."
-msgstr ""
+msgstr "Color de relleno predeterminado para el estilo de otros datos."
 
-#: core/models/preferences.py:272
+#: core/models/preferences.py:298
 msgid "Default outline color for other data style."
-msgstr ""
+msgstr "Color de contorno predeterminado para el estilo de otros datos."
 
-#: core/models/preferences.py:279
+#: core/models/preferences.py:305
 msgid "Default outline size for other data style."
-msgstr ""
-
-#: core/models/preferences.py:288
-msgid "Default outline color for dynamic style."
-msgstr ""
-
-#: core/models/preferences.py:295
-msgid "Default outline size for dynamic style."
-msgstr ""
-
-#: core/models/preferences.py:304
-msgid "Outline size for compare mode."
-msgstr ""
+msgstr "Grosor de contorno predeterminado para el estilo de otros datos."
 
 #: core/models/preferences.py:314
-msgid "Help text to show in login page."
-msgstr ""
+msgid "Default outline color for dynamic style."
+msgstr "Color de contorno predeterminado para el estilo dinámico."
 
-#: core/models/preferences.py:335
+#: core/models/preferences.py:321
+msgid "Default outline size for dynamic style."
+msgstr "Grosor de contorno predeterminado para el estilo dinámico."
+
+#: core/models/preferences.py:330
+msgid "Outline size for compare mode."
+msgstr "Grosor de contorno para el modo de comparación."
+
+#: core/models/preferences.py:340
+msgid "Help text to show in login page."
+msgstr "Texto de ayuda que se muestra en la página de inicio de sesión."
+
+#: core/models/preferences.py:361
 msgid ""
 "Add a feedback URL in the Help section. You can use a mailto: link, like "
 "mailto:example@email.com, to allow users to send an email."
 msgstr ""
+"Añade una URL de comentarios en la sección de Ayuda. Puedes usar un enlace "
+"mailto:, como mailto:example@email.com, para que los usuarios puedan enviar "
+"un correo electrónico."
 
-#: core/models/preferences.py:344
+#: core/models/preferences.py:370
 msgid ""
 "Add a Contact Us URL in the Help section. You can use a mailto: link, like "
 "mailto:example@email.com, to allow users to send an email."
 msgstr ""
+"Añade una URL de Contacto en la sección de Ayuda. Puedes usar un enlace "
+"mailto:, como mailto:example@email.com, para que los usuarios puedan enviar "
+"un correo electrónico."
 
-#: core/models/preferences.py:439
+#: core/models/preferences.py:479
 msgid "Title of image."
-msgstr ""
+msgstr "Título de la imagen."
 
-#: core/models/preferences.py:444
+#: core/models/preferences.py:484
 msgid "Description of image."
-msgstr ""
+msgstr "Descripción de la imagen."
 
 #: core/settings/project.py:90
 msgid "English"
-msgstr ""
+msgstr "Inglés"
 
 #: core/settings/project.py:91
 msgid "Spanish"
-msgstr ""
+msgstr "Español"
+
+#: core/settings/project.py:92
+msgid "French"
+msgstr "Francés"
+
+#: core/settings/project.py:93
+msgid "Portuguese (Portugal)"
+msgstr "Portugués (Portugal)"
+
+#: core/settings/project.py:94
+msgid "Portuguese (Brazil)"
+msgstr "Portugués (Brasil)"
 
 #: frontend/views/admin/dashboard/list.py:32
 msgid "Projects"
@@ -212,31 +236,31 @@ msgstr "Indicadores"
 
 #: geosight/data/admin/indicator.py:32
 msgid "Entity Null"
-msgstr ""
+msgstr "Entidad nula"
 
-#: geosight/data/admin/indicator.py:38 geosight/data/admin/indicator.py:60
+#: geosight/data/admin/indicator.py:49 geosight/data/admin/indicator.py:88
 #: geosight/georepo/admin/entity.py:33
 msgid "Is NULL"
-msgstr ""
+msgstr "Es NULL"
 
-#: geosight/data/admin/indicator.py:39 geosight/data/admin/indicator.py:61
+#: geosight/data/admin/indicator.py:50 geosight/data/admin/indicator.py:89
 #: geosight/georepo/admin/entity.py:34
 msgid "Is NOT NULL"
-msgstr ""
+msgstr "No es NULL"
 
-#: geosight/data/admin/indicator.py:54 geosight/georepo/admin/entity.py:27
+#: geosight/data/admin/indicator.py:71 geosight/georepo/admin/entity.py:27
 msgid "Country Null"
-msgstr ""
+msgstr "País nulo"
 
-#: geosight/data/models/basemap_layer.py:95
+#: geosight/data/models/basemap_layer.py:98
 msgid "The name of parameter"
-msgstr ""
+msgstr "El nombre del parámetro"
 
-#: geosight/data/models/basemap_layer.py:102
+#: geosight/data/models/basemap_layer.py:105
 msgid "The value of parameter"
-msgstr ""
+msgstr "El valor del parámetro"
 
-#: geosight/data/models/context_layer.py:107
+#: geosight/data/models/context_layer.py:103
 #, python-brace-format
 msgid ""
 "The type of layer for this context layer.<br>For <b>ArcGIS</b>, put feature "
@@ -247,192 +271,240 @@ msgid ""
 "url.<br>For <b>Cloud native gis layer</b>, select the layer from cloud "
 "native gis."
 msgstr ""
+"El tipo de capa para esta capa de contexto.<br>Para <b>ArcGIS</b>, introduce "
+"el Feature Server REST, p. ej.: https://{host}/rest/services/{layer}/"
+"FeatureServer/1.<br>Para <b>GeoJson</b>, introduce la URL del GeoJSON."
+"<br>Para <b>Raster tile</b>, introduce la URL XYZ.<br>Para <b>Raster COG</"
+"b>, introduce la URL del COG.<br>Para <b>Related table</b>, selecciona el "
+"nombre de una tabla relacionada existente.<br>Para <b>Vector tile</b>, "
+"introduce la URL XYZ.<br>Para <b>Cloud native gis layer</b>, selecciona la "
+"capa de cloud native gis."
 
-#: geosight/data/models/context_layer.py:124
+#: geosight/data/models/context_layer.py:120
 msgid ""
 "ArcGIS configuration that contains username/password that will be used to "
 "autogenerate the token."
 msgstr ""
+"Configuración de ArcGIS con el usuario/contraseña que se usará para generar "
+"el token automáticamente."
 
-#: geosight/data/models/context_layer.py:133
+#: geosight/data/models/context_layer.py:129
 msgid "Related table name."
-msgstr ""
+msgstr "Nombre de la tabla relacionada."
 
-#: geosight/data/models/context_layer.py:141
+#: geosight/data/models/context_layer.py:137
 msgid ""
 "This is the url of image that will be rendered as legend. ArcGIS type can be "
 "generated automatically, but if you fill this url legend, it will be "
 "overridden"
 msgstr ""
+"URL de la imagen que se mostrará como leyenda. Para el tipo ArcGIS se puede "
+"generar automáticamente, pero si rellenas esta URL de leyenda, se "
+"sobrescribirá"
 
-#: geosight/data/models/context_layer.py:150
+#: geosight/data/models/context_layer.py:146
 msgid "Token to access the layer if needed."
-msgstr ""
+msgstr "Token para acceder a la capa, si es necesario."
 
-#: geosight/data/models/context_layer.py:157
+#: geosight/data/models/context_layer.py:153
 msgid "Username to access the layer if needed."
-msgstr ""
+msgstr "Nombre de usuario para acceder a la capa, si es necesario."
 
-#: geosight/data/models/context_layer.py:164
+#: geosight/data/models/context_layer.py:160
 msgid "Password to access the layer if needed."
-msgstr ""
+msgstr "Contraseña para acceder a la capa, si es necesario."
 
-#: geosight/data/models/context_layer.py:183
+#: geosight/data/models/context_layer.py:182
 msgid "Using layer from cloud native gis."
-msgstr ""
+msgstr "Usa una capa de cloud native gis."
 
-#: geosight/data/models/context_layer.py:437
+#: geosight/data/models/context_layer.py:596
 msgid "RUNNING"
-msgstr ""
+msgstr "EN EJECUCIÓN"
 
-#: geosight/data/models/context_layer.py:438
+#: geosight/data/models/context_layer.py:597
 msgid "SUCCESS"
-msgstr ""
+msgstr "CORRECTO"
 
-#: geosight/data/models/context_layer.py:439
+#: geosight/data/models/context_layer.py:598
 msgid "FAILED"
-msgstr ""
+msgstr "FALLIDO"
 
 #: geosight/data/models/dashboard/bookmark.py:34
-#: geosight/data/models/dashboard/dashboard.py:76
+#: geosight/data/models/dashboard/dashboard.py:79
 msgid "Extent of the dashboard. If empty, it is the whole map"
-msgstr ""
+msgstr "Extensión del panel. Si está vacía, es el mapa completo"
 
-#: geosight/data/models/dashboard/bookmark.py:70
+#: geosight/data/models/dashboard/bookmark.py:62
+msgid "Map mode of the dashboard. is it compare_layers or side_by_side_view."
+msgstr "Modo de mapa del panel: compare_layers o side_by_side_view."
+
+#: geosight/data/models/dashboard/bookmark.py:91
 msgid "User who create the bookmark."
-msgstr ""
+msgstr "Usuario que creó el marcador."
 
-#: geosight/data/models/dashboard/dashboard.py:68
+#: geosight/data/models/dashboard/dashboard.py:71
 #: geosight/georepo/models/entity.py:64
-#: geosight/importer/models/importer.py:100
+#: geosight/importer/models/importer.py:102
 msgid "Reference layer."
-msgstr ""
+msgstr "Capa de referencia."
 
-#: geosight/data/models/dashboard/dashboard.py:112
+#: geosight/data/models/dashboard/dashboard.py:84
+msgid "Minimum zoom level for the dashboard"
+msgstr "Nivel de zoom mínimo del panel"
+
+#: geosight/data/models/dashboard/dashboard.py:88
+msgid "Maximum zoom level for the dashboard"
+msgstr "Nivel de zoom máximo del panel"
+
+#: geosight/data/models/dashboard/dashboard.py:137
 msgid "Show a splash screen when opening project for the first time"
 msgstr ""
+"Mostrar una pantalla de bienvenida al abrir el proyecto por primera vez"
 
-#: geosight/data/models/dashboard/dashboard_indicator_layer.py:246
-#: geosight/data/models/indicator/indicator_value.py:340
+#: geosight/data/models/dashboard/dashboard.py:151
+msgid "Show map toolbars on the map."
+msgstr "Mostrar las barras de herramientas en el mapa."
+
+#: geosight/data/models/dashboard/dashboard_indicator_layer.py:294
+#: geosight/data/models/indicator/indicator_value.py:436
 #: geosight/importer/models/attribute.py:33
 #: geosight/importer/models/attribute.py:59
 msgid "The name of attribute"
-msgstr ""
+msgstr "El nombre del atributo"
 
-#: geosight/data/models/dashboard/dashboard_indicator_layer.py:252
-#: geosight/data/models/indicator/indicator_value.py:346
+#: geosight/data/models/dashboard/dashboard_indicator_layer.py:300
+#: geosight/data/models/indicator/indicator_value.py:442
 #: geosight/importer/models/attribute.py:37
 #: geosight/importer/models/attribute.py:63
 msgid "The value of attribute"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:28
-msgid "3D view"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:29
-msgid "Compare layers"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:30
-msgid "Measurement"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:31
-msgid "Zonal analysis"
-msgstr ""
+msgstr "El valor del atributo"
 
 #: geosight/data/models/indicator/indicator_value.py:36
-#: geosight/data/models/indicator/indicator_value.py:371
+#: geosight/data/models/indicator/indicator_value.py:472
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: geosight/data/models/indicator/indicator_value.py:37
-#: geosight/data/models/indicator/indicator_value.py:372
+#: geosight/data/models/indicator/indicator_value.py:473
 msgid "The date of the value harvested."
-msgstr ""
+msgstr "La fecha en que se obtuvo el valor."
 
 #: geosight/data/models/rule.py:30
 msgid ""
 "Use formula to create the rule and use x as the value.Example: x<100. It "
 "will replace x with the value and will check the condition."
 msgstr ""
+"Usa una fórmula para crear la regla, con x como valor. Ejemplo: x<100. Se "
+"reemplazará x por el valor y se comprobará la condición."
 
 #: geosight/data/models/rule.py:39
 msgid "Color of the rule"
-msgstr ""
+msgstr "Color de la regla"
 
 #: geosight/data/models/rule.py:46
 msgid "Color for the outline of geometry on map."
+msgstr "Color del contorno de la geometría en el mapa."
+
+#: geosight/data_restorer/models.py:95
+msgid "Indicates whether default data has been restored."
+msgstr "Indica si se han restaurado los datos predeterminados."
+
+#: geosight/data_restorer/models.py:101
+msgid ""
+"Enable request to restore fixture.It will be disabled if there is a color "
+"palette."
 msgstr ""
+"Habilita la solicitud de restauración de los datos iniciales. Se "
+"deshabilitará si existe una paleta de colores."
+
+#: geosight/data_restorer/models.py:134
+msgid "Created"
+msgstr "Creado"
+
+#: geosight/data_restorer/models.py:135
+msgid "Running"
+msgstr "En ejecución"
+
+#: geosight/data_restorer/models.py:136
+msgid "Finish"
+msgstr "Finalizado"
+
+#: geosight/data_restorer/models.py:137
+msgid "Failed"
+msgstr "Fallido"
 
 #: geosight/georepo/admin/reference_layer.py:31
 msgid "in georepo"
-msgstr ""
+msgstr "en GeoRepo"
 
-#: geosight/georepo/admin/reference_layer.py:37
+#: geosight/georepo/admin/reference_layer.py:50
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
-#: geosight/georepo/admin/reference_layer.py:38
+#: geosight/georepo/admin/reference_layer.py:51
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: geosight/georepo/models/entity.py:110
 msgid "The country of the entity. If null, it is the country of the entity."
-msgstr ""
+msgstr "El país de la entidad. Si es nulo, la propia entidad es el país."
 
 #: geosight/georepo/models/reference_layer.py:43
 msgid "Reference layer identifier."
-msgstr ""
+msgstr "Identificador de la capa de referencia."
 
 #: geosight/georepo/models/reference_layer.py:48
 msgid "Reference layer name."
-msgstr ""
+msgstr "Nombre de la capa de referencia."
 
 #: geosight/georepo/models/reference_layer.py:61
 msgid "The country of the view."
-msgstr ""
+msgstr "El país de la vista."
 
 #: geosight/importer/models/attribute.py:42
 msgid "The file of attribute"
-msgstr ""
+msgstr "El archivo del atributo"
 
-#: geosight/importer/models/importer.py:53
+#: geosight/importer/models/importer.py:55
 msgid ""
 "Type of data that will be saved. It is between indicator value or related "
 "table."
 msgstr ""
+"Tipo de datos que se guardarán: valor de indicador o tabla relacionada."
 
-#: geosight/importer/models/importer.py:94
+#: geosight/importer/models/importer.py:96
 msgid "Format of input. It will used for deciding what importer will be used."
-msgstr ""
+msgstr "Formato de entrada. Se usa para decidir qué importador se utilizará."
 
-#: geosight/importer/models/importer.py:111
+#: geosight/importer/models/importer.py:113
 msgid "The code type of the data."
-msgstr ""
+msgstr "El tipo de código de los datos."
 
-#: geosight/importer/models/importer.py:117
+#: geosight/importer/models/importer.py:119
 msgid "Scheduled task for the importer."
-msgstr ""
+msgstr "Tarea programada del importador."
 
 #: geosight/reference_dataset/models/reference_dataset.py:106
 msgid "Level name."
-msgstr ""
+msgstr "Nombre del nivel."
 
 #: geosight/reference_dataset/models/reference_dataset_importer.py:101
 msgid "Field indicate the name."
-msgstr ""
+msgstr "Campo que indica el nombre."
 
 #: geosight/reference_dataset/models/reference_dataset_importer.py:105
 msgid "Field indicate the ucode."
-msgstr ""
+msgstr "Campo que indica el ucode."
 
 #: geosight/reference_dataset/models/reference_dataset_importer.py:111
 msgid "Field indicate the parent ucode. This is just 1 level above it."
 msgstr ""
+"Campo que indica el ucode del padre, es decir, del nivel inmediatamente "
+"superior."
 
 #: patch/auth_user.py:9
 msgid ""
 "Required. 150 characters or fewer. Letters, digits and @/./+/-/_/# only."
 msgstr ""
+"Obligatorio. 150 caracteres como máximo. Solo letras, dígitos y @/./+/-/_/#."
