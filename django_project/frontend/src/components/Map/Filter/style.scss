@@ -192,7 +192,8 @@
 
         .FilterDelete {
           color: $tab-active-color;
-          width: 9px;
+          // Same width as the .FilterEdit pencil next to it
+          width: 12px;
         }
       }
     }
@@ -256,6 +257,13 @@
         .FilterGroupDelete {
           background-color: rgba(0, 0, 0, 0);
           color: $primary-color;
+        }
+
+        // Same size and colour as the delete bin on a filter row
+        .FilterGroupDelete {
+          color: $tab-active-color;
+          width: 12px;
+          height: auto;
         }
 
         div.MuiInputBase-root {

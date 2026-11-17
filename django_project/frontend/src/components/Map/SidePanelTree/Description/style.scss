@@ -30,6 +30,12 @@
 }
 
 .LayerInfoIcon {
+  // Lighter than the layer name, like the widget info icons
+  // (gray stays gray, the selected layer's blue stays blue)
+  svg {
+    color: color-mix(in srgb, currentColor 50%, #fff);
+  }
+
   &.Error {
     circle {
       fill: #d32f2f78;
