@@ -17,7 +17,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main, version-2.0.0, Filter-improvement ]
+    branches: [ main, version-2.0.0 ]
 
 jobs:
   flake8_py3:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8.18
+          python-version: "3.10"
           architecture: x64
       - name: Checkout Repository
         uses: actions/checkout@v3
