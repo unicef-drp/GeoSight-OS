@@ -89,6 +89,9 @@ SOUTH_TESTS_MIGRATE = False
 LANGUAGES = (
     ('en-us', _('English')),
     ('es-es', _('Spanish')),
+    ('fr-fr', _('French')),
+    ('pt-pt', _('Portuguese (Portugal)')),
+    ('pt-br', _('Portuguese (Brazil)')),
 )
 
 # Set storage path for the translation files
