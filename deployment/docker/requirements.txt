@@ -30,6 +30,7 @@ drf-yasg==1.21.7
 
 requests==2.31.0
 celery==5.3.1
+kombu==5.6.2
 fiona==1.10.1
 Pillow==9.5.0
 psycopg2-binary==2.9.6
