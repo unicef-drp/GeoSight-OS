@@ -21,6 +21,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import CircularProgress from "@mui/material/CircularProgress";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import { axiosPostWithSession } from "../../../../Requests";
@@ -28,7 +29,8 @@ import { Actions } from "../../../../store/dashboard";
 import { formatDate, nowUTC } from "../../../../utils/main";
 import { INTERVALS } from "../../../../utils/Dates";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import PlayControl from "./PlayControl";
+import PlayControl, { usePlayback } from "./PlayControl";
+import MobileTime from "./MobileTime";
 import TimeTrack from "./TimeTrack";
 import TimeSettings from "./TimeSettings";
 import { periodLabel, windowLabel } from "./utils";
@@ -105,6 +107,9 @@ export default function GlobalDateSelector() {
   const [selectedDatePoint, setSelectedDatePoint] = useState(null);
   const [interval, setInterval] = useState(defaultInterval);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  // Same breakpoint as app-mobile.scss.
+  const isMobile = useMediaQuery("(max-width:1000px)", { noSsr: true });
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [animationDone, setAnimationDone] = useState(true);
@@ -609,6 +614,72 @@ export default function GlobalDateSelector() {
     setSelectedDatePointSelected(true);
   };
   const ready = selectedDatePoint && minDate && maxDate;
+  const playback = usePlayback(
+    usedDates,
+    selectedDatePoint,
+    setSelectedDatePoint,
+  );
+  const onChangeMinDate = (value) =>
+    setMinDate(value > maxDate ? maxDate : value);
+  const onChangeMaxDate = (value) =>
+    setMaxDate(value < minDate ? minDate : value);
+  const loadingMessage =
+    errorMessage && !usedDates.length ? (
+      <div className="TimeBarMessage Error">{errorMessage}</div>
+    ) : (
+      <div className="TimeBarMessage">
+        <CircularProgress size={16} />
+        {t("dashboardPage.timeSlider.preparing")}
+      </div>
+    );
+
+  // Phones and small tablets: floating card / bottom sheet.
+  if (isMobile) {
+    return (
+      <div
+        className={
+          "GlobalDateSelection " +
+          (globalDateSelectorOpened ? "Open " : "") +
+          (hide ? "Hide" : "")
+        }
+      >
+        {ready && !(errorMessage && !usedDates.length) ? (
+          <MobileTime
+            playback={playback}
+            onReset={resetToDefaults}
+            label={periodLabel(selectedDatePoint, interval, language)}
+            activeWindow={activeWindow}
+            interval={interval}
+            intervalOptions={intervalOptions}
+            onChangeInterval={setInterval}
+            track={{
+              dates,
+              minDate,
+              maxDate,
+              selectedDatePoint,
+              interval,
+              onSelect: selectDate,
+            }}
+            settings={{
+              options: rangeOptions,
+              minDate,
+              maxDate,
+              onChangeMinDate,
+              onChangeMaxDate,
+              isFitToIndicatorRange,
+              onChangeFitToIndicatorRange: setIsFitToIndicatorRange,
+              isInLatestValue,
+              onChangeInLatestValue: setIsInLatestValue,
+            }}
+            sheetOpen={sheetOpen}
+            setSheetOpen={setSheetOpen}
+          />
+        ) : (
+          <div className="TimeCard">{loadingMessage}</div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -624,15 +695,10 @@ export default function GlobalDateSelector() {
         aria-label={t("dashboardPage.timeSlider.title")}
       >
         {errorMessage && !usedDates.length ? (
-          <div className="TimeBarMessage Error">{errorMessage}</div>
+          loadingMessage
         ) : ready ? (
           <Fragment>
-            <PlayControl
-              dates={usedDates}
-              selectedDatePoint={selectedDatePoint}
-              setSelectedDatePoint={setSelectedDatePoint}
-              onReset={resetToDefaults}
-            />
+            <PlayControl playback={playback} onReset={resetToDefaults} />
             <div className="TimeBarRule" />
             <div
               className="TimeBarDate"
@@ -695,12 +761,8 @@ export default function GlobalDateSelector() {
                     options={rangeOptions}
                     minDate={minDate}
                     maxDate={maxDate}
-                    onChangeMinDate={(value) =>
-                      setMinDate(value > maxDate ? maxDate : value)
-                    }
-                    onChangeMaxDate={(value) =>
-                      setMaxDate(value < minDate ? minDate : value)
-                    }
+                    onChangeMinDate={onChangeMinDate}
+                    onChangeMaxDate={onChangeMaxDate}
                     isFitToIndicatorRange={isFitToIndicatorRange}
                     onChangeFitToIndicatorRange={setIsFitToIndicatorRange}
                     isInLatestValue={isInLatestValue}
@@ -711,10 +773,7 @@ export default function GlobalDateSelector() {
             </ClickAwayListener>
           </Fragment>
         ) : (
-          <div className="TimeBarMessage">
-            <CircularProgress size={16} />
-            {t("dashboardPage.timeSlider.preparing")}
-          </div>
+          loadingMessage
         )}
         <button
           type="button"

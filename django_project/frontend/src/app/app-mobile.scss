@@ -272,8 +272,9 @@
       }
     }
   }
+  // Lift the map's bottom controls above the floating time card.
   .DashboardMiddlePanel .BottomContent.DateOpen {
-    height: 64px !important;
+    height: 96px !important;
   }
   .Fullscreen {
     display: none !important;;

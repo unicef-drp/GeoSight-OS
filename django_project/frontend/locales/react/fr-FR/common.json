@@ -265,7 +265,10 @@
       "fitToIndicatorRange": "Ajuster à la plage de l'indicateur actuel",
       "lastKnownValue": "Afficher la dernière valeur connue dans la plage",
       "hide": "Masquer le curseur temporel",
-      "preparing": "Préparation du contrôle temporel…"
+      "preparing": "Préparation du contrôle temporel…",
+      "position": "{{current}} sur {{total}}",
+      "expand": "Ouvrir les contrôles temporels",
+      "collapse": "Fermer les contrôles temporels"
     }
   },
   "featured": "Mis en avant",

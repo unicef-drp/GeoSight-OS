@@ -36,9 +36,10 @@ const MAX_YEAR_TICKS = 8;
  * @param {string} selectedDatePoint Current date.
  * @param {string} interval Current interval.
  * @param {function} onSelect Called with the picked data date.
+ * @param {boolean} mini Small, read-only track (mobile card).
  */
 export default function TimeTrack(
-  { dates, minDate, maxDate, selectedDatePoint, interval, onSelect }
+  { dates, minDate, maxDate, selectedDatePoint, interval, onSelect, mini }
 ) {
   const { t, i18n } = useTranslation();
 
@@ -92,6 +93,20 @@ export default function TimeTrack(
     const mark = marks.find((m) => m.value === idx);
     return mark ? periodLabel(mark.date, interval, i18n.language) : "";
   };
+
+  if (mini) {
+    return (
+      <div className="TimeTrackMini" aria-hidden="true">
+        {marks.map((mark) => (
+          <span
+            key={mark.date}
+            className={mark.date === selectedDatePoint ? "Selected" : ""}
+            style={{ left: position(mark.value) + "%" }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={"TimeTrack" + (single ? " Single" : "")}>

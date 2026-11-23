@@ -154,3 +154,30 @@
     }
   }
 }
+
+// Mobile card: small read-only track.
+.TimeTrackMini {
+  position: relative;
+  height: 6px;
+  margin: 0 8px 4px;
+  border-radius: 3px;
+  background-color: color-mix(in srgb, var(--primary-color) 18%, #fff);
+
+  span {
+    position: absolute;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    border-radius: 50%;
+    background-color: #6E8591;
+
+    &.Selected {
+      width: 10px;
+      height: 10px;
+      margin: -2px 0 0 -5px;
+      background-color: var(--primary-color);
+      box-shadow: 0 0 0 2px var(--white);
+    }
+  }
+}

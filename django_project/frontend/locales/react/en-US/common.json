@@ -265,7 +265,10 @@
       "fitToIndicatorRange": "Fit to current indicator range",
       "lastKnownValue": "Show last known value in range",
       "hide": "Hide time slider",
-      "preparing": "Preparing time control..."
+      "preparing": "Preparing time control...",
+      "position": "{{current}} of {{total}}",
+      "expand": "Open time controls",
+      "collapse": "Close time controls"
     }
   },
   "featured": "Featured",

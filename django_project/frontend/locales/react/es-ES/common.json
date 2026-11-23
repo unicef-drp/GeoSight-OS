@@ -265,7 +265,10 @@
       "fitToIndicatorRange": "Ajustar al rango del indicador actual",
       "lastKnownValue": "Mostrar el último valor conocido en el rango",
       "hide": "Ocultar el control deslizante de tiempo",
-      "preparing": "Preparando el control de tiempo..."
+      "preparing": "Preparando el control de tiempo...",
+      "position": "{{current}} de {{total}}",
+      "expand": "Abrir los controles de tiempo",
+      "collapse": "Cerrar los controles de tiempo"
     }
   },
   "featured": "Destacado",

@@ -39,13 +39,14 @@ export default function TimeSettings(
     onChangeFitToIndicatorRange,
     isInLatestValue,
     onChangeInLatestValue,
+    inline = false,
   }
 ) {
   const { t } = useTranslation();
   return (
     <div
-      className="TimeSettings"
-      role="dialog"
+      className={"TimeSettings" + (inline ? " Inline" : "")}
+      role={inline ? "group" : "dialog"}
       aria-label={t("dashboardPage.timeSlider.settings")}
       data-testid="time-slider-settings"
     >
