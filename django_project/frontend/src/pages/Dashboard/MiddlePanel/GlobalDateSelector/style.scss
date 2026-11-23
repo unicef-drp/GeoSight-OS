@@ -23,7 +23,9 @@
   pointer-events: auto;
   padding: 0 !important;
   transition: height 0.3s;
-  z-index: 10;
+  // Above the map's fullscreen button (z-index 999): this flex item is the
+  // stacking context of the settings popover and the mobile card / sheet.
+  z-index: 1000;
 
   &.Open {
     height: 64px;
