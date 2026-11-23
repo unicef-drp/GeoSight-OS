@@ -55,7 +55,7 @@
     height: 34px;
     padding: 0;
     border: none;
-    border-radius: 6px;
+    border-radius: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -108,9 +108,14 @@
       min-height: 34px;
       height: 34px;
       border: 1px solid var(--primary-color);
-      border-radius: 6px;
+      border-radius: 0;
       box-shadow: none;
       cursor: pointer;
+    }
+
+    // Square, like the toolbar's Admin Level dropdown.
+    .ReactSelect__menu {
+      border-radius: 0;
     }
 
     .ReactSelect__indicator-separator {
