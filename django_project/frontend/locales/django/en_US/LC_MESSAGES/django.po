@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoSight\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-11 14:52+0000\n"
+"POT-Creation-Date: 2026-11-17 23:42+0000\n"
 "PO-Revision-Date: 2024-03-21 12:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: English\n"
@@ -27,15 +27,15 @@ msgstr ""
 msgid "Autoassign user under the domain to the group."
 msgstr ""
 
-#: core/admin.py:225
+#: core/admin.py:267
 msgid "Personal info"
 msgstr ""
 
-#: core/admin.py:227
+#: core/admin.py:269
 msgid "Permissions"
 msgstr ""
 
-#: core/admin.py:233
+#: core/admin.py:275
 msgid "Important dates"
 msgstr ""
 
@@ -56,7 +56,7 @@ msgstr ""
 msgid "You don't have permission to access this resource"
 msgstr ""
 
-#: core/forms/user.py:95
+#: core/forms/user.py:106
 msgid "Designates whether the user can access the backend (Django) admin site."
 msgstr ""
 
@@ -68,7 +68,7 @@ msgstr ""
 msgid "NEW_PERMISSIONS"
 msgstr ""
 
-#: core/models/access_request.py:36 geosight/data/models/context_layer.py:436
+#: core/models/access_request.py:36 geosight/data/models/context_layer.py:595
 msgid "PENDING"
 msgstr ""
 
@@ -88,109 +88,109 @@ msgstr ""
 msgid "API Keys"
 msgstr ""
 
-#: core/models/preferences.py:42
+#: core/models/preferences.py:48
 msgid "Staging"
 msgstr ""
 
-#: core/models/preferences.py:43
+#: core/models/preferences.py:49
 msgid "Production"
 msgstr ""
 
-#: core/models/preferences.py:138
+#: core/models/preferences.py:156
 msgid ""
 "Main color for the website. Put the hex color with # (e.g. #ffffff) or put "
 "the text of color. (e.g. blue)"
 msgstr ""
 
-#: core/models/preferences.py:147
+#: core/models/preferences.py:165
 msgid "Anti of primary color that used for text in primary color."
 msgstr ""
 
-#: core/models/preferences.py:154
+#: core/models/preferences.py:172
 msgid "Secondary color that used for example for button. "
 msgstr ""
 
-#: core/models/preferences.py:161
+#: core/models/preferences.py:179
 msgid "Anti of secondary color that used for text in primary color."
 msgstr ""
 
-#: core/models/preferences.py:168
+#: core/models/preferences.py:186
 msgid "Tertiary color that used for example for some special place. "
 msgstr ""
 
-#: core/models/preferences.py:175
+#: core/models/preferences.py:193
 msgid "Anti of tertiary color that used for text in primary color."
 msgstr ""
 
-#: core/models/preferences.py:215
+#: core/models/preferences.py:241
 msgid "Default fill color for new rule style."
 msgstr ""
 
-#: core/models/preferences.py:223
+#: core/models/preferences.py:249
 msgid "Default outline color for new rule style."
 msgstr ""
 
-#: core/models/preferences.py:230
+#: core/models/preferences.py:256
 msgid "Default outline size for new rule style."
 msgstr ""
 
-#: core/models/preferences.py:239
+#: core/models/preferences.py:265
 msgid "Default fill color for no data style."
 msgstr ""
 
-#: core/models/preferences.py:248
+#: core/models/preferences.py:274
 msgid "Default outline color for no data style."
 msgstr ""
 
-#: core/models/preferences.py:255
+#: core/models/preferences.py:281
 msgid "Default outline size for no data style."
 msgstr ""
 
-#: core/models/preferences.py:264
+#: core/models/preferences.py:290
 msgid "Default fill color for other data style."
 msgstr ""
 
-#: core/models/preferences.py:272
+#: core/models/preferences.py:298
 msgid "Default outline color for other data style."
 msgstr ""
 
-#: core/models/preferences.py:279
+#: core/models/preferences.py:305
 msgid "Default outline size for other data style."
 msgstr ""
 
-#: core/models/preferences.py:288
+#: core/models/preferences.py:314
 msgid "Default outline color for dynamic style."
 msgstr ""
 
-#: core/models/preferences.py:295
+#: core/models/preferences.py:321
 msgid "Default outline size for dynamic style."
 msgstr ""
 
-#: core/models/preferences.py:304
+#: core/models/preferences.py:330
 msgid "Outline size for compare mode."
 msgstr ""
 
-#: core/models/preferences.py:314
+#: core/models/preferences.py:340
 msgid "Help text to show in login page."
 msgstr ""
 
-#: core/models/preferences.py:335
+#: core/models/preferences.py:361
 msgid ""
 "Add a feedback URL in the Help section. You can use a mailto: link, like "
 "mailto:example@email.com, to allow users to send an email."
 msgstr ""
 
-#: core/models/preferences.py:344
+#: core/models/preferences.py:370
 msgid ""
 "Add a Contact Us URL in the Help section. You can use a mailto: link, like "
 "mailto:example@email.com, to allow users to send an email."
 msgstr ""
 
-#: core/models/preferences.py:439
+#: core/models/preferences.py:479
 msgid "Title of image."
 msgstr ""
 
-#: core/models/preferences.py:444
+#: core/models/preferences.py:484
 msgid "Description of image."
 msgstr ""
 
@@ -200,6 +200,18 @@ msgstr ""
 
 #: core/settings/project.py:91
 msgid "Spanish"
+msgstr ""
+
+#: core/settings/project.py:92
+msgid "French"
+msgstr ""
+
+#: core/settings/project.py:93
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+#: core/settings/project.py:94
+msgid "Portuguese (Brazil)"
 msgstr ""
 
 #: frontend/views/admin/dashboard/list.py:32
@@ -214,29 +226,29 @@ msgstr ""
 msgid "Entity Null"
 msgstr ""
 
-#: geosight/data/admin/indicator.py:38 geosight/data/admin/indicator.py:60
+#: geosight/data/admin/indicator.py:49 geosight/data/admin/indicator.py:88
 #: geosight/georepo/admin/entity.py:33
 msgid "Is NULL"
 msgstr ""
 
-#: geosight/data/admin/indicator.py:39 geosight/data/admin/indicator.py:61
+#: geosight/data/admin/indicator.py:50 geosight/data/admin/indicator.py:89
 #: geosight/georepo/admin/entity.py:34
 msgid "Is NOT NULL"
 msgstr ""
 
-#: geosight/data/admin/indicator.py:54 geosight/georepo/admin/entity.py:27
+#: geosight/data/admin/indicator.py:71 geosight/georepo/admin/entity.py:27
 msgid "Country Null"
 msgstr ""
 
-#: geosight/data/models/basemap_layer.py:95
+#: geosight/data/models/basemap_layer.py:98
 msgid "The name of parameter"
 msgstr ""
 
-#: geosight/data/models/basemap_layer.py:102
+#: geosight/data/models/basemap_layer.py:105
 msgid "The value of parameter"
 msgstr ""
 
-#: geosight/data/models/context_layer.py:107
+#: geosight/data/models/context_layer.py:103
 #, python-brace-format
 msgid ""
 "The type of layer for this context layer.<br>For <b>ArcGIS</b>, put feature "
@@ -248,107 +260,107 @@ msgid ""
 "native gis."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:124
+#: geosight/data/models/context_layer.py:120
 msgid ""
 "ArcGIS configuration that contains username/password that will be used to "
 "autogenerate the token."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:133
+#: geosight/data/models/context_layer.py:129
 msgid "Related table name."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:141
+#: geosight/data/models/context_layer.py:137
 msgid ""
 "This is the url of image that will be rendered as legend. ArcGIS type can be "
 "generated automatically, but if you fill this url legend, it will be "
 "overridden"
 msgstr ""
 
-#: geosight/data/models/context_layer.py:150
+#: geosight/data/models/context_layer.py:146
 msgid "Token to access the layer if needed."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:157
+#: geosight/data/models/context_layer.py:153
 msgid "Username to access the layer if needed."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:164
+#: geosight/data/models/context_layer.py:160
 msgid "Password to access the layer if needed."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:183
+#: geosight/data/models/context_layer.py:182
 msgid "Using layer from cloud native gis."
 msgstr ""
 
-#: geosight/data/models/context_layer.py:437
+#: geosight/data/models/context_layer.py:596
 msgid "RUNNING"
 msgstr ""
 
-#: geosight/data/models/context_layer.py:438
+#: geosight/data/models/context_layer.py:597
 msgid "SUCCESS"
 msgstr ""
 
-#: geosight/data/models/context_layer.py:439
+#: geosight/data/models/context_layer.py:598
 msgid "FAILED"
 msgstr ""
 
 #: geosight/data/models/dashboard/bookmark.py:34
-#: geosight/data/models/dashboard/dashboard.py:76
+#: geosight/data/models/dashboard/dashboard.py:79
 msgid "Extent of the dashboard. If empty, it is the whole map"
 msgstr ""
 
-#: geosight/data/models/dashboard/bookmark.py:70
+#: geosight/data/models/dashboard/bookmark.py:62
+msgid "Map mode of the dashboard. is it compare_layers or side_by_side_view."
+msgstr ""
+
+#: geosight/data/models/dashboard/bookmark.py:91
 msgid "User who create the bookmark."
 msgstr ""
 
-#: geosight/data/models/dashboard/dashboard.py:68
+#: geosight/data/models/dashboard/dashboard.py:71
 #: geosight/georepo/models/entity.py:64
-#: geosight/importer/models/importer.py:100
+#: geosight/importer/models/importer.py:102
 msgid "Reference layer."
 msgstr ""
 
-#: geosight/data/models/dashboard/dashboard.py:112
+#: geosight/data/models/dashboard/dashboard.py:84
+msgid "Minimum zoom level for the dashboard"
+msgstr ""
+
+#: geosight/data/models/dashboard/dashboard.py:88
+msgid "Maximum zoom level for the dashboard"
+msgstr ""
+
+#: geosight/data/models/dashboard/dashboard.py:137
 msgid "Show a splash screen when opening project for the first time"
 msgstr ""
 
-#: geosight/data/models/dashboard/dashboard_indicator_layer.py:246
-#: geosight/data/models/indicator/indicator_value.py:340
+#: geosight/data/models/dashboard/dashboard.py:151
+msgid "Show map toolbars on the map."
+msgstr ""
+
+#: geosight/data/models/dashboard/dashboard_indicator_layer.py:294
+#: geosight/data/models/indicator/indicator_value.py:436
 #: geosight/importer/models/attribute.py:33
 #: geosight/importer/models/attribute.py:59
 msgid "The name of attribute"
 msgstr ""
 
-#: geosight/data/models/dashboard/dashboard_indicator_layer.py:252
-#: geosight/data/models/indicator/indicator_value.py:346
+#: geosight/data/models/dashboard/dashboard_indicator_layer.py:300
+#: geosight/data/models/indicator/indicator_value.py:442
 #: geosight/importer/models/attribute.py:37
 #: geosight/importer/models/attribute.py:63
 msgid "The value of attribute"
 msgstr ""
 
-#: geosight/data/models/dashboard/dashboard_tool.py:28
-msgid "3D view"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:29
-msgid "Compare layers"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:30
-msgid "Measurement"
-msgstr ""
-
-#: geosight/data/models/dashboard/dashboard_tool.py:31
-msgid "Zonal analysis"
-msgstr ""
-
 #: geosight/data/models/indicator/indicator_value.py:36
-#: geosight/data/models/indicator/indicator_value.py:371
+#: geosight/data/models/indicator/indicator_value.py:472
 msgid "Date"
 msgstr ""
 
 #: geosight/data/models/indicator/indicator_value.py:37
-#: geosight/data/models/indicator/indicator_value.py:372
+#: geosight/data/models/indicator/indicator_value.py:473
 msgid "The date of the value harvested."
 msgstr ""
 
@@ -366,15 +378,41 @@ msgstr ""
 msgid "Color for the outline of geometry on map."
 msgstr ""
 
+#: geosight/data_restorer/models.py:95
+msgid "Indicates whether default data has been restored."
+msgstr ""
+
+#: geosight/data_restorer/models.py:101
+msgid ""
+"Enable request to restore fixture.It will be disabled if there is a color "
+"palette."
+msgstr ""
+
+#: geosight/data_restorer/models.py:134
+msgid "Created"
+msgstr ""
+
+#: geosight/data_restorer/models.py:135
+msgid "Running"
+msgstr ""
+
+#: geosight/data_restorer/models.py:136
+msgid "Finish"
+msgstr ""
+
+#: geosight/data_restorer/models.py:137
+msgid "Failed"
+msgstr ""
+
 #: geosight/georepo/admin/reference_layer.py:31
 msgid "in georepo"
 msgstr ""
 
-#: geosight/georepo/admin/reference_layer.py:37
+#: geosight/georepo/admin/reference_layer.py:50
 msgid "Yes"
 msgstr ""
 
-#: geosight/georepo/admin/reference_layer.py:38
+#: geosight/georepo/admin/reference_layer.py:51
 msgid "No"
 msgstr ""
 
@@ -398,21 +436,21 @@ msgstr ""
 msgid "The file of attribute"
 msgstr ""
 
-#: geosight/importer/models/importer.py:53
+#: geosight/importer/models/importer.py:55
 msgid ""
 "Type of data that will be saved. It is between indicator value or related "
 "table."
 msgstr ""
 
-#: geosight/importer/models/importer.py:94
+#: geosight/importer/models/importer.py:96
 msgid "Format of input. It will used for deciding what importer will be used."
 msgstr ""
 
-#: geosight/importer/models/importer.py:111
+#: geosight/importer/models/importer.py:113
 msgid "The code type of the data."
 msgstr ""
 
-#: geosight/importer/models/importer.py:117
+#: geosight/importer/models/importer.py:119
 msgid "Scheduled task for the importer."
 msgstr ""
 
