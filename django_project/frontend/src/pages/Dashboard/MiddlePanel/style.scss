@@ -125,7 +125,10 @@
     z-index: 1;
 
     &.DateOpen {
-      height: 200px;
+      // 50px basemap row + 64px time bar
+      height: 114px;
+      // Above .TopContent so the time settings popover is not covered.
+      z-index: 3;
     }
 
     .Disclaimer {

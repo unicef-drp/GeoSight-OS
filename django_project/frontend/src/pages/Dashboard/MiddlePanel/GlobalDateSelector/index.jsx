@@ -19,28 +19,23 @@
 
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Slider from "@mui/material/Slider";
-import Switch from "@mui/material/Switch";
+import { useTranslation } from "react-i18next";
 import CircularProgress from "@mui/material/CircularProgress";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import KeyboardDoubleArrowDownIcon
-  from "@mui/icons-material/KeyboardDoubleArrowDown";
-import KeyboardDoubleArrowUpIcon
-  from "@mui/icons-material/KeyboardDoubleArrowUp";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import { axiosPostWithSession } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
-import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
-import {
-  dateLabel,
-  getDatesInRange,
-  INTERVALS
-} from "../../../../utils/Dates";
+import { formatDate, nowUTC } from "../../../../utils/main";
+import { INTERVALS } from "../../../../utils/Dates";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import PlayControl from "./PlayControl";
-import { ThemeButton } from "../../../../components/Elements/Button";
+import TimeTrack from "./TimeTrack";
+import TimeSettings from "./TimeSettings";
+import { periodLabel, windowLabel } from "./utils";
+import {
+  ChevronDownIcon,
+  TimeSettingsIcon
+} from "../../../../components/Icons";
 import { Session } from "../../../../utils/Sessions";
 import {
   referenceLayerIndicatorLayer
@@ -55,6 +50,7 @@ import { selectIndicatorLayers } from "../../../../selectors/indicatorLayers";
  */
 export default function GlobalDateSelector() {
   const dispatch = useDispatch();
+  const { t, i18n } = useTranslation();
   const { globalDateSelectorOpened } = useSelector(
     (state) => state.globalState,
   );
@@ -85,24 +81,30 @@ export default function GlobalDateSelector() {
     fit_to_current_indicator_range,
     show_last_known_value_in_range,
   } = default_time_mode;
+  // Project defaults (also used by Stop, which resets to them).
+  const defaultIsInLatestValue = use_only_last_known_value
+    ? true
+    : show_last_known_value_in_range === undefined
+      ? false
+      : show_last_known_value_in_range;
+  const defaultIsFitToIndicatorRange = use_only_last_known_value
+    ? false
+    : fit_to_current_indicator_range === undefined
+      ? false
+      : fit_to_current_indicator_range;
+  const defaultInterval = default_interval
+    ? default_interval
+    : INTERVALS.MONTHLY;
+
   const [isInLatestValue, setIsInLatestValue] = useState(
-    use_only_last_known_value
-      ? true
-      : show_last_known_value_in_range === undefined
-        ? false
-        : show_last_known_value_in_range,
+    defaultIsInLatestValue,
   );
   const [isFitToIndicatorRange, setIsFitToIndicatorRange] = useState(
-    use_only_last_known_value
-      ? false
-      : fit_to_current_indicator_range === undefined
-        ? false
-        : fit_to_current_indicator_range,
+    defaultIsFitToIndicatorRange,
   );
   const [selectedDatePoint, setSelectedDatePoint] = useState(null);
-  const [interval, setInterval] = useState(
-    default_interval ? default_interval : INTERVALS.MONTHLY,
-  );
+  const [interval, setInterval] = useState(defaultInterval);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [animationDone, setAnimationDone] = useState(true);
@@ -271,12 +273,6 @@ export default function GlobalDateSelector() {
    * CURRENT DATES
    * **/
   const currentDates = formatDates();
-  const options = currentDates.map((date) => {
-    return {
-      name: dateLabel(new Date(date), interval),
-      value: date,
-    };
-  });
 
   /**
    * Update Global Dates
@@ -561,30 +557,58 @@ export default function GlobalDateSelector() {
     }
   }, [animationDone]);
 
-  // Update the inputs
-  let currentSelectedDatePointMark = 0;
-  let usedDates = dates;
-  let actualMarks = [];
-  if (minDate && maxDate) {
-    usedDates = usedDates.filter((date) => date >= minDate && date <= maxDate);
-    actualMarks = getDatesInRange(
-      new Date(minDate),
-      new Date(maxDate),
-      interval,
-    );
-  }
-  const marks = usedDates.map((date) => {
-    let label = dateLabel(new Date(date), interval);
-    const idx = actualMarks.indexOf(label);
-    if (date === selectedDatePoint) {
-      currentSelectedDatePointMark = idx;
-    }
-    return {
-      value: idx,
-      date: date,
-      label: label,
-    };
-  });
+  /** Stop: reset to the project's default time settings. */
+  const resetToDefaults = () => {
+    setSettingsOpen(false);
+    setSelectedDatePointSelected(false);
+    setInterval(defaultInterval);
+    setIsInLatestValue(defaultIsInLatestValue);
+    setIsFitToIndicatorRange(defaultIsFitToIndicatorRange);
+    const first = currentDates[0];
+    const last = currentDates[currentDates.length - 1];
+    setMinDate(first);
+    setMaxDate(last);
+    setSelectedDatePoint(last);
+  };
+
+  // Data dates inside the range
+  const usedDates =
+    minDate && maxDate
+      ? dates.filter((date) => date >= minDate && date <= maxDate)
+      : dates;
+  const language = i18n.language;
+  const dateOptions = usedDates.map((date) => ({
+    name: periodLabel(date, interval, language),
+    value: date,
+  }));
+  const rangeOptions = currentDates.map((date) => ({
+    name: periodLabel(date, interval, language),
+    value: date,
+  }));
+  const intervalOptions = [
+    {
+      value: INTERVALS.DAILY,
+      name: t("dashboardPage.timeSlider.intervalDaily"),
+    },
+    {
+      value: INTERVALS.MONTHLY,
+      name: t("dashboardPage.timeSlider.intervalMonthly"),
+    },
+    {
+      value: INTERVALS.YEARLY,
+      name: t("dashboardPage.timeSlider.intervalYearly"),
+    },
+  ];
+  const activeWindow = windowLabel(
+    selectedGlobalTime?.min,
+    selectedGlobalTime?.max,
+    language,
+  );
+  const selectDate = (date) => {
+    setSelectedDatePoint(date);
+    setSelectedDatePointSelected(true);
+  };
+  const ready = selectedDatePoint && minDate && maxDate;
 
   return (
     <div
@@ -594,239 +618,119 @@ export default function GlobalDateSelector() {
         (hide ? "Hide" : "")
       }
     >
-      <div className="UpperFloating">
-        <PlayControl
-          dates={marks.map((mark) => mark.date)}
-          selectedDatePoint={selectedDatePoint}
-          setSelectedDatePoint={setSelectedDatePoint}
-        >
-          <ThemeButton
-            tabIndex="-1"
-            variant={"secondary Basic Reverse"}
-            className="GlobalDateSelectionIcon"
-            onClick={(_) => {
-              dispatch(
-                Actions.GlobalState.update({
-                  globalDateSelectorOpened: !globalDateSelectorOpened,
-                }),
-              );
-            }}
-          >
-            {globalDateSelectorOpened ? (
-              <KeyboardDoubleArrowDownIcon />
-            ) : (
-              <KeyboardDoubleArrowUpIcon />
-            )}
-            <AccessTimeIcon />
-            {globalDateSelectorOpened ? (
-              <KeyboardDoubleArrowDownIcon />
-            ) : (
-              <KeyboardDoubleArrowUpIcon />
-            )}
-          </ThemeButton>
-        </PlayControl>
-      </div>
-      <div className={"GlobalDateSelectionOuterWrapper"}>
-        <div className="GlobalDateSelectionWrapper">
-          {errorMessage && !marks.length ? (
-            <div className="LoadingElement">
-              <div className="Throbber error">{errorMessage}</div>
+      <div
+        className="TimeBar"
+        role="region"
+        aria-label={t("dashboardPage.timeSlider.title")}
+      >
+        {errorMessage && !usedDates.length ? (
+          <div className="TimeBarMessage Error">{errorMessage}</div>
+        ) : ready ? (
+          <Fragment>
+            <PlayControl
+              dates={usedDates}
+              selectedDatePoint={selectedDatePoint}
+              setSelectedDatePoint={setSelectedDatePoint}
+              onReset={resetToDefaults}
+            />
+            <div className="TimeBarRule" />
+            <div
+              className="TimeBarDate"
+              title={activeWindow}
+              data-testid="time-slider-date"
+            >
+              <SelectWithList
+                list={dateOptions}
+                required={true}
+                value={selectedDatePoint}
+                classNamePrefix={"ReactSelect"}
+                aria-label={t("dashboardPage.timeSlider.date")}
+                onChange={(evt) => selectDate(evt.value)}
+              />
             </div>
-          ) : selectedDatePoint && minDate && maxDate ? (
-            <Fragment>
-              <div className="UpperSection">
-                <div className="TimeSelection">
-                  {selectedGlobalTime.min &&
-                  selectedGlobalTime.min !== selectedGlobalTime.max ? (
-                    <b>
-                      {formatDateTime(
-                        new Date(selectedGlobalTime.min),
-                        true,
-                        true,
-                      )}
-                    </b>
-                  ) : (
-                    "-"
-                  )}
-                  <div>Active Window Start</div>
-                </div>
-                <div className="UpperSectionMiddle">
-                  <div style={{ display: "flex" }}>
-                    <div className="Separator" />
-                    {/* Other control */}
-                    <div
-                      data-testid="time-slider-date"
-                      style={{ display: "contents" }}
-                    >
-                      <SelectWithList
-                        tabIndex="-1"
-                        list={marks}
-                        required={true}
-                        value={currentSelectedDatePointMark}
-                        classNamePrefix={"ReactSelect"}
-                        onChange={(evt) => {
-                          const selectedMark = marks.find(
-                            (mark) => mark.value === evt.value,
-                          );
-                          if (selectedMark) {
-                            setSelectedDatePoint(selectedMark.date);
-                            setSelectedDatePointSelected(true);
-                          }
-                        }}
-                      />
-                    </div>
-                    &nbsp;&nbsp;
-                    <SelectWithList
-                      tabIndex="-1"
-                      list={[
-                        INTERVALS.DAILY,
-                        INTERVALS.MONTHLY,
-                        INTERVALS.YEARLY,
-                      ]}
-                      required={true}
-                      value={interval}
-                      classNamePrefix={"ReactSelect"}
-                      onChange={(evt) => {
-                        setInterval(evt.value);
-                      }}
-                    />
-                    <div className="Separator" />
-                  </div>
-                </div>
-                <div className="TimeSelection" style={{ textAlign: "right" }}>
-                  <b>
-                    {formatDateTime(
-                      new Date(selectedGlobalTime.max),
-                      true,
-                      true,
-                    )}
-                  </b>
-                  <div>Active Window End</div>
-                </div>
-              </div>
-              <div className="GlobalDateSelectionSliderWrapper">
-                <div className="TimeSelection">
-                  <div style={{ textAlign: "left" }}>Range Start</div>
-                  <SelectWithList
-                    tabIndex="-1"
-                    className="Selection"
-                    list={options}
-                    required={true}
-                    value={minDate}
-                    classNamePrefix={"ReactSelect"}
-                    onChange={(evt) => {
-                      if (evt.value > maxDate) {
-                        setMinDate(maxDate);
-                      } else {
-                        setMinDate(evt.value);
-                      }
-                    }}
-                  />
-                </div>
-                <div className="Middle">
-                  <div className="Options">
-                    <div className="Separator" />
-                    <FormGroup style={{ marginRight: "2rem" }}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            tabIndex="-1"
-                            size="small"
-                            className="Secondary"
-                            checked={isFitToIndicatorRange}
-                            onChange={() => {
-                              setIsFitToIndicatorRange(!isFitToIndicatorRange);
-                            }}
-                          />
-                        }
-                        label="Fit to current indicator range"
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            tabIndex="-1"
-                            size="small"
-                            className="Secondary"
-                            checked={isInLatestValue}
-                            onChange={() => {
-                              setIsInLatestValue(!isInLatestValue);
-                            }}
-                          />
-                        }
-                        label="Show last known value in range"
-                      />
-                    </FormGroup>
-                    <div className="Separator" />
-                  </div>
-                  <div
-                    className={
-                      "GlobalDateSelectionSlider " +
-                      (marks.length <= 1 ? "Single" : "")
+            <div className="TimeBarInterval" data-testid="time-slider-interval">
+              <SelectWithList
+                list={intervalOptions}
+                required={true}
+                value={interval}
+                classNamePrefix={"ReactSelect"}
+                aria-label={t("dashboardPage.timeSlider.interval")}
+                onChange={(evt) => setInterval(evt.value)}
+              />
+            </div>
+            <TimeTrack
+              dates={dates}
+              minDate={minDate}
+              maxDate={maxDate}
+              selectedDatePoint={selectedDatePoint}
+              interval={interval}
+              onSelect={selectDate}
+            />
+            <div className="TimeBarRule" />
+            <ClickAwayListener onClickAway={() => setSettingsOpen(false)}>
+              <div
+                className="TimeBarSettings"
+                onKeyDown={(evt) => {
+                  if (evt.key === "Escape") {
+                    setSettingsOpen(false);
+                  }
+                }}
+              >
+                <button
+                  type="button"
+                  className={
+                    "TimeBarButton" + (settingsOpen ? " Active" : "")
+                  }
+                  title={t("dashboardPage.timeSlider.settings")}
+                  aria-label={t("dashboardPage.timeSlider.settings")}
+                  aria-expanded={settingsOpen}
+                  aria-pressed={settingsOpen}
+                  data-testid="time-slider-settings-button"
+                  onClick={() => setSettingsOpen(!settingsOpen)}
+                >
+                  <TimeSettingsIcon />
+                </button>
+                {settingsOpen && (
+                  <TimeSettings
+                    options={rangeOptions}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    onChangeMinDate={(value) =>
+                      setMinDate(value > maxDate ? maxDate : value)
                     }
-                  >
-                    <Slider
-                      tabIndex="-1"
-                      value={currentSelectedDatePointMark}
-                      max={actualMarks.length - 1}
-                      step={null}
-                      track={false}
-                      valueLabelDisplay="auto"
-                      marks={marks}
-                      valueLabelFormat={(value) => {
-                        const selectedMark = marks.find(
-                          (mark) => mark.value === value,
-                        );
-                        if (selectedMark) {
-                          return dateLabel(
-                            new Date(selectedMark.date),
-                            interval,
-                          );
-                        }
-                        return "";
-                      }}
-                      onChange={(evt) => {
-                        const selectedMark = marks.find(
-                          (mark) => mark.value === evt.target.value,
-                        );
-                        if (selectedMark) {
-                          setSelectedDatePoint(selectedMark.date);
-                          setSelectedDatePointSelected(true);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="TimeSelection">
-                  <div style={{ textAlign: "right" }}>Range End</div>
-                  <SelectWithList
-                    tabIndex="-1"
-                    className="Selection"
-                    list={options}
-                    required={true}
-                    value={maxDate}
-                    classNamePrefix={"ReactSelect"}
-                    onChange={(evt) => {
-                      if (evt.value < minDate) {
-                        setMaxDate(minDate);
-                      } else {
-                        setMaxDate(evt.value);
-                      }
-                    }}
+                    onChangeMaxDate={(value) =>
+                      setMaxDate(value < minDate ? minDate : value)
+                    }
+                    isFitToIndicatorRange={isFitToIndicatorRange}
+                    onChangeFitToIndicatorRange={setIsFitToIndicatorRange}
+                    isInLatestValue={isInLatestValue}
+                    onChangeInLatestValue={setIsInLatestValue}
                   />
-                </div>
+                )}
               </div>
-            </Fragment>
-          ) : (
-            <div className="LoadingElement">
-              <div className="Throbber">
-                <CircularProgress />
-                Preparing time control...
-              </div>
-            </div>
-          )}
-        </div>
+            </ClickAwayListener>
+          </Fragment>
+        ) : (
+          <div className="TimeBarMessage">
+            <CircularProgress size={16} />
+            {t("dashboardPage.timeSlider.preparing")}
+          </div>
+        )}
+        <button
+          type="button"
+          className="TimeBarButton"
+          title={t("dashboardPage.timeSlider.hide")}
+          aria-label={t("dashboardPage.timeSlider.hide")}
+          data-testid="time-slider-hide"
+          onClick={() => {
+            setSettingsOpen(false);
+            dispatch(
+              Actions.GlobalState.update({ globalDateSelectorOpened: false }),
+            );
+          }}
+        >
+          <ChevronDownIcon />
+        </button>
       </div>
     </div>
   );
