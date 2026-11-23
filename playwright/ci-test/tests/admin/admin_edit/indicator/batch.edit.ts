@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
 import { BASE_URL } from "../../../variables";
-import { parseMultipartFormData } from "../../../utils";
+import { parseMultipartFormData, selectAllRows } from "../../../utils";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -63,7 +63,7 @@ test.describe('Batch edit indicator', () => {
     await delay(1000);
     await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await selectAllRows(page);
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
@@ -97,7 +97,7 @@ test.describe('Batch edit indicator', () => {
     await delay(1000);
     await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await selectAllRows(page);
     await expect(page.locator('.AdminListHeader-Count ')).toContainText('4 items on this list are selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
@@ -124,7 +124,7 @@ test.describe('Batch edit indicator', () => {
     await page.waitForURL(_url)
     await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
-    await page.getByLabel('Select all rows').check();
+    await selectAllRows(page);
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
