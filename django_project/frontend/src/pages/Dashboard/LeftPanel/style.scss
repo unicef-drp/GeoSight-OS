@@ -473,6 +473,22 @@
   }
 }
 
+// Context Layers / Indicators eye toggles: a 28px square click area around
+// the 16px icon, so a click next to the strokes doesn't switch the tab.
+.MuiTab-root svg.LayerVisibilityToggle {
+  box-sizing: content-box;
+  width: 16px;
+  height: 16px;
+  padding: 6px;
+  margin-left: 2px;
+  border-radius: 0;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+}
+
 .dashboard__content-wrapper__inner {
   background-color: #FFFFFF !important;
 }
