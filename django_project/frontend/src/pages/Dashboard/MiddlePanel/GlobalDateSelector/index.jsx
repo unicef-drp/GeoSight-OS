@@ -654,22 +654,27 @@ export default function GlobalDateSelector() {
                   <div style={{ display: "flex" }}>
                     <div className="Separator" />
                     {/* Other control */}
-                    <SelectWithList
-                      tabIndex="-1"
-                      list={marks}
-                      required={true}
-                      value={currentSelectedDatePointMark}
-                      classNamePrefix={"ReactSelect"}
-                      onChange={(evt) => {
-                        const selectedMark = marks.find(
-                          (mark) => mark.value === evt.value,
-                        );
-                        if (selectedMark) {
-                          setSelectedDatePoint(selectedMark.date);
-                          setSelectedDatePointSelected(true);
-                        }
-                      }}
-                    />
+                    <div
+                      data-testid="time-slider-date"
+                      style={{ display: "contents" }}
+                    >
+                      <SelectWithList
+                        tabIndex="-1"
+                        list={marks}
+                        required={true}
+                        value={currentSelectedDatePointMark}
+                        classNamePrefix={"ReactSelect"}
+                        onChange={(evt) => {
+                          const selectedMark = marks.find(
+                            (mark) => mark.value === evt.value,
+                          );
+                          if (selectedMark) {
+                            setSelectedDatePoint(selectedMark.date);
+                            setSelectedDatePointSelected(true);
+                          }
+                        }}
+                      />
+                    </div>
                     &nbsp;&nbsp;
                     <SelectWithList
                       tabIndex="-1"
