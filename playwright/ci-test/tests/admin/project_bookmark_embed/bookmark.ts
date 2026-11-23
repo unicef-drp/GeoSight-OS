@@ -13,6 +13,7 @@ import {
   defaultBookmark,
   defaultCheck,
   deleteBookmark,
+  deleteBookmarkIfExists,
   selectBookmark,
   selection
 } from '../../utils/bookmark'
@@ -31,6 +32,7 @@ test.describe('Bookmark', () => {
   test('Test bookmark project', async ({ page }) => {
     const name = 'Bookmark 1'
     await viewProject(page, 'Demo GeoSight Project', true);
+    await deleteBookmarkIfExists(page, name)
 
     // --------------------------------------------
     // Selection
