@@ -67,6 +67,36 @@ const LayerMetadata = "Layer Metadata";
 const SDMXConfig = "SDMX Config";
 const FilterDimensions = "Filter Dimensions";
 const DataConfig = "Data Config";
+
+// Data Config fields are set by this form, not by SDMXForm.
+const COLUMN_FIELDS = ["geomCodeField", "valueField", "dateTimeField"];
+const OTHER_FIELDS = ["aggregationType", "dateTimeFormat"];
+
+/**
+ * Merge the config reported by SDMXForm with the Data Config fields of the
+ * current config. SDMXForm keeps its own copy of the config, which does not
+ * have these fields, so replacing the config would wipe them.
+ * A column field is kept only while the data still has that column.
+ */
+const mergeSDMXConfig = (
+  currentConfig: Record<string, any> | undefined,
+  newConfig: Record<string, any>,
+): Record<string, any> => {
+  const merged = { ...newConfig };
+  if (!currentConfig) return merged;
+  const attributeKeys: string[] = newConfig?.attributeKeys || [];
+  COLUMN_FIELDS.forEach((key) => {
+    const value = currentConfig[key];
+    if (value && (!attributeKeys.length || attributeKeys.includes(value))) {
+      merged[key] = value;
+    }
+  });
+  OTHER_FIELDS.forEach((key) => {
+    if (currentConfig[key]) merged[key] = currentConfig[key];
+  });
+  return merged;
+};
+
 /**
  * SDMXLayer Config
  */
@@ -314,7 +344,10 @@ const SDMXLayerConfig = forwardRef<SDMXLayerConfigRef, SDMXLayerConfigProps>(
                             <SDMXForm
                               initialData={data.config}
                               dataChanged={(config) => {
-                                data.config = config;
+                                data.config = mergeSDMXConfig(
+                                  data.config,
+                                  config,
+                                );
                                 updateData();
                               }}
                             />
