@@ -45,21 +45,23 @@
   }
 }
 
-// Collapsed card, floating over the map above the bottom navigation.
+// Collapsed card, docked full width on top of the bottom navigation tabs.
 .TimeCard {
   position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: calc(var(--mobile-bottom-nav-height) + 12px);
+  left: 0;
+  right: 0;
+  bottom: var(--mobile-bottom-nav-height);
   // Above the map's fullscreen button (z-index 999).
   z-index: 1000;
   box-sizing: border-box;
-  padding: 10px 10px 8px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   background-color: var(--white);
-  box-shadow: 0 4px 16px rgba(16, 40, 56, 0.18);
+  // Same shadow as the tab bar; a grey seam where the two meet.
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--gray-200);
   color: var(--base-black-color);
 
   .TimeCardRow {
