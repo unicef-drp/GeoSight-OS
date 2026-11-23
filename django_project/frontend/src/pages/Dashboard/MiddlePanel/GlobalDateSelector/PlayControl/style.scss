@@ -54,6 +54,11 @@
 
   button {
     margin: 0 0.2rem;
+
+    > svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 
   .MuiButtonBase-root {

@@ -19,14 +19,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import StopIcon from '@mui/icons-material/Stop';
 import { ThemeButton } from "../../../../../components/Elements/Button";
 import { allLayerDataIsReady } from "../../../../../utils/indicatorLayer";
 import { returnWhere } from "../../../../../utils/queryExtraction";
-import { NextEndIcon, PrevEndIcon } from "../../../../../components/Icons/svg";
+import {
+  TimeFirstIcon,
+  TimeLastIcon,
+  TimeNextIcon,
+  TimePauseIcon,
+  TimePlayIcon,
+  TimePreviousIcon,
+  TimeStopIcon
+} from "../../../../../components/Icons";
 import { selectIndicatorLayers } from "../../../../../selectors/indicatorLayers";
 
 import './style.scss';
@@ -122,61 +126,61 @@ export default function PlayControl(
     <ThemeButton
       tabIndex="-1"
       title={'Start'}
-      variant={'secondary Basic Reverse'}
+      variant={'primary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
         stop()
         setNextIdx(0)
       }}>
-      <PrevEndIcon/>
+      <TimeFirstIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
       title={'Previous'}
-      variant={'secondary Basic Reverse'}
+      variant={'primary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
         stop()
         const nextIdx = (idx - 1) >= 0 ? idx - 1 : (dates.length - 1)
         setNextIdx(nextIdx)
       }}>
-      <SkipPreviousIcon/>
+      <TimePreviousIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
-      title={'Play'}
-      variant={'secondary Basic ' + (!isPlay ? 'Reverse' : '')}
-      disabled={disabled} onClick={play}>
-      <PlayArrowIcon/>
+      title={isPlay ? 'Pause' : 'Play'}
+      variant={'primary Basic ' + (!isPlay ? 'Reverse' : '')}
+      disabled={disabled} onClick={isPlay ? stop : play}>
+      {isPlay ? <TimePauseIcon/> : <TimePlayIcon/>}
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
       title={'Stop'}
-      variant={'secondary Basic Reverse'}
+      variant={'primary Basic Reverse'}
       disabled={disabled || !isPlay} onClick={stop}>
-      <StopIcon/>
+      <TimeStopIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
       title={'Next'}
-      variant={'secondary Basic Reverse'}
+      variant={'primary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
         stop()
         next()
       }}>
-      <SkipNextIcon/>
+      <TimeNextIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
       title={'End'}
-      variant={'secondary Basic Reverse'}
+      variant={'primary Basic Reverse'}
       disabled={disabled}
       onClick={() => {
         stop()
         setNextIdx(dates.length - 1)
       }}>
-      <NextEndIcon/>
+      <TimeLastIcon/>
     </ThemeButton>
     {children}
   </div>
