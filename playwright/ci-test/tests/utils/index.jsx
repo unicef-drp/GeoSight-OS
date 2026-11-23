@@ -22,9 +22,15 @@ export function parseMultipartFormData(body) {
 }
 /**
  * Select all rows of an admin list.
- * The header checkbox only selects the rows that are loaded, so wait for them first.
+ * A click while the list is (re)loading checks the grid's header checkbox but
+ * leaves the list's selection empty ("0 items … selected", Edit disabled),
+ * so wait until the list has finished loading first.
  */
 export async function selectAllRows(page) {
-  await expect(page.locator('.MuiDataGrid-row').first()).toBeVisible();
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('.AdminList .MuiDataGrid-overlay')).toHaveCount(0);
+  await expect(page.locator('.AdminList .MuiDataGrid-row').first()).toBeVisible();
   await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+  // The list itself must have taken the selection, not only the grid
+  await expect(page.locator('.AdminListHeader-Count')).not.toHaveClass(/Empty/);
 }
