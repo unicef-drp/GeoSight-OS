@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
 import { BASE_URL } from "../../../variables";
-import { parseMultipartFormData } from "../../../utils";
+import { parseMultipartFormData, selectAllRows } from "../../../utils";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -39,7 +39,7 @@ test.describe('Batch edit style', () => {
     });
 
     await delay(2000);
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await selectAllRows(page);
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
@@ -72,7 +72,7 @@ test.describe('Batch edit style', () => {
 
     // batch edit permission
     await delay(2000);
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await selectAllRows(page);
     await expect(page.locator('.AdminListHeader-Count ')).toContainText('1 item on this list is selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
@@ -97,13 +97,8 @@ test.describe('Batch edit style', () => {
     // Edit the public access
     await page.goto(_url);
     await page.waitForURL(_url)
-    await page.getByLabel('Select all rows').check();
+    await selectAllRows(page);
     await delay(1000);
-    const selectAll = page.getByLabel('Select all rows');
-    if (await selectAll.isVisible()) {
-      await page.getByLabel('Select all rows').check();
-      await delay(1000);
-    }
     await expect(page.locator('.AdminListHeader-Count ')).toContainText('1 item on this list is selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();

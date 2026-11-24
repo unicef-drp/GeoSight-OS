@@ -44,7 +44,12 @@ test.describe('Context layer create admin', () => {
 
     // Labels
     await page.getByText('Label').first().click();
-    await page.getByRole('textbox').nth(4).fill('{Partner}');
+    // The label text field, not a position among all textboxes on the page
+    const labelText = page.locator('.ArcgisConfig.Label .BasicFormSection')
+      .filter({ has: page.locator('label.form-label', { hasText: /^Text$/ }) })
+      .getByRole('textbox');
+    await labelText.fill('{Partner}');
+    await expect(labelText).toHaveValue('{Partner}');
 
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('[data-wrapper-name="related_table_selector"]')).not.toContainText('This field is required.');

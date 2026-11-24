@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
-import { parseMultipartFormData } from "../../../utils";
+import { parseMultipartFormData, selectAllRows } from "../../../utils";
 import { BASE_URL } from "../../../variables";
 
 const timeout = 2000;
@@ -45,7 +45,7 @@ test.describe('Batch edit context-layer', () => {
     });
 
     await delay(2000);
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await selectAllRows(page);
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
@@ -108,10 +108,8 @@ test.describe('Batch edit context-layer', () => {
     // Edit the public access
     await page.goto(_url);
     await page.waitForURL(_url)
-    await page.getByLabel('Select all rows').check();
-    if (!await page.getByRole('button', { name: 'Edit' }).isEnabled()) {
-      await page.getByLabel('Select all rows').check();
-    }
+    await selectAllRows(page);
+    await expect(page.getByRole('button', { name: 'Edit' })).toBeEnabled();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
