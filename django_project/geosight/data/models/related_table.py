@@ -34,7 +34,14 @@ from geosight.permission.models.manager import PermissionManager
 
 
 def literal(value):
-    """Return value as an escaped SQL literal, to be safe in raw query."""
+    """
+    Return value as an escaped SQL literal, to be safe in raw query.
+
+    :param value: The value to be escaped.
+    :type value: any
+    :return: The escaped SQL literal, e.g. ``'value'``.
+    :rtype: str
+    """
     connection.ensure_connection()
     return sql.Literal(value).as_string(connection.connection)
 

@@ -41,7 +41,14 @@ class ContextLayerListAPI(APIView):
     """Return ContextLayer list."""
 
     def get(self, request):
-        """Return ContextLayer list."""
+        """
+        Return list of context layers that the user can list.
+
+        :param request: The HTTP request.
+        :type request: rest_framework.request.Request
+        :return: Serialized list of context layers.
+        :rtype: rest_framework.response.Response
+        """
         return Response(
             ContextLayerSerializer(
                 ContextLayer.permissions.list(request.user).order_by('name'),
@@ -50,7 +57,14 @@ class ContextLayerListAPI(APIView):
         )
 
     def delete(self, request):
-        """Delete objects."""
+        """
+        Delete context layers by ids that the user can delete.
+
+        :param request: The HTTP request containing ``ids`` in data.
+        :type request: rest_framework.request.Request
+        :return: Response with message of deleted.
+        :rtype: rest_framework.response.Response
+        """
         ids = json.loads(request.data['ids'])
         for obj in ContextLayer.permissions.delete(request.user).filter(
                 id__in=ids):
@@ -64,7 +78,16 @@ class ContextLayerDetailAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        """Delete an indicator."""
+        """
+        Return detail of a context layer.
+
+        :param request: The HTTP request.
+        :type request: rest_framework.request.Request
+        :param pk: The primary key of the context layer.
+        :type pk: int
+        :return: Serialized context layer.
+        :rtype: rest_framework.response.Response
+        """
         layer = get_object_or_404(ContextLayer, pk=pk)
         read_permission_resource(layer, request.user)
         return Response(
@@ -75,7 +98,16 @@ class ContextLayerDetailAPI(APIView):
         )
 
     def delete(self, request, pk):
-        """Delete an basemap."""
+        """
+        Delete a context layer.
+
+        :param request: The HTTP request.
+        :type request: rest_framework.request.Request
+        :param pk: The primary key of the context layer.
+        :type pk: int
+        :return: Response with message of deleted.
+        :rtype: rest_framework.response.Response
+        """
         layer = get_object_or_404(ContextLayer, pk=pk)
         delete_permission_resource(layer, request.user)
         layer.delete()
@@ -88,7 +120,22 @@ class ContextLayerZonalAnalysisAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, pk, aggregation='sum'):
-        """Run zonal analysis."""
+        """
+        Run zonal analysis of a context layer.
+
+        :param request:
+            The HTTP request containing ``geometries`` and
+            ``aggregation_field`` in data.
+        :type request: rest_framework.request.Request
+        :param pk: The primary key of the context layer.
+        :type pk: int
+        :param aggregation: The aggregation method, e.g. sum, count.
+        :type aggregation: str
+        :return:
+            Response with uuid of the zonal analysis,
+            or bad request if the payload is not valid.
+        :rtype: rest_framework.response.Response
+        """
         try:
             geometry_datas = json.loads(request.data.get('geometries'))
         except TypeError:
@@ -126,7 +173,18 @@ class ZonalAnalysisResultAPI(APIView):
     """Fetch Zonal Analysis results."""
 
     def get(self, request, analysis_uuid):
-        """Get zonal analysis result."""
+        """
+        Return the result of zonal analysis.
+
+        The analysis is deleted after the finished result is returned.
+
+        :param request: The HTTP request.
+        :type request: rest_framework.request.Request
+        :param analysis_uuid: The uuid of the zonal analysis.
+        :type analysis_uuid: str
+        :return: Response with status and result of the analysis.
+        :rtype: rest_framework.response.Response
+        """
         analysis: ZonalAnalysis = get_object_or_404(
             ZonalAnalysis,
             uuid=analysis_uuid

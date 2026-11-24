@@ -46,7 +46,6 @@ def get_importer_log(pk, user, permission='read'):
     :type permission: str
     :return: The ImporterLog object.
     :rtype: ImporterLog
-    :raises Http404: If the log is not found.
     :raises PermissionDenied: If the user doesn't have the permission.
     """
     obj = get_object_or_404(ImporterLog, pk=pk)

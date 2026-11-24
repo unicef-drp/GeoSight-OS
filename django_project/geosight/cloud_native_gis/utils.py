@@ -27,7 +27,25 @@ def run_zonal_analysis_vector_layer(
         aggregation_field: str,
         geometry: GeometryCollection
 ):
-    """Run zonal analysis on multiple geometries."""
+    """
+    Run zonal analysis of a vector layer on the geometry.
+
+    :param layer: The cloud native gis layer.
+    :type layer: cloud_native_gis.models.Layer
+    :param aggregation: The aggregation method: count, sum, max, min, avg.
+    :type aggregation: str
+    :param aggregation_field:
+        The column of the layer to be aggregated.
+        It must be an existing column of the layer table.
+    :type aggregation_field: str
+    :param geometry: The geometry to intersect with the layer.
+    :type geometry: shapely.geometry.GeometryCollection
+    :return: The aggregated value.
+    :rtype: float or int or None
+    :raises ValueError:
+        If the layer is not a vector layer, the aggregation is not
+        recognized or the aggregation_field is not found in the layer.
+    """
     if layer.layer_type != LayerType.VECTOR_TILE:
         raise ValueError(
             'run_zonal_analysis_vector_layer just for vector layer'
@@ -63,7 +81,14 @@ def run_zonal_analysis_vector_layer(
 
 
 def layer_columns(layer: Layer):
-    """Return column names of the table of a cloud native gis layer."""
+    """
+    Return column names of the table of a cloud native gis layer.
+
+    :param layer: The cloud native gis layer.
+    :type layer: cloud_native_gis.models.Layer
+    :return: List of column names.
+    :rtype: list[str]
+    """
     with connection.cursor() as cursor:
         cursor.execute(
             'SELECT column_name FROM information_schema.columns '

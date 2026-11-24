@@ -49,7 +49,24 @@ class ImporterLogDataBaseAPI(FilteredAPI):
             self, request, query, ignores: list, fields: list = None,
             data_is_timestamp=False
     ):
-        """Return filter query."""
+        """
+        Return query filtered by request parameters.
+
+        :param request: The HTTP request containing the filter parameters.
+        :type request: rest_framework.request.Request
+        :param query: The queryset to be filtered.
+        :type query: django.db.models.QuerySet
+        :param ignores: Parameters that are not used as filter.
+        :type ignores: list
+        :param fields: Fields that are allowed to be filtered, all if None.
+        :type fields: list
+        :param data_is_timestamp: Unused, kept for compatibility.
+        :type data_is_timestamp: bool
+        :return: The filtered queryset.
+        :rtype: django.db.models.QuerySet
+        :raises SuspiciousOperation:
+            If a parameter is not allowed or not valid.
+        """
         for param, value in request.GET.items():
             field = param.split('__')[0]
             if field in ignores:
@@ -90,7 +107,13 @@ class ImporterLogDataBaseAPI(FilteredAPI):
         return query
 
     def get_queryset(self):
-        """Return queryset of API."""
+        """
+        Return data of the log that the user has permission on.
+
+        :return: Queryset of the log data.
+        :rtype: django.db.models.QuerySet
+        :raises Http404: If pk is not provided.
+        """
         try:
             pk = self.kwargs['pk']
             obj = get_importer_log(pk, self.request.user)
@@ -109,7 +132,16 @@ class ImporterLogDataAPI(ImporterLogDataBaseAPI, ListAPIView):
     """API for detail of Importer Log."""
 
     def post(self, request, pk):
-        """Save the data of the log."""
+        """
+        Save the selected data of the log to the actual model.
+
+        :param request: The HTTP request containing ``data`` (list of ids).
+        :type request: rest_framework.request.Request
+        :param pk: The primary key of the log.
+        :type pk: int
+        :return: Response with OK message.
+        :rtype: rest_framework.response.Response
+        """
         obj = get_importer_log(pk, request.user, 'edit')
         progress = ImporterLogDataSaveProgress.objects.create(
             log=obj, target_ids=json.loads(request.data['data'])
@@ -122,7 +154,16 @@ class ImporterLogDataIdsAPI(APIView, ImporterLogDataBaseAPI):
     """API for returning detail of api."""
 
     def get(self, request, pk):
-        """Get ids of data."""
+        """
+        Return ids of the data of the log.
+
+        :param request: The HTTP request.
+        :type request: rest_framework.request.Request
+        :param pk: The primary key of the log.
+        :type pk: int
+        :return: Response with list of ids.
+        :rtype: rest_framework.response.Response
+        """
         return Response(self.get_queryset().values_list('id', flat=True))
 
 
@@ -132,7 +173,17 @@ class ImporterLogDataProgresAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        """Return progress of saving the data of the log."""
+        """
+        Return progress of saving the data of the log.
+
+        :param request: The HTTP request.
+        :type request: rest_framework.request.Request
+        :param pk: The primary key of the log.
+        :type pk: int
+        :return: Response with the running progress.
+        :rtype: rest_framework.response.Response
+        :raises Http404: If there is no running progress.
+        """
         obj = get_importer_log(pk, request.user)
         progress = ImporterLogDataSaveProgress.objects.filter(
             log=obj, done=False
