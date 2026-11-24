@@ -34,7 +34,7 @@ import {
   TimeType,
   WidgetType,
 } from "../Definition";
-import { INTERVALS } from "../../../utils/Dates";
+import { INTERVALS, toLocalDateTimeString } from "../../../utils/Dates";
 import { DateTimeConfig, WidgetMetadata } from "../../../types/Widget";
 import {
   GeographyUnitSeriesConfig,
@@ -113,7 +113,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
       !minDateFilter ||
       new Date(minDateFilter).toString() === "Invalid Date"
     ) {
-      minDateFilter = new Date().toISOString();
+      minDateFilter = toLocalDateTimeString(new Date());
     }
     if (new Date(maxDateFilter).toString() === "Invalid Date") {
       maxDateFilter = null;

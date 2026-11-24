@@ -24,7 +24,7 @@ import React from "react";
 import { DateTimeConfig } from "../../../types/Widget";
 import { TimeType } from "../Definition";
 import { SelectWithList } from "../../Input/SelectWithList";
-import { INTERVALS } from "../../../utils/Dates";
+import { INTERVALS, toLocalDateTimeString } from "../../../utils/Dates";
 import { RemoveIcon } from "../../Icons";
 
 export interface Props {
@@ -101,7 +101,7 @@ export function DateTimeConfigForm({
               onChange={(date: any) => {
                 setDateTimeConfig({
                   ...dateTimeConfig,
-                  minDateFilter: new Date(date).toISOString(),
+                  minDateFilter: toLocalDateTimeString(new Date(date)),
                 });
               }}
               disabled={use_only_last_known_value}
@@ -123,7 +123,7 @@ export function DateTimeConfigForm({
                 onChange={(date: any) => {
                   let newDate = null;
                   if (date) {
-                    newDate = new Date(date).toISOString();
+                    newDate = toLocalDateTimeString(new Date(date));
                   }
                   setDateTimeConfig({
                     ...dateTimeConfig,
