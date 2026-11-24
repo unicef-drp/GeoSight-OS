@@ -1,23 +1,11 @@
 import { expect, request as playwrightRequest, test } from "@playwright/test";
 
+// Read the CSRF token that every page renders (frontend/base.html).
+// Production settings keep the token in the session (CSRF_USE_SESSIONS),
+// so there is no csrftoken cookie; this also does not depend on page texts.
 const csrfTokenFromContext = async (page: any): Promise<string> => {
-  const cookies = await page.context().cookies();
-  const csrfToken = cookies.find((cookie: any) => cookie.name === "csrftoken");
-  return csrfToken?.value || "";
-};
-
-// Wait for Django to set the CSRF cookie. This does not depend on page
-// texts, so it works in every language.
-const waitForCsrfCookie = async (page: any): Promise<void> => {
-  await expect
-    .poll(
-      async () =>
-        (await page.context().cookies()).some(
-          (cookie: any) => cookie.name === "csrftoken" && cookie.value,
-        ),
-      { timeout: 60_000 },
-    )
-    .toBe(true);
+  await page.waitForLoadState("domcontentloaded");
+  return (await page.evaluate("csrfmiddlewaretoken")) || "";
 };
 
 test.describe("Dashboard v1 create API permissions", () => {
@@ -46,7 +34,6 @@ test.describe("Dashboard v1 create API permissions", () => {
     page,
   }) => {
     await page.goto("/admin/project/");
-    await waitForCsrfCookie(page);
 
     const csrfToken = await csrfTokenFromContext(page);
     expect(csrfToken.length).toBeGreaterThan(0);
