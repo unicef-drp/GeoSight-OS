@@ -270,3 +270,45 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             pass
         else:
             self.fail('Zonal Analysis object should be deleted!')
+
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
+    def test_context_layer_invalid_aggregation_field(self):
+        """Test aggregation_field that is not a column of the layer.
+
+        It should never be put into the SQL query, and the database error
+        should not be returned to the user.
+        """
+        url = reverse(
+            'context-layer-zonal-analysis',
+            args=[self.resource.id, 'sum']
+        )
+        # Too long aggregation field is rejected
+        response = self._send_request(url, {
+            'aggregation_field': (
+                'value"::int) FROM (SELECT CAST(password AS int) AS "value" '
+                'FROM auth_user) AS t --'
+            ),
+            'geometries': self.geometries
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(ZonalAnalysis.objects.exists())
+
+        for aggregation_field in [
+            'unknown',
+            'value") FROM auth_user --',
+            'value");SELECT 1;--',
+        ]:
+            response = self._send_request(url, {
+                'aggregation_field': aggregation_field,
+                'geometries': self.geometries
+            })
+            self.assertEqual(response.status_code, 200)
+            zonal_analysis = ZonalAnalysis.objects.get(
+                uuid='12345678-1234-5678-1234-567812345678'
+            )
+            self.assertEqual(
+                zonal_analysis.status, ZonalAnalysis.AnalysisStatus.FAILED
+            )
+            self.assertIn('is not found in the layer', zonal_analysis.result)
+            self.assertNotIn('pbkdf2', zonal_analysis.result)
+            zonal_analysis.delete()

@@ -22,6 +22,7 @@ from django.contrib.gis.db import models
 from django.db import connection, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from psycopg2 import sql
 
 from core.models.general import (
     AbstractEditData, AbstractTerm, AbstractVersionData, AbstractSource
@@ -30,6 +31,12 @@ from geosight.data.models.field_layer import BaseFieldLayerAbstract
 from geosight.data.utils import extract_time_string
 from geosight.importer.utilities import date_from_timestamp
 from geosight.permission.models.manager import PermissionManager
+
+
+def literal(value):
+    """Return value as an escaped SQL literal, to be safe in raw query."""
+    connection.ensure_connection()
+    return sql.Literal(value).as_string(connection.connection)
 
 
 class RelatedTableException(Exception):
@@ -289,12 +296,13 @@ class RelatedTable(
         if not countries:
             return None
 
+        geo_field = literal(geo_field)
         if geo_type.lower() == 'ucode':
             return (
                 f"select {select} "
                 f"  from geosight_data_relatedtablerow as row "
                 f"LEFT JOIN geosight_georepo_entity as entity "
-                f"  ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                f"  ON data ->> {geo_field}::text=entity.geom_id::text "
                 f"WHERE row.table_id={self.id} AND "
                 f"  ("
                 f"      entity.country_id IN ({','.join(countries)}) OR"
@@ -306,12 +314,13 @@ class RelatedTable(
                 f"ORDER BY {order_by}"
             )
         else:
+            geo_type = literal(geo_type.lower())
             return (
                 f"select {select} "
                 f"from geosight_data_relatedtablerow as row "
                 f"LEFT JOIN geosight_georepo_entitycode as entity_code "
-                f"ON data ->> '{geo_field}'::text=entity_code.code::text "
-                f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
+                f"ON data ->> {geo_field}::text=entity_code.code::text "
+                f"AND LOWER(entity_code.code_type)={geo_type} "
                 f"LEFT JOIN geosight_georepo_entity as entity "
                 f"ON entity.id=entity_code.entity_id "
                 f"WHERE row.table_id={self.id} AND "
@@ -365,10 +374,10 @@ class RelatedTable(
                 # query the data
                 query = self.query(
                     country_geom_ids=country_geom_ids,
-                    select=f"DISTINCT(data ->> '{field}'){cast}",
+                    select=f"DISTINCT(data ->> {literal(field)}){cast}",
                     geo_field=geo_field,
                     geo_type=geo_type,
-                    order_by=f"data ->> '{field}'",
+                    order_by=f"data ->> {literal(field)}",
                 )
                 if not query:
                     return []
@@ -428,7 +437,7 @@ class RelatedTable(
             if not query:
                 return []
             if offset is not None:
-                query += f' LIMIT {limit} OFFSET {offset}'
+                query += f' LIMIT {int(limit)} OFFSET {int(offset)}'
 
             cursor.execute(query)
             rows = cursor.fetchall()
@@ -489,9 +498,9 @@ class RelatedTable(
             query = self.query(
                 country_geom_ids=country_geom_ids,
                 geo_field=geo_field,
-                select=f"DISTINCT(data ->> '{date_field}')",
+                select=f"DISTINCT(data ->> {literal(date_field)})",
                 geo_type=geo_type,
-                order_by=f"data ->> '{date_field}'",
+                order_by=f"data ->> {literal(date_field)}",
             )
             if not query:
                 return []

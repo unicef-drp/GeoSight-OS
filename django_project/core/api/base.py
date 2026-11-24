@@ -57,7 +57,11 @@ class FilteredAPI(object):
             queryset = queryset.filter(queries)
         return queryset
 
-    BLOCKED_PARAM_FIELDS = {'password', 'last_login', 'is_superuser'}
+    # Any param that contains one of these keywords is blocked.
+    BLOCKED_PARAM_KEYWORDS = (
+        'password', 'secret', 'token', 'api_key', 'digest', 'email',
+        'last_login', 'is_superuser'
+    )
 
     @staticmethod
     def _validate_orm_param(param):
@@ -67,13 +71,13 @@ class FilteredAPI(object):
         :param param: The query parameter to validate.
         :type param: str
         :raises SuspiciousOperation:
-            If the parameter references a blocked field.
+            If the parameter contains a blocked keyword.
         """
-        parts = param.lstrip('-').split('__')
-        for part in parts:
-            if part in FilteredAPI.BLOCKED_PARAM_FIELDS:
+        lowered = param.lower()
+        for keyword in FilteredAPI.BLOCKED_PARAM_KEYWORDS:
+            if keyword in lowered:
                 raise SuspiciousOperation(
-                    f'Filtering on field is not allowed: {part}'
+                    f'Filtering on field is not allowed: {param}'
                 )
 
     def filter_query(

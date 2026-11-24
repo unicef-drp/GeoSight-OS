@@ -20,7 +20,6 @@ from django.core.exceptions import (
     FieldError, ValidationError, SuspiciousOperation
 )
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -29,9 +28,8 @@ from rest_framework.views import APIView
 from core.api.base import FilteredAPI
 from core.pagination import Pagination
 from geosight.georepo.models.reference_layer import ReferenceLayerView
-from geosight.importer.models.log import (
-    ImporterLog, ImporterLogDataSaveProgress
-)
+from geosight.importer.api.log import get_importer_log
+from geosight.importer.models.log import ImporterLogDataSaveProgress
 from geosight.importer.serializer.log import (
     ImporterLogDataSerializer,
     ImporterLogDataSaveProgressSerializer
@@ -83,6 +81,7 @@ class ImporterLogDataBaseAPI(FilteredAPI):
                 except (TypeError, ValueError):
                     pass
             try:
+                self._validate_orm_param(param)
                 query = query.filter(**{param: value})
             except FieldError:
                 raise SuspiciousOperation(f'Can not query param {param}')
@@ -94,7 +93,7 @@ class ImporterLogDataBaseAPI(FilteredAPI):
         """Return queryset of API."""
         try:
             pk = self.kwargs['pk']
-            obj = get_object_or_404(ImporterLog, pk=pk)
+            obj = get_importer_log(pk, self.request.user)
             query = self.filter_query(
                 self.request, obj.importerlogdata_set.all(),
                 ['page', 'page_size', 'status']
@@ -110,8 +109,8 @@ class ImporterLogDataAPI(ImporterLogDataBaseAPI, ListAPIView):
     """API for detail of Importer Log."""
 
     def post(self, request, pk):
-        """Delete an basemap."""
-        obj = get_object_or_404(ImporterLog, pk=pk)
+        """Save the data of the log."""
+        obj = get_importer_log(pk, request.user, 'edit')
         progress = ImporterLogDataSaveProgress.objects.create(
             log=obj, target_ids=json.loads(request.data['data'])
         )
@@ -133,8 +132,8 @@ class ImporterLogDataProgresAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        """Delete an basemap."""
-        obj = get_object_or_404(ImporterLog, pk=pk)
+        """Return progress of saving the data of the log."""
+        obj = get_importer_log(pk, request.user)
         progress = ImporterLogDataSaveProgress.objects.filter(
             log=obj, done=False
         ).first()

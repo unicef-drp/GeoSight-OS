@@ -102,6 +102,13 @@ class ContextLayerZonalAnalysisAPI(APIView):
             return HttpResponseBadRequest(
                 "'aggregation_field' is required in payload"
             )
+        max_length = ZonalAnalysis._meta.get_field(
+            'aggregation_field'
+        ).max_length
+        if aggregation_field and len(aggregation_field) > max_length:
+            return HttpResponseBadRequest(
+                f"'aggregation_field' max length is {max_length}"
+            )
 
         zonal_analysis = ZonalAnalysis.objects.create(
             uuid=uuid.uuid4(),

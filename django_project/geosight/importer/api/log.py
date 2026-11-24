@@ -18,6 +18,7 @@ import json
 
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -31,6 +32,31 @@ from geosight.importer.models.log import (
 from geosight.importer.serializer.log import (
     ImporterLogSerializer
 )
+
+
+def get_importer_log(pk, user, permission='read'):
+    """
+    Return importer log that the user has permission on.
+
+    :param pk: The primary key of the ImporterLog.
+    :type pk: int or str
+    :param user: The user that requests the log.
+    :type user: django.contrib.auth.models.User
+    :param permission: The permission that is needed, e.g. read or edit.
+    :type permission: str
+    :return: The ImporterLog object.
+    :rtype: ImporterLog
+    :raises Http404: If the log is not found.
+    :raises PermissionDenied: If the user doesn't have the permission.
+    """
+    obj = get_object_or_404(ImporterLog, pk=pk)
+    if not user.is_authenticated or not obj.importer.permissions(
+            user
+    )[permission]:
+        raise PermissionDenied(
+            'You do not have permission to access this log.'
+        )
+    return obj
 
 
 class ImporterLogListAPI(ListAPIView, FilteredAPI):
@@ -113,7 +139,7 @@ class ImporterLogDetailAPI(APIView):
         :return: Serialized ImporterLog data.
         :rtype: Response
         """
-        obj = get_object_or_404(ImporterLog, pk=pk)
+        obj = get_importer_log(pk, request.user)
         return Response(
             ImporterLogSerializer(obj, context={'user': request.user}).data
         )

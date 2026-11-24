@@ -363,3 +363,95 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         )
         self.assertEqual(len(response.json()), 3)
         self.assertEqual(response.json(), ['1', '2', '3'])
+
+    def test_geo_data_sql_injection(self):
+        """Test parameters of geo data api are not put into SQL query."""
+        resource = self.create_resource(self.creator)
+        resource.permission.public_permission = PERMISSIONS.READ_DATA.name
+        resource.permission.save()
+        injections = [
+            "x') FROM geosight_data_relatedtablerow "
+            "UNION SELECT 'db:'||current_database() "
+            "UNION SELECT 'pw:'||password FROM auth_user --",
+            "geom_id'::text=entity.geom_id::text OR '1'='1",
+            "ucode' OR '1'='1",
+        ]
+
+        def get(url_tag, **params):
+            url = reverse(url_tag, args=[resource.id])
+            params = {
+                'country_geom_ids': 'A,B,C',
+                'geography_code_field_name': self.geography_code_field_name,
+                'geography_code_type': self.geography_code_type,
+                **params
+            }
+            response = self.test_client().get(url, params)
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn(b'db:', response.content)
+            self.assertNotIn(b'pw:', response.content)
+            self.assertNotIn(b'pbkdf2', response.content)
+            return response.json()
+
+        for injection in injections:
+            # Field is used as json key, so it just returns empty values
+            self.assertEqual(
+                get('related_tables_geo_data-data-field', field=injection),
+                [None]
+            )
+            self.assertEqual(
+                get('related_tables_geo_data-dates', date_field=injection),
+                []
+            )
+            # Geography field and type don't match anything
+            self.assertEqual(
+                get(
+                    'related_tables_geo_data-list',
+                    geography_code_field_name=injection
+                ),
+                []
+            )
+            for geo_type in [injection, f'other{injection}']:
+                self.assertEqual(
+                    get(
+                        'related_tables_geo_data-list',
+                        geography_code_type=geo_type
+                    ),
+                    []
+                )
+                self.assertEqual(
+                    get(
+                        'related_tables_geo_data-data-field',
+                        geography_code_type=geo_type,
+                        field='population'
+                    ),
+                    []
+                )
+
+        # Stacked UPDATE/DELETE queries are not executed
+        username = self.viewer.username
+        for injection in [
+            "x'); UPDATE auth_user SET is_superuser=true; --",
+            f"x'); DELETE FROM auth_user WHERE username='{username}'; --",
+        ]:
+            get('related_tables_geo_data-data-field', field=injection)
+            get('related_tables_geo_data-dates', date_field=injection)
+            get('related_tables_geo_data-list', page=1, page_size=10,
+                geography_code_field_name=injection)
+            get('related_tables_geo_data-list', page=1, page_size=10,
+                geography_code_type=injection)
+        self.viewer.refresh_from_db()
+        self.assertFalse(self.viewer.is_superuser)
+        self.assertFalse(
+            User.objects.filter(is_superuser=True).exclude(
+                id=self.admin.id
+            ).exists()
+        )
+
+        # Valid query still works
+        self.assertEqual(
+            get('related_tables_geo_data-data-field', field='population'),
+            ['1', '2', '3']
+        )
+        self.assertEqual(
+            len(get('related_tables_geo_data-list', page=1, page_size=2)), 4
+        )

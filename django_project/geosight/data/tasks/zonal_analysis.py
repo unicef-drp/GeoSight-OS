@@ -102,6 +102,8 @@ def run_zonal_analysis(zonal_analysis_uuid):
                         f'{e} is required in payload'
                     )
                 except (ProgrammingError, ValueError) as e:
+                    # Don't expose database error messages to the user
                     zonal_analysis.failed(
-                        f'{e}'
+                        f'{e}' if isinstance(e, ValueError) else
+                        'Failed to run zonal analysis on the layer.'
                     )

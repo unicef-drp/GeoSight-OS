@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from cloud_native_gis.models import Layer, LayerType
 
 from django.db import connection
+from psycopg2 import sql
 from shapely.geometry import GeometryCollection
 
 
@@ -32,27 +33,41 @@ def run_zonal_analysis_vector_layer(
             'run_zonal_analysis_vector_layer just for vector layer'
         )
     aggregation = aggregation.lower().strip()
-    query = None
     if aggregation == 'count':
-        query = f"""
-            SELECT count(*) FROM {layer.schema_name}.{layer.table_name}
-            WHERE ST_Intersects(
-                geometry, ST_GeomFromText('{geometry.wkt}', 4326)
-            )
-        """
+        select = sql.SQL('count(*)')
     elif aggregation in ['sum', 'max', 'min', 'avg']:
-        query = f"""
-            SELECT {aggregation}("{aggregation_field}")
-            FROM {layer.schema_name}.{layer.table_name}
-            WHERE ST_Intersects(
-                geometry, ST_GeomFromText('{geometry.wkt}', 4326)
+        if aggregation_field not in layer_columns(layer):
+            raise ValueError(
+                f'aggregation_field {aggregation_field} is not found '
+                f'in the layer.'
             )
-        """
-    if query:
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            row = cursor.fetchone()
-            return row[0]
-    raise ValueError(
-        'Aggregation must be one of the following: count'
+        select = sql.SQL('{}({})').format(
+            sql.SQL(aggregation), sql.Identifier(aggregation_field)
+        )
+    else:
+        raise ValueError(
+            'Aggregation must be one of the following: '
+            'count, sum, max, min, avg'
+        )
+    query = sql.SQL(
+        'SELECT {select} FROM {table} '
+        'WHERE ST_Intersects(geometry, ST_GeomFromText(%s, 4326))'
+    ).format(
+        select=select,
+        table=sql.Identifier(layer.schema_name, layer.table_name)
     )
+    with connection.cursor() as cursor:
+        cursor.execute(query.as_string(cursor.cursor), [geometry.wkt])
+        row = cursor.fetchone()
+        return row[0]
+
+
+def layer_columns(layer: Layer):
+    """Return column names of the table of a cloud native gis layer."""
+    with connection.cursor() as cursor:
+        cursor.execute(
+            'SELECT column_name FROM information_schema.columns '
+            'WHERE table_schema = %s AND table_name = %s',
+            [layer.schema_name, layer.table_name]
+        )
+        return [row[0] for row in cursor.fetchall()]

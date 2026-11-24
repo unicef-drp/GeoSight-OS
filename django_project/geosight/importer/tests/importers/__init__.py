@@ -22,3 +22,4 @@ from .schedule import *
 from .sharepoint import *
 from .utilities import *
 from .vector_context_layer import *
+from .log_api import *
