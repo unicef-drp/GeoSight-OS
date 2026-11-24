@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '05/03/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.db.models import OuterRef, Subquery, Sum, Min, Max, Avg, Count
 from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
@@ -27,6 +27,34 @@ from geosight.data.models import Indicator
 
 class IndicatorValueApiUtilities:
     """Indicator value api utilities."""
+
+    # Fields that can be used in ``group_by`` of the statistic action.
+    statistic_group_by_fields = {
+        'indicator_id', 'indicator_shortcode', 'indicator_name',
+        'geom_id', 'date', 'value_str',
+        'entity_id', 'entity_name', 'admin_level', 'concept_uuid',
+        'country_id', 'country_name', 'country_geom_id',
+        'country_concept_uuid',
+    }
+
+    def _validate_group_by(self, group_fields):
+        """
+        Validate fields of ``group_by`` against the allowed fields.
+
+        :param group_fields: Fields requested in ``group_by``.
+        :type group_fields: list[str]
+        :raises ValidationError: If any field is not allowed.
+        """
+        invalid_fields = [
+            field for field in group_fields
+            if field not in self.statistic_group_by_fields
+        ]
+        if invalid_fields:
+            raise ValidationError(
+                f'Invalid group_by fields: {", ".join(invalid_fields)}. '
+                f'Allowed: '
+                f'{", ".join(sorted(self.statistic_group_by_fields))}'
+            )
 
     def check_indicators_permissions(self):
         """Return indicators by parameters.
@@ -316,6 +344,7 @@ class IndicatorValueApiUtilities:
         group_by = request.GET.get('group_by', None)
         if group_by:
             group_fields = group_by.replace(' ', '').split(',')
+            self._validate_group_by(group_fields)
             query = query.order_by().values(
                 *group_fields
             ).annotate(**aggregation_dict)
