@@ -16,13 +16,22 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.db.models import OuterRef, Subquery, Sum, Min, Max, Avg, Count
-from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
+from django.db.models.functions import (
+    ExtractDay, ExtractMonth, ExtractYear, TruncDay, TruncMonth, TruncYear
+)
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from geosight.data.models import Indicator
+
+# ``frequency`` of the statistic action: the date truncated to a period.
+STATISTIC_FREQUENCIES = {
+    'daily': TruncDay,
+    'monthly': TruncMonth,
+    'yearly': TruncYear,
+}
 
 
 class IndicatorValueApiUtilities:
@@ -37,23 +46,29 @@ class IndicatorValueApiUtilities:
         'country_concept_uuid',
     }
 
-    def _validate_group_by(self, group_fields):
+    def _validate_group_by(self, group_fields, extra_fields=None):
         """
         Validate fields of ``group_by`` against the allowed fields.
 
         :param group_fields: Fields requested in ``group_by``.
         :type group_fields: list[str]
+        :param extra_fields:
+            Fields annotated for this request only (e.g. ``period``).
+        :type extra_fields: set[str]
         :raises ValidationError: If any field is not allowed.
         """
+        allowed_fields = self.statistic_group_by_fields | (
+            extra_fields or set()
+        )
         invalid_fields = [
             field for field in group_fields
-            if field not in self.statistic_group_by_fields
+            if field not in allowed_fields
         ]
         if invalid_fields:
             raise ValidationError(
                 f'Invalid group_by fields: {", ".join(invalid_fields)}. '
                 f'Allowed: '
-                f'{", ".join(sorted(self.statistic_group_by_fields))}'
+                f'{", ".join(sorted(allowed_fields))}'
             )
 
     def check_indicators_permissions(self):
@@ -285,12 +300,19 @@ class IndicatorValueApiUtilities:
             Comma-separated list of aggregation functions to apply.
             Valid values are ``min``, ``max``, and ``avg``.
             Defaults to ``min,max,avg``.
+        :query string group_by:
+            Optional comma-separated list of fields to group by.
+        :query string frequency:
+            Optional ``daily``, ``monthly`` or ``yearly``. Adds a ``period``
+            field (the date truncated to that frequency) that can be used in
+            ``group_by``.
 
         :return: A JSON response containing the requested statistics.
         :rtype: rest_framework.response.Response
 
         :status 200: Successfully returns the requested aggregations.
-        :status 400: If ``keys`` is missing, empty, or contains invalid values.
+        :status 400: If ``keys`` is missing, empty, or contains invalid values,
+            or if ``group_by`` or ``frequency`` is invalid.
         """
         default_methods = ['min', 'max', 'avg']
         keys = request.GET.get(
@@ -341,10 +363,23 @@ class IndicatorValueApiUtilities:
         if not aggregation_dict.keys():
             return HttpResponseBadRequest('No aggregation found')
 
+        # Optional period grouping
+        extra_fields = set()
+        frequency = request.GET.get('frequency', None)
+        if frequency:
+            trunc = STATISTIC_FREQUENCIES.get(frequency.lower())
+            if not trunc:
+                return HttpResponseBadRequest(
+                    f'frequency {frequency} is not recognized. '
+                    f'frequency: {", ".join(STATISTIC_FREQUENCIES)}'
+                )
+            query = query.annotate(period=trunc('date'))
+            extra_fields.add('period')
+
         group_by = request.GET.get('group_by', None)
         if group_by:
             group_fields = group_by.replace(' ', '').split(',')
-            self._validate_group_by(group_fields)
+            self._validate_group_by(group_fields, extra_fields)
             query = query.order_by().values(
                 *group_fields
             ).annotate(**aggregation_dict)

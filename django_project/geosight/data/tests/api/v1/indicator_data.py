@@ -244,3 +244,80 @@ class IndicatorDataApiTest(BaseDataBrowserTest.TestCase):
         self.assertIn('avg', result)
         self.assertEqual(result['min'], 1)
         self.assertEqual(result['max'], 4)
+
+
+class IndicatorsDataFrequencyApiTest(BaseDataBrowserTest.TestCase):
+    """Test for the statistic api with ``frequency`` (the ``period`` field)."""
+
+    def url(self, **params):
+        """Return the statistic url with query parameters.
+
+        :param params: Query parameters.
+        :type params: dict
+        :return: The url.
+        :rtype: str
+        """
+        query = '&'.join(f'{key}={value}' for key, value in params.items())
+        return f"{reverse('indicators_data-statistic')}?{query}"
+
+    def test_frequency(self):
+        """Frequency adds a period field to group by."""
+        response = self.assertRequestGetView(
+            self.url(
+                indicator_id__in=self.indicator_1.id,
+                aggregate_methods='count,sum',
+                frequency='monthly',
+                group_by='period'
+            ), 200, user=self.admin
+        )
+        results = {row['period']: row for row in response.json()}
+        self.assertEqual(
+            sorted(results.keys()),
+            ['2020-01-01', '2020-05-01', '2020-06-01']
+        )
+        self.assertEqual(results['2020-01-01']['count'], 5)
+        self.assertEqual(results['2020-05-01']['count'], 9)
+        self.assertEqual(results['2020-06-01']['count'], 4)
+
+        response = self.assertRequestGetView(
+            self.url(
+                indicator_id__in=(
+                    f'{self.indicator_1.id},{self.indicator_2.id}'
+                ),
+                aggregate_methods='count',
+                frequency='yearly',
+                group_by='period,indicator_id'
+            ), 200, user=self.admin
+        )
+        results = response.json()
+        self.assertEqual(len(results), 2)
+        for row in results:
+            self.assertEqual(row['period'], '2020-01-01')
+            self.assertEqual(row['count'], 18)
+
+    def test_frequency_invalid(self):
+        """An unknown frequency, or period without frequency, returns 400."""
+        self.assertRequestGetView(
+            self.url(
+                indicator_id__in=self.indicator_1.id,
+                frequency='weekly',
+                group_by='period'
+            ), 400, user=self.admin
+        )
+        self.assertRequestGetView(
+            self.url(
+                indicator_id__in=self.indicator_1.id,
+                aggregate_methods='count',
+                group_by='period'
+            ), 400, user=self.admin
+        )
+
+    def test_without_group_by(self):
+        """Without group_by the response stays a single aggregate."""
+        response = self.assertRequestGetView(
+            self.url(
+                indicator_id__in=self.indicator_1.id,
+                aggregate_methods='min,max'
+            ), 200, user=self.admin
+        )
+        self.assertEqual(response.json(), {'min': 1, 'max': 4})
