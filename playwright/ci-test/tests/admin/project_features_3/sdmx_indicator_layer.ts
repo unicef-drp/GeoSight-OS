@@ -156,6 +156,16 @@ const sdmxConfig = async (page: any) => {
   await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(6).locator('.ReactSelect__single-value')).toHaveText("SUM");
   await expect(dateTimeFormat.locator('.ReactSelect__single-value')).toHaveText(yearMonthFormat);
 
+  // Still kept after the time period (SDMX URL) is changed
+  await page.locator('.SDMX-Tab').getByText('Filter Dimensions').click();
+  await timeInputs.nth(0).fill('2021-01-01');
+  await expect(sdmxUrl).toHaveValue(/startPeriod=2021-01-01/);
+  await timeInputs.nth(0).fill('');
+  await expect(sdmxUrl).not.toHaveValue(/Period/);
+  await page.locator('.SDMX-Tab').getByText('Data Config').click();
+  await expect(page.locator('.SDMXIndicatorLayerConfig .BasicForm .ReactSelect').nth(7).locator('.ReactSelect__single-value')).toHaveText("TIME_PERIOD");
+  await expect(dateTimeFormat.locator('.ReactSelect__single-value')).toHaveText(yearMonthFormat);
+
   // Revert the format
   await dateTimeFormat.locator('.ReactSelect__input-container').click();
   await page.getByRole('option', { name: 'Date (YYYY-MM-DD)' }).click();
