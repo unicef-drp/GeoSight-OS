@@ -243,6 +243,10 @@ def apply_create_defaults(data: dict):
 def _check_style_rules(rules, path: str, errors: list):  # noqa: DOC201
     """Check that every style rule has the keys the save code needs.
 
+    Only a list of rules is saved; any other value (the editor sends one
+    for some layer types) is ignored by the save code, so it is not an
+    error here either.
+
     :param rules: The style rules.
     :type rules: list
     :param path: Field path used in error messages.
@@ -250,10 +254,7 @@ def _check_style_rules(rules, path: str, errors: list):  # noqa: DOC201
     :param errors: Error list, changed in place.
     :type errors: list
     """
-    if rules in [None, '']:
-        return
     if not isinstance(rules, list):
-        errors.append({'field': path, 'message': _('Must be a list.')})
         return
     for idx, rule in enumerate(rules):
         if not isinstance(rule, dict):

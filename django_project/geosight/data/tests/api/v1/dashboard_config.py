@@ -251,6 +251,24 @@ class DashboardConfigUpdateApiTest(BasePermissionTest.TestCase):
             self.error_fields(response)
         )
 
+    def test_create_accepts_editor_layer_styles(self):
+        """Layer styles the editor sends (null, chart style) are accepted."""
+        payload = self.full_payload('editor-layer-styles')
+        payload['data']['indicator_layers'][0]['style'] = None
+        payload['data']['indicator_layers'][1].update({
+            'type': 'Multi Indicator',
+            'style': {'sizeType': 'Fixed size', 'chartType': 'Pie', 'size': 50},
+            'indicators': [
+                {'id': self.indicator_a.id, 'style': None},
+                {'id': self.indicator_b.id, 'style': None}
+            ]
+        })
+        self.post(payload, 201)
+        dashboard = Dashboard.objects.get(slug='editor-layer-styles')
+        self.assertEqual(
+            dashboard.dashboardindicatorlayer_set.count(), 2
+        )
+
     @patch('geosight.georepo.tasks.fetch_reference_codes.delay')
     @patch('geosight.georepo.tasks.create_data_access_reference_layer_view.delay')
     def test_create_unknown_reference_layer(self, *args):
