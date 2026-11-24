@@ -447,6 +447,8 @@ export function IndicatorOtherRule(
 }
 
 /** Adding new rule **/
+const MAX_PENDING_ECHOES = 50;
+
 export const newRule = (
   theStyleRules, active, defaultValue, defaultName,
   defaultColor, defaultOutlineColor, defaultOutlineSize, defaultIdx
@@ -596,15 +598,50 @@ export default function StyleRules(
     })
   );
 
+  // JSON of the rules sent to onStyleRulesChanged that have not come back
+  // yet as inputStyleRules. Parents echo every change back; when inputs are
+  // edited quickly, an echo can arrive after a newer edit (stale echo).
+  const pendingEchoes = useRef([]);
+
+  /** Send rules to the parent; track them to recognise their echo. **/
+  const emitStyleRules = (newStyleRules, track = true) => {
+    if (!onStyleRulesChanged) {
+      return
+    }
+    if (track) {
+      const json = JSON.stringify(newStyleRules)
+      const pending = pendingEchoes.current
+      if (pending[pending.length - 1] !== json) {
+        pending.push(json)
+        if (pending.length > MAX_PENDING_ECHOES) {
+          pending.shift()
+        }
+      }
+    }
+    onStyleRulesChanged(newStyleRules)
+  }
+
   // When the rule changed
   useEffect(() => {
-    setStyleRules(updateStyleRules(inputStyleRules))
+    const newStyleRules = updateStyleRules(inputStyleRules)
+    const json = JSON.stringify(newStyleRules)
+    const pending = pendingEchoes.current
+    const echoIdx = pending.lastIndexOf(json)
+    if (echoIdx !== -1) {
+      // Our own echo (possibly stale): keep the local rules.
+      pending.splice(0, echoIdx + 1)
+      return
+    }
+    if (json === JSON.stringify(rules)) {
+      return
+    }
+    // A real change from the parent.
+    pending.length = 0
+    setStyleRules(newStyleRules)
   }, [inputStyleRules])
 
   useEffect(() => {
-    if (onStyleRulesChanged) {
-      onStyleRulesChanged(rules)
-    }
+    emitStyleRules(rules)
     setItems(
       rules.map((rule, idx) => {
         return idx + 1
@@ -633,9 +670,7 @@ export default function StyleRules(
     )
   }
   const onChange = () => {
-    if (onStyleRulesChanged) {
-      onStyleRulesChanged(rules)
-    }
+    emitStyleRules(rules)
   }
 
   /** When drag event ended **/
@@ -650,13 +685,13 @@ export default function StyleRules(
       )
       setItems(newGroupList)
 
-      if (onStyleRulesChanged) {
-        const newStyleRules = []
-        newGroupList.map(item => {
-          newStyleRules.push(rules[item - 1])
-        })
-        onStyleRulesChanged(newStyleRules)
-      }
+      const newStyleRules = []
+      newGroupList.map(item => {
+        newStyleRules.push(rules[item - 1])
+      })
+      // Not tracked: the local rules keep the old order, so the parent's
+      // echo must be applied to reorder them.
+      emitStyleRules(newStyleRules, false)
     }
   };
   const newChoices = codesChoices.concat(codesChoicesFromResponse)
