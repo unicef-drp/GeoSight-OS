@@ -19,7 +19,7 @@ from django.shortcuts import redirect, reverse
 
 from azure_auth.backends import AzureAuthRequiredMixin
 from frontend.views.dashboard._base import BaseDashboardView
-from geosight.data.services.dashboard_create import (
+from geosight.data.services.dashboard_service import (
     create_dashboard_from_payload
 )
 from geosight.permission.access import RoleCreatorRequiredMixin

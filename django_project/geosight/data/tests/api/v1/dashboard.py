@@ -23,7 +23,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from geosight.data.models.dashboard import Dashboard, DashboardGroup
-from geosight.data.services.dashboard_create import INTERNAL_CREATE_ERROR
+from geosight.data.services.dashboard_service import INTERNAL_CREATE_ERROR
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest

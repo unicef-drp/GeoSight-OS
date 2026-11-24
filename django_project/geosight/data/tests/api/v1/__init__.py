@@ -18,6 +18,7 @@ from .basemap import *
 from .code import *
 from .context_layer import *
 from .dashboard import *
+from .dashboard_config import *
 from .group import *
 from .indicator import *
 from .indicator_data import *
