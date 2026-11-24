@@ -474,3 +474,99 @@ msgstr ""
 msgid ""
 "Required. 150 characters or fewer. Letters, digits and @/./+/-/_/# only."
 msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be valid JSON."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be an object."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be a list."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "%(model)s %(id)s does not exist."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "Reference layer %(identifier)s was not found."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be a list of 4 numbers: [min longitude, min latitude, max longitude, max latitude]."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be the identifier as a string."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must not be empty."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be an integer id."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Indicator"
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Basemap"
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Context layer"
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Related table"
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be an integer id. Use the id from the config to keep a layer, or any unused number for a new layer."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Duplicate id."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "Dashboard with this url shortcode : %(slug)s is exist. Please choose other url shortcode."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Origin project is not found."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Unable to create dashboard due to an internal error."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Unable to update dashboard due to an internal error."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be the modified_at value from the config."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "The dashboard was changed after %(modified_at)s. Read the config again and reapply your change."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "You need share permission to change who can access this dashboard."
+msgstr ""
+
+#: geosight/data/services/dashboard_service.py
+msgid "Only admins can change the Featured status."
+msgstr ""
