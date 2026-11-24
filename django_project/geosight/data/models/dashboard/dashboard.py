@@ -222,7 +222,9 @@ class Dashboard(
             # If it does not have icon, just save*
             super().save(*args, **kwargs)
 
-    def save_relations(self, data, is_create=False):  # noqa DOC202
+    def save_relations(  # noqa DOC202
+            self, data, user=None, is_create=False
+    ):
         """
         Save all related data and relationships for a dashboard instance.
 
@@ -241,6 +243,12 @@ class Dashboard(
             relationships, including widgets, indicators, basemaps,
             context layers, related tables, and permissions.
         :type data: dict
+
+        :param user:
+            The user who saves the dashboard. The ``permission`` block in
+            ``data`` is applied only if this user has share permission;
+            without a user it is never applied.
+        :type user: User
 
         :param is_create:
             Optional flag to indicate if this call is during a
@@ -269,8 +277,8 @@ class Dashboard(
             IndicatorStyleType
         )
 
-        if data.get('permission', None):
-            self.permission.update(data['permission'])
+        # Sharing changes need share permission.
+        self.permission.update_from_request_data(data, user)
 
         # INDICATORS
         self.save_relation(

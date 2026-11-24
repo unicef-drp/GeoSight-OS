@@ -316,6 +316,172 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
             b'Indicator with id 9999999 does not exist'
         )
 
+    def _payload_with_permission(self, name, permission=None):
+        """Return an edit/create payload with the given permission block.
+
+        :param name: Dashboard name.
+        :type name: str
+        :param permission:
+            Permission block to send, or None to leave it out.
+        :type permission: dict or None
+        :return: The payload.
+        :rtype: dict
+        """
+        data = copy.deepcopy(self.data)
+        if permission is None:
+            del data['permission']
+        else:
+            data['permission'] = permission
+        return {'name': name, 'data': json.dumps(data)}
+
+    def _make_private(self):
+        """Make the test dashboard private."""
+        self.permission.public_permission = PERMISSIONS.NONE.name
+        self.permission.organization_permission = PERMISSIONS.NONE.name
+        self.permission.save()
+
+    def _user_perm(self, user):
+        """Return the user's direct permission on the test dashboard.
+
+        :param user: The user.
+        :type user: User
+        :return: The permission name, or None if there is none.
+        :rtype: str or None
+        """
+        perm = self.permission.user_permissions.filter(user=user).first()
+        return perm.permission if perm else None
+
+    def test_edit_permission_without_share(self):
+        """Write without Share can't change the dashboard's sharing."""
+        self._make_private()
+        self.permission.update_user_permission(
+            self.contributor, PERMISSIONS.WRITE.name
+        )
+        url = reverse(self.edit_url_tag, kwargs={'slug': self.resource.slug})
+        payload = self._payload_with_permission(
+            'name write only', {
+                'public_permission': PERMISSIONS.READ.name,
+                'organization_permission': PERMISSIONS.READ.name,
+                'user_permissions': [
+                    {
+                        'id': self.contributor.id,
+                        'permission': PERMISSIONS.OWNER.name
+                    }
+                ],
+                'group_permissions': [],
+            }
+        )
+        self.assertRequestPostView(url, 302, payload, self.contributor)
+
+        # The rest of the edit is saved.
+        self.resource.refresh_from_db()
+        self.assertEqual(self.resource.name, 'name write only')
+        self.assertEqual(self.resource.modified_by, self.contributor)
+
+        # Sharing is unchanged.
+        self.permission.refresh_from_db()
+        self.assertEqual(
+            self.permission.public_permission, PERMISSIONS.NONE.name
+        )
+        self.assertEqual(
+            self.permission.organization_permission, PERMISSIONS.NONE.name
+        )
+        self.assertEqual(
+            self._user_perm(self.contributor), PERMISSIONS.WRITE.name
+        )
+        self.assertFalse(self.permission.has_share_perm(self.contributor))
+
+    def test_edit_permission_with_share(self):
+        """Share permission lets a user change the dashboard's sharing."""
+        self._make_private()
+        self.permission.update_user_permission(
+            self.contributor, PERMISSIONS.SHARE.name
+        )
+        url = reverse(self.edit_url_tag, kwargs={'slug': self.resource.slug})
+        payload = self._payload_with_permission(
+            'name share', {
+                'public_permission': PERMISSIONS.READ.name,
+                'organization_permission': PERMISSIONS.READ.name,
+                'user_permissions': [
+                    {
+                        'id': self.contributor.id,
+                        'permission': PERMISSIONS.SHARE.name
+                    },
+                    {
+                        'id': self.viewer.id,
+                        'permission': PERMISSIONS.READ.name
+                    }
+                ],
+                'group_permissions': [],
+            }
+        )
+        self.assertRequestPostView(url, 302, payload, self.contributor)
+
+        self.permission.refresh_from_db()
+        self.assertEqual(
+            self.permission.public_permission, PERMISSIONS.READ.name
+        )
+        self.assertEqual(
+            self.permission.organization_permission, PERMISSIONS.READ.name
+        )
+        self.assertEqual(
+            self._user_perm(self.contributor), PERMISSIONS.SHARE.name
+        )
+        self.assertEqual(self._user_perm(self.viewer), PERMISSIONS.READ.name)
+
+        # Without a permission block, sharing stays as it is.
+        # The rename changed the slug, so build the url again.
+        self.resource.refresh_from_db()
+        url = reverse(self.edit_url_tag, kwargs={'slug': self.resource.slug})
+        payload = self._payload_with_permission('name no permission')
+        self.assertRequestPostView(url, 302, payload, self.contributor)
+        self.resource.refresh_from_db()
+        self.assertEqual(self.resource.name, 'name no permission')
+        self.permission.refresh_from_db()
+        self.assertEqual(
+            self.permission.public_permission, PERMISSIONS.READ.name
+        )
+        self.assertEqual(
+            self.permission.organization_permission, PERMISSIONS.READ.name
+        )
+        self.assertEqual(
+            self._user_perm(self.contributor), PERMISSIONS.SHARE.name
+        )
+        self.assertEqual(self._user_perm(self.viewer), PERMISSIONS.READ.name)
+
+    def test_create_permission(self):
+        """The creator's sharing is applied when a dashboard is created."""
+        url = reverse(self.create_url_tag)
+        payload = self._payload_with_permission(
+            'name created shared', {
+                'public_permission': PERMISSIONS.READ.name,
+                'organization_permission': PERMISSIONS.NONE.name,
+                'user_permissions': [
+                    {
+                        'id': self.viewer.id,
+                        'permission': PERMISSIONS.READ.name
+                    }
+                ],
+                'group_permissions': [],
+            }
+        )
+        self.assertRequestPostView(url, 302, payload, self.creator)
+        dashboard = Dashboard.objects.get(name='name created shared')
+        permission = dashboard.permission
+        self.assertEqual(dashboard.creator, self.creator)
+        self.assertEqual(
+            permission.get_user_perm_level(self.creator),
+            PERMISSIONS.OWNER.level
+        )
+        self.assertEqual(permission.public_permission, PERMISSIONS.READ.name)
+        self.assertEqual(
+            permission.organization_permission, PERMISSIONS.NONE.name
+        )
+        self.assertEqual(
+            permission.user_permissions.get(user=self.viewer).permission,
+            PERMISSIONS.READ.name
+        )
+
     def test_detail_view(self):
         """Test for create view."""
         url = reverse(
