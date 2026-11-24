@@ -26,65 +26,88 @@ import { AggregationConfig } from "../../../types/Widget";
 export interface Props {
   data: AggregationConfig;
   setData: (data: AggregationConfig) => void;
+  /** Show the aggregation method (SUM, AVG…). */
+  showMethod?: boolean;
+  /** Show the number format (decimal places, auto units). */
+  showFormat?: boolean;
+  /** Section title; defaults to "Aggregation". */
+  label?: string;
 }
 
-export function AggregationConfigForm({ data, setData }: Props) {
+export function AggregationConfigForm({
+  data,
+  setData,
+  showMethod = true,
+  showFormat = true,
+  label,
+}: Props) {
   const { t } = useTranslation();
   return (
     <FormControl className="MuiForm-RadioGroup">
-      <FormLabel className="MuiInputLabel-root">{t("Aggregation")}</FormLabel>
+      <FormLabel className="MuiInputLabel-root">
+        {label || t("Aggregation")}
+      </FormLabel>
       <div className={"WidgetConfigSection"}>
-        <RadioGroup
-          row
-          value={data.method}
-          onChange={(evt) => {
-            setData({ ...data, method: evt.target.value });
-          }}
-        >
-          {Object.keys(AGGREGATION_TYPES).map((key) => {
-            return (
-              <FormControlLabel
-                key={key}
-                control={<Radio />}
-                /*@ts-ignore*/
-                value={AGGREGATION_TYPES[key]}
-                /*@ts-ignore*/
-                label={AGGREGATION_TYPES[key]}
-              />
-            );
-          })}
-        </RadioGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={data.useDecimalPlace}
-              onChange={(evt) => {
-                setData({ ...data, useDecimalPlace: evt.target.checked });
-              }}
+        {showMethod && (
+          <RadioGroup
+            row
+            value={data.method}
+            onChange={(evt) => {
+              setData({ ...data, method: evt.target.value });
+            }}
+          >
+            {Object.keys(AGGREGATION_TYPES).map((key) => {
+              return (
+                <FormControlLabel
+                  key={key}
+                  control={<Radio />}
+                  /*@ts-ignore*/
+                  value={AGGREGATION_TYPES[key]}
+                  /*@ts-ignore*/
+                  label={AGGREGATION_TYPES[key]}
+                />
+              );
+            })}
+          </RadioGroup>
+        )}
+        {showFormat && (
+          <>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={data.useDecimalPlace}
+                  onChange={(evt) => {
+                    setData({ ...data, useDecimalPlace: evt.target.checked });
+                  }}
+                />
+              }
+              label={t("Decimal places")}
             />
-          }
-          label={t("Decimal places")}
-        />
-        <input
-          style={{ width: "100px" }}
-          disabled={!data.useDecimalPlace}
-          type="number"
-          onChange={(event) => {
-            setData({ ...data, decimalPlace: parseInt(event.target.value) });
-          }}
-          value={data.decimalPlace}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={data.useAutoUnits}
-              onChange={(evt) => {
-                setData({ ...data, useAutoUnits: evt.target.checked });
+            <input
+              style={{ width: "100px" }}
+              disabled={!data.useDecimalPlace}
+              type="number"
+              onChange={(event) => {
+                setData({
+                  ...data,
+                  decimalPlace: parseInt(event.target.value),
+                });
               }}
+              value={data.decimalPlace}
             />
-          }
-          label={t("Auto units")}
-        />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={data.useAutoUnits}
+                  onChange={(evt) => {
+                    setData({ ...data, useAutoUnits: evt.target.checked });
+                  }}
+                />
+              }
+              label={t("Auto units")}
+            />
+          </>
+        )}
       </div>
     </FormControl>
   );

@@ -79,6 +79,7 @@ export default function WidgetSelection({
         );
       case WidgetType.GENERIC_SUMMARY_WIDGET:
       case WidgetType.GENERIC_TIME_SERIES_WIDGET:
+      case WidgetType.CHART_WIDGET:
         return (
           <WidgetForm
             title={"Generic"}

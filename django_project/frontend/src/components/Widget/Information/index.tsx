@@ -24,7 +24,23 @@ import { Widget, WidgetConfig } from "../../../types/Widget";
 import CustomPopover from "../../CustomPopover";
 import { InfoFillIcon } from "../../Icons";
 import { getIndicatorOrIndicatorLayer } from "../../../utils/dashboard";
-import { DateFilterType, SeriesDataType, TimeType } from "../Definition";
+import {
+  ChartBarLayouts,
+  ChartPeriods,
+  ChartTypes,
+  DateFilterType,
+  SeriesDataType,
+  TimeType,
+  WidgetType,
+} from "../Definition";
+import {
+  chartConfig,
+  usesAggregation,
+  usesIndicatorList,
+  usesPeriod,
+  usesSeries,
+  usesSort,
+} from "../ChartWidget/capabilities";
 import { capitalize } from "../../../utils/main";
 import { widgetLocalDateTime } from "../../../utils/Dates";
 
@@ -172,6 +188,89 @@ function DateTimeRange(config: WidgetConfig) {
   );
 }
 
+/** Chart widgets: the chart type and its own settings. */
+function ChartInfo({ data }: Props) {
+  const { t } = useTranslation();
+  const indicators = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.indicators,
+  );
+  const chart = chartConfig(data);
+  const typeKeys: Record<string, string> = {
+    [ChartTypes.BAR]: "chartBar",
+    [ChartTypes.LINE]: "chartLine",
+    [ChartTypes.DONUT]: "chartDonut",
+    [ChartTypes.SCATTER]: "chartScatter",
+    [ChartTypes.HEATMAP]: "chartHeatmap",
+    [ChartTypes.TREEMAP]: "chartTreemap",
+    [ChartTypes.GAUGE]: "chartGauge",
+    [ChartTypes.KPI]: "chartKpi",
+  };
+  const layoutKeys: Record<string, string> = {
+    [ChartBarLayouts.SIMPLE]: "layoutSimple",
+    [ChartBarLayouts.STACKED]: "layoutStacked",
+    [ChartBarLayouts.GROUPED]: "layoutGrouped",
+    [ChartBarLayouts.PERCENT]: "layoutPercent",
+  };
+  const periodKeys: Record<string, string> = {
+    [ChartPeriods.DATE]: "periodDate",
+    [ChartPeriods.MONTHLY]: "periodMonthly",
+    [ChartPeriods.YEARLY]: "periodYearly",
+  };
+  const indicatorName = (id: number | null | undefined) =>
+    indicators?.find((indicator: any) => indicator.id === id)?.name ||
+    (id ? "" + id : "");
+
+  const rows: [string, string][] = [];
+  let type = typeKeys[chart.type]
+    ? t("admin.widget." + typeKeys[chart.type])
+    : "";
+  if (chart.type === ChartTypes.BAR && layoutKeys[chart.layout]) {
+    type += " · " + t("admin.widget." + layoutKeys[chart.layout]);
+  }
+  if (type) {
+    rows.push([t("admin.widget.chartType"), type]);
+  }
+  if (chart.type === ChartTypes.SCATTER) {
+    rows.push([t("admin.widget.chartScatterX"), indicatorName(chart.x)]);
+    rows.push([t("admin.widget.chartScatterY"), indicatorName(chart.y)]);
+    if (chart.size) {
+      rows.push([
+        t("admin.widget.chartScatterSize"),
+        indicatorName(chart.size),
+      ]);
+    }
+  }
+  // An unset period is drawn per date.
+  const period = chart.period || ChartPeriods.DATE;
+  if (usesPeriod(chart) && periodKeys[period]) {
+    rows.push([
+      t("admin.widget.chartPeriod"),
+      t("admin.widget." + periodKeys[period]),
+    ]);
+  }
+  if (
+    [ChartTypes.BAR, ChartTypes.GAUGE].includes(chart.type) &&
+    chart.target !== null &&
+    chart.target !== undefined &&
+    ("" + chart.target).trim() !== ""
+  ) {
+    rows.push([t("admin.widget.chartTarget"), "" + chart.target]);
+  }
+  return (
+    <>
+      {rows
+        .filter(([, value]) => value)
+        .map(([label, value]) => (
+          <div key={label}>
+            <div>{label}:</div>
+            <div>{value}</div>
+          </div>
+        ))}
+    </>
+  );
+}
+
 function GroupBy(config: WidgetConfig) {
   const { t } = useTranslation();
   let text = "";
@@ -212,7 +311,9 @@ function SortBy(config: WidgetConfig) {
 
 export default function WidgetInformation({ data }: Props) {
   const { config } = data;
-  const aggregation = config?.aggregation?.method;
+  // Chart widgets list only the settings their chart type uses.
+  const chart =
+    data.type === WidgetType.CHART_WIDGET ? chartConfig(data) : null;
   return (
     // Aggregation
     <CustomPopover
@@ -227,11 +328,14 @@ export default function WidgetInformation({ data }: Props) {
       Button={<InfoFillIcon />}
       showOnHover={true}
     >
-      <div className="WidgetInformation">
-        <Aggregation {...config} />
-        <GroupBy {...config} />
-        <SortBy {...config} />
-        <Indicators {...config} />
+      <div className="WidgetInformation" data-testid="widget-information">
+        {chart && <ChartInfo data={data} />}
+        {(!chart || usesAggregation(chart, config.seriesType)) && (
+          <Aggregation {...config} />
+        )}
+        {(!chart || usesSeries(chart)) && <GroupBy {...config} />}
+        {(!chart || usesSort(chart)) && <SortBy {...config} />}
+        {(!chart || usesIndicatorList(chart)) && <Indicators {...config} />}
         <GeographicUnit {...config} />
         <DateTimeRange {...config} />
       </div>

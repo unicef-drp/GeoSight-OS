@@ -33,6 +33,8 @@ export interface Props {
   colorPalette: number;
   setColorPalette: (colorPalette: number) => void;
   useColorPalette: boolean;
+  /** Show the palette of "Sync with the current map" (default true). */
+  showPalette?: boolean;
 }
 
 export interface DataSeriesConfigChild extends Props {
@@ -56,6 +58,7 @@ export function DataSeriesConfig({
   colorPalette,
   setColorPalette,
   useColorPalette,
+  showPalette = true,
 }: DataSeriesConfig) {
   return (
     <FormControl className="MuiForm-RadioGroup">
@@ -92,7 +95,7 @@ export function DataSeriesConfig({
           configEnabled={enabled}
           noColor={!useColorPalette}
         />
-      ) : enabled && useColorPalette ? (
+      ) : enabled && useColorPalette && showPalette ? (
         <div className="MuiForm-SubGroup">
           {/* TODO: We need to move color palette to tsx */}
           {/* @ts-ignore*/}
@@ -119,6 +122,7 @@ export function IndicatorDataSeriesConfig({
   colorPalette,
   setColorPalette,
   useColorPalette,
+  showPalette,
 }: DataSeriesConfigChild) {
   const { indicators, indicatorLayers } = useSelector(
     // @ts-ignore
@@ -154,6 +158,7 @@ export function IndicatorDataSeriesConfig({
       colorPalette={colorPalette}
       setColorPalette={setColorPalette}
       useColorPalette={useColorPalette}
+      showPalette={showPalette}
     />
   );
 }
@@ -167,6 +172,7 @@ export function GeographyUnitSeriesConfig({
   colorPalette,
   setColorPalette,
   useColorPalette,
+  showPalette,
 }: DataSeriesConfigChild) {
   /** States of dashboard **/
   const { referenceLayer } =
@@ -201,6 +207,7 @@ export function GeographyUnitSeriesConfig({
       colorPalette={colorPalette}
       setColorPalette={setColorPalette}
       useColorPalette={useColorPalette}
+      showPalette={showPalette}
     />
   );
 }

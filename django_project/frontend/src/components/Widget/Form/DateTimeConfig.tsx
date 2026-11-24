@@ -32,6 +32,8 @@ export interface Props {
   setDateTimeType: (dateTimeType: string) => void;
   dateTimeConfig: DateTimeConfig;
   setDateTimeConfig: (dateTimeConfig: DateTimeConfig) => void;
+  /** Show the interval (daily, monthly, yearly); the chart widget has its own period. */
+  showInterval?: boolean;
 }
 
 export function DateTimeConfigForm({
@@ -39,6 +41,7 @@ export function DateTimeConfigForm({
   dateTimeConfig,
   setDateTimeType,
   setDateTimeConfig,
+  showInterval = true,
 }: Props) {
   // @ts-ignore
   const { default_time_mode } = useSelector((state) => state.dashboard.data);
@@ -70,19 +73,21 @@ export function DateTimeConfigForm({
       {dateTimeType === TimeType.PREDEFINED ? (
         <div className="MuiForm-SubGroup">
           <div className="CustomDateFilterValues BasicFormSection">
-            <SelectWithList
-              list={[INTERVALS.DAILY, INTERVALS.MONTHLY, INTERVALS.YEARLY]}
-              menuPlacement={"top"}
-              required={true}
-              value={dateTimeConfig.interval}
-              onChange={(evt: any) => {
-                setDateTimeConfig({
-                  ...dateTimeConfig,
-                  interval: evt.value,
-                });
-              }}
-              isDisabled={use_only_last_known_value}
-            />
+            {showInterval && (
+              <SelectWithList
+                list={[INTERVALS.DAILY, INTERVALS.MONTHLY, INTERVALS.YEARLY]}
+                menuPlacement={"top"}
+                required={true}
+                value={dateTimeConfig.interval}
+                onChange={(evt: any) => {
+                  setDateTimeConfig({
+                    ...dateTimeConfig,
+                    interval: evt.value,
+                  });
+                }}
+                isDisabled={use_only_last_known_value}
+              />
+            )}
             <div className="Separator">FROM</div>
             <DatePicker
               /* @ts-ignore */

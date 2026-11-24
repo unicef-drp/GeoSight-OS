@@ -1,0 +1,128 @@
+/**
+GeoSight is UNICEF's geospatial web-based business intelligence platform.
+
+Contact : geosight-no-reply@unicef.org
+
+.. note:: This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+__date__ = '24/11/2026'
+__copyright__ = ('Copyright 2026, Unicef')
+*/
+
+.ChartConfig {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+
+  .ChartConfig-Types {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  // Each card is a radio button; at least 44px tall for touch.
+  .ChartConfig-Type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-height: 64px;
+    padding: 0.5rem 0.25rem;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #444444;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #9e9e9e;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #1a6ccc;
+      outline-offset: 2px;
+    }
+
+    &.Selected {
+      border: 2px solid #1a6ccc;
+      background: #eef5fd;
+      color: #0f4c94;
+      font-weight: 600;
+    }
+  }
+
+  .ChartConfig-Options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .ChartConfig-Row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem 1rem;
+  }
+
+  .ChartConfig-Field {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 140px;
+    min-width: 0;
+
+    input,
+    select {
+      min-height: 44px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  .ChartConfig-Radios {
+    .MuiFormControlLabel-root {
+      margin-left: 0;
+    }
+  }
+
+  .ChartConfig-Help {
+    color: #666666;
+    font-size: 0.8125rem;
+  }
+
+  .ChartConfig-Advanced {
+    summary {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      font-family: monospace;
+      font-size: 0.8125rem;
+      margin-top: 0.25rem;
+
+      &[aria-invalid="true"] {
+        border-color: #b3261e;
+      }
+    }
+  }
+
+  .ChartConfig-Error {
+    color: #b3261e;
+    font-size: 0.8125rem;
+  }
+}

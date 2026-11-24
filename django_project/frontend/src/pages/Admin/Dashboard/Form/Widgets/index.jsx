@@ -15,6 +15,7 @@
 
 import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
 import WidgetSelection from "../../../../../components/Widget/Selection";
@@ -27,6 +28,7 @@ import {
  * Widget dashboard
  */
 export default function WidgetForm() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { widgets, widgetsStructure } = useSelector(
     (state) => state.dashboard.data,
@@ -145,6 +147,12 @@ export default function WidgetForm() {
               return (
                 <div className="OtherActionIndicator">
                   {WidgetText.GENERIC_SUMMARY_WIDGET}
+                </div>
+              );
+            case WidgetType.CHART_WIDGET:
+              return (
+                <div className="OtherActionIndicator">
+                  {t("admin.widget.chartWidget")}
                 </div>
               );
             default:

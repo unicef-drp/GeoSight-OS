@@ -17,10 +17,11 @@
    SUMMARY EDITOR
    ========================================================================== */
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
-import { Button, FormControl, Input, InputLabel, Radio } from "@mui/material";
+import { Button, FormControl, InputLabel, Radio } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -29,10 +30,11 @@ import Select from "@mui/material/Select";
 import { DateFilterType, WidgetOperation } from "../../Definition";
 
 import Modal, { ModalContent, ModalHeader } from "../../../Modal";
-import {
-  indicatorLayersLikeIndicator
-} from "../../../../utils/indicatorLayer";
+import { indicatorLayersLikeIndicator } from "../../../../utils/indicatorLayer";
 import { RemoveIcon } from "../../../Icons";
+import SummaryGroupWidgetView from "../SummaryGroupWidget/View";
+
+import "../../Form/editor-layout.scss";
 
 /**
  * Edit section for widget.
@@ -43,6 +45,7 @@ import { RemoveIcon } from "../../../Icons";
  * @param {React.Component} children React component to be rendered
  */
 export default function WidgetEditor({ open, setData, data, title, children }) {
+  const { t } = useTranslation();
   const { indicators, indicatorLayers, default_time_mode } = useSelector(
     (state) => state.dashboard.data,
   );
@@ -106,13 +109,10 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
     setData();
   };
 
-  /** On apply **/
-  const onApply = () => {
-    if (!data.config) {
-      data.config = {};
-    }
+  /** The widget with the settings of the form. */
+  const formData = () => {
     const config = {
-      ...data.config,
+      ...(data.config || {}),
       ...additionalData,
       layer_id: layerID,
       layer_used: layerType,
@@ -122,7 +122,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
       date_filter_type: dateFilterType,
       date_filter_value: [minDateFilter, maxDateFilter].join(";"),
     };
-    const newData = {
+    return {
       ...data,
       ...{
         name: name,
@@ -130,7 +130,32 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
         config: config,
       },
     };
-    setData(newData);
+  };
+
+  // The preview gets a new object only when a data setting changes (not on
+  // each keystroke in the name), so it doesn't fetch again for nothing.
+  const previewData = useMemo(
+    () => ({ ...formData(), name: data.name, description: "" }),
+    [
+      data,
+      layerID,
+      layerType,
+      operation,
+      unit,
+      property,
+      additionalData,
+      dateFilterType,
+      minDateFilter,
+      maxDateFilter,
+    ],
+  );
+
+  /** On apply **/
+  const onApply = () => {
+    if (!data.config) {
+      data.config = {};
+    }
+    setData(formData());
   };
 
   // Format indicator list
@@ -162,194 +187,244 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
       <Modal
         open={open}
         onClosed={onClosed}
-        className="WidgetEditor MuiFormControl-Form"
+        className="WidgetEditor MuiFormControl-Form MuiBox-Large WidgetEditor-Layout WidgetEditor-Legacy"
       >
         <ModalHeader onClosed={onClosed}>
           {name ? "Change " + name : "New " + title}
         </ModalHeader>
         <ModalContent>
-          <FormControl>
-            <InputLabel>Widget name</InputLabel>
-            <Input
-              type="text"
-              placeholder="Widget name"
-              onChange={(event) => {
-                setName(event.target.value);
-              }}
-              value={name}
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel>Widget description</InputLabel>
-            <Input
-              type="text"
-              placeholder="Widget description"
-              onChange={(event) => {
-                setDescription(event.target.value);
-              }}
-              value={description}
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel>Unit</InputLabel>
-            <Input
-              type="text"
-              placeholder="Unit"
-              onChange={(event) => {
-                setUnit(event.target.value);
-              }}
-              value={unit}
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel>Layer Type</InputLabel>
-            <Select
-              onChange={(event) => {
-                setLayerType(event.target.value);
-              }}
-              value={layerType}
-            >
-              {Object.keys(definition.WidgetLayerUsed).map((key, index) => (
-                <MenuItem key={index} value={definition.WidgetLayerUsed[key]}>
-                  {definition.WidgetLayerUsed[key]}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel>Source Layer</InputLabel>
-            <Select
-              onChange={(event) => {
-                setLayerID(event.target.value);
-              }}
-              value={layerID}
-            >
-              {(layerType === definition.WidgetLayerUsed.INDICATOR
-                ? indicatorList
-                : indicatorLayerList
-              ).map(function (indicator, index) {
-                return (
-                  <MenuItem key={index} value={indicator[0]}>
-                    {indicator[1]}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel>Operation</InputLabel>
-            <Select
-              onChange={(event) => {
-                setOperation(event.target.value);
-              }}
-              value={operation}
-            >
-              {Object.keys(WidgetOperation).map((key, index) => (
-                <MenuItem key={index} value={WidgetOperation[key]}>
-                  {WidgetOperation[key]}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel>Source Value</InputLabel>
-            <Select
-              onChange={(event) => {
-                setProperty(event.target.value);
-              }}
-              value={property}
-            >
-              {["value"].map((key, index) => (
-                <MenuItem key={index} value={key}>
-                  {key}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {React.Children.map(children, (child) => {
-            return React.cloneElement(child, {
-              data,
-              selectedData,
-              setAdditionalData,
-            });
-          })}
-
-          <FormControl className="MuiForm-RadioGroup">
-            <FormLabel className="MuiInputLabel-root">Datetime</FormLabel>
-            <RadioGroup
-              value={dateFilterType}
-              onChange={(evt) => {
-                setDateFilterType(evt.target.value);
-              }}
-            >
-              <FormControlLabel
-                disabled={use_only_last_known_value}
-                value={DateFilterType.NO_FILTER}
-                control={<Radio />}
-                label="No filter (global latest values will be used)"
-              />
-              <FormControlLabel
-                disabled={use_only_last_known_value}
-                value={DateFilterType.SYNC}
-                control={<Radio />}
-                label="Use datetime filter from Dashboard level."
-              />
-              <FormControlLabel
-                disabled={use_only_last_known_value}
-                value={DateFilterType.CUSTOM}
-                control={<Radio />}
-                label="Use custom datetime filter."
-              />
-            </RadioGroup>
-
-            {dateFilterType === DateFilterType.CUSTOM ? (
-              <div className="BasicForm">
-                <div className="CustomDateFilterValues BasicFormSection">
-                  <DatePicker
-                    showTimeSelect
-                    dateFormat="dd-MM-yyyy hh:mm:ss"
-                    selected={minDateFilter ? new Date(minDateFilter) : null}
-                    maxDate={new Date(maxDateFilter)}
-                    onChange={(date) => {
-                      setMinDateFilter(new Date(date).toISOString());
-                    }}
-                  />
-                  <div className="Separator">
-                    <RemoveIcon />
-                  </div>
-                  <DatePicker
-                    showTimeSelect
-                    dateFormat="dd-MM-yyyy hh:mm:ss"
-                    selected={maxDateFilter ? new Date(maxDateFilter) : null}
-                    minDate={new Date(minDateFilter)}
-                    onChange={(date) => {
-                      if (date) {
-                        setMaxDateFilter(new Date(date).toISOString());
-                      } else {
-                        setMaxDateFilter(null);
-                      }
-                    }}
-                  />
+          <div className="BasicForm WidgetLayout">
+            <div className="WidgetLayout-Main">
+              <div className="BasicFormSection">
+                <div>
+                  <label className="form-label">Widget name</label>
                 </div>
-                <div className="helptext" style={{ width: "100%" }}>
-                  Make the max date empty to make the data filtered up to
-                  `today`.
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Widget name"
+                    onChange={(event) => {
+                      setName(event.target.value);
+                    }}
+                    value={name}
+                  />
                 </div>
               </div>
-            ) : (
-              ""
-            )}
-          </FormControl>
+              <div className="BasicFormSection">
+                <div>
+                  <label className="form-label">Widget description</label>
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Widget description"
+                    onChange={(event) => {
+                      setDescription(event.target.value);
+                    }}
+                    value={description}
+                  />
+                </div>
+              </div>
+              <div className="BasicFormSection">
+                <div>
+                  <label className="form-label">Unit</label>
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Unit"
+                    onChange={(event) => {
+                      setUnit(event.target.value);
+                    }}
+                    value={unit}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="WidgetLayout-Data">
+              <FormControl className="MuiForm-RadioGroup WidgetLegacy-Source">
+                <FormLabel className="MuiInputLabel-root">
+                  {t("admin.widget.dataSection")}
+                </FormLabel>
+                <FormControl>
+                  <InputLabel>Layer Type</InputLabel>
+                  <Select
+                    onChange={(event) => {
+                      setLayerType(event.target.value);
+                    }}
+                    value={layerType}
+                  >
+                    {Object.keys(definition.WidgetLayerUsed).map(
+                      (key, index) => (
+                        <MenuItem
+                          key={index}
+                          value={definition.WidgetLayerUsed[key]}
+                        >
+                          {definition.WidgetLayerUsed[key]}
+                        </MenuItem>
+                      ),
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel>Source Layer</InputLabel>
+                  <Select
+                    onChange={(event) => {
+                      setLayerID(event.target.value);
+                    }}
+                    value={layerID}
+                  >
+                    {(layerType === definition.WidgetLayerUsed.INDICATOR
+                      ? indicatorList
+                      : indicatorLayerList
+                    ).map(function (indicator, index) {
+                      return (
+                        <MenuItem key={index} value={indicator[0]}>
+                          {indicator[1]}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel>Operation</InputLabel>
+                  <Select
+                    onChange={(event) => {
+                      setOperation(event.target.value);
+                    }}
+                    value={operation}
+                  >
+                    {Object.keys(WidgetOperation).map((key, index) => (
+                      <MenuItem key={index} value={WidgetOperation[key]}>
+                        {WidgetOperation[key]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel>Source Value</InputLabel>
+                  <Select
+                    onChange={(event) => {
+                      setProperty(event.target.value);
+                    }}
+                    value={property}
+                  >
+                    {["value"].map((key, index) => (
+                      <MenuItem key={index} value={key}>
+                        {key}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-          <Button
-            variant="primary"
-            className="WidgetEditor-apply"
-            onClick={onApply}
-            disabled={!name || !layerType || !operation || !property}
-          >
-            Apply
-          </Button>
+                {React.Children.map(children, (child) => {
+                  return React.cloneElement(child, {
+                    data,
+                    selectedData,
+                    setAdditionalData,
+                  });
+                })}
+              </FormControl>
+
+              <FormControl className="MuiForm-RadioGroup">
+                <FormLabel className="MuiInputLabel-root">Datetime</FormLabel>
+                <RadioGroup
+                  value={dateFilterType}
+                  onChange={(evt) => {
+                    setDateFilterType(evt.target.value);
+                  }}
+                >
+                  <FormControlLabel
+                    disabled={use_only_last_known_value}
+                    value={DateFilterType.NO_FILTER}
+                    control={<Radio />}
+                    label="No filter (global latest values will be used)"
+                  />
+                  <FormControlLabel
+                    disabled={use_only_last_known_value}
+                    value={DateFilterType.SYNC}
+                    control={<Radio />}
+                    label="Use datetime filter from Dashboard level."
+                  />
+                  <FormControlLabel
+                    disabled={use_only_last_known_value}
+                    value={DateFilterType.CUSTOM}
+                    control={<Radio />}
+                    label="Use custom datetime filter."
+                  />
+                </RadioGroup>
+
+                {dateFilterType === DateFilterType.CUSTOM ? (
+                  <div className="BasicForm">
+                    <div className="CustomDateFilterValues BasicFormSection">
+                      <DatePicker
+                        showTimeSelect
+                        dateFormat="dd-MM-yyyy hh:mm:ss"
+                        selected={
+                          minDateFilter ? new Date(minDateFilter) : null
+                        }
+                        maxDate={new Date(maxDateFilter)}
+                        onChange={(date) => {
+                          setMinDateFilter(new Date(date).toISOString());
+                        }}
+                      />
+                      <div className="Separator">
+                        <RemoveIcon />
+                      </div>
+                      <DatePicker
+                        showTimeSelect
+                        dateFormat="dd-MM-yyyy hh:mm:ss"
+                        selected={
+                          maxDateFilter ? new Date(maxDateFilter) : null
+                        }
+                        minDate={new Date(minDateFilter)}
+                        onChange={(date) => {
+                          if (date) {
+                            setMaxDateFilter(new Date(date).toISOString());
+                          } else {
+                            setMaxDateFilter(null);
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="helptext" style={{ width: "100%" }}>
+                      Make the max date empty to make the data filtered up to
+                      `today`.
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </FormControl>
+            </div>
+            <div className="WidgetLayout-Side">
+              {open && (
+                <div className="WidgetPreview" data-testid="widget-preview">
+                  <div className="WidgetPreview-Title">
+                    {t("admin.widget.chartPreview")}
+                  </div>
+                  <div className="widget WidgetPreview-Widget">
+                    <div className="widget__content">
+                      {layerID && layerType && operation && property && (
+                        <SummaryGroupWidgetView data={previewData} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Apply stays in the lower right corner. */}
+            <div className="WidgetLayout-Footer">
+              <Button
+                variant="primary"
+                className="WidgetEditor-apply"
+                onClick={onApply}
+                disabled={!name || !layerType || !operation || !property}
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
         </ModalContent>
       </Modal>
     </Fragment>

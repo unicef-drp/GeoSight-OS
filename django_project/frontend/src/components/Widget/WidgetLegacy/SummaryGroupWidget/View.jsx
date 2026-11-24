@@ -251,7 +251,10 @@ export default function SummaryGroupWidgetView({ data }) {
             true,
           );
       }
-    })();
+    })().catch((err) => {
+      // The error is already in the widget state (fetchIndicatorData).
+      console.error(err);
+    });
   }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, countries]);
 
   let indicatorData = null;
