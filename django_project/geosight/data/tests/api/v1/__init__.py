@@ -22,6 +22,7 @@ from .group import *
 from .indicator import *
 from .indicator_data import *
 from .indicator_value import *
+from .indicators_data import *
 from .related_table import *
 from .related_table_data import *
 from .style import *

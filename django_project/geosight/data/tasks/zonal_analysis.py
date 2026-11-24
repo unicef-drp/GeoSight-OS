@@ -36,7 +36,14 @@ from geosight.data.utils import run_zonal_analysis_raster
 
 @app.task
 def run_zonal_analysis(zonal_analysis_uuid):
-    """Run zonal analysis task."""
+    """
+    Run zonal analysis task.
+
+    :param zonal_analysis_uuid: The uuid of the zonal analysis.
+    :type zonal_analysis_uuid: str
+    :return: Response of the result for raster layer, otherwise None.
+    :rtype: rest_framework.response.Response or None
+    """
     zonal_analysis: ZonalAnalysis = ZonalAnalysis.objects.get(
         uuid=zonal_analysis_uuid
     )
@@ -102,6 +109,8 @@ def run_zonal_analysis(zonal_analysis_uuid):
                         f'{e} is required in payload'
                     )
                 except (ProgrammingError, ValueError) as e:
+                    # Don't expose database error messages to the user
                     zonal_analysis.failed(
-                        f'{e}'
+                        f'{e}' if isinstance(e, ValueError) else
+                        'Failed to run zonal analysis on the layer.'
                     )
