@@ -57,6 +57,7 @@ import {
   isMultiBar,
   needsOneIndicator,
   showsAreas,
+  usesCustomColors,
   usesAggregation,
   usesPalette,
 } from "./capabilities";
@@ -193,7 +194,11 @@ function ChartWidgetView({ data: widget }: Props) {
     valueKey: string,
     indicatorId: number,
   ): (string | null)[] => {
-    if (chart.colors === ChartColorModes.PALETTE) {
+    // Map style is the default; palette and custom colours ignore it.
+    if (
+      chart.colors === ChartColorModes.PALETTE ||
+      chart.colors === ChartColorModes.CUSTOM
+    ) {
       return rows.map((): null => null);
     }
     const indicator = indicatorOf(indicatorId);
@@ -509,21 +514,33 @@ function ChartWidgetView({ data: widget }: Props) {
     })();
   }, [requestParameters, indicators, requestKey]);
 
-  // Colours configured on the predefined indicators / units.
+  // Custom colours: the colour of each item of the predefined indicator or
+  // area list (the series dimension), by the name the chart shows.
   const colors = useMemo(() => {
     const result: Record<string, string> = {};
+    if (!usesCustomColors(chart)) {
+      return result;
+    }
     const units: UnitConfig[] = byIndicator
       ? config.indicators
       : config.geographicalUnit;
+    // Areas: the list names carry the code ("Bay (SOM_0005_V1)"); the chart
+    // shows the area name, so match by code.
+    const areaNames: Record<string, string> = {};
+    Object.entries(state.areas || {}).forEach(([name, area]) => {
+      areaNames[area.geom_id] = name;
+    });
     units?.forEach((unit: UnitConfig) => {
       if (!unit.color) {
         return;
       }
-      const name = byIndicator ? indicatorName(unit.id) : unit.name;
+      const name = byIndicator
+        ? indicatorName(unit.id)
+        : areaNames["" + unit.id] || unit.name;
       result[name] = unit.color;
     });
     return result;
-  }, [config, indicators]);
+  }, [config, indicators, chart.colors, chart.type, state.areas]);
 
   // Decimal places off: the value as it is, up to 2 decimals (0.45 stays
   // 0.45, not 0); trailing zeros are dropped by formatNumber.

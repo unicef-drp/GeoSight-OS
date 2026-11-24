@@ -101,6 +101,9 @@ export interface WidgetConfig {
   // Chart widget
   chart?: ChartConfig;
 
+  // Text widget: Markdown, optionally with HTML (sanitised when shown)
+  text?: string;
+
   // This is legacy
   layer_id?: number;
   layer_used?: string;

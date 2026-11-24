@@ -324,10 +324,11 @@ function buildBarSimple(
           formatter: (params: any) => opts.format(params.value),
         },
         markLine: targetLine(chart, opts),
-        data: rows.map((row) => ({
+        // Palette: one colour per bar, so the chosen palette shows.
+        data: rows.map((row, index) => ({
           value: row.value,
           itemStyle: {
-            color: colorOf(opts, row.category, 0, row.color),
+            color: colorOf(opts, row.category, index, row.color),
             borderRadius: radius,
           },
         })),

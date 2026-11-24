@@ -49,12 +49,31 @@ import { ChartAdvancedForm, ChartConfigForm } from "./ChartConfig";
 import ChartWidgetView from "../ChartWidget/View";
 import GenericWidgetView from "../GenericWidget/View";
 import TimeSeriesChartWidgetView from "../TimeSeriesChartWidget/View";
+import TextWidgetView from "../TextWidget/View";
+import { WidgetTiles, WidgetTypeTiles } from "./WidgetTypeTiles";
+import { TextConfigForm } from "./TextConfig";
 import {
   usesAggregation,
+  usesCustomColors,
   usesIndicatorList,
   usesSeries,
   usesSort,
 } from "../ChartWidget/capabilities";
+import { FALLBACK_COLORS } from "../ChartWidget/buildOption";
+
+/**
+ * Items just added to a predefined list get the default black; in a chart
+ * give them the next palette colour instead, so custom colours start out
+ * distinct.
+ */
+function withDefaultColors(items: any[], previous: any[]): any[] {
+  const known = (previous || []).map((item) => item.id);
+  return items.map((item, index) =>
+    !known.includes(item.id) && (!item.color || item.color === "#000000")
+      ? { ...item, color: FALLBACK_COLORS[index % FALLBACK_COLORS.length] }
+      : item,
+  );
+}
 import { Logger } from "../../../utils/logger";
 
 import "./style.scss";
@@ -207,6 +226,13 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
     if (newData.type === WidgetType.CHART_WIDGET) {
       newData.config.chart = { ...DEFAULT_CHART_CONFIG, ...(chart || {}) };
     }
+    // Settings of single widget types: kept when the widget is opened again.
+    if (config.text !== undefined) {
+      newData.config.text = config.text;
+    }
+    if (config.linkAreas !== undefined) {
+      newData.config.linkAreas = config.linkAreas;
+    }
     setWidgetData(newData);
   }, [data]);
 
@@ -227,13 +253,50 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
   };
 
   const isChart = widgetData.type === WidgetType.CHART_WIDGET;
+  const isText = widgetData.type === WidgetType.TEXT_WIDGET;
   const chart = isChart ? widgetData.config.chart : null;
-  const isSummary =
-    !isChart &&
-    ![
-      WidgetType.TIME_SERIES_CHART_WIDGET,
-      WidgetType.GENERIC_TIME_SERIES_WIDGET,
-    ].includes(widgetData.type);
+  const isSummary = widgetData.type === WidgetType.GENERIC_SUMMARY_WIDGET;
+
+  // The tile of the widget: a chart type, the value (summary), the text, or
+  // time series (only existing widgets of that type).
+  const tile = isChart
+    ? chart?.type
+    : isText
+      ? WidgetTiles.TEXT
+      : widgetData.type === WidgetType.GENERIC_TIME_SERIES_WIDGET
+        ? WidgetTiles.TIME_SERIES
+        : WidgetTiles.VALUE;
+
+  /** Change the widget type from a tile; the other settings are kept. */
+  const selectTile = (newTile: string) => {
+    const config = { ...widgetData.config };
+    let type = WidgetType.GENERIC_SUMMARY_WIDGET;
+    if (newTile === WidgetTiles.TEXT) {
+      type = WidgetType.TEXT_WIDGET;
+      config.text = config.text || "";
+    } else if (newTile === WidgetTiles.TIME_SERIES) {
+      type = WidgetType.GENERIC_TIME_SERIES_WIDGET;
+    } else if (newTile !== WidgetTiles.VALUE) {
+      type = WidgetType.CHART_WIDGET;
+      config.chart = {
+        ...(config.chart || DEFAULT_CHART_CONFIG),
+        type: newTile,
+      };
+    }
+    if (type !== WidgetType.CHART_WIDGET) {
+      delete config.chart;
+    }
+    // Charts and time series always split the data by something.
+    if (
+      [WidgetType.CHART_WIDGET, WidgetType.GENERIC_TIME_SERIES_WIDGET].includes(
+        type,
+      ) &&
+      config.seriesType === SeriesTypeNone
+    ) {
+      config.seriesType = SeriesType.GEOGRAPHICAL_UNITS;
+    }
+    setWidgetData({ ...widgetData, type, config });
+  };
   const applyButton = (
     <Button
       /* @ts-ignore */
@@ -328,7 +391,12 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
               ...widgetData,
               config: {
                 ...widgetData.config,
-                indicators: selectedList,
+                indicators: isChart
+                  ? withDefaultColors(
+                      selectedList,
+                      widgetData.config.indicators,
+                    )
+                  : selectedList,
               },
             });
           }}
@@ -342,7 +410,9 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
               },
             });
           }}
-          useColorPalette={!isSummary}
+          useColorPalette={
+            isChart ? !!chart && usesCustomColors(chart) : !isSummary
+          }
           showPalette={!isChart}
         />
       )}
@@ -365,7 +435,12 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
             ...widgetData,
             config: {
               ...widgetData.config,
-              geographicalUnit: selectedList,
+              geographicalUnit: isChart
+                ? withDefaultColors(
+                    selectedList,
+                    widgetData.config.geographicalUnit,
+                  )
+                : selectedList,
             },
           });
         }}
@@ -379,7 +454,9 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
             },
           });
         }}
-        useColorPalette={!isSummary}
+        useColorPalette={
+          isChart ? !!chart && usesCustomColors(chart) : !isSummary
+        }
         showPalette={!isChart}
       />
 
@@ -432,6 +509,9 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
       case WidgetType.TIME_SERIES_CHART_WIDGET:
         /* @ts-ignore */
         return <TimeSeriesChartWidgetView data={preview} />;
+      case WidgetType.TEXT_WIDGET:
+        /* @ts-ignore */
+        return <TextWidgetView data={preview} />;
       default:
         return null;
     }
@@ -450,53 +530,16 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
         <ModalContent>
           <div className="BasicForm WidgetLayout">
             <div className="WidgetLayout-Main">
+              {/* One grid of tiles for every widget type (legacy time series
+                  widgets keep their own editor without it). */}
               {widgetData.type !== WidgetType.TIME_SERIES_CHART_WIDGET && (
-                <RadioGroup
-                  row
-                  className="TypeSelector"
-                  value={widgetData.type}
-                  onChange={(evt) => {
-                    const newType = evt.target.value;
-                    if (
-                      [
-                        WidgetType.GENERIC_TIME_SERIES_WIDGET,
-                        WidgetType.CHART_WIDGET,
-                      ].includes(newType) &&
-                      widgetData.config.seriesType === SeriesTypeNone
-                    ) {
-                      widgetData.config.seriesType =
-                        SeriesType.GEOGRAPHICAL_UNITS;
-                    }
-                    const config = { ...widgetData.config };
-                    if (newType === WidgetType.CHART_WIDGET) {
-                      config.chart = config.chart
-                        ? config.chart
-                        : { ...DEFAULT_CHART_CONFIG };
-                    } else {
-                      delete config.chart;
-                    }
-                    setWidgetData({ ...widgetData, type: newType, config });
-                  }}
-                >
-                  <FormControlLabel
-                    style={{ marginLeft: 0 }}
-                    value={WidgetType.GENERIC_SUMMARY_WIDGET}
-                    control={<Radio />}
-                    label="Summary"
-                  />
-                  <FormControlLabel
-                    style={{ marginLeft: 0 }}
-                    value={WidgetType.GENERIC_TIME_SERIES_WIDGET}
-                    control={<Radio />}
-                    label="Time Series"
-                  />
-                  <FormControlLabel
-                    style={{ marginLeft: 0 }}
-                    value={WidgetType.CHART_WIDGET}
-                    control={<Radio />}
-                    label={t("admin.widget.typeChart")}
-                  />
-                </RadioGroup>
+                <WidgetTypeTiles
+                  value={tile}
+                  onChange={selectTile}
+                  showTimeSeries={
+                    data.type === WidgetType.GENERIC_TIME_SERIES_WIDGET
+                  }
+                />
               )}
 
               {/* ------------------------------------- */}
@@ -607,7 +650,21 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
                 </ChartConfigForm>
               )}
             </div>
-            <div className="WidgetLayout-Data">{dataSettings}</div>
+            <div className="WidgetLayout-Data">
+              {isText ? (
+                <TextConfigForm
+                  text={widgetData.config.text || ""}
+                  setText={(text) =>
+                    setWidgetData({
+                      ...widgetData,
+                      config: { ...widgetData.config, text: text },
+                    })
+                  }
+                />
+              ) : (
+                dataSettings
+              )}
+            </div>
             <div className="WidgetLayout-Side">
               {/* Advanced chart options, next to the preview they change. */}
               {isChart && widgetData.config.chart && (

@@ -80,20 +80,34 @@ export function usesAggregation(
 }
 
 /**
- * Does the chart take its colours from a palette? Lines always do; bars,
- * donuts, treemaps, heatmaps and scatters in palette mode (else map style);
- * gauge and KPI have one colour of their own.
+ * Does the chart take its colours from a palette? Lines do unless their
+ * colours are custom (they have no map style); bars, donuts, treemaps,
+ * heatmaps and scatters in palette mode; gauge and KPI have one colour of
+ * their own.
  */
 export function usesPalette(chart: ChartConfig): boolean {
   switch (chart.type) {
     case ChartTypes.LINE:
-      return true;
+      return chart.colors !== ChartColorModes.CUSTOM;
     case ChartTypes.GAUGE:
     case ChartTypes.KPI:
       return false;
     default:
       return chart.colors === ChartColorModes.PALETTE;
   }
+}
+
+/** Does the chart use a colour per item, set in the predefined lists? */
+export function usesCustomColors(chart: ChartConfig): boolean {
+  return (
+    chart.colors === ChartColorModes.CUSTOM &&
+    ![ChartTypes.GAUGE, ChartTypes.KPI].includes(chart.type)
+  );
+}
+
+/** Does the chart have a colour setting at all? */
+export function hasColorSetting(chart: ChartConfig): boolean {
+  return ![ChartTypes.GAUGE, ChartTypes.KPI].includes(chart.type);
 }
 
 /** Does the chart follow the sort settings (order, top N)? */

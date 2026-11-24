@@ -311,6 +311,10 @@ function SortBy(config: WidgetConfig) {
 
 export default function WidgetInformation({ data }: Props) {
   const { config } = data;
+  // A text widget has no data settings to describe.
+  if (data.type === WidgetType.TEXT_WIDGET) {
+    return null;
+  }
   // Chart widgets list only the settings their chart type uses.
   const chart =
     data.type === WidgetType.CHART_WIDGET ? chartConfig(data) : null;

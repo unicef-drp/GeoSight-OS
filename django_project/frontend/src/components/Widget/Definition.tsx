@@ -53,6 +53,7 @@ export const WidgetType = {
   GENERIC_SUMMARY_WIDGET: "GenericSummaryWidget",
   GENERIC_TIME_SERIES_WIDGET: "GenericTimeSeriesWidget",
   CHART_WIDGET: "ChartWidget",
+  TEXT_WIDGET: "TextWidget",
 
   // This is legacy widget
   SUMMARY_WIDGET: "SummaryWidget",
@@ -115,6 +116,8 @@ export const ChartPeriods = {
 export const ChartColorModes = {
   MAP_STYLE: "map-style",
   PALETTE: "palette",
+  // A colour per item, set in the predefined indicator or area list.
+  CUSTOM: "custom",
 };
 
 /** Version of the chart config format. **/

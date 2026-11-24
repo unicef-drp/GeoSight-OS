@@ -27,6 +27,7 @@ import { Widget } from "../../types/Widget";
 import WidgetInformation from "./Information";
 import GenericWidgetView from "./GenericWidget/View";
 import ChartWidgetView from "./ChartWidget/View";
+import TextWidgetView from "./TextWidget/View";
 
 import "./style.scss";
 
@@ -55,6 +56,8 @@ export const WidgetView = memo(({ data }: WidgetViewProps) => {
         return <GenericWidgetView data={data} />;
       case WidgetType.CHART_WIDGET:
         return <ChartWidgetView data={data} />;
+      case WidgetType.TEXT_WIDGET:
+        return <TextWidgetView data={data} />;
       default:
         throw new Error("Widget type does not recognized.");
     }

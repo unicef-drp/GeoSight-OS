@@ -155,6 +155,12 @@ export default function WidgetForm() {
                   {t("admin.widget.chartWidget")}
                 </div>
               );
+            case WidgetType.TEXT_WIDGET:
+              return (
+                <div className="OtherActionIndicator">
+                  {t("admin.widget.textWidget")}
+                </div>
+              );
             default:
               throw null;
           }
