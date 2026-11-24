@@ -31,10 +31,12 @@ test.describe('Chart widget', () => {
     await page.getByText('Widgets (6)').click();
     await page.getByRole('button', { name: 'Add Widget' }).click();
 
-    // Summary stays the default; picking Chart adds the chart settings.
+    // The value (summary) stays the default; a chart type tile adds the
+    // chart settings.
     await expect.poll(() => state.config?.type).toEqual('GenericSummaryWidget')
+    await expect(page.getByTestId('widget-type-value')).toHaveAttribute('aria-checked', 'true');
     await expect(page.getByTestId('chart-config')).toBeHidden();
-    await page.getByRole('radio', { name: 'Chart', exact: true }).check();
+    await page.getByTestId('chart-type-bar').click();
     await expect.poll(() => state.config?.type).toEqual('ChartWidget')
     await expect.poll(() => chartOf(state)).toEqual(DEFAULT_CHART)
     await expect.poll(() => state.config.config.seriesType).toEqual('Geographical units')
@@ -149,10 +151,13 @@ test.describe('Chart widget', () => {
     await expect(page.locator('div').getByText('Fetching Project Data...')).toBeHidden();
     await page.locator('.TabPrimary > *').filter({ hasText: /\(6\)/ }).last().click();
     await page.getByRole('button', { name: 'Ajouter un widget' }).click();
-    await page.getByRole('radio', { name: 'Graphique', exact: true }).check();
+    await page.getByTestId('chart-type-bar').click();
+    // The widget type tiles and the chart settings are in French.
+    const tiles = page.locator('.WidgetTypeTiles');
+    await expect(tiles).toContainText('Type de widget');
+    await expect(tiles).toContainText('Nuage de points');
+    await expect(tiles).not.toContainText('admin.widget');
     const config = page.getByTestId('chart-config');
-    await expect(config).toContainText('Type de graphique');
-    await expect(config).toContainText('Nuage de points');
     await expect(config).toContainText('Style de la carte');
     await expect(config).not.toContainText('admin.widget');
   })

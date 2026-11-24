@@ -39,7 +39,9 @@ export async function addChartWidget(
   page, name: string, type: string = 'bar', setup?: (page) => Promise<void>
 ) {
   await page.getByRole('button', { name: 'Add Widget' }).click();
-  await page.getByRole('radio', { name: 'Chart', exact: true }).check();
+  // A chart tile makes the widget a chart; the data is set on a bar chart
+  // (it shows every data section), then the chart type is picked.
+  await page.getByTestId('chart-type-bar').click();
   await page.getByRole('textbox', { name: 'Widget name' }).fill(name);
   await page.getByText('Sync with the current map').first().click();
   await page.getByText('Sync with the current map').nth(1).click();
