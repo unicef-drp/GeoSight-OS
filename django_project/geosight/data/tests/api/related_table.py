@@ -429,6 +429,9 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
 
         # Stacked UPDATE/DELETE queries are not executed
         username = self.viewer.username
+        superuser_ids = set(
+            User.objects.filter(is_superuser=True).values_list('id', flat=True)
+        )
         for injection in [
             "x'); UPDATE auth_user SET is_superuser=true; --",
             f"x'); DELETE FROM auth_user WHERE username='{username}'; --",
@@ -441,10 +444,13 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
                 geography_code_type=injection)
         self.viewer.refresh_from_db()
         self.assertFalse(self.viewer.is_superuser)
-        self.assertFalse(
-            User.objects.filter(is_superuser=True).exclude(
-                id=self.admin.id
-            ).exists()
+        self.assertEqual(
+            set(
+                User.objects.filter(
+                    is_superuser=True
+                ).values_list('id', flat=True)
+            ),
+            superuser_ids
         )
 
         # Valid query still works
