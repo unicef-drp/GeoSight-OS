@@ -6,21 +6,18 @@ const csrfTokenFromContext = async (page: any): Promise<string> => {
   return csrfToken?.value || "";
 };
 
-const waitForAdminProjectListReady = async (page: any): Promise<void> => {
-  try {
-    await expect(page.getByText("Create New Project")).toBeVisible({
-      timeout: 10_000,
-    });
-  } catch {
-    await expect(page.getByText("Project Name")).toBeVisible({
-      timeout: 60_000,
-    });
-  }
-  await expect(
-    page.locator('.AdminContent [role="progressbar"]:visible'),
-  ).toHaveCount(0, {
-    timeout: 60_000,
-  });
+// Wait for Django to set the CSRF cookie. This does not depend on page
+// texts, so it works in every language.
+const waitForCsrfCookie = async (page: any): Promise<void> => {
+  await expect
+    .poll(
+      async () =>
+        (await page.context().cookies()).some(
+          (cookie: any) => cookie.name === "csrftoken" && cookie.value,
+        ),
+      { timeout: 60_000 },
+    )
+    .toBe(true);
 };
 
 test.describe("Dashboard v1 create API permissions", () => {
@@ -49,7 +46,7 @@ test.describe("Dashboard v1 create API permissions", () => {
     page,
   }) => {
     await page.goto("/admin/project/");
-    await waitForAdminProjectListReady(page);
+    await waitForCsrfCookie(page);
 
     const csrfToken = await csrfTokenFromContext(page);
     expect(csrfToken.length).toBeGreaterThan(0);
