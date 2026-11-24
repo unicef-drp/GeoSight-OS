@@ -45,17 +45,28 @@ export default function MobileBottomNav() {
   const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
   const filterVisible = useSelector(isFilterContentVisible);
 
-  const navItems = [{ key: t("Map"), icon: <MapActiveIcon /> }];
+  // `key` is stable and never translated: it drives the <html> class that
+  // app-mobile.scss uses to show a panel, data-item and the active tab.
+  // Only `label` (the accessible name) is translated.
+  const navItems = [{ key: "Map", label: t("Map"), icon: <MapActiveIcon /> }];
   if (contextLayerContentVisible) {
-    navItems.push({ key: t("Context Layers"), icon: <ListIcon /> });
+    navItems.push({
+      key: "Context Layers",
+      label: t("Context Layers"),
+      icon: <ListIcon />,
+    });
   }
   if (indicatorLayerVisible) {
-    navItems.push({ key: t("Indicators"), icon: <LayerIcon /> });
+    navItems.push({
+      key: "Indicators",
+      label: t("Indicators"),
+      icon: <LayerIcon />,
+    });
   }
   if (filterVisible) {
-    navItems.push({ key: t("Filter"), icon: <FilterIcon /> });
+    navItems.push({ key: "Filter", label: t("Filter"), icon: <FilterIcon /> });
   }
-  navItems.push({ key: t("Widget"), icon: <GraphIcon /> });
+  navItems.push({ key: "Widget", label: t("Widget"), icon: <GraphIcon /> });
   const className = (key: string) => {
     return "Mobile_" + key.replace(" ", "_");
   };
@@ -78,6 +89,8 @@ export default function MobileBottomNav() {
             className={"Item" + (activePanel === item.key ? " Active" : "")}
             onClick={() => handleNavClick(item.key)}
             data-item={item.key}
+            title={item.label}
+            aria-label={item.label}
           >
             {item.icon}
           </div>
