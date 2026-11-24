@@ -14,8 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '26/02/2026'
 __copyright__ = ('Copyright 2026, Unicef')
 
+from unittest import mock
+
 import factory
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 
 from core.models.profile import ROLES
 from core.tests.base_tests import TestCase
@@ -281,3 +284,55 @@ class DashboardCachePermissionTest(TestCase):
             cache['related_tables'][f'{self.related_table_1.id}'][
                 DashboardCachePermissions.PERMISSION_KEY]['share']
         )
+
+    def test_cache_permission_concurrent_create(self):
+        """Test a concurrent request creating the cache row first.
+
+        Two requests miss the cache at the same time and both insert a
+        row; the second insert must not fail with an IntegrityError.
+        """
+        original_save = DashboardCachePermissions.save
+        competing = {'created': False}
+
+        def save_after_competing_request(instance, *args, **kwargs):
+            if instance.pk is None and not competing['created']:
+                competing['created'] = True
+                # The other request inserts its row first (no save()).
+                DashboardCachePermissions.objects.bulk_create([
+                    DashboardCachePermissions(
+                        dashboard=instance.dashboard,
+                        user=instance.user,
+                        cache=instance.cache
+                    )
+                ])
+            return original_save(instance, *args, **kwargs)
+
+        with mock.patch.object(
+                DashboardCachePermissions, 'save', autospec=True,
+                side_effect=save_after_competing_request
+        ):
+            cache = DashboardCachePermissions.get_cache(
+                self.resource, self.viewer
+            )
+        self.assertTrue(competing['created'])
+        self.assertEqual(
+            DashboardCachePermissions.objects.filter(
+                dashboard=self.resource, user=self.viewer
+            ).count(), 1
+        )
+        self.assertIn(f'{self.indicator_1.id}', cache['indicators'].keys())
+
+    def test_cache_permission_anonymous_duplicates(self):
+        """Test duplicate cache rows for anonymous users.
+
+        unique_together does not stop duplicate rows with user NULL, so
+        get_cache must not fail when there are two.
+        """
+        DashboardCachePermissions.objects.bulk_create([
+            DashboardCachePermissions(dashboard=self.resource, user=None),
+            DashboardCachePermissions(dashboard=self.resource, user=None)
+        ])
+        cache = DashboardCachePermissions.get_cache(
+            self.resource, AnonymousUser()
+        )
+        self.assertIn(f'{self.indicator_1.id}', cache['indicators'].keys())
