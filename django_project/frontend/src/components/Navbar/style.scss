@@ -81,6 +81,27 @@ header {
       margin-right: 10px;
     }
 
+    // Centre the globe and help icons on the header's middle line, like the
+    // edit pencil: inline SVGs otherwise sit on the text baseline.
+    .LanguageSelector,
+    .HelpButton,
+    .HelpButton a {
+      display: flex;
+      align-items: center;
+    }
+
+    .LanguageSelector svg,
+    .HelpButton svg {
+      display: block;
+    }
+
+    // Admin panel gear at the same 16px as the globe and help icons
+    // (.LinkButton svg would otherwise shrink it to 10px)
+    .AdminLinkButton.Fullscreen svg {
+      width: 16px;
+      height: 16px;
+    }
+
 
     .SvgButton {
       color: var(--anti-primary-color);

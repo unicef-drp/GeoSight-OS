@@ -65,6 +65,18 @@
       min-height: 49px;
       height: 49px;
       box-sizing: border-box;
+
+      // Tab icons at the same 16px as the map toolbar icons
+      .layers-tab > svg,
+      .filters-tab > svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      // Unselected tab icon in a lighter gray than its label
+      .MuiTab-root:not(.Mui-selected) > svg {
+        color: color-mix(in srgb, currentColor 50%, #fff);
+      }
     }
 
     &.Layers .filter-wrapper {

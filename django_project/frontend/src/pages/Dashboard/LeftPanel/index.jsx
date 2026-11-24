@@ -32,8 +32,8 @@ import IndicatorLayersAccordion from "./IndicatorLayers";
 import RelatedTables from "./RelatedTable";
 import FiltersAccordion from "./Filters";
 import {
+  FilterIcon,
   LayerIcon,
-  TuneIcon,
   VisibilityIcon,
   VisibilityOffIcon,
 } from "../../../components/Icons";
@@ -145,7 +145,7 @@ export default function LeftPanel({ leftExpanded }) {
                 <Tab
                   className="filters-tab"
                   label={t("dashboardPage.filters")}
-                  icon=<TuneIcon />
+                  icon=<FilterIcon />
                   iconPosition="start"
                   {...tabProps("Filters")}
                 />

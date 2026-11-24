@@ -13,6 +13,11 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
+// Widget title info icon: lighter than the title text
+.widget__title svg {
+  color: color-mix(in srgb, currentColor 50%, #fff);
+}
+
 .WidgetInformation {
   padding: 1rem;
 
