@@ -82,6 +82,7 @@ for (const zone of ZONES) {
       expect(await requestDates(page, isStatistic)).toEqual({ gte: '2010-01-01', lte: '2010-12-31' });
 
       // Information popup shows the same local dates
+      await page.getByRole('button', { name: 'Close' }).click();
       await page.locator('.widget__title svg').first().hover();
       await expect(page.locator('.WidgetInformation')).toContainText(`${NEW_MIN} - ${NEW_MAX}`);
     });
@@ -103,7 +104,11 @@ for (const zone of ZONES) {
 
     test('Time series: sync uses the dashboard dates', async ({ page }) => {
       await showOnlyWidget(page, TIME_SERIES_WIDGET_ID, SYNC);
-      const dates = await requestDates(page, isValues);
+      // The dashboard dates arrive after the time slider has loaded them,
+      // so wait for the request that has them.
+      const dates = await requestDates(
+        page, request => isValues(request) && !!request.postDataJSON()?.date__gte
+      );
       expect(dates.gte).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(dates.lte).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(dates.gte <= dates.lte).toBeTruthy();
