@@ -19,6 +19,7 @@ from unittest import mock
 import factory
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db.models.query import QuerySet
 
 from core.models.profile import ROLES
 from core.tests.base_tests import TestCase
@@ -288,33 +289,47 @@ class DashboardCachePermissionTest(TestCase):
     def test_cache_permission_concurrent_create(self):
         """Test a concurrent request creating the cache row first.
 
-        Two requests miss the cache at the same time and both insert a
-        row; the second insert must not fail with an IntegrityError.
+        Our lookup misses the row, but another request inserts and commits
+        it before our insert; our insert must not fail with an
+        IntegrityError.
         """
-        original_save = DashboardCachePermissions.save
-        competing = {'created': False}
+        # The row created and committed by the other request.
+        DashboardCachePermissions(
+            dashboard=self.resource, user=self.viewer
+        ).generate_cache()
 
-        def save_after_competing_request(instance, *args, **kwargs):
-            if instance.pk is None and not competing['created']:
-                competing['created'] = True
-                # The other request inserts its row first (no save()).
-                DashboardCachePermissions.objects.bulk_create([
-                    DashboardCachePermissions(
-                        dashboard=instance.dashboard,
-                        user=instance.user,
-                        cache=instance.cache
-                    )
-                ])
-            return original_save(instance, *args, **kwargs)
+        # Our first lookup ran just before that commit: it finds nothing.
+        state = {'missed': False}
+        original_get = QuerySet.get
+        original_first = QuerySet.first
+
+        def is_first_lookup(queryset):
+            if state['missed'] or (
+                    queryset.model is not DashboardCachePermissions
+            ):
+                return False
+            state['missed'] = True
+            return True
+
+        def get_missing_once(queryset, *args, **kwargs):
+            if is_first_lookup(queryset):
+                raise DashboardCachePermissions.DoesNotExist()
+            return original_get(queryset, *args, **kwargs)
+
+        def first_missing_once(queryset):
+            if is_first_lookup(queryset):
+                return None
+            return original_first(queryset)
 
         with mock.patch.object(
-                DashboardCachePermissions, 'save', autospec=True,
-                side_effect=save_after_competing_request
+                QuerySet, 'get', autospec=True, side_effect=get_missing_once
+        ), mock.patch.object(
+            QuerySet, 'first', autospec=True, side_effect=first_missing_once
         ):
             cache = DashboardCachePermissions.get_cache(
                 self.resource, self.viewer
             )
-        self.assertTrue(competing['created'])
+        self.assertTrue(state['missed'])
         self.assertEqual(
             DashboardCachePermissions.objects.filter(
                 dashboard=self.resource, user=self.viewer
