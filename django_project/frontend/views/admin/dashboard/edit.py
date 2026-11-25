@@ -130,7 +130,7 @@ class DashboardEditView(
         if form.is_valid():
             try:
                 dashboard = form.save()
-                dashboard.save_relations(data)
+                dashboard.save_relations(data, user=request.user)
                 dashboard.increase_version()
                 return redirect(
                     reverse(
