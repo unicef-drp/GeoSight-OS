@@ -14,8 +14,12 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '26/02/2026'
 __copyright__ = ('Copyright 2026, Unicef')
 
+from unittest import mock
+
 import factory
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.db.models.query import QuerySet
 
 from core.models.profile import ROLES
 from core.tests.base_tests import TestCase
@@ -281,3 +285,69 @@ class DashboardCachePermissionTest(TestCase):
             cache['related_tables'][f'{self.related_table_1.id}'][
                 DashboardCachePermissions.PERMISSION_KEY]['share']
         )
+
+    def test_cache_permission_concurrent_create(self):
+        """Test a concurrent request creating the cache row first.
+
+        Our lookup misses the row, but another request inserts and commits
+        it before our insert; our insert must not fail with an
+        IntegrityError.
+        """
+        # The row created and committed by the other request.
+        DashboardCachePermissions(
+            dashboard=self.resource, user=self.viewer
+        ).generate_cache()
+
+        # Our first lookup ran just before that commit: it finds nothing.
+        state = {'missed': False}
+        original_get = QuerySet.get
+        original_first = QuerySet.first
+
+        def is_first_lookup(queryset):
+            if state['missed'] or (
+                    queryset.model is not DashboardCachePermissions
+            ):
+                return False
+            state['missed'] = True
+            return True
+
+        def get_missing_once(queryset, *args, **kwargs):
+            if is_first_lookup(queryset):
+                raise DashboardCachePermissions.DoesNotExist()
+            return original_get(queryset, *args, **kwargs)
+
+        def first_missing_once(queryset):
+            if is_first_lookup(queryset):
+                return None
+            return original_first(queryset)
+
+        with mock.patch.object(
+                QuerySet, 'get', autospec=True, side_effect=get_missing_once
+        ), mock.patch.object(
+            QuerySet, 'first', autospec=True, side_effect=first_missing_once
+        ):
+            cache = DashboardCachePermissions.get_cache(
+                self.resource, self.viewer
+            )
+        self.assertTrue(state['missed'])
+        self.assertEqual(
+            DashboardCachePermissions.objects.filter(
+                dashboard=self.resource, user=self.viewer
+            ).count(), 1
+        )
+        self.assertIn(f'{self.indicator_1.id}', cache['indicators'].keys())
+
+    def test_cache_permission_anonymous_duplicates(self):
+        """Test duplicate cache rows for anonymous users.
+
+        unique_together does not stop duplicate rows with user NULL, so
+        get_cache must not fail when there are two.
+        """
+        DashboardCachePermissions.objects.bulk_create([
+            DashboardCachePermissions(dashboard=self.resource, user=None),
+            DashboardCachePermissions(dashboard=self.resource, user=None)
+        ])
+        cache = DashboardCachePermissions.get_cache(
+            self.resource, AnonymousUser()
+        )
+        self.assertIn(f'{self.indicator_1.id}', cache['indicators'].keys())

@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
+from django.db import IntegrityError, transaction
 
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.dashboard import (
@@ -118,22 +119,34 @@ class DashboardCachePermissions(models.Model):
             (``indicators``, ``context_layers``, ``related_tables``),
             each mapping resource id to its permission dict.
         :rtype: dict
+        :raises IntegrityError: If the row could not be created and no
+            concurrent request created it either.
         """
         user = user if user.is_authenticated else None
-        try:
-            permission = DashboardCachePermissions.objects.get(
-                dashboard=dashboard, user=user
-            )
-            if not permission.cache:
-                permission.generate_cache()
-                permission.refresh_from_db()
-                return permission.cache
-            else:
-                return permission.cache
-        except DashboardCachePermissions.DoesNotExist:
+        # filter().first() instead of get(): unique_together does not stop
+        # duplicate rows for anonymous users (user is NULL).
+        query = DashboardCachePermissions.objects.filter(
+            dashboard=dashboard, user=user
+        ).order_by('id')
+        permission = query.first()
+        if permission is not None and permission.cache:
+            return permission.cache
+
+        if permission is None:
             permission = DashboardCachePermissions(
                 dashboard=dashboard, user=user
             )
+            try:
+                with transaction.atomic():
+                    permission.generate_cache()
+            except IntegrityError:
+                # A concurrent request created the row first: use it.
+                permission = query.first()
+                if permission is None:
+                    raise
+                if not permission.cache:
+                    permission.generate_cache()
+        else:
             permission.generate_cache()
-            permission.refresh_from_db()
-            return permission.cache
+        permission.refresh_from_db()
+        return permission.cache
