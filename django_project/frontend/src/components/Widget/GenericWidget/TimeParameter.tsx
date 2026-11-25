@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 // Widgets
 import { DateTimeConfig, WidgetConfig } from "../../../types/Widget";
 import { TimeType } from "../Definition";
+import { widgetRequestDate } from "../../../utils/Dates";
 
 export interface TimeParametersProps {
   dateTimeConfig: DateTimeConfig;
@@ -45,8 +46,11 @@ function TimeParameter({ config, parameter, setParameter }: Props) {
   );
 
   const { dateTimeConfig, dateTimeType } = config;
-  let { maxDateFilter, minDateFilter } = dateTimeConfig;
+  // Predefined dates are the widget's own calendar days (YYYY-MM-DD).
+  let minDateFilter = widgetRequestDate(dateTimeConfig.minDateFilter);
+  let maxDateFilter = widgetRequestDate(dateTimeConfig.maxDateFilter);
   if (dateTimeType === TimeType.SYNC) {
+    // Dates of the data, as returned by the server.
     maxDateFilter = selectedGlobalTime.max;
     minDateFilter = selectedGlobalTime.min;
   }

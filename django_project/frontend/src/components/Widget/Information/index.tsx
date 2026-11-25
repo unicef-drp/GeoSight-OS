@@ -26,6 +26,7 @@ import { InfoFillIcon } from "../../Icons";
 import { getIndicatorOrIndicatorLayer } from "../../../utils/dashboard";
 import { DateFilterType, SeriesDataType, TimeType } from "../Definition";
 import { capitalize } from "../../../utils/main";
+import { widgetLocalDateTime } from "../../../utils/Dates";
 
 import "./style.scss";
 
@@ -149,12 +150,12 @@ function DateTimeRange(config: WidgetConfig) {
       text = [from.split(".")[0], to.split(".")[0]].join(" - ");
     }
   } else if (config.dateTimeType === TimeType.PREDEFINED) {
-    const from = config.dateTimeConfig.minDateFilter;
-    const to = config.dateTimeConfig.maxDateFilter;
+    const from = widgetLocalDateTime(config.dateTimeConfig.minDateFilter);
+    const to = widgetLocalDateTime(config.dateTimeConfig.maxDateFilter);
     if (!to) {
-      text = t("From ") + " " + from.split(".")[0];
+      text = t("From ") + " " + from;
     } else {
-      text = [from.split(".")[0], to.split(".")[0]].join(" - ");
+      text = [from, to].join(" - ");
     }
     if (config.dateTimeConfig.interval) {
       text = config.dateTimeConfig.interval + " - " + text;

@@ -20,7 +20,13 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from "react-redux";
 import { SeriesType, TimeType } from "../Definition";
-import { dateLabel, getDatesInRange, INTERVALS } from "../../../utils/Dates";
+import {
+  dateLabel,
+  getDatesInRange,
+  INTERVALS,
+  toLocalDateTimeString,
+  widgetRequestDate
+} from "../../../utils/Dates";
 import {
   dynamicLayerData,
   dynamicLayerIndicatorList,
@@ -59,11 +65,16 @@ export default function RequestDataIndicator(
     dateTimeConfig,
     dateTimeType
   } = config
-  let { interval, maxDateFilter, minDateFilter } = dateTimeConfig
+  // Request dates as YYYY-MM-DD.
+  // Predefined: the widget's own calendar days.
+  let { interval } = dateTimeConfig
+  let minDateFilter = widgetRequestDate(dateTimeConfig.minDateFilter)
+  let maxDateFilter = widgetRequestDate(dateTimeConfig.maxDateFilter)
   if (dateTimeType === TimeType.SYNC) {
+    // Sync: the dates of the data selected on the dashboard, as returned by the server.
     interval = selectedGlobalTimeConfig.interval
-    maxDateFilter = selectedGlobalTimeConfig.maxDate
-    minDateFilter = selectedGlobalTimeConfig.minDate
+    maxDateFilter = selectedGlobalTimeConfig.maxDate?.split('T')[0]
+    minDateFilter = selectedGlobalTimeConfig.minDate?.split('T')[0]
   }
   if (use_only_last_known_value) {
     interval = INTERVALS.DAILY
@@ -133,7 +144,7 @@ export default function RequestDataIndicator(
               }
               const parameters = {
                 frequency: interval,
-                date__lte: dateLabel(maxDateFilter ? new Date(maxDateFilter) : new Date())
+                date__lte: maxDateFilter ? maxDateFilter : toLocalDateTimeString(new Date()).split('T')[0]
               }
               try {
                 parameters.geom_id = unit.name.split('(')[1].replace(')', '')
@@ -145,7 +156,7 @@ export default function RequestDataIndicator(
                 }
               }
               if (minDateFilter) {
-                parameters['date__gte'] = dateLabel(new Date(minDateFilter))
+                parameters['date__gte'] = minDateFilter
               }
               // ------------------------------------------------
               // This is for the data from indicator

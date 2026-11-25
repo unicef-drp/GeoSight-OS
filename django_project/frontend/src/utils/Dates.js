@@ -20,6 +20,53 @@ export const INTERVALS = {
   YEARLY: "Yearly",
 };
 
+const pad = (number) => ("" + number).padStart(2, "0");
+
+/***
+ * Return the local date and time of a Date, without a timezone,
+ * e.g. 2010-01-01T00:00:00. Used to store widget dates, so they mean
+ * the same calendar day for every viewer.
+ */
+export const toLocalDateTimeString = (date) => {
+  return (
+    [date.getFullYear(), pad(date.getMonth() + 1), pad(date.getDate())].join(
+      "-",
+    ) +
+    "T" +
+    [pad(date.getHours()), pad(date.getMinutes()), pad(date.getSeconds())].join(
+      ":",
+    )
+  );
+};
+
+/***
+ * Return a stored widget date as a local date time string.
+ * Values with a timezone (Z or +hh:mm, saved before widget dates were
+ * stored without one) are converted to the viewer's local time.
+ * Returns null for an empty or invalid value.
+ */
+export const widgetLocalDateTime = (value) => {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(value);
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+  if (!/(Z|[+-]\d{2}:?\d{2})$/i.test(value)) {
+    return value.split(".")[0];
+  }
+  return toLocalDateTimeString(date);
+};
+
+/***
+ * Return the YYYY-MM-DD date of a stored widget date, for requests.
+ */
+export const widgetRequestDate = (value) => {
+  const dateTime = widgetLocalDateTime(value);
+  return dateTime ? dateTime.split("T")[0] : null;
+};
+
 /***
  * Return date label
  */
