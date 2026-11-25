@@ -197,6 +197,37 @@ class DashboardConfigUpdateApiTest(BasePermissionTest.TestCase):
         self.assertEqual(dashboard.dashboardindicatorlayer_set.count(), 0)
         self.assertEqual(dashboard.creator, self.creator)
 
+    def test_create_with_permission(self):
+        """A permission block sent on create sets the sharing."""
+        self.post({
+            'name': 'Shared', 'slug': 'shared-dashboard',
+            'data': {
+                'reference_layer': 'AAAA', 'extent': [0, 0, 1, 1],
+                'permission': {
+                    'organization_permission': PERMISSIONS.READ.name,
+                    'public_permission': PERMISSIONS.READ.name,
+                    'user_permissions': [
+                        {'id': self.contributor.id,
+                         'permission': PERMISSIONS.WRITE.name}
+                    ],
+                    'group_permissions': []
+                }
+            }
+        }, 201)
+        permission = Dashboard.objects.get(slug='shared-dashboard').permission
+        self.assertEqual(
+            permission.public_permission, PERMISSIONS.READ.name
+        )
+        self.assertEqual(
+            permission.organization_permission, PERMISSIONS.READ.name
+        )
+        self.assertEqual(
+            permission.user_permissions.get(
+                user=self.contributor
+            ).permission,
+            PERMISSIONS.WRITE.name
+        )
+
     def test_create_reports_field_errors(self):
         """Missing and wrong keys are reported with their path."""
         response = self.post({

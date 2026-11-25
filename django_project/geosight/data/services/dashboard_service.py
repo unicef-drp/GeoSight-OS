@@ -720,7 +720,7 @@ def create_dashboard_from_payload(  # noqa: DOC501,DOC503
             if origin:
                 dashboard.icon = origin.icon
                 dashboard.save()
-            dashboard.save_relations(data, is_create=True)
+            dashboard.save_relations(data, user=user, is_create=True)
             dashboard.increase_version()
             return DashboardCreateResult(dashboard=dashboard)
     except Exception:
@@ -950,7 +950,7 @@ def update_dashboard_from_payload(  # noqa: DOC503
     try:
         with transaction.atomic():
             dashboard = form.save()
-            dashboard.save_relations(data)
+            dashboard.save_relations(data, user=user)
             dashboard.increase_version()
     except Exception:
         logger.exception('Dashboard update failed.')
