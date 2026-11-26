@@ -14,8 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import base64
 import json
+
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from core.models.preferences import SitePreferences
@@ -37,6 +40,17 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         return Dashboard.permissions.create(
             user=user,
             name=name
+        )
+
+    def create_story_resource(self, user, name):
+        """Create a dashboard that can be duplicated (has structures)."""
+        return Dashboard.permissions.create(
+            user=user,
+            name=name,
+            indicator_layers_structure={"children": []},
+            context_layers_structure={"children": []},
+            basemaps_layers_structure={"children": []},
+            widgets_structure={"children": []},
         )
 
     def get_resources(self, user):
@@ -263,7 +277,9 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
 
     def test_story_map_data_and_duplicate_api(self):
         """Test story map data is serialized and preserved on duplicate."""
-        resource = self.create_resource(self.creator, 'Dashboard with story')
+        resource = self.create_story_resource(
+            self.creator, 'Dashboard with story'
+        )
         bookmark = DashboardBookmark.objects.create(
             dashboard=resource,
             creator=self.creator,
@@ -279,14 +295,8 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
             config={'auto_play': False}
         )
         resource.story_map_enabled = True
-        resource.stories_structure = {
-            'children': [
-                {
-                    'id': story.id,
-                    'children': []
-                }
-            ]
-        }
+        # Same format as the admin form: page ids in the children.
+        resource.stories_structure = {'children': [story.id]}
         resource.save()
 
         url = reverse('dashboard-data-api', kwargs={'slug': resource.slug})
@@ -298,8 +308,7 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         self.assertEqual(data['stories'][0]['bookmark_id'], bookmark.id)
         self.assertEqual(data['stories'][0]['config'], {'auto_play': False})
         self.assertEqual(
-            data['stories_structure'],
-            {'children': [{'id': story.id, 'children': []}]}
+            data['stories_structure'], {'children': [story.id]}
         )
 
         duplicate_url = reverse(
@@ -313,11 +322,90 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         self.assertEqual(duplicated.story_map_enabled, True)
         self.assertEqual(
             duplicated.stories_structure,
-            {'children': [{'id': duplicated_story.id, 'children': []}]}
+            {'children': [duplicated_story.id]}
         )
         self.assertEqual(duplicated_story.description, 'Narrative step')
         self.assertEqual(duplicated_story.config, {'auto_play': False})
         self.assertEqual(duplicated_story.bookmark.name, 'Story bookmark')
+
+    def _story_dashboard(self):
+        """Return a dashboard with one bookmark and one story page."""
+        resource = self.create_story_resource(
+            self.creator, 'Dashboard story 2'
+        )
+        bookmark = DashboardBookmark.objects.create(
+            dashboard=resource, creator=self.creator, name='Bookmark A'
+        )
+        story = DashboardStory.objects.create(
+            dashboard=resource, name='Page A', bookmark=bookmark,
+            visible_by_default=True, order=0
+        )
+        resource.story_map_enabled = True
+        resource.stories_structure = {'children': [story.id]}
+        resource.save()
+        return resource, bookmark, story
+
+    def test_story_kept_when_bookmark_deleted(self):
+        """Deleting a bookmark unlinks it from the story page."""
+        resource, bookmark, story = self._story_dashboard()
+        bookmark.delete()
+        story.refresh_from_db()
+        self.assertIsNone(story.bookmark)
+        self.assertEqual(resource.dashboardstory_set.count(), 1)
+
+    def test_save_relations_without_stories_keeps_them(self):
+        """A payload without story data does not touch the stories."""
+        resource, bookmark, story = self._story_dashboard()
+        resource.save_relations(self._minimal_relations(), user=self.creator)
+        resource.refresh_from_db()
+        self.assertEqual(
+            list(resource.dashboardstory_set.values_list('id', flat=True)),
+            [story.id]
+        )
+        self.assertTrue(resource.story_map_enabled)
+        self.assertEqual(resource.stories_structure, {'children': [story.id]})
+
+    def _minimal_relations(self):
+        """Return the relation data save_relations needs, without stories."""
+        return {
+            'indicators': [], 'indicator_layers': [],
+            'indicator_layers_structure': {'children': []},
+            'basemaps_layers': [], 'basemaps_layers_structure': {
+                'children': []
+            },
+            'context_layers': [], 'context_layers_structure': {
+                'children': []
+            },
+            'widgets': [], 'widgets_structure': {'children': []},
+            'related_tables': [], 'tools': [],
+        }
+
+    def test_duplicate_copies_story_thumbnail(self):
+        """Duplicating a dashboard keeps the story page thumbnails."""
+        resource, bookmark, story = self._story_dashboard()
+        png = base64.b64decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMA'
+            'ASsJTYQAAAAASUVORK5CYII='
+        )
+        story.icon = SimpleUploadedFile(
+            'story.png', png, content_type='image/png'
+        )
+        story.save()
+
+        duplicate_url = reverse(
+            'dashboard-duplicate-api', kwargs={'slug': resource.slug}
+        )
+        self.assertRequestPostView(
+            duplicate_url, 302, data={}, user=self.creator
+        )
+        duplicated = Dashboard.objects.get(slug=resource.slug + '-1')
+        duplicated_story = duplicated.dashboardstory_set.get(name='Page A')
+        self.assertEqual(duplicated_story.icon.name, story.icon.name)
+        self.assertNotEqual(duplicated_story.bookmark_id, bookmark.id)
+        self.assertEqual(duplicated_story.bookmark.dashboard, duplicated)
+        self.assertEqual(
+            duplicated.stories_structure, {'children': [duplicated_story.id]}
+        )
 
     def test_delete_api(self):
         """Test list API."""
