@@ -103,6 +103,8 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           {/* This is all the toolbars that has popup */}
           <PopupToolbars map={mainMap} ref={drawingRef} />
           <LayerCreationToolbars />
+          {/* Story Map group (only when the project enables it) */}
+          <StoryCinematicToolbar />
           <div className="Separator" />
         </div>
 
@@ -123,7 +125,6 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           <Plugin className="BookmarkControl">
             <Bookmark map={mainMap} />
           </Plugin>
-          <StoryCinematicToolbar />
           {rightPanelProps ? (
             <ToggleSidePanel
               className={rightPanelProps.className}
