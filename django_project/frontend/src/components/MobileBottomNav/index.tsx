@@ -20,6 +20,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import $ from "jquery";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { useTranslation } from "react-i18next";
 import {
   FilterIcon,
@@ -32,6 +33,7 @@ import {
   isContextLayerContentVisible,
   isFilterContentVisible,
   isIndicatorLayerContentVisible,
+  isStoryMapEnabled,
 } from "../../selectors/dashboard";
 
 import "./style.scss";
@@ -44,6 +46,7 @@ export default function MobileBottomNav() {
   const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible);
   const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
   const filterVisible = useSelector(isFilterContentVisible);
+  const storyMapEnabled = useSelector(isStoryMapEnabled);
 
   // `key` is stable and never translated: it drives the <html> class that
   // app-mobile.scss uses to show a panel, data-item and the active tab.
@@ -65,6 +68,13 @@ export default function MobileBottomNav() {
   }
   if (filterVisible) {
     navItems.push({ key: "Filter", label: t("Filter"), icon: <FilterIcon /> });
+  }
+  if (storyMapEnabled) {
+    navItems.push({
+      key: "Story",
+      label: t("dashboardPage.storyMap.tab"),
+      icon: <MenuBookIcon />,
+    });
   }
   navItems.push({ key: "Widget", label: t("Widget"), icon: <GraphIcon /> });
   const className = (key: string) => {
