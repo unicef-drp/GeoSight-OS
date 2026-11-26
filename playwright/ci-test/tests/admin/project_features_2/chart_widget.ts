@@ -7,6 +7,7 @@ import {
 } from "../../utils/project";
 import {
   chartOf,
+  pickChartIndicator,
   previewChart,
   watchWidgetConfig
 } from "../../utils/chart_widget";
@@ -97,8 +98,8 @@ test.describe('Chart widget', () => {
     // Scatter: asks for the axes, then draws.
     await page.getByTestId('chart-type-scatter').click();
     await expect(previewChart(page)).toContainText('Pick the indicators of the X and Y axes.');
-    await page.getByTestId('chart-config-x').selectOption({ label: 'Sample Indicator A' });
-    await page.getByTestId('chart-config-y').selectOption({ label: 'Sample Indicator B' });
+    await pickChartIndicator(page, 'x', 'Sample Indicator A');
+    await pickChartIndicator(page, 'y', 'Sample Indicator B');
     await page.getByTestId('chart-config-pulse').click();
     await expect.poll(() => typeof chartOf(state).x).toEqual('number')
     await expect.poll(() => typeof chartOf(state).y).toEqual('number')

@@ -8,6 +8,7 @@ import {
 import {
   addChartWidget,
   dashboardWidget,
+  pickChartIndicator,
   widgetInformation
 } from "../../utils/chart_widget";
 
@@ -19,8 +20,8 @@ const layout = (label: string) => async (page) => {
   await page.getByTestId('chart-config-layout').getByText(label, { exact: true }).click();
 }
 const scatter = (pulse: boolean) => async (page) => {
-  await page.getByTestId('chart-config-x').selectOption({ label: 'Sample Indicator A' });
-  await page.getByTestId('chart-config-y').selectOption({ label: 'Sample Indicator B' });
+  await pickChartIndicator(page, 'x', 'Sample Indicator A');
+  await pickChartIndicator(page, 'y', 'Sample Indicator B');
   if (pulse) {
     await page.getByTestId('chart-config-pulse').click();
   }

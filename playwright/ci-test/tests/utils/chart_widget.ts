@@ -21,6 +21,16 @@ export function watchWidgetConfig(page) {
   return state
 }
 
+/** Pick an indicator in a searchable chart select (scatter axes). */
+export async function pickChartIndicator(page, key: string, name: string) {
+  const select = page.getByTestId(`chart-config-${key}`);
+  await select.locator('input').fill(name);
+  // Options read "Name (SHORTCODE)".
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  await page.getByRole('option', { name: new RegExp(`^${escaped}( \\(.*\\))?$`) }).click();
+  await expect(select).toContainText(name);
+}
+
 /** Chart settings of the widget being edited. */
 export function chartOf(state) {
   return state.config?.config?.chart
