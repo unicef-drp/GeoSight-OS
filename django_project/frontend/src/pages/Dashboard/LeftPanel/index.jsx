@@ -175,7 +175,9 @@ export default function LeftPanel({ leftExpanded, selectedTab, setSelectedTab })
     >
       <div className={classNameWrapper}>
         <Box sx={{ width: "100%" }}>
-          {tabs.length > 1 && (
+          {/* As before: the tab bar shows when filters are on (also with one
+              tab left, e.g. in an embed), or when Story adds a second tab. */}
+          {tabs.length > 0 && (filterVisible || tabs.length > 1) && (
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={selectedTab}
