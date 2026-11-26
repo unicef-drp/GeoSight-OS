@@ -14,7 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -69,21 +68,19 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
             'name': 'name AA',
             'extent': [0, 0, 0, 0],
             'filters': {},
-            'indicatorShow': 0,
-            'selectedIndicatorLayers': [self.layer.id],
-            'selectedContextLayers': [],
-            'contextLayersShow': False,
-            'selectedAdminLevel': 0,
-            'selectedBasemap': BasemapLayer.objects.create(name='name').id,
-            'is3dMode': True,
-            'position': '{}',
+            'indicator_layer_show': False,
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'context_layer_show': False,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name='name').id,
+            'is_3d_mode': True,
+            'position': {},
         }
-        self.assertRequestPostView(url, 403, data={
-            'data': json.dumps(data),
-        }, user=self.viewer)
-        self.assertRequestPostView(url, 200, data={
-            'data': json.dumps(data),
-        }, user=self.creator)
+        self.assertRequestPostView(url, 403, data=data,
+            content_type='application/json', user=self.viewer)
+        self.assertRequestPostView(url, 200, data=data,
+            content_type='application/json', user=self.creator)
         self.assertEqual(
             DashboardBookmark.objects.get(pk=resource.id).name, 'name AA'
         )
@@ -109,25 +106,25 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
             'name': 'name CCC',
             'extent': [0, 0, 0, 0],
             'filters': {},
-            'indicatorShow': 0,
-            'selectedIndicatorLayers': [self.layer.id],
-            'selectedContextLayers': [],
-            'contextLayersShow': False,
-            'selectedAdminLevel': 0,
-            'selectedBasemap': BasemapLayer.objects.create(name='name').id,
-            'is3dMode': True,
-            'position': '{}',
+            'indicator_layer_show': False,
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'context_layer_show': False,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name='name').id,
+            'is_3d_mode': True,
+            'position': {},
         }
         url = reverse(
             'dashboard-bookmarks-create', kwargs={'slug': self.dashboard.slug}
         )
         self.assertRequestPostView(
             url, 403,
-            data={'data': json.dumps(data)},
+            data=data, content_type='application/json',
             user=self.viewer
         )
         self.assertRequestPostView(
-            url, 403, data={'data': json.dumps(data)},
+            url, 403, data=data, content_type='application/json',
             user=self.contributor
         )
         self.dashboard.permission.update_user_permission(
@@ -135,7 +132,7 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
         )
         self.assertRequestPostView(
             url, 200,
-            data={'data': json.dumps(data)},
+            data=data, content_type='application/json',
             user=self.contributor
         )
         self.assertEqual(DashboardBookmark.objects.count(), 2)

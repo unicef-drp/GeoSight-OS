@@ -24,7 +24,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
+class DashboardEmbedApiTest(BasePermissionTest.TestCase):
     """Test for dashboard bookmark api."""
 
     def create_resource(self, user, name='name'):
