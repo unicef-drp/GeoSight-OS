@@ -67,3 +67,32 @@ class DashboardEmbedApiTest(BasePermissionTest.TestCase):
         )
         self.assertEqual(DashboardEmbed.objects.count(), 1)
         self.assertTrue('code' in response.json())
+
+    def test_embed_map_mode_and_sync(self):
+        """Test embed saves map mode and side by side sync."""
+        data = {
+            'name': 'name DDD',
+            'extent': [0, 0, 0, 0],
+            'filters': {},
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'indicator_layer_show': True,
+            'context_layer_show': True,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name='name').id,
+            'is_3d_mode': False,
+            'position': {},
+            'transparency_config': {},
+            'map_mode': 'SIDE_BY_SIDE_VIEW',
+            'side_by_side_view_sync': False,
+        }
+        url = reverse(
+            'dashboard-embed', kwargs={'slug': self.dashboard.slug}
+        )
+        self.assertRequestPostView(
+            url, 200, data=data, user=self.viewer,
+            content_type='application/json'
+        )
+        embed = DashboardEmbed.objects.get()
+        self.assertEqual(embed.map_mode, 'SIDE_BY_SIDE_VIEW')
+        self.assertIs(embed.side_by_side_view_sync, False)
