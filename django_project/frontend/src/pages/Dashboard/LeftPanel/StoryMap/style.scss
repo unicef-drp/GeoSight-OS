@@ -406,6 +406,8 @@ html.StoryCinematic {
 
   &.StoryCinematicWidgets .DashboardMiddlePanel .RightContent {
     margin-right: 0 !important;
+    // The description card sits on top of the widgets (Cinematic.tsx).
+    padding-top: calc(var(--story-card-height, 0px) + 8px) !important;
   }
 }
 
@@ -425,8 +427,11 @@ html.StoryCinematic {
 html.StoryCinematicWidgets .StoryCinematicOverlay {
   // Leave room for the widget panel on the right.
   --story-right: calc(320px + 2rem);
+
 }
 
+
+// The page title: centred at the top, large, like a slide title.
 .StoryCinematicTitle {
   position: absolute;
   top: 16px;
@@ -434,25 +439,33 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
   transform: translateX(-50%);
   max-width: min(60vw, 900px);
   margin: 0;
-  padding: 12px 24px;
+  padding: 14px 32px 12px;
   box-sizing: border-box;
-  background-color: rgba(255, 255, 255, 0.92);
-  box-shadow: var(--box-shadow);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 4px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(16, 40, 56, 0.2);
   color: var(--base-black-color);
-  font-size: clamp(22px, 3vw, 40px);
-  font-weight: 600;
+  font-size: clamp(26px, 3.4vw, 50px);
+  font-weight: 700;
   line-height: 1.2;
   text-align: center;
   overflow-wrap: anywhere;
 }
 
+// Centred title that stays clear of the card or widget column on both sides.
+@media (min-width: 1001px) {
+  .StoryCinematicTitle {
+    max-width: min(900px, calc(100vw - 2 * (360px + 40px)));
+  }
+}
+
 .StoryCinematicCard {
   position: absolute;
-  top: 96px;
+  top: 16px;
   right: var(--story-right);
   width: 360px;
   max-width: calc(100vw - 32px);
-  max-height: calc(100vh - 96px - 110px);
+  max-height: calc(100vh - 16px - 110px);
   overflow-y: auto;
   box-sizing: border-box;
   background-color: var(--white, #fff);
@@ -469,12 +482,48 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     background-color: #F4F5F5;
   }
 
+  // On top of the widget column: same width, top aligned with it. Compact
+  // until "More", so two or three widgets stay in view below it.
+  &.Docked {
+    top: 12px;
+    max-height: none;
+    overflow: visible;
+    border-top: 3px solid var(--primary-color);
+
+    &:not(.Expanded) {
+      .StoryCinematicImage {
+        max-height: 140px;
+      }
+
+      .StoryCinematicDescription {
+        padding: 12px 16px;
+        font-size: 14px;
+
+        &.Collapsed {
+          max-height: calc(4 * 1.5em + 12px);
+        }
+      }
+    }
+
+    .StoryCinematicMore {
+      margin: -4px 16px 12px;
+    }
+  }
+
   .StoryCinematicDescription {
     padding: 16px 20px;
     font-size: 15px;
     line-height: 1.5;
     color: var(--base-black-color);
     overflow-wrap: anywhere;
+
+    // First lines only; "More" shows the rest (and moves the widgets down).
+    &.Collapsed {
+      max-height: calc(8 * 1.5em + 16px);
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+      mask-image: linear-gradient(to bottom, #000 70%, transparent);
+    }
 
     p {
       margin: 0 0 8px;
@@ -483,6 +532,23 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     *:last-child {
       margin-bottom: 0;
     }
+  }
+}
+
+.StoryCinematicMore {
+  display: block;
+  margin: -6px 20px 14px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
   }
 }
 

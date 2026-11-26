@@ -286,7 +286,9 @@
       "stop": "Parar e ir para a primeira página",
       "timeLeft": "Tempo restante nesta página",
       "showLegend": "Mostrar legenda",
-      "hideLegend": "Ocultar legenda"
+      "hideLegend": "Ocultar legenda",
+      "more": "Mais",
+      "less": "Menos"
     }
   },
   "featured": "Em destaque",
