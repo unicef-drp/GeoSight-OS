@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('group', models.CharField(blank=True, max_length=512, null=True)),
                 ('relation_group', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_data.dashboardrelationgroup')),
                 ('config', models.JSONField(blank=True, null=True)),
-                ('bookmark', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='geosight_data.dashboardbookmark')),
+                ('bookmark', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_data.dashboardbookmark')),
                 ('dashboard', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='geosight_data.dashboard')),
             ],
             options={

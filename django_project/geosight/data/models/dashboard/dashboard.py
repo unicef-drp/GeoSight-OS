@@ -287,17 +287,23 @@ class Dashboard(
         self.permission.update_from_request_data(data, user)
 
         # STORIES
-        stories_new = self.save_stories(
-            data.get('stories', []),
-            files=files,
-            allow_missing_bookmark=is_create
-        )
-        stories_structure = data.get('stories_structure', {'children': []})
-        self.story_ids_new = stories_new
-        self.stories_structure = update_structure(
-            stories_structure, stories_new
-        )
-        self.story_map_enabled = data.get('story_map_enabled', False)
+        # Only when the payload has them: a payload without stories must
+        # not delete the existing story pages.
+        if 'stories' in data:
+            stories_new = self.save_stories(
+                data['stories'],
+                files=files,
+                allow_missing_bookmark=is_create
+            )
+            stories_structure = (
+                data.get('stories_structure') or {'children': []}
+            )
+            self.story_ids_new = stories_new
+            self.stories_structure = update_structure(
+                stories_structure, stories_new
+            )
+        if 'story_map_enabled' in data:
+            self.story_map_enabled = bool(data['story_map_enabled'])
 
         # INDICATORS
         self.save_relation(
@@ -926,68 +932,74 @@ class Dashboard(
                 pass
         return ids_new
 
-    def clone_story_bookmarks_from(self, origin):
+    def clone_stories_from(self, origin):
         """
-        Clone bookmarks referenced by stories from another dashboard.
+        Copy story thumbnails and bookmarks from the duplicated dashboard.
 
-        This is primarily used during dashboard duplication so that newly
-        created stories reference bookmarks owned by the duplicated dashboard.
+        Used when a dashboard is duplicated: the new story pages get the
+        thumbnails of the original pages, and copies of their bookmarks
+        (bookmarks belong to one dashboard).
 
-        :param origin: Source dashboard to clone story bookmarks from.
+        :param origin: Source dashboard the stories were duplicated from.
         :type origin: Dashboard
         """
-        from .dashboard_story import DashboardStory
-
         story_ids_new = getattr(self, 'story_ids_new', {})
         cloned_bookmarks = {}
 
         for origin_story in origin.dashboardstory_set.select_related(
                 'bookmark').all():
-            if not origin_story.bookmark:
+            story_id = story_ids_new.get(origin_story.id)
+            story = self.dashboardstory_set.filter(id=story_id).first()
+            if not story:
                 continue
 
+            update_fields = []
+            if origin_story.icon and not story.icon:
+                story.icon = origin_story.icon
+                update_fields.append('icon')
+
             origin_bookmark = origin_story.bookmark
-            if origin_bookmark.id not in cloned_bookmarks:
-                bookmark = self.dashboardbookmark_set.create(
-                    name=origin_bookmark.name,
-                    dashboard=self,
-                    creator=self.creator,
-                    extent=origin_bookmark.extent,
-                    filters=origin_bookmark.filters,
-                    selected_basemap=origin_bookmark.selected_basemap,
-                    selected_indicator_layers=
-                    origin_bookmark.selected_indicator_layers,
-                    indicator_layer_show=origin_bookmark.indicator_layer_show,
-                    selected_admin_level=origin_bookmark.selected_admin_level,
-                    is_3d_mode=origin_bookmark.is_3d_mode,
-                    position=origin_bookmark.position,
-                    context_layer_show=origin_bookmark.context_layer_show,
-                    context_layers_config=(
-                        origin_bookmark.context_layers_config
-                    ),
-                    transparency_config=origin_bookmark.transparency_config,
-                )
-                bookmark.selected_context_layers.set(
-                    origin_bookmark.selected_context_layers.all()
-                )
-                cloned_bookmarks[origin_bookmark.id] = bookmark
+            if origin_bookmark:
+                if origin_bookmark.id not in cloned_bookmarks:
+                    cloned_bookmarks[origin_bookmark.id] = (
+                        self.clone_bookmark(origin_bookmark)
+                    )
+                story.bookmark = cloned_bookmarks[origin_bookmark.id]
+                update_fields.append('bookmark')
 
-            story_id = story_ids_new.get(origin_story.id)
-            if story_id:
-                try:
-                    story = self.dashboardstory_set.get(id=story_id)
-                except DashboardStory.DoesNotExist:
-                    story = None
-            else:
-                story = self.dashboardstory_set.filter(
-                    name=origin_story.name, order=origin_story.order
-                ).first()
+            if update_fields:
+                story.save(update_fields=update_fields)
 
-            if story:
-                story.bookmark = cloned_bookmarks[
-                    origin_bookmark.id
-                ]
-                story.save(update_fields=['bookmark'])
+    def clone_bookmark(self, bookmark):
+        """
+        Copy a bookmark of another dashboard into this dashboard.
+
+        :param bookmark: Bookmark to copy.
+        :type bookmark: DashboardBookmark
+        :return: The new bookmark of this dashboard.
+        :rtype: DashboardBookmark
+        """
+        new_bookmark = self.dashboardbookmark_set.create(
+            name=bookmark.name,
+            description=bookmark.description,
+            creator=self.creator,
+            extent=bookmark.extent,
+            filters=bookmark.filters,
+            selected_basemap=bookmark.selected_basemap,
+            selected_indicator_layers=bookmark.selected_indicator_layers,
+            indicator_layer_show=bookmark.indicator_layer_show,
+            selected_admin_level=bookmark.selected_admin_level,
+            is_3d_mode=bookmark.is_3d_mode,
+            position=bookmark.position,
+            map_mode=bookmark.map_mode,
+            context_layer_show=bookmark.context_layer_show,
+            context_layers_config=bookmark.context_layers_config,
+            transparency_config=bookmark.transparency_config,
+        )
+        new_bookmark.selected_context_layers.set(
+            bookmark.selected_context_layers.all()
+        )
+        return new_bookmark
 
     @staticmethod
     def check_data(data, user: User):

@@ -26,9 +26,10 @@ from geosight.data.models.dashboard.dashboard_relation import (
 class DashboardStory(AbstractTerm, IconTerm, DashboardRelationWithLimit):
     """Dashboard story model."""
 
+    # Deleting a bookmark keeps the story page, without a map state.
     bookmark = models.ForeignKey(
         DashboardBookmark,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True
     )

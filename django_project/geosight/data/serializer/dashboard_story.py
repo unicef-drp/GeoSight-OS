@@ -22,18 +22,7 @@ from geosight.data.models.dashboard.dashboard_story import DashboardStory
 class DashboardStorySerializer(serializers.ModelSerializer):
     """Serializer for Dashboard Story."""
 
-    bookmark_id = serializers.SerializerMethodField()
-
-    def get_bookmark_id(self, obj: DashboardStory):
-        """
-        Return the related bookmark identifier.
-
-        :param obj: Dashboard story instance being serialized.
-        :type obj: DashboardStory
-        :return: The related bookmark ID, if any.
-        :rtype: int or None
-        """
-        return obj.bookmark.id if obj.bookmark else None
+    bookmark_id = serializers.IntegerField(read_only=True)
 
     class Meta:  # noqa: D106
         model = DashboardStory
