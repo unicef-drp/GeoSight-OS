@@ -233,6 +233,19 @@ test.describe.serial('Story Map', () => {
     await page.locator('.StoryMap [data-testid="EditIcon"]').nth(1).click();
     const modal = page.locator('.StoryMapModal');
     await expect(modal.getByLabel('Title')).toHaveValue('Page two');
+
+    // The "Default" bookmark (the project's default view) is kept on save.
+    await modal.locator('select').selectOption({ label: 'Default' });
+    await modal.getByRole('button', { name: 'Apply' }).click();
+    const rows = page.locator('.StoryMap .OtherActionIndicator');
+    await expect(rows.nth(1)).toHaveText('Bookmark: Default');
+    await saveProject(page);
+    await editProject(page, PROJECT);
+    await openStoryMapTab(page);
+    await expect(rows.nth(1)).toHaveText('Bookmark: Default');
+    await page.locator('.StoryMap [data-testid="EditIcon"]').nth(1).click();
+    await expect(modal.locator('select')).toHaveValue('0');
+
     await modal.getByLabel('Visible in the story').uncheck();
     await modal.getByRole('button', { name: 'Apply' }).click();
     await saveProject(page);
