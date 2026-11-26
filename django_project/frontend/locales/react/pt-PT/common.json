@@ -6,6 +6,13 @@
   "Back to home": "Voltar ao início",
   "Back to Home": "Voltar ao início",
   "Compare layers": "Comparar camadas",
+  "components": {
+    "contextLayerDownload": {
+      "downloadError": "Erro na transferência, tente novamente.",
+      "startError": "Erro ao iniciar a transferência.",
+      "timeout": "A transferência está a demorar demasiado. Tente novamente mais tarde."
+    }
+  },
   "Config": "Configuração",
   "Context Layers": "Camadas de contexto",
   "Context and indicator layer tabs visibility": "Visibilidade dos separadores de camadas de contexto e de indicadores",

@@ -3,7 +3,8 @@ import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
 import { CLOUD_NATIVE_DOWNLOAD_FORMATS } from "../../pages/Dashboard/Toolbars/DataDownloader/ContextLayer";
 import { Notification, NotificationStatus } from "../Notification";
-import { DjangoRequests } from "../../Requests"; // Declare global urls type
+import { DjangoRequests } from "../../Requests";
+import { useTranslation } from "react-i18next";
 
 // Declare global urls type
 declare const urls: {
@@ -25,6 +26,13 @@ interface DownloadResponse {
 
 type DownloadFormat = keyof typeof CLOUD_NATIVE_DOWNLOAD_FORMATS;
 
+/** Poll every second, give up after 5 minutes. */
+const POLL_INTERVAL_MS = 1000;
+const POLL_TIMEOUT_MS = 5 * 60 * 1000;
+
+/** Do not throw on HTTP error codes; the status is handled by the caller. */
+const ANY_STATUS = { validateStatus: () => true };
+
 export function CloudNativeDownloadComponent({
   id,
   baseUrl,
@@ -39,47 +47,82 @@ export function CloudNativeDownloadComponent({
     notificationRef?.current?.notify(newMessage, newSeverity);
   };
 
+  const { t } = useTranslation();
   const [downloadingFormat, setDownloadingFormat] = useState<string | null>(
     null,
   );
-  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   baseUrl = baseUrl || urls.api.download.replace("/0", `/${id}`);
 
-  // Cleanup interval on unmount
-  useEffect(() => {
-    return () => {
-      if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current);
-      }
-    };
-  }, []);
-
-  const checkDownloadStatus = async (path: string): Promise<number> => {
-    try {
-      const response = await DjangoRequests.head(path);
-      return response.status;
-    } catch (error) {
-      // Network errors or other exceptions
-      const errorMessage = `Error on downloading, please retry`;
-      notify(errorMessage, NotificationStatus.ERROR);
-      return 500;
+  const stopPolling = () => {
+    if (pollTimeoutRef.current) {
+      clearTimeout(pollTimeoutRef.current);
+      pollTimeoutRef.current = null;
     }
   };
 
-  const startPolling = (path: string) => {
-    pollIntervalRef.current = setInterval(async () => {
-      const status = await checkDownloadStatus(path);
-      if (status === 200 || status === 500 || status === 404) {
-        if (pollIntervalRef.current) {
-          clearInterval(pollIntervalRef.current);
-          pollIntervalRef.current = null;
-        }
-        setDownloadingFormat(null);
-        if (path) {
-          window.open(path, "_blank");
-        }
+  // Cleanup polling on unmount
+  useEffect(() => {
+    return stopPolling;
+  }, []);
+
+  /** Read the reason of a failed download from the JSON error response. */
+  const getErrorDetail = async (path: string): Promise<string> => {
+    try {
+      const response = await DjangoRequests.get(path, ANY_STATUS);
+      return response.data?.note || response.data?.error || "";
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const notifyDownloadError = (detail: string) => {
+    const message = t("components.contextLayerDownload.downloadError");
+    notify(detail ? `${message} ${detail}` : message, NotificationStatus.ERROR);
+  };
+
+  const finish = () => {
+    stopPolling();
+    setDownloadingFormat(null);
+  };
+
+  const poll = (path: string, startedAt: number) => {
+    pollTimeoutRef.current = setTimeout(async () => {
+      let status: number;
+      try {
+        status = (await DjangoRequests.head(path, ANY_STATUS)).status;
+      } catch (error) {
+        // Network error
+        notifyDownloadError("");
+        finish();
+        return;
       }
-    }, 1000);
+
+      // Ready: download the file
+      if (status === 200) {
+        finish();
+        window.open(path, "_blank");
+        return;
+      }
+
+      // 400 = not ready yet: keep polling until the timeout
+      if (status === 400) {
+        if (Date.now() - startedAt < POLL_TIMEOUT_MS) {
+          poll(path, startedAt);
+        } else {
+          notify(
+            t("components.contextLayerDownload.timeout"),
+            NotificationStatus.ERROR,
+          );
+          finish();
+        }
+        return;
+      }
+
+      // Failed (500), file not found (404) or other errors
+      notifyDownloadError(await getErrorDetail(path));
+      finish();
+    }, POLL_INTERVAL_MS);
   };
 
   const handleDownload = async (format: DownloadFormat) => {
@@ -87,15 +130,25 @@ export function CloudNativeDownloadComponent({
 
     try {
       const downloadUrl = baseUrl + "?file_format=" + format;
-      const response = await DjangoRequests.post(downloadUrl, {});
+      const response = await DjangoRequests.post(downloadUrl, {}, ANY_STATUS);
       if (response.status !== 200) {
-        throw new Error("Download request failed");
+        const detail = response.data?.error || "";
+        const message = t("components.contextLayerDownload.startError");
+        notify(
+          detail ? `${message} ${detail}` : message,
+          NotificationStatus.ERROR,
+        );
+        setDownloadingFormat(null);
+        return;
       }
 
-      const data: DownloadResponse = await response.data;
-      startPolling(data.path);
+      const data: DownloadResponse = response.data;
+      poll(data.path, Date.now());
     } catch (error) {
-      notify("Error initiating download:" + error, NotificationStatus.ERROR);
+      notify(
+        t("components.contextLayerDownload.startError"),
+        NotificationStatus.ERROR,
+      );
       setDownloadingFormat(null);
     }
   };

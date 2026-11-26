@@ -6,6 +6,13 @@
   "Back to home": "Volver a inicio",
   "Back to Home": "Volver a inicio",
   "Compare layers": "Comparar capas",
+  "components": {
+    "contextLayerDownload": {
+      "downloadError": "Error en la descarga, inténtelo de nuevo.",
+      "startError": "Error al iniciar la descarga.",
+      "timeout": "La descarga está tardando demasiado. Inténtelo de nuevo más tarde."
+    }
+  },
   "Config": "Configuración",
   "Context Layers": "Capas de contexto",
   "Context and indicator layer tabs visibility": "Visibilidad de las pestañas de capas de contexto e indicadores",

@@ -6,6 +6,13 @@
   "Back to home": "Back to home",
   "Back to Home": "Back to home",
   "Compare layers": "Compare layers",
+  "components": {
+    "contextLayerDownload": {
+      "downloadError": "Error on downloading, please retry.",
+      "startError": "Error initiating download.",
+      "timeout": "The download is taking too long. Please try again later."
+    }
+  },
   "Config": "Config",
   "Context Layers": "Context Layers",
   "Context and indicator layer tabs visibility": "Context and indicator layer tabs visibility",
