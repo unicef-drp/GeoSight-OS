@@ -36,12 +36,32 @@ class DashboardStory(AbstractTerm, IconTerm, DashboardRelationWithLimit):
 
     config = models.JSONField(null=True, blank=True)
 
+    # The "Default" bookmark (the project's default view) is not a saved
+    # bookmark: the bookmark API lists it with id 0. A page that uses it
+    # has no bookmark and this flag in its config.
+    DEFAULT_BOOKMARK_ID = 0
+    DEFAULT_BOOKMARK_KEY = 'default_bookmark'
+
     content_limitation_description = (
         'Limit the number of stories per project'
     )
 
     def __str__(self):
         return self.name
+
+    @property
+    def bookmark_value(self):
+        """
+        Return the bookmark of the page for the frontend.
+
+        :return: The bookmark ID, 0 for the "Default" view, or None.
+        :rtype: int or None
+        """
+        if self.bookmark_id:
+            return self.bookmark_id
+        if (self.config or {}).get(self.DEFAULT_BOOKMARK_KEY):
+            return self.DEFAULT_BOOKMARK_ID
+        return None
 
     class Meta:  # noqa: D106
         ordering = ('order',)

@@ -902,9 +902,13 @@ class Dashboard(
                 except (KeyError, DashboardStory.DoesNotExist):
                     story = DashboardStory(dashboard=self)
 
-                bookmark_id = data.get('bookmark') or data.get('bookmark_id')
+                bookmark_id = data.get('bookmark_id', data.get('bookmark'))
                 bookmark = None
-                if bookmark_id:
+                # 0 is the project's "Default" view (not a saved bookmark).
+                is_default = str(bookmark_id) == str(
+                    DashboardStory.DEFAULT_BOOKMARK_ID
+                )
+                if bookmark_id and not is_default:
                     try:
                         bookmark = DashboardBookmark.objects.get(
                             id=bookmark_id,
@@ -923,7 +927,11 @@ class Dashboard(
                 story.order = order if order else 0
                 story.visible_by_default = data.get('visible_by_default', True)
                 story.bookmark = bookmark
-                story.config = data.get('config', None)
+                config = dict(data.get('config') or {})
+                config.pop(DashboardStory.DEFAULT_BOOKMARK_KEY, None)
+                if is_default:
+                    config[DashboardStory.DEFAULT_BOOKMARK_KEY] = True
+                story.config = config or None
                 icon_key = (
                     f"story_icon_{story.id or data.get('id', 'new')}"
                 )

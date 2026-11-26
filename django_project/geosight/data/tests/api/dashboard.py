@@ -384,6 +384,51 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
             'related_tables': [], 'tools': [],
         }
 
+    def test_story_default_bookmark(self):
+        """The "Default" bookmark (id 0) is kept, also on duplicate."""
+        resource, bookmark, story = self._story_dashboard()
+        resource.save_stories([
+            {
+                'id': story.id, 'name': 'Page A', 'bookmark_id': 0,
+                'config': {'auto_play': False}
+            },
+            {'name': 'Page B', 'bookmark_id': bookmark.id},
+        ])
+        page_a = resource.dashboardstory_set.get(name='Page A')
+        self.assertIsNone(page_a.bookmark)
+        self.assertEqual(
+            page_a.config, {'auto_play': False, 'default_bookmark': True}
+        )
+
+        url = reverse('dashboard-data-api', kwargs={'slug': resource.slug})
+        data = self.assertRequestGetView(url, 200, self.creator).json()
+        bookmarks = {row['name']: row['bookmark_id'] for row in data['stories']}
+        self.assertEqual(bookmarks, {'Page A': 0, 'Page B': bookmark.id})
+
+        # Choosing a saved bookmark again removes the flag.
+        resource.save_stories([
+            {'id': page_a.id, 'name': 'Page A', 'bookmark_id': bookmark.id},
+        ])
+        page_a.refresh_from_db()
+        self.assertEqual(page_a.bookmark, bookmark)
+        self.assertIsNone(page_a.config)
+
+        # Duplicate keeps the "Default" choice.
+        resource.save_stories([
+            {'id': page_a.id, 'name': 'Page A', 'bookmark_id': 0},
+        ])
+        resource.stories_structure = {'children': [page_a.id]}
+        resource.save()
+        duplicate_url = reverse(
+            'dashboard-duplicate-api', kwargs={'slug': resource.slug}
+        )
+        self.assertRequestPostView(
+            duplicate_url, 302, data={}, user=self.creator
+        )
+        duplicated = Dashboard.objects.get(slug=resource.slug + '-1')
+        duplicated_story = duplicated.dashboardstory_set.get(name='Page A')
+        self.assertEqual(duplicated_story.bookmark_value, 0)
+
     def test_duplicate_copies_story_thumbnail(self):
         """Duplicating a dashboard keeps the story page thumbnails."""
         resource, bookmark, story = self._story_dashboard()

@@ -202,10 +202,13 @@ const StoryEditor = ({
               <select
                 id="StoryEditorBookmark"
                 className="form-control"
-                value={data.bookmark_id || ""}
+                // 0 is the "Default" view, a real choice.
+                value={data.bookmark_id ?? ""}
                 onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                   const value = event.target.value;
-                  change({ bookmark_id: value ? parseInt(value) : null });
+                  change({
+                    bookmark_id: value !== "" ? parseInt(value) : null,
+                  });
                 }}
               >
                 <option value="">
