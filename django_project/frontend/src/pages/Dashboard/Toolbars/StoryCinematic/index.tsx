@@ -14,8 +14,8 @@
 
 /* ==========================================================================
    Map toolbar button: play the Story Map in cinematic (full screen) mode.
-   Shown when the project enables the cinematic mode, as its own group at
-   the end of the main tools.
+   Shown when the project enables the cinematic mode; part of the share and
+   story group of the main tools (MapLibre/index.jsx).
    ========================================================================== */
 
 import React from "react";
@@ -32,27 +32,17 @@ export default function StoryCinematicToolbar() {
     return null;
   }
   return (
-    <>
-      {/* Group divider, as in the other toolbar groups. */}
-      <div
-        style={{
-          borderLeft: "1px solid #E6E8E8",
-          height: "30px",
-          margin: "0 0.5rem",
-        }}
-      />
-      <Plugin className="StoryCinematicControl">
-        <div data-testid="story-map-cinematic-toolbar">
-          <PluginChild
-            title={t("dashboardPage.storyMap.cinematic")}
-            disabled={false}
-            active={false}
-            onClick={() => playback.setCinematic(true)}
-          >
-            <StoryPlayIcon />
-          </PluginChild>
-        </div>
-      </Plugin>
-    </>
+    <Plugin className="StoryCinematicControl">
+      <div data-testid="story-map-cinematic-toolbar">
+        <PluginChild
+          title={t("dashboardPage.storyMap.cinematic")}
+          disabled={false}
+          active={false}
+          onClick={() => playback.setCinematic(true)}
+        >
+          <StoryPlayIcon />
+        </PluginChild>
+      </div>
+    </Plugin>
   );
 }

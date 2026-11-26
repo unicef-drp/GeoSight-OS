@@ -50,6 +50,7 @@ import MainMapLibre, { MirrorMapLibre } from "./MapLibre";
 import LayerCreationToolbars from "../Toolbars/LayerCreationToolbars";
 import MapModeToolbars from "../Toolbars/MapModeToolbars";
 import StoryCinematicToolbar from "../Toolbars/StoryCinematic";
+import { useStoryPlayback } from "../LeftPanel/StoryMap/StoryPlayback";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
@@ -66,6 +67,19 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
   const embedToolEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.EMBED_TOOL),
   );
+  const dataDownloadEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.DATA_DOWNLOAD),
+  );
+  const bookmarkEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK),
+  );
+  const story = useStoryPlayback();
+  // Share and story tools: one group at the end of the main tools.
+  const shareGroupVisible =
+    embedToolEnable ||
+    dataDownloadEnable ||
+    bookmarkEnable ||
+    (story.cinematicEnabled && story.total > 0);
 
   return (
     <section
@@ -103,14 +117,16 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           {/* This is all the toolbars that has popup */}
           <PopupToolbars map={mainMap} ref={drawingRef} />
           <LayerCreationToolbars />
-          {/* Story Map group (only when the project enables it) */}
-          <StoryCinematicToolbar />
-          <div className="Separator" />
-        </div>
-
-        {/* RIGHT SIDE OF NAVBAR */}
-        <div className="Toolbar-Right">
-          <SearchGeometryInput />
+          {/* Embed, download, bookmark and Story Map tools */}
+          {shareGroupVisible && (
+            <div
+              style={{
+                borderLeft: "1px solid #E6E8E8",
+                height: "30px",
+                margin: "0 0.5rem",
+              }}
+            />
+          )}
           <Plugin className="EmbedControl" hidden={!embedToolEnable}>
             <div
               className="Active"
@@ -122,9 +138,17 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
             </div>
           </Plugin>
           <DataDownloader />
+          {/* Always mounted: it also applies bookmarks (story pages too). */}
           <Plugin className="BookmarkControl">
             <Bookmark map={mainMap} />
           </Plugin>
+          <StoryCinematicToolbar />
+          <div className="Separator" />
+        </div>
+
+        {/* RIGHT SIDE OF NAVBAR */}
+        <div className="Toolbar-Right">
+          <SearchGeometryInput />
           {rightPanelProps ? (
             <ToggleSidePanel
               className={rightPanelProps.className}
