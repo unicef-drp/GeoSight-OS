@@ -205,6 +205,13 @@ test.describe.serial('Story Map', () => {
       'Page one'
     );
 
+    // With widgets: the description card sits on top of the widget column.
+    const cardBox = await page.getByTestId('story-map-cinematic-card').boundingBox();
+    const widgetBox = await page.locator('.DashboardMiddlePanel .RightContent .widget').first().boundingBox();
+    expect(Math.abs(cardBox.x - widgetBox.x)).toBeLessThan(2);
+    expect(Math.abs(cardBox.width - widgetBox.width)).toBeLessThan(2);
+    expect(cardBox.y + cardBox.height).toBeLessThanOrEqual(widgetBox.y);
+
     // Widgets can be hidden.
     await expect(page.locator('.DashboardMiddlePanel .RightContent')).toBeVisible();
     await view.getByTestId('story-map-settings-button').click();
