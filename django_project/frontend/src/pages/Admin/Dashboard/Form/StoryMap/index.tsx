@@ -270,7 +270,7 @@ export default function StoryMapForm() {
     stories,
     storiesStructure,
     story_map_enabled,
-    story_map_cinematic,
+    story_map_presentation,
   } = useSelector((state: any) => state.dashboard.data);
   const ListFormComponent: any = ListForm;
 
@@ -355,21 +355,21 @@ export default function StoryMapForm() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={!!story_map_cinematic}
+                  checked={!!story_map_presentation}
                   disabled={!story_map_enabled}
                   onChange={() => {
                     dispatch(
                       Actions.Dashboard.updateProps({
-                        story_map_cinematic: !story_map_cinematic,
+                        story_map_presentation: !story_map_presentation,
                       }),
                     );
                   }}
                 />
               }
-              label={t("admin.dashboard.storyMap.cinematic")}
+              label={t("admin.dashboard.storyMap.presentation")}
             />
             <div className="form-helptext">
-              {t("admin.dashboard.storyMap.cinematicHelp")}
+              {t("admin.dashboard.storyMap.presentationHelp")}
             </div>
           </FormGroup>
         </div>

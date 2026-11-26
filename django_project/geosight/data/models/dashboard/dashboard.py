@@ -152,10 +152,10 @@ class Dashboard(
         help_text=_('Show map toolbars on the map.')
     )
     story_map_enabled = models.BooleanField(default=False)
-    story_map_cinematic = models.BooleanField(
+    story_map_presentation = models.BooleanField(
         default=False,
         help_text=_(
-            'Show the Story Map cinematic (full screen) mode button.'
+            'Show the Story Map presentation (full screen) mode button.'
         )
     )
 
@@ -310,8 +310,8 @@ class Dashboard(
             )
         if 'story_map_enabled' in data:
             self.story_map_enabled = bool(data['story_map_enabled'])
-        if 'story_map_cinematic' in data:
-            self.story_map_cinematic = bool(data['story_map_cinematic'])
+        if 'story_map_presentation' in data:
+            self.story_map_presentation = bool(data['story_map_presentation'])
 
         # INDICATORS
         self.save_relation(

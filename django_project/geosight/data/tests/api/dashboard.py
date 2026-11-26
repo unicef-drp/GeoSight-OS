@@ -224,7 +224,7 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         self.assertEqual(data['stories'], [])
         self.assertEqual(data['stories_structure'], None)
         self.assertEqual(data['story_map_enabled'], False)
-        self.assertEqual(data['story_map_cinematic'], False)
+        self.assertEqual(data['story_map_presentation'], False)
         pref = SitePreferences.preferences()
         self.assertEqual(data['default_time_mode'], {
             'use_only_last_known_value': True,
@@ -296,7 +296,7 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
             config={'auto_play': False}
         )
         resource.story_map_enabled = True
-        resource.story_map_cinematic = True
+        resource.story_map_presentation = True
         # Same format as the admin form: page ids in the children.
         resource.stories_structure = {'children': [story.id]}
         resource.save()
@@ -305,7 +305,7 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200, self.creator)
         data = response.json()
         self.assertEqual(data['story_map_enabled'], True)
-        self.assertEqual(data['story_map_cinematic'], True)
+        self.assertEqual(data['story_map_presentation'], True)
         self.assertEqual(len(data['stories']), 1)
         self.assertEqual(data['stories'][0]['name'], 'Story page 1')
         self.assertEqual(data['stories'][0]['bookmark_id'], bookmark.id)
@@ -323,7 +323,7 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         duplicated = Dashboard.objects.get(slug=resource.slug + '-1')
         duplicated_story = duplicated.dashboardstory_set.get(name='Story page 1')
         self.assertEqual(duplicated.story_map_enabled, True)
-        self.assertEqual(duplicated.story_map_cinematic, True)
+        self.assertEqual(duplicated.story_map_presentation, True)
         self.assertEqual(
             duplicated.stories_structure,
             {'children': [duplicated_story.id]}

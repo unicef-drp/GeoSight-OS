@@ -112,8 +112,8 @@
         "apply": "Appliquer",
         "bookmarkName": "Signet : {{name}}",
         "noBookmark": "Aucun signet",
-        "cinematic": "Mode cinéma (présentation plein écran)",
-        "cinematicHelp": "Ajoute un bouton dans la barre d'outils de la carte et dans le panneau du récit pour lire le récit en plein écran, sans l'en-tête, la barre d'outils ni le panneau latéral."
+        "presentation": "Mode présentation (récit en plein écran)",
+        "presentationHelp": "Ajoute un bouton dans la barre d'outils de la carte et dans le panneau du récit pour présenter le récit en plein écran, sans l'en-tête, la barre d'outils ni le panneau latéral."
       }
     },
     "data": "DONNÉES",
@@ -277,9 +277,7 @@
       "settings": "Paramètres du récit",
       "timePerPage": "Durée par page",
       "seconds": "{{count}} s",
-      "showWidgets": "Afficher les widgets en mode cinéma",
-      "cinematic": "Mode cinéma (plein écran)",
-      "exitCinematic": "Quitter le mode cinéma",
+      "showWidgets": "Afficher les widgets en mode présentation",
       "goToPage": "Aller à la page",
       "expand": "Afficher la page",
       "collapse": "Masquer la page",
@@ -288,7 +286,9 @@
       "showLegend": "Afficher la légende",
       "hideLegend": "Masquer la légende",
       "more": "Plus",
-      "less": "Moins"
+      "less": "Moins",
+      "presentation": "Mode présentation (plein écran)",
+      "exitPresentation": "Quitter le mode présentation"
     }
   },
   "featured": "Mis en avant",

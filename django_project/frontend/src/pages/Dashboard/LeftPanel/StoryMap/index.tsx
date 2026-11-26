@@ -22,7 +22,7 @@ import { DashboardStory } from "../../../../types/Story";
 import { ChevronDownIcon, ChevronUpIcon } from "../../../../components/Icons";
 import { useStoryPlayback } from "./StoryPlayback";
 import {
-  StoryCinematicButton,
+  StoryPresentationButton,
   StoryProgress,
   StorySettings,
   StoryTransport,
@@ -91,7 +91,7 @@ export default function StoryMap() {
     <div className="StoryMapPanel" data-testid="story-map-panel" ref={ref}>
       <div className="StoryMapControls">
         <StoryTransport />
-        <StoryCinematicButton />
+        <StoryPresentationButton />
         <div className="StoryMapCounter" data-testid="story-map-counter">
           {t("dashboardPage.storyMap.counter", {
             current: playback.current + 1,

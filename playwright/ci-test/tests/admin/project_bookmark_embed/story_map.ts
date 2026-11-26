@@ -49,7 +49,7 @@ test.describe.serial('Story Map', () => {
     await editProject(page, PROJECT);
     await openStoryMapTab(page);
     await page.getByLabel('Show the Story Map in the project').check();
-    await page.getByLabel('Cinematic mode (full-screen presentation)').check();
+    await page.getByLabel('Presentation mode (full-screen story)').check();
     await addStoryPage(page, 'Page one', BOOKMARK_A);
     await addStoryPage(page, 'Page two', BOOKMARK_B);
     const rows = page.locator('.StoryMap .OtherActionIndicator');
@@ -68,7 +68,7 @@ test.describe.serial('Story Map', () => {
       page.getByLabel('Show the Story Map in the project')
     ).toBeChecked();
     await expect(
-      page.getByLabel('Cinematic mode (full-screen presentation)')
+      page.getByLabel('Presentation mode (full-screen story)')
     ).toBeChecked();
     const savedRows = page.locator('.StoryMap .OtherActionIndicator');
     await expect(savedRows).toHaveCount(2);
@@ -154,36 +154,36 @@ test.describe.serial('Story Map', () => {
     await expect(page.getByLabel(layer1)).toBeChecked();
   });
 
-  test('Cinematic mode', async ({ page }) => {
+  test('Presentation mode', async ({ page }) => {
     await viewProject(page, PROJECT, true);
-    // The map toolbar button starts the cinematic mode.
-    await page.getByTestId('story-map-cinematic-toolbar')
-      .getByTitle('Cinematic mode (full screen)').click();
+    // The map toolbar button starts the presentation mode.
+    await page.getByTestId('story-map-presentation-toolbar')
+      .getByTitle('Presentation mode (full screen)').click();
 
     // Only the map, the title, the description card and the bar.
-    const view = page.getByTestId('story-map-cinematic-view');
+    const view = page.getByTestId('story-map-presentation-view');
     await expect(view).toBeVisible();
     await expect(page.locator('header')).toBeHidden();
     await expect(page.locator('.DashboardMap .Toolbar')).toBeHidden();
     await expect(page.locator('.dashboard__left_side')).toBeHidden();
-    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+    await expect(page.getByTestId('story-map-presentation-title')).toHaveText(
       'Page one'
     );
-    await expect(page.getByTestId('story-map-cinematic-card')).toContainText(
+    await expect(page.getByTestId('story-map-presentation-card')).toContainText(
       'First page of the story.'
     );
     await expect(page.getByLabel(layer1)).toBeChecked();
 
     // Next, and the page picker.
     await view.getByTestId('story-map-next').click();
-    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+    await expect(page.getByTestId('story-map-presentation-title')).toHaveText(
       'Page two'
     );
     await expect(page.getByLabel(layer2)).toBeChecked();
     await view.getByTestId('story-map-page-select').selectOption({
       label: '1. Page one'
     });
-    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+    await expect(page.getByTestId('story-map-presentation-title')).toHaveText(
       'Page one'
     );
 
@@ -197,16 +197,16 @@ test.describe.serial('Story Map', () => {
 
     // Arrow keys change the page.
     await page.keyboard.press('ArrowRight');
-    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+    await expect(page.getByTestId('story-map-presentation-title')).toHaveText(
       'Page two'
     );
     await page.keyboard.press('ArrowLeft');
-    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+    await expect(page.getByTestId('story-map-presentation-title')).toHaveText(
       'Page one'
     );
 
     // With widgets: the description card sits on top of the widget column.
-    const cardBox = await page.getByTestId('story-map-cinematic-card').boundingBox();
+    const cardBox = await page.getByTestId('story-map-presentation-card').boundingBox();
     const widgetBox = await page.locator('.DashboardMiddlePanel .RightContent .widget').first().boundingBox();
     expect(Math.abs(cardBox.x - widgetBox.x)).toBeLessThan(2);
     expect(Math.abs(cardBox.width - widgetBox.width)).toBeLessThan(2);
@@ -215,12 +215,12 @@ test.describe.serial('Story Map', () => {
     // Widgets can be hidden.
     await expect(page.locator('.DashboardMiddlePanel .RightContent')).toBeVisible();
     await view.getByTestId('story-map-settings-button').click();
-    await view.getByLabel('Show widgets in cinematic mode').uncheck();
+    await view.getByLabel('Show widgets in presentation mode').uncheck();
     await expect(page.locator('.DashboardMiddlePanel .RightContent')).toBeHidden();
-    await view.getByLabel('Show widgets in cinematic mode').check();
+    await view.getByLabel('Show widgets in presentation mode').check();
 
     // Exit: everything is back.
-    await view.getByTestId('story-map-cinematic-exit').click();
+    await view.getByTestId('story-map-presentation-exit').click();
     await expect(view).toBeHidden();
     await expect(page.locator('header')).toBeVisible();
     await expect(page.locator('.DashboardMap .Toolbar')).toBeVisible();
@@ -268,15 +268,15 @@ test.describe.serial('Story Map', () => {
     );
     await expect(page.getByTestId('story-map-counter')).toHaveText('1 / 1');
 
-    // Cinematic mode on the phone.
-    await page.getByTestId('story-map-cinematic').click();
-    const view = page.getByTestId('story-map-cinematic-view');
-    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+    // Presentation mode on the phone.
+    await page.getByTestId('story-map-presentation').click();
+    const view = page.getByTestId('story-map-presentation-view');
+    await expect(page.getByTestId('story-map-presentation-title')).toHaveText(
       'Page one'
     );
     await expect(view.getByTestId('story-map-play')).toBeVisible();
     await expect(page.locator('.MobileBottomNav')).toBeHidden();
-    await view.getByTestId('story-map-cinematic-exit').click();
+    await view.getByTestId('story-map-presentation-exit').click();
     await expect(page.locator('.MobileBottomNav')).toBeVisible();
   });
 });

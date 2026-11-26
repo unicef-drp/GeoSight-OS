@@ -32,7 +32,7 @@ import {
 import {
   StoryPlaybackProvider,
 } from "./LeftPanel/StoryMap/StoryPlayback";
-import StoryCinematic from "./LeftPanel/StoryMap/Cinematic";
+import StoryPresentation from "./LeftPanel/StoryMap/Presentation";
 import { Variables } from "../../utils/Variables";
 
 import "./style.scss";
@@ -130,8 +130,8 @@ export default function Dashboard({ children }) {
             />
           </section>
 
-          {/* STORY MAP CINEMATIC MODE (full screen) */}
-          <StoryCinematic />
+          {/* STORY MAP PRESENTATION MODE (full screen) */}
+          <StoryPresentation />
         </StoryPlaybackProvider>
       ) : (
         <div className="LoadingElement">

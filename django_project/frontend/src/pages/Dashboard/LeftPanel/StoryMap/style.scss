@@ -13,7 +13,7 @@
  */
 
 /* ==========================================================================
-   Story Map: buttons (time slider style), settings, panel, cinematic mode.
+   Story Map: buttons (time slider style), settings, panel, presentation mode.
    Square corners everywhere, like the rest of the UI.
    ========================================================================== */
 
@@ -366,9 +366,9 @@
 }
 
 /* --------------------------------------------------------------------------
-   Cinematic mode
+   Presentation mode
    -------------------------------------------------------------------------- */
-html.StoryCinematic {
+html.StoryPresentation {
   // Header, map toolbar, left panel and the bottom bar are hidden; the map
   // panel covers the screen.
   header,
@@ -387,7 +387,7 @@ html.StoryCinematic {
     background-color: var(--white, #fff);
   }
 
-  // Legend: the cinematic bar has its own button.
+  // Legend: the presentation bar has its own button.
   .LegendToggler {
     display: none !important;
   }
@@ -400,18 +400,18 @@ html.StoryCinematic {
     display: block !important;
   }
 
-  &:not(.StoryCinematicWidgets) .DashboardMiddlePanel .RightContent {
+  &:not(.StoryPresentationWidgets) .DashboardMiddlePanel .RightContent {
     display: none !important;
   }
 
-  &.StoryCinematicWidgets .DashboardMiddlePanel .RightContent {
+  &.StoryPresentationWidgets .DashboardMiddlePanel .RightContent {
     margin-right: 0 !important;
-    // The description card sits on top of the widgets (Cinematic.tsx).
+    // The description card sits on top of the widgets (Presentation.tsx).
     padding-top: calc(var(--story-card-height, 0px) + 8px) !important;
   }
 }
 
-.StoryCinematicOverlay {
+.StoryPresentationOverlay {
   // Only the title, card and bar take clicks; the map stays usable.
   position: fixed;
   inset: 0;
@@ -424,7 +424,7 @@ html.StoryCinematic {
   }
 }
 
-html.StoryCinematicWidgets .StoryCinematicOverlay {
+html.StoryPresentationWidgets .StoryPresentationOverlay {
   // Leave room for the widget panel on the right.
   --story-right: calc(320px + 2rem);
 
@@ -432,7 +432,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
 
 
 // The page title: centred at the top, large, like a slide title.
-.StoryCinematicTitle {
+.StoryPresentationTitle {
   position: absolute;
   top: 16px;
   left: 50%;
@@ -454,12 +454,12 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
 
 // Centred title that stays clear of the card or widget column on both sides.
 @media (min-width: 1001px) {
-  .StoryCinematicTitle {
+  .StoryPresentationTitle {
     max-width: min(900px, calc(100vw - 2 * (360px + 40px)));
   }
 }
 
-.StoryCinematicCard {
+.StoryPresentationCard {
   position: absolute;
   top: 16px;
   right: var(--story-right);
@@ -473,7 +473,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
   box-shadow: var(--box-shadow);
 
   // The whole image, scaled down to fit (not cropped).
-  .StoryCinematicImage {
+  .StoryPresentationImage {
     display: block;
     width: 100%;
     height: auto;
@@ -491,11 +491,11 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     border-top: 3px solid var(--primary-color);
 
     &:not(.Expanded) {
-      .StoryCinematicImage {
+      .StoryPresentationImage {
         max-height: 140px;
       }
 
-      .StoryCinematicDescription {
+      .StoryPresentationDescription {
         padding: 12px 16px;
         font-size: 14px;
 
@@ -505,12 +505,12 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
       }
     }
 
-    .StoryCinematicMore {
+    .StoryPresentationMore {
       margin: -4px 16px 12px;
     }
   }
 
-  .StoryCinematicDescription {
+  .StoryPresentationDescription {
     padding: 16px 20px;
     font-size: 15px;
     line-height: 1.5;
@@ -535,7 +535,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
   }
 }
 
-.StoryCinematicMore {
+.StoryPresentationMore {
   display: block;
   margin: -6px 20px 14px;
   padding: 0;
@@ -552,7 +552,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
   }
 }
 
-.StoryCinematicBar {
+.StoryPresentationBar {
   position: absolute;
   bottom: 24px;
   left: 50%;
@@ -577,7 +577,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     max-width: 260px;
   }
 
-  .StoryCinematicRule {
+  .StoryPresentationRule {
     width: 1px;
     height: 34px;
     background-color: var(--border-gray);
@@ -589,7 +589,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
   }
 }
 
-.StoryCinematicStatus {
+.StoryPresentationStatus {
   position: absolute;
   bottom: 110px;
   left: 50%;
@@ -602,24 +602,24 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
 
 // Phones: title on top, description as a card above the bar, no widgets.
 @media (max-width: 1000px) {
-  html.StoryCinematic .MapLegend {
+  html.StoryPresentation .MapLegend {
     top: 64px !important;
     height: calc(100% - 64px) !important;
     padding-bottom: 220px !important;
   }
 
-  html.StoryCinematic .DashboardMiddlePanel .RightContent {
+  html.StoryPresentation .DashboardMiddlePanel .RightContent {
     display: none !important;
   }
 
-  .StoryCinematicTitle {
+  .StoryPresentationTitle {
     top: 8px;
     max-width: calc(100vw - 16px);
     width: calc(100vw - 16px);
     padding: 8px 12px;
   }
 
-  .StoryCinematicCard {
+  .StoryPresentationCard {
     top: auto;
     right: 8px;
     left: 8px;
@@ -628,19 +628,19 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     max-width: none;
     max-height: 35vh;
 
-    .StoryCinematicImage {
+    .StoryPresentationImage {
       max-height: 20vh;
     }
   }
 
-  .StoryCinematicBar {
+  .StoryPresentationBar {
     bottom: 8px;
     width: calc(100vw - 16px);
     max-width: none;
     gap: 8px;
     padding: 8px;
 
-    .StoryCinematicRule {
+    .StoryPresentationRule {
       display: none;
     }
 
@@ -651,7 +651,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     }
   }
 
-  .StoryCinematicStatus {
+  .StoryPresentationStatus {
     bottom: 150px;
   }
 }

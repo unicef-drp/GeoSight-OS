@@ -13,9 +13,9 @@
  */
 
 /* ==========================================================================
-   Cinematic mode: full screen map with the page title, its description in a
+   Presentation mode: full screen map with the page title, its description in a
    floating card and the playback bar. Header, map toolbar and left panel
-   are hidden (html.StoryCinematic in style.scss); widgets are optional.
+   are hidden (html.StoryPresentation in style.scss); widgets are optional.
    ========================================================================== */
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -26,7 +26,7 @@ import remarkGfm from "remark-gfm";
 
 import { useStoryPlayback } from "./StoryPlayback";
 import {
-  StoryCinematicButton,
+  StoryPresentationButton,
   StoryLegendButton,
   StoryPageSelect,
   StoryProgress,
@@ -41,8 +41,8 @@ import "./style.scss";
 const WIDGET_COLUMN = ".DashboardMiddlePanel .RightContent section.right";
 const PHONE = "(max-width: 1000px)";
 
-/** Cinematic mode overlay; renders only while the mode is on. */
-export default function StoryCinematic() {
+/** Presentation mode overlay; renders only while the mode is on. */
+export default function StoryPresentation() {
   const { t } = useTranslation();
   const playback = useStoryPlayback();
   const pageTitle = useStoryTitle();
@@ -54,7 +54,7 @@ export default function StoryCinematic() {
   );
   const [expanded, setExpanded] = useState(false);
   const [overflowing, setOverflowing] = useState(false);
-  const docked = playback.cinematic && playback.showWidgets && !!column;
+  const docked = playback.presentation && playback.showWidgets && !!column;
 
   // A new page starts with its description collapsed.
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function StoryCinematic() {
   // Place the card over the widget column and move the widgets below it.
   useLayoutEffect(() => {
     const html = document.documentElement;
-    if (!playback.cinematic || !playback.showWidgets) {
+    if (!playback.presentation || !playback.showWidgets) {
       setColumn(null);
       html.style.removeProperty("--story-card-height");
       return;
@@ -101,7 +101,7 @@ export default function StoryCinematic() {
       html.style.removeProperty("--story-card-height");
     };
   }, [
-    playback.cinematic,
+    playback.presentation,
     playback.showWidgets,
     playback.current,
     expanded,
@@ -112,12 +112,12 @@ export default function StoryCinematic() {
   useLayoutEffect(() => {
     const text = textRef.current;
     setOverflowing(!!text && text.scrollHeight > text.clientHeight + 1);
-  }, [playback.current, playback.cinematic, expanded, docked]);
+  }, [playback.current, playback.presentation, expanded, docked]);
 
   // Keyboard: arrows for pages, space for play/pause, Esc to leave. Caught
   // before the map sees them (capture phase), so the arrows don't pan it.
   useEffect(() => {
-    if (!playback.cinematic) {
+    if (!playback.presentation) {
       return;
     }
     const onKey = (event: KeyboardEvent) => {
@@ -131,11 +131,11 @@ export default function StoryCinematic() {
       } else if (event.key === "ArrowLeft") {
         playback.previous();
       } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-        // No map panning in the cinematic mode.
+        // No map panning in the presentation mode.
       } else if (event.key === " " && target?.tagName !== "BUTTON") {
         playback.togglePlay();
       } else if (event.key === "Escape") {
-        playback.setCinematic(false);
+        playback.setPresentation(false);
       } else {
         handled = false;
       }
@@ -148,21 +148,21 @@ export default function StoryCinematic() {
     return () => window.removeEventListener("keydown", onKey, true);
   }, [playback]);
 
-  if (!playback.cinematic || !playback.total) {
+  if (!playback.presentation || !playback.total) {
     return null;
   }
   const story = playback.stories[playback.current];
 
   return createPortal(
-    <div className="StoryCinematicOverlay" data-testid="story-map-cinematic-view">
-      <h1 className="StoryCinematicTitle" data-testid="story-map-cinematic-title">
+    <div className="StoryPresentationOverlay" data-testid="story-map-presentation-view">
+      <h1 className="StoryPresentationTitle" data-testid="story-map-presentation-title">
         {pageTitle(story, playback.current)}
       </h1>
       {story?.description || story?.icon ? (
         <aside
           ref={cardRef}
           className={
-            "StoryCinematicCard" +
+            "StoryPresentationCard" +
             (docked ? " Docked" : "") +
             (expanded ? " Expanded" : "")
           }
@@ -171,17 +171,17 @@ export default function StoryCinematic() {
               ? { left: column.left, width: column.width, right: "auto" }
               : undefined
           }
-          data-testid="story-map-cinematic-card"
+          data-testid="story-map-presentation-card"
         >
           {story.icon ? (
-            <img src={story.icon} alt="" className="StoryCinematicImage" />
+            <img src={story.icon} alt="" className="StoryPresentationImage" />
           ) : null}
           {story.description ? (
             <>
               <div
                 ref={textRef}
                 className={
-                  "StoryCinematicDescription" + (expanded ? "" : " Collapsed")
+                  "StoryPresentationDescription" + (expanded ? "" : " Collapsed")
                 }
               >
                 <Markdown remarkPlugins={[remarkGfm]}>
@@ -191,8 +191,8 @@ export default function StoryCinematic() {
               {overflowing || expanded ? (
                 <button
                   type="button"
-                  className="StoryCinematicMore"
-                  data-testid="story-map-cinematic-more"
+                  className="StoryPresentationMore"
+                  data-testid="story-map-presentation-more"
                   aria-expanded={expanded}
                   onClick={() => setExpanded(!expanded)}
                 >
@@ -206,13 +206,13 @@ export default function StoryCinematic() {
         </aside>
       ) : null}
       <div
-        className="StoryCinematicBar"
+        className="StoryPresentationBar"
         role="toolbar"
         aria-label={t("dashboardPage.storyMap.playback")}
       >
         <StoryProgress />
         <StoryTransport big />
-        <div className="StoryCinematicRule" />
+        <div className="StoryPresentationRule" />
         <StoryPageSelect />
         <div className="StoryMapCounter">
           {t("dashboardPage.storyMap.counter", {
@@ -220,13 +220,13 @@ export default function StoryCinematic() {
             total: playback.total,
           })}
         </div>
-        <div className="StoryCinematicRule" />
+        <div className="StoryPresentationRule" />
         <StoryLegendButton />
         <StorySettings placement="above" />
-        <StoryCinematicButton />
+        <StoryPresentationButton />
       </div>
       {playback.autoPlay && !playback.isDataLoaded ? (
-        <div className="StoryCinematicStatus">
+        <div className="StoryPresentationStatus">
           {t("dashboardPage.storyMap.waitingForData")}
         </div>
       ) : null}

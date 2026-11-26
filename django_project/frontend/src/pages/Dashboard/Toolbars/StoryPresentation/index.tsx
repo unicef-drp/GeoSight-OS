@@ -13,8 +13,8 @@
  */
 
 /* ==========================================================================
-   Map toolbar button: play the Story Map in cinematic (full screen) mode.
-   Shown when the project enables the cinematic mode; part of the share and
+   Map toolbar button: play the Story Map in presentation (full screen) mode.
+   Shown when the project enables the presentation mode; part of the share and
    story group of the main tools (MapLibre/index.jsx).
    ========================================================================== */
 
@@ -25,20 +25,20 @@ import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { StoryPlayIcon } from "../../../../components/Icons";
 import { useStoryPlayback } from "../../LeftPanel/StoryMap/StoryPlayback";
 
-export default function StoryCinematicToolbar() {
+export default function StoryPresentationToolbar() {
   const { t } = useTranslation();
   const playback = useStoryPlayback();
-  if (!playback.cinematicEnabled || !playback.total) {
+  if (!playback.presentationEnabled || !playback.total) {
     return null;
   }
   return (
-    <Plugin className="StoryCinematicControl">
-      <div data-testid="story-map-cinematic-toolbar">
+    <Plugin className="StoryPresentationControl">
+      <div data-testid="story-map-presentation-toolbar">
         <PluginChild
-          title={t("dashboardPage.storyMap.cinematic")}
+          title={t("dashboardPage.storyMap.presentation")}
           disabled={false}
           active={false}
-          onClick={() => playback.setCinematic(true)}
+          onClick={() => playback.setPresentation(true)}
         >
           <StoryPlayIcon />
         </PluginChild>

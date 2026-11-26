@@ -13,7 +13,7 @@
  */
 
 /* ==========================================================================
-   Story Map controls, shared by the left panel and the cinematic mode.
+   Story Map controls, shared by the left panel and the presentation mode.
    Same button style and icons as the time slider.
    ========================================================================== */
 
@@ -200,25 +200,25 @@ export function StorySettings({ placement }: { placement: "below" | "above" }) {
   );
 }
 
-/** Enter or leave the cinematic (full screen) mode. */
-export function StoryCinematicButton() {
+/** Enter or leave the presentation (full screen) mode. */
+export function StoryPresentationButton() {
   const { t } = useTranslation();
   const playback = useStoryPlayback();
-  if (!playback.cinematicEnabled) {
+  if (!playback.presentationEnabled) {
     return null;
   }
-  const title = playback.cinematic
-    ? t("dashboardPage.storyMap.exitCinematic")
-    : t("dashboardPage.storyMap.cinematic");
+  const title = playback.presentation
+    ? t("dashboardPage.storyMap.exitPresentation")
+    : t("dashboardPage.storyMap.presentation");
   return (
     <StoryButton
       testId={
-        playback.cinematic ? "story-map-cinematic-exit" : "story-map-cinematic"
+        playback.presentation ? "story-map-presentation-exit" : "story-map-presentation"
       }
       title={title}
-      onClick={() => playback.setCinematic(!playback.cinematic)}
+      onClick={() => playback.setPresentation(!playback.presentation)}
     >
-      {playback.cinematic ? <ShrinkIcon /> : <StoryPlayIcon />}
+      {playback.presentation ? <ShrinkIcon /> : <StoryPlayIcon />}
     </StoryButton>
   );
 }
@@ -251,7 +251,7 @@ export function StoryProgress() {
   );
 }
 
-/** Show or hide the map legend (cinematic mode). */
+/** Show or hide the map legend (presentation mode). */
 export function StoryLegendButton() {
   const { t } = useTranslation();
   const playback = useStoryPlayback();

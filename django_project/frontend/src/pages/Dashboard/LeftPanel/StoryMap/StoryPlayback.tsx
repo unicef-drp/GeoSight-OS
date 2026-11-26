@@ -13,7 +13,7 @@
  */
 
 /* ==========================================================================
-   Story Map playback: one state for the left panel and the cinematic mode.
+   Story Map playback: one state for the left panel and the presentation mode.
    ========================================================================== */
 
 import React, {
@@ -45,8 +45,8 @@ const SETTINGS_KEY = "GeoSight.StoryMap.settings";
 
 export interface StoryPlayback {
   enabled: boolean;
-  /** The project shows the cinematic mode button. */
-  cinematicEnabled: boolean;
+  /** The project shows the presentation mode button. */
+  presentationEnabled: boolean;
   /** Goes up on every page change (play, next, previous, page pick). */
   navigation: number;
   stories: DashboardStory[];
@@ -57,12 +57,12 @@ export interface StoryPlayback {
   isDataLoaded: boolean;
   speed: number;
   showWidgets: boolean;
-  cinematic: boolean;
+  presentation: boolean;
   /** Autoplay timer of the current page is running (data loaded). */
   countdownActive: boolean;
   /** Changes when a new countdown starts (restarts the progress bar). */
   countdownKey: string;
-  /** Legend shown in the cinematic mode. */
+  /** Legend shown in the presentation mode. */
   legendVisible: boolean;
   applyStory: (index: number) => void;
   start: () => void;
@@ -73,7 +73,7 @@ export interface StoryPlayback {
   toggleLegend: () => void;
   setSpeed: (speed: number) => void;
   setShowWidgets: (show: boolean) => void;
-  setCinematic: (on: boolean) => void;
+  setPresentation: (on: boolean) => void;
 }
 
 /**
@@ -149,7 +149,7 @@ const noop = () => {};
 /** Outside a dashboard page (no provider): no story. */
 const NO_STORY: StoryPlayback = {
   enabled: false,
-  cinematicEnabled: false,
+  presentationEnabled: false,
   navigation: 0,
   stories: [],
   activeIndex: null,
@@ -159,7 +159,7 @@ const NO_STORY: StoryPlayback = {
   isDataLoaded: true,
   speed: DEFAULT_SPEED,
   showWidgets: true,
-  cinematic: false,
+  presentation: false,
   countdownActive: false,
   countdownKey: "",
   legendVisible: true,
@@ -172,7 +172,7 @@ const NO_STORY: StoryPlayback = {
   toggleLegend: noop,
   setSpeed: noop,
   setShowWidgets: noop,
-  setCinematic: noop,
+  setPresentation: noop,
 };
 
 /** Story playback of the dashboard. */
@@ -180,7 +180,7 @@ export function useStoryPlayback(): StoryPlayback {
   return useContext(StoryPlaybackContext) || NO_STORY;
 }
 
-/** Provides the story playback to the left panel and the cinematic mode. */
+/** Provides the story playback to the left panel and the presentation mode. */
 export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
   const dispatch = useDispatch();
   const selectedBookmark = useSelector((state: any) => state.selectedBookmark);
@@ -189,7 +189,7 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
     stories,
     storiesStructure,
     story_map_enabled,
-    story_map_cinematic,
+    story_map_presentation,
     indicatorLayers,
     relatedTables,
   } = useSelector((state: any) => state.dashboard.data);
@@ -204,9 +204,9 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
   const [autoPlay, setAutoPlay] = useState(false);
   const [settings, setSettings] = useState(readSettings);
-  const [cinematic, setCinematicState] = useState(false);
+  const [presentation, setPresentationState] = useState(false);
   const [navigation, setNavigation] = useState(0);
-  // Legend in the cinematic mode: on for desktop, off on phones (small map).
+  // Legend in the presentation mode: on for desktop, off on phones (small map).
   const [legendVisible, setLegendVisible] = useState(
     () =>
       !(
@@ -324,33 +324,33 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer);
   }, [countdownActive, activeIndex, navigation, total, settings]);
 
-  // Cinematic mode: page class, full screen, and the map size.
+  // Presentation mode: page class, full screen, and the map size.
   useEffect(() => {
     const html = document.documentElement;
-    html.classList.toggle("StoryCinematic", cinematic);
+    html.classList.toggle("StoryPresentation", presentation);
     html.classList.toggle(
-      "StoryCinematicWidgets",
-      cinematic && settings.showWidgets,
+      "StoryPresentationWidgets",
+      presentation && settings.showWidgets,
     );
-    html.classList.toggle("StoryLegendOn", cinematic && legendVisible);
-    html.classList.toggle("StoryLegendOff", cinematic && !legendVisible);
+    html.classList.toggle("StoryLegendOn", presentation && legendVisible);
+    html.classList.toggle("StoryLegendOff", presentation && !legendVisible);
     // The map container changed size.
     window.setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
-  }, [cinematic, settings.showWidgets, legendVisible]);
+  }, [presentation, settings.showWidgets, legendVisible]);
 
-  // Leaving browser full screen (Esc) also leaves the cinematic mode.
+  // Leaving browser full screen (Esc) also leaves the presentation mode.
   useEffect(() => {
     const onChange = () => {
       if (!document.fullscreenElement) {
-        setCinematicState(false);
+        setPresentationState(false);
       }
     };
     document.addEventListener("fullscreenchange", onChange);
     return () => {
       document.removeEventListener("fullscreenchange", onChange);
       document.documentElement.classList.remove(
-        "StoryCinematic",
-        "StoryCinematicWidgets",
+        "StoryPresentation",
+        "StoryPresentationWidgets",
         "StoryLegendOn",
         "StoryLegendOff",
       );
@@ -367,7 +367,7 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
 
   const value: StoryPlayback = {
     enabled,
-    cinematicEnabled: enabled && !!story_map_cinematic,
+    presentationEnabled: enabled && !!story_map_presentation,
     navigation,
     stories: orderedStories,
     activeIndex,
@@ -377,7 +377,7 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
     isDataLoaded,
     speed: settings.speed,
     showWidgets: settings.showWidgets,
-    cinematic,
+    presentation,
     countdownActive,
     countdownKey: `${navigation}-${settings.speed}`,
     legendVisible,
@@ -408,7 +408,7 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
     },
     setSpeed: (speed: number) => updateSettings({ speed }),
     setShowWidgets: (showWidgets: boolean) => updateSettings({ showWidgets }),
-    setCinematic: (on: boolean) => {
+    setPresentation: (on: boolean) => {
       if (on) {
         if (activeIndex === null && total) {
           applyStory(0);
@@ -417,7 +417,7 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
       } else {
         exitFullScreen();
       }
-      setCinematicState(on);
+      setPresentationState(on);
     },
   };
 

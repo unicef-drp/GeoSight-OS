@@ -112,8 +112,8 @@
         "apply": "Aplicar",
         "bookmarkName": "Marcador: {{name}}",
         "noBookmark": "Sem marcador",
-        "cinematic": "Modo cinema (apresentação em tela cheia)",
-        "cinematicHelp": "Adiciona um botão na barra de ferramentas do mapa e no painel da história que reproduz a história em tela cheia, sem o cabeçalho, a barra de ferramentas e o painel lateral."
+        "presentation": "Modo apresentação (história em tela cheia)",
+        "presentationHelp": "Adiciona um botão na barra de ferramentas do mapa e no painel da história que apresenta a história em tela cheia, sem o cabeçalho, a barra de ferramentas e o painel lateral."
       }
     },
     "data": "DADOS",
@@ -277,9 +277,7 @@
       "settings": "Configurações da história",
       "timePerPage": "Tempo por página",
       "seconds": "{{count}} s",
-      "showWidgets": "Mostrar widgets no modo cinema",
-      "cinematic": "Modo cinema (tela cheia)",
-      "exitCinematic": "Sair do modo cinema",
+      "showWidgets": "Mostrar widgets no modo apresentação",
       "goToPage": "Ir para a página",
       "expand": "Mostrar página",
       "collapse": "Ocultar página",
@@ -288,7 +286,9 @@
       "showLegend": "Mostrar legenda",
       "hideLegend": "Ocultar legenda",
       "more": "Mais",
-      "less": "Menos"
+      "less": "Menos",
+      "presentation": "Modo apresentação (tela cheia)",
+      "exitPresentation": "Sair do modo apresentação"
     }
   },
   "featured": "Em destaque",

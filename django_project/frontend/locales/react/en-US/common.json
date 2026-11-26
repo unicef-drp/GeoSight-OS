@@ -112,8 +112,8 @@
         "apply": "Apply",
         "bookmarkName": "Bookmark: {{name}}",
         "noBookmark": "No bookmark",
-        "cinematic": "Cinematic mode (full-screen presentation)",
-        "cinematicHelp": "Adds a button to the map toolbar and the story panel that plays the story full screen, without the header, toolbar and side panel."
+        "presentation": "Presentation mode (full-screen story)",
+        "presentationHelp": "Adds a button to the map toolbar and the story panel that presents the story full screen, without the header, toolbar and side panel."
       }
     },
     "data": "DATA",
@@ -277,9 +277,7 @@
       "settings": "Story settings",
       "timePerPage": "Time per page",
       "seconds": "{{count}} s",
-      "showWidgets": "Show widgets in cinematic mode",
-      "cinematic": "Cinematic mode (full screen)",
-      "exitCinematic": "Exit cinematic mode",
+      "showWidgets": "Show widgets in presentation mode",
       "goToPage": "Go to page",
       "expand": "Show page",
       "collapse": "Hide page",
@@ -288,7 +286,9 @@
       "showLegend": "Show legend",
       "hideLegend": "Hide legend",
       "more": "More",
-      "less": "Less"
+      "less": "Less",
+      "presentation": "Presentation mode (full screen)",
+      "exitPresentation": "Exit presentation mode"
     }
   },
   "featured": "Featured",

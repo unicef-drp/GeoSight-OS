@@ -183,7 +183,7 @@ class DashboardForm(forms.ModelForm):
         data['widgets_structure'] = other_data['widgets_structure']
         for key in (
                 'stories', 'stories_structure', 'story_map_enabled',
-                'story_map_cinematic'
+                'story_map_presentation'
         ):
             if key in other_data:
                 data[key] = other_data[key]

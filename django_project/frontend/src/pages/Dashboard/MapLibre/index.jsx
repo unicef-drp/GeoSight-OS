@@ -49,7 +49,7 @@ import ZoomToFilteredGeometries
 import MainMapLibre, { MirrorMapLibre } from "./MapLibre";
 import LayerCreationToolbars from "../Toolbars/LayerCreationToolbars";
 import MapModeToolbars from "../Toolbars/MapModeToolbars";
-import StoryCinematicToolbar from "../Toolbars/StoryCinematic";
+import StoryPresentationToolbar from "../Toolbars/StoryPresentation";
 import { useStoryPlayback } from "../LeftPanel/StoryMap/StoryPlayback";
 
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -79,7 +79,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
     embedToolEnable ||
     dataDownloadEnable ||
     bookmarkEnable ||
-    (story.cinematicEnabled && story.total > 0);
+    (story.presentationEnabled && story.total > 0);
 
   return (
     <section
@@ -142,7 +142,7 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           <Plugin className="BookmarkControl">
             <Bookmark map={mainMap} />
           </Plugin>
-          <StoryCinematicToolbar />
+          <StoryPresentationToolbar />
           <div className="Separator" />
         </div>
 
