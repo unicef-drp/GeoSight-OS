@@ -15,10 +15,16 @@ __date__ = '13/10/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import copy
+from unittest import mock
+
 from cloud_native_gis.models.layer import Layer
+from cloud_native_gis.models.layer_download import (
+    DownloadStatus, LayerDownload
+)
 from cloud_native_gis.models.layer_upload import LayerUpload
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from kombu.exceptions import OperationalError
 
 from core.settings.utils import ABS_PATH
 from geosight.data.models.context_layer import ContextLayer, LayerType
@@ -112,3 +118,27 @@ class ContextLayerCloudNativeDownloadTest(BasePermissionTest.TestCase):
             user=self.admin,
             data={}
         )
+
+    def test_download_broker_unavailable(self):
+        """Test download when the task broker can not be reached."""
+        key = "context_layers_data-download"
+        with mock.patch.object(
+                LayerDownload, 'schedule_task',
+                side_effect=OperationalError(
+                    'Error 111 connecting to 127.0.0.1:6379.'
+                )
+        ):
+            response = self.assertRequestPostView(
+                url=reverse(
+                    key, kwargs={'context_layer_id': self.resource.id}
+                ) + '?file_format=geojson',
+                code=503,
+                user=self.admin,
+                data={}
+            )
+        self.assertEqual(response.json()['status'], 'failed')
+        layer_download = LayerDownload.objects.get(
+            unique_id=response.json()['uuid']
+        )
+        self.assertEqual(layer_download.status, DownloadStatus.FAILED)
+        self.assertIn('Error 111', layer_download.note)

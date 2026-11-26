@@ -16,7 +16,9 @@ __copyright__ = ('Copyright 2025, Unicef')
 import os
 
 from cloud_native_gis.models.layer import Layer
-from cloud_native_gis.models.layer_download import LayerDownload
+from cloud_native_gis.models.layer_download import (
+    DownloadStatus, LayerDownload
+)
 from cloud_native_gis.utils.connection import fields
 from cloud_native_gis.utils.geopandas import geojson_to_geopanda, Mode
 from cloud_native_gis.utils.type import FileType
@@ -26,6 +28,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.urls import reverse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from kombu.exceptions import OperationalError as BrokerError
 from psycopg2.errors import UndefinedColumn, InvalidParameterValue
 from rest_framework import status
 from rest_framework.decorators import action
@@ -365,7 +368,23 @@ class ContextLayerDataViewSet(ContextBaseDetailDataView):
             )
 
         # Schedule async task
-        layer_download.schedule_task()
+        try:
+            layer_download.schedule_task()
+        except BrokerError as e:
+            layer_download.status = DownloadStatus.FAILED
+            layer_download.note = f'Could not schedule the download: {e}'
+            layer_download.save()
+            return JsonResponse(
+                {
+                    "uuid": layer_download.unique_id,
+                    "status": "failed",
+                    "error": (
+                        "The download service is not available. "
+                        "Please try again later."
+                    )
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
 
         download_path = reverse(
             'cloud-native-gis-download-file-data',
