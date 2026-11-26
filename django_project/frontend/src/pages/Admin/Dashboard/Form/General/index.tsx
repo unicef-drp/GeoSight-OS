@@ -634,7 +634,7 @@ const GeneralForm = memo(({}: Props) => {
                       style={{ marginTop: "1rem" }}
                       value=""
                       control={<Radio />}
-                      label={t("Hide both tabs")}
+                      label={t("admin.dashboard.hideBothTabs")}
                     />
                   </RadioGroup>
                 </div>

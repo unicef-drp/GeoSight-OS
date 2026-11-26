@@ -60,7 +60,8 @@
       "indicator": "Adicionar indicador",
       "indicatorLayer": "Adicionar camada de indicador",
       "relatedTable": "Adicionar tabela relacionada",
-      "widget": "Adicionar widget"
+      "widget": "Adicionar widget",
+      "storyPage": "Adicionar página da história"
     },
     "basemaps": "Mapas base",
     "cancel": "Cancelar",
@@ -93,7 +94,25 @@
       "transparencyOfIndicatorLayers": "Transparência das camadas de indicadores",
       "truncateLongIndicatorLayerName": "Truncar nomes longos de camadas de indicadores",
       "urlShortcode": "Código curto da URL",
-      "urlShortcodeDescription": "URL do projeto em formato slug. Os espaços são substituídos automaticamente por \"-\" e o texto é convertido para minúsculas.\nSe estiver vazia, será gerada a partir do nome."
+      "urlShortcodeDescription": "URL do projeto em formato slug. Os espaços são substituídos automaticamente por \"-\" e o texto é convertido para minúsculas.\nSe estiver vazia, será gerada a partir do nome.",
+      "hideBothTabs": "Ocultar ambas as abas",
+      "storyMap": {
+        "enable": "Mostrar o mapa narrativo no projeto",
+        "addPage": "Adicionar página da história",
+        "editPage": "Editar {{name}}",
+        "page": "página da história",
+        "title": "Título",
+        "description": "Descrição",
+        "loading": "Carregando…",
+        "thumbnail": "Miniatura",
+        "bookmark": "Marcador espacial",
+        "noBookmarkSelected": "Nenhum marcador selecionado",
+        "noBookmarksHelp": "Salve o projeto primeiro e depois crie marcadores no mapa para vinculá-los às páginas da história.",
+        "visibleInStory": "Visível na história",
+        "apply": "Aplicar",
+        "bookmarkName": "Marcador: {{name}}",
+        "noBookmark": "Sem marcador"
+      }
     },
     "data": "DADOS",
     "dataBrowser": "Explorador de dados",
@@ -241,7 +260,19 @@
     "projectOverviewNoShow": "Não mostrar novamente!",
     "relatedTableNotConfigured": "A tabela relacionada não está configurada corretamente",
     "searchGeographyEntity": "Pesquisar entidade geográfica",
-    "searchGeographyEntityLoading": "Carregando..."
+    "searchGeographyEntityLoading": "Carregando...",
+    "storyMap": {
+      "tab": "História",
+      "toolbarTitle": "Mapa narrativo",
+      "empty": "Esta história ainda não tem páginas.",
+      "waitingForData": "Aguardando o carregamento dos dados do mapa…",
+      "pageFallbackTitle": "Página {{number}}",
+      "previous": "Página anterior",
+      "next": "Próxima página",
+      "play": "Reproduzir a história",
+      "pause": "Pausar a história",
+      "counter": "{{current}} / {{total}}"
+    }
   },
   "featured": "Em destaque",
   "featured projects": "Projetos em destaque",

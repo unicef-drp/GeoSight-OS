@@ -20,6 +20,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
 import { debounce } from "@mui/material/utils";
+import { useTranslation } from "react-i18next";
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
@@ -77,6 +78,7 @@ const StoryEditor = ({
   setOpen,
   onApply,
 }: StoryEditorProps) => {
+  const { t } = useTranslation();
   const [data, setData] = useState<DashboardStory | null>(story);
 
   useEffect(() => {
@@ -100,14 +102,18 @@ const StoryEditor = ({
           setOpen(false);
         }}
       >
-        {data.id ? `Edit ${data.name || "story page"}` : "Add story page"}
+        {data.id
+          ? t("admin.dashboard.storyMap.editPage", {
+              name: data.name || t("admin.dashboard.storyMap.page"),
+            })
+          : t("admin.dashboard.storyMap.addPage")}
       </ModalHeader>
       <ModalContent>
         <div className="BasicForm">
           <div className="BasicFormSection">
             <TextField
               fullWidth
-              label="Title"
+              label={t("admin.dashboard.storyMap.title")}
               value={data.name || ""}
               onChange={(event) => {
                 setData({
@@ -118,8 +124,10 @@ const StoryEditor = ({
             />
           </div>
           <div className="BasicFormSection">
-            <label className="form-label">Description</label>
-            <Suspense fallback={<div>Loading...</div>}>
+            <label className="form-label">
+              {t("admin.dashboard.storyMap.description")}
+            </label>
+            <Suspense fallback={<div>{t("admin.dashboard.storyMap.loading")}</div>}>
               <MDXEditor
                 markdown={data.description || ""}
                 plugins={[
@@ -135,7 +143,10 @@ const StoryEditor = ({
                       <>
                         <UndoRedo />
                         <div data-orientation="vertical" role="separator" />
-                        <BoldItalicUnderlineToggles />
+                        {/* No underline: it is stored as raw HTML, which is not rendered. */}
+                        <BoldItalicUnderlineToggles
+                          options={["Bold", "Italic"]}
+                        />
                         <CodeToggle />
                         <div data-orientation="vertical" role="separator" />
                         <ListsToggle />
@@ -160,7 +171,9 @@ const StoryEditor = ({
             </Suspense>
           </div>
           <div className="BasicFormSection">
-            <label className="form-label">Thumbnail</label>
+            <label className="form-label">
+              {t("admin.dashboard.storyMap.thumbnail")}
+            </label>
             <ImageInput
               id={`StoryMapIcon-${data.id || "new"}`}
               name={`story_icon_input_${data.id || "new"}`}
@@ -176,7 +189,9 @@ const StoryEditor = ({
             />
           </div>
           <div className="BasicFormSection">
-            <label className="form-label">Spatial bookmark</label>
+            <label className="form-label">
+              {t("admin.dashboard.storyMap.bookmark")}
+            </label>
             <select
               className="form-control"
               value={data.bookmark_id || ""}
@@ -189,7 +204,9 @@ const StoryEditor = ({
               }}
               style={{ width: "100%", minHeight: "40px" }}
             >
-              <option value="">No bookmark selected</option>
+              <option value="">
+                {t("admin.dashboard.storyMap.noBookmarkSelected")}
+              </option>
               {bookmarks.map((bookmark) => (
                 <option key={bookmark.id} value={bookmark.id}>
                   {bookmark.name}
@@ -198,8 +215,7 @@ const StoryEditor = ({
             </select>
             {!bookmarks.length ? (
               <div className="form-helptext" style={{ marginTop: "0.5rem" }}>
-                Save the dashboard first, then create bookmarks to attach them to
-                Story Map pages.
+                {t("admin.dashboard.storyMap.noBookmarksHelp")}
               </div>
             ) : null}
           </div>
@@ -217,7 +233,7 @@ const StoryEditor = ({
                     }}
                   />
                 }
-                label="Visible in story"
+                label={t("admin.dashboard.storyMap.visibleInStory")}
               />
             </FormGroup>
           </div>
@@ -230,11 +246,11 @@ const StoryEditor = ({
             setOpen(false);
           }}
         >
-          Cancel
+          {t("admin.cancel")}
         </ThemeButton>
         <SaveButton
           variant="primary"
-          text="Apply"
+          text={t("admin.dashboard.storyMap.apply")}
           disabled={!data.name}
           onClick={() => {
             onApply(data);
@@ -248,6 +264,7 @@ const StoryEditor = ({
 
 export default function StoryMapForm() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { slug, stories, storiesStructure, story_map_enabled } = useSelector(
     (state: any) => state.dashboard.data,
   );
@@ -335,7 +352,7 @@ export default function StoryMapForm() {
                   }}
                 />
               }
-              label="Enable Story Map in the dashboard"
+              label={t("admin.dashboard.storyMap.enable")}
             />
           </FormGroup>
         </div>
@@ -383,7 +400,11 @@ export default function StoryMapForm() {
           );
           return (
             <div className="OtherActionIndicator">
-              {bookmark ? `Bookmark: ${bookmark.name}` : "No bookmark"}
+              {bookmark
+                ? t("admin.dashboard.storyMap.bookmarkName", {
+                    name: bookmark.name,
+                  })
+                : t("admin.dashboard.storyMap.noBookmark")}
             </div>
           );
         }}

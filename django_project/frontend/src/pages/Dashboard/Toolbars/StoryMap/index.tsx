@@ -15,6 +15,7 @@
 
 import React from "react";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import { useTranslation } from "react-i18next";
 
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 
@@ -25,15 +26,20 @@ interface Props {
 }
 
 export default function StoryMapToolbar({ enabled, active, onToggle }: Props) {
+  const { t } = useTranslation();
   if (!enabled) {
     return null;
   }
 
   return (
     <Plugin className="StoryMapControl">
-      <div className={active ? "Active" : ""} data-tool="Story map">
+      <div
+        className={active ? "Active" : ""}
+        data-tool="Story map"
+        data-testid="story-map-toolbar"
+      >
         <PluginChild
-          title={"Story map"}
+          title={t("dashboardPage.storyMap.toolbarTitle")}
           disabled={false}
           active={active}
           onClick={onToggle}

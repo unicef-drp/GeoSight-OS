@@ -60,7 +60,8 @@
       "indicator": "Agregar indicador",
       "indicatorLayer": "Agregar capa de indicador",
       "relatedTable": "Agregar tabla relacionada",
-      "widget": "Agregar widget"
+      "widget": "Agregar widget",
+      "storyPage": "Agregar página de historia"
     },
     "basemaps": "Mapas base",
     "cancel": "Cancelar",
@@ -93,7 +94,25 @@
       "transparencyOfIndicatorLayers": "Transparencia de las capas de indicadores",
       "truncateLongIndicatorLayerName": "Truncar nombre largo de la capa de indicador",
       "urlShortcode": "Código corto de URL",
-      "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío."
+      "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío.",
+      "hideBothTabs": "Ocultar ambas pestañas",
+      "storyMap": {
+        "enable": "Mostrar el mapa narrativo en el proyecto",
+        "addPage": "Agregar página de historia",
+        "editPage": "Editar {{name}}",
+        "page": "página de historia",
+        "title": "Título",
+        "description": "Descripción",
+        "loading": "Cargando…",
+        "thumbnail": "Miniatura",
+        "bookmark": "Marcador espacial",
+        "noBookmarkSelected": "Ningún marcador seleccionado",
+        "noBookmarksHelp": "Guarde primero el proyecto y luego cree marcadores en el mapa para vincularlos a las páginas de la historia.",
+        "visibleInStory": "Visible en la historia",
+        "apply": "Aplicar",
+        "bookmarkName": "Marcador: {{name}}",
+        "noBookmark": "Sin marcador"
+      }
     },
     "data": "DATOS",
     "dataBrowser": "Explorador de datos",
@@ -241,7 +260,19 @@
     "projectOverviewNoShow": "¡No mostrar esto de nuevo!",
     "relatedTableNotConfigured": "La tabla relacionada no está configurada correctamente",
     "searchGeographyEntity": "Buscar entidad geográfica",
-    "searchGeographyEntityLoading": "Cargando..."
+    "searchGeographyEntityLoading": "Cargando...",
+    "storyMap": {
+      "tab": "Historia",
+      "toolbarTitle": "Mapa narrativo",
+      "empty": "Esta historia todavía no tiene páginas.",
+      "waitingForData": "Esperando a que se carguen los datos del mapa…",
+      "pageFallbackTitle": "Página {{number}}",
+      "previous": "Página anterior",
+      "next": "Página siguiente",
+      "play": "Reproducir la historia",
+      "pause": "Pausar la historia",
+      "counter": "{{current}} / {{total}}"
+    }
   },
   "featured": "Destacado",
   "featured projects": "Proyectos destacados",

@@ -60,7 +60,8 @@
       "indicator": "Add Indicator",
       "indicatorLayer": "Add Indicator Layer",
       "relatedTable": "Add Related Table",
-      "widget": "Add Widget"
+      "widget": "Add Widget",
+      "storyPage": "Add Story Page"
     },
     "basemaps": "Basemaps",
     "cancel": "Cancel",
@@ -93,7 +94,25 @@
       "transparencyOfIndicatorLayers": "Transparency of Indicator Layers",
       "truncateLongIndicatorLayerName": "Truncate long indicator layer name",
       "urlShortcode": "URL Shortcode",
-      "urlShortcodeDescription": "Url of project in slug format. It will auto change space to \"-\" and to lowercase.\nIt will be generated from name if empty."
+      "urlShortcodeDescription": "Url of project in slug format. It will auto change space to \"-\" and to lowercase.\nIt will be generated from name if empty.",
+      "hideBothTabs": "Hide both tabs",
+      "storyMap": {
+        "enable": "Show the Story Map in the project",
+        "addPage": "Add story page",
+        "editPage": "Edit {{name}}",
+        "page": "story page",
+        "title": "Title",
+        "description": "Description",
+        "loading": "Loading…",
+        "thumbnail": "Thumbnail",
+        "bookmark": "Spatial bookmark",
+        "noBookmarkSelected": "No bookmark selected",
+        "noBookmarksHelp": "Save the project first, then create bookmarks on the map to link them to story pages.",
+        "visibleInStory": "Visible in the story",
+        "apply": "Apply",
+        "bookmarkName": "Bookmark: {{name}}",
+        "noBookmark": "No bookmark"
+      }
     },
     "data": "DATA",
     "dataBrowser": "Data Browser",
@@ -241,7 +260,19 @@
     "projectOverviewNoShow": "Do not show this again!",
     "relatedTableNotConfigured": "Related table does not configured properly",
     "searchGeographyEntity": "Search Geography Entity",
-    "searchGeographyEntityLoading": "Loading...."
+    "searchGeographyEntityLoading": "Loading....",
+    "storyMap": {
+      "tab": "Story",
+      "toolbarTitle": "Story Map",
+      "empty": "This story has no pages yet.",
+      "waitingForData": "Waiting for the map data to load…",
+      "pageFallbackTitle": "Page {{number}}",
+      "previous": "Previous page",
+      "next": "Next page",
+      "play": "Play the story",
+      "pause": "Pause the story",
+      "counter": "{{current}} / {{total}}"
+    }
   },
   "featured": "Featured",
   "featured projects": "Featured Projects",
