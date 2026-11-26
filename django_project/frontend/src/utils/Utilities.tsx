@@ -66,7 +66,13 @@ export function formatWidgetNumber(
   format: WidgetNumberFormat | null | undefined,
   fallbackDecimals: number = 0,
 ): string {
-  return format?.useDecimalPlace
-    ? formatNumber(value, format.decimalPlace || 0, format.useAutoUnits, true)
-    : formatNumber(value, fallbackDecimals, format?.useAutoUnits);
+  if (!format?.useDecimalPlace) {
+    return formatNumber(value, fallbackDecimals, format?.useAutoUnits);
+  }
+  // Legacy widgets turn decimals on without a count: keep formatNumber's
+  // default (up to 2 decimals, no trailing zeros).
+  if ([null, undefined].includes(format.decimalPlace)) {
+    return formatNumber(value, undefined, format.useAutoUnits);
+  }
+  return formatNumber(value, format.decimalPlace, format.useAutoUnits, true);
 }
