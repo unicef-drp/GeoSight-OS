@@ -111,7 +111,9 @@
         "visibleInStory": "Visible dans le récit",
         "apply": "Appliquer",
         "bookmarkName": "Signet : {{name}}",
-        "noBookmark": "Aucun signet"
+        "noBookmark": "Aucun signet",
+        "cinematic": "Mode cinéma (présentation plein écran)",
+        "cinematicHelp": "Ajoute un bouton dans la barre d'outils de la carte et dans le panneau du récit pour lire le récit en plein écran, sans l'en-tête, la barre d'outils ni le panneau latéral."
       }
     },
     "data": "DONNÉES",
@@ -263,7 +265,6 @@
     "searchGeographyEntityLoading": "Chargement...",
     "storyMap": {
       "tab": "Récit",
-      "toolbarTitle": "Carte narrative",
       "empty": "Ce récit n'a pas encore de pages.",
       "waitingForData": "Chargement des données de la carte…",
       "pageFallbackTitle": "Page {{number}}",
@@ -271,7 +272,17 @@
       "next": "Page suivante",
       "play": "Lire le récit",
       "pause": "Mettre le récit en pause",
-      "counter": "{{current}} / {{total}}"
+      "counter": "{{current}} / {{total}}",
+      "playback": "Lecture du récit",
+      "settings": "Paramètres du récit",
+      "timePerPage": "Durée par page",
+      "seconds": "{{count}} s",
+      "showWidgets": "Afficher les widgets en mode cinéma",
+      "cinematic": "Mode cinéma (plein écran)",
+      "exitCinematic": "Quitter le mode cinéma",
+      "goToPage": "Aller à la page",
+      "expand": "Afficher la page",
+      "collapse": "Masquer la page"
     }
   },
   "featured": "Mis en avant",

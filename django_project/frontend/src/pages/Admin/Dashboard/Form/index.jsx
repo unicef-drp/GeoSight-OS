@@ -221,6 +221,7 @@ export function DashboardSaveForm() {
     layer_tabs_visibility,
     show_map_toolbar,
     story_map_enabled,
+    story_map_cinematic,
 
     // Filter configurations
     filters,
@@ -367,6 +368,7 @@ export function DashboardSaveForm() {
         permission: permission,
         tools: tools,
         story_map_enabled: story_map_enabled,
+        story_map_cinematic: !!story_map_cinematic,
 
         // Filter configurations
         filters: filters,

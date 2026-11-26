@@ -59,20 +59,6 @@ export default function ToggleSidePanel({
     setActive("Active");
   }, []);
 
-  // Follow the panel when it is opened or closed elsewhere (e.g. Story Map).
-  useEffect(() => {
-    if (props.active === undefined) {
-      return;
-    }
-    const expanded = !!props.active;
-    if (props.className === "LeftButton") {
-      setState(expanded ? LEFT : RIGHT);
-    } else {
-      setState(expanded ? RIGHT : LEFT);
-    }
-    setActive(expanded ? "Active" : "");
-  }, [props.active]);
-
   const change = () => {
     const newState = state === RIGHT ? LEFT : RIGHT;
     setState(newState);

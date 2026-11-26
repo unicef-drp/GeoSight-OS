@@ -108,3 +108,4 @@ export { default as TimeLastIcon } from "./time-last.svg";
 export { default as TimeSettingsIcon } from "./time-settings.svg";
 export { default as ChevronUpIcon } from "./chevron-up.svg";
 export { default as ChevronDownIcon } from "./chevron-down.svg";
+export { default as StoryPlayIcon } from "./story-play.svg";

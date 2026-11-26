@@ -18,7 +18,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from "../../store/dashboard";
-import LeftPanel, { LEFT_PANEL_TAB } from "./LeftPanel";
+import LeftPanel from "./LeftPanel";
 import MapLibre from "./MapLibre";
 import RightPanel from "./MiddlePanel/RightPanel";
 import MiddlePanel from "./MiddlePanel";
@@ -26,12 +26,13 @@ import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { useTranslation } from "react-i18next";
 import {
-  isContextLayerContentVisible,
   isDashboardToolEnabled,
-  isFilterContentVisible,
-  isIndicatorLayerContentVisible,
   isStoryMapEnabled,
 } from "../../selectors/dashboard";
+import {
+  StoryPlaybackProvider,
+} from "./LeftPanel/StoryMap/StoryPlayback";
+import StoryCinematic from "./LeftPanel/StoryMap/Cinematic";
 import { Variables } from "../../utils/Variables";
 
 import "./style.scss";
@@ -48,43 +49,19 @@ export default function Dashboard({ children }) {
   const entitySearchEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
   );
-  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible);
-  const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
-  const filterVisible = useSelector(isFilterContentVisible);
   const storyMapEnabled = useSelector(isStoryMapEnabled);
 
-  const showLayerTab =
-    !!EmbedConfig().layer_tab &&
-    (indicatorLayerVisible || contextLayerContentVisible);
-  const showFilterTab = !!EmbedConfig().filter_tab && filterVisible;
+  const showLayerTab = !!EmbedConfig().layer_tab;
+  const showFilterTab = !!EmbedConfig().filter_tab;
   const showWidget = EmbedConfig().widget_tab;
-  const showLeftPanel = showLayerTab || showFilterTab || storyMapEnabled;
   const [leftExpanded, setLeftExpanded] = useState(
-    !!EmbedConfig().layer_tab || !!EmbedConfig().filter_tab,
+    showLayerTab || showFilterTab,
   );
-  const [leftPanelTab, setLeftPanelTab] = useState(LEFT_PANEL_TAB.LAYERS);
-  const storyMapActive = leftExpanded && leftPanelTab === LEFT_PANEL_TAB.STORY;
-
-  /** Story Map toolbar button: open the Story tab, or leave it. */
-  const toggleStoryPanel = () => {
-    if (storyMapActive) {
-      if (showLayerTab) {
-        setLeftPanelTab(LEFT_PANEL_TAB.LAYERS);
-      } else if (showFilterTab) {
-        setLeftPanelTab(LEFT_PANEL_TAB.FILTERS);
-      } else {
-        setLeftExpanded(false);
-      }
-    } else {
-      setLeftExpanded(true);
-      setLeftPanelTab(LEFT_PANEL_TAB.STORY);
-    }
-  };
   const [rightExpanded, setRightExpanded] = useState(showWidget);
   const { t } = useTranslation();
 
   const leftPanelProps =
-    showLeftPanel || !!EmbedConfig().layer_tab || !!EmbedConfig().filter_tab
+    showLayerTab || showFilterTab || storyMapEnabled
       ? {
           className: "LeftButton",
           initState: leftExpanded ? LEFT : RIGHT,
@@ -128,13 +105,9 @@ export default function Dashboard({ children }) {
       }
     >
       {user_permission ? (
-        <>
+        <StoryPlaybackProvider>
           {/* LEFT SIDE PANEL */}
-          <LeftPanel
-            leftExpanded={leftExpanded}
-            selectedTab={leftPanelTab}
-            setSelectedTab={setLeftPanelTab}
-          />
+          <LeftPanel leftExpanded={leftExpanded} />
 
           {/* CONTENT PANEL */}
           <section
@@ -147,9 +120,6 @@ export default function Dashboard({ children }) {
             <MapLibre
               leftPanelProps={leftPanelProps}
               rightPanelProps={rightPanelProps}
-              storyMapEnabled={storyMapEnabled}
-              storyMapActive={storyMapActive}
-              onToggleStoryPanel={toggleStoryPanel}
             />
             <MiddlePanel
               leftExpanded={leftExpanded}
@@ -159,7 +129,10 @@ export default function Dashboard({ children }) {
               rightContent={<RightPanel rightExpanded={rightExpanded} />}
             />
           </section>
-        </>
+
+          {/* STORY MAP CINEMATIC MODE (full screen) */}
+          <StoryCinematic />
+        </StoryPlaybackProvider>
       ) : (
         <div className="LoadingElement">
           <div className="Throbber">

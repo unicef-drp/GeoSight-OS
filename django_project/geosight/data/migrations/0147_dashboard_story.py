@@ -21,6 +21,11 @@ class Migration(migrations.Migration):
             name='story_map_enabled',
             field=models.BooleanField(default=False),
         ),
+        migrations.AddField(
+            model_name='dashboard',
+            name='story_map_cinematic',
+            field=models.BooleanField(default=False, help_text='Show the Story Map cinematic (full screen) mode button.'),
+        ),
         migrations.CreateModel(
             name='DashboardStory',
             fields=[

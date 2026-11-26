@@ -111,7 +111,9 @@
         "visibleInStory": "Visible in the story",
         "apply": "Apply",
         "bookmarkName": "Bookmark: {{name}}",
-        "noBookmark": "No bookmark"
+        "noBookmark": "No bookmark",
+        "cinematic": "Cinematic mode (full-screen presentation)",
+        "cinematicHelp": "Adds a button to the map toolbar and the story panel that plays the story full screen, without the header, toolbar and side panel."
       }
     },
     "data": "DATA",
@@ -263,7 +265,6 @@
     "searchGeographyEntityLoading": "Loading....",
     "storyMap": {
       "tab": "Story",
-      "toolbarTitle": "Story Map",
       "empty": "This story has no pages yet.",
       "waitingForData": "Waiting for the map data to load…",
       "pageFallbackTitle": "Page {{number}}",
@@ -271,7 +272,17 @@
       "next": "Next page",
       "play": "Play the story",
       "pause": "Pause the story",
-      "counter": "{{current}} / {{total}}"
+      "counter": "{{current}} / {{total}}",
+      "playback": "Story playback",
+      "settings": "Story settings",
+      "timePerPage": "Time per page",
+      "seconds": "{{count}} s",
+      "showWidgets": "Show widgets in cinematic mode",
+      "cinematic": "Cinematic mode (full screen)",
+      "exitCinematic": "Exit cinematic mode",
+      "goToPage": "Go to page",
+      "expand": "Show page",
+      "collapse": "Hide page"
     }
   },
   "featured": "Featured",

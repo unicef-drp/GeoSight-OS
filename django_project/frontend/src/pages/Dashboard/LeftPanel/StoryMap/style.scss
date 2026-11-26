@@ -1,111 +1,507 @@
+/**
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __date__ = '26/11/2026'
+ * __copyright__ = ('Copyright 2026, Unicef')
+ */
+
+/* ==========================================================================
+   Story Map: buttons (time slider style), settings, panel, cinematic mode.
+   Square corners everywhere, like the rest of the UI.
+   ========================================================================== */
+
+.StoryButton {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--primary-color);
+  background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 22%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &.Active {
+    color: var(--anti-primary-color);
+    background-color: var(--primary-color);
+  }
+
+  &.Big {
+    width: 56px;
+    height: 56px;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
+.StoryTransport {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+// Directional glyphs mirror in right-to-left languages.
+[dir="rtl"] .StoryTransport svg {
+  transform: scaleX(-1);
+}
+
+.StoryMapCounter {
+  color: #5F6B73;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+// Settings pop-over (same look as the time slider settings).
+.StorySettingsWrapper {
+  position: relative;
+  flex: none;
+}
+
+.StorySettings {
+  position: absolute;
+  right: 0;
+  width: 260px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--white, #fff);
+  border: 1px solid var(--border-gray);
+  border-radius: 0;
+  box-shadow: 0 8px 24px rgba(16, 40, 56, 0.16);
+  color: var(--base-black-color);
+  font-size: 14px;
+  text-align: left;
+  z-index: 30;
+
+  &.below {
+    top: calc(100% + 8px);
+  }
+
+  &.above {
+    bottom: calc(100% + 8px);
+  }
+
+  .StorySettingsTitle {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #5F6B73;
+  }
+
+  .StorySettingsField {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    select {
+      min-width: 90px;
+    }
+  }
+
+  .StorySettingsSwitch {
+    margin: 0;
+    justify-content: space-between;
+
+    .MuiFormControlLabel-label {
+      font-size: 14px;
+    }
+  }
+}
+
+.StorySettings select,
+.StoryPageSelect {
+  height: 34px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  border: 1px solid var(--border-gray);
+  border-radius: 0;
+  background-color: var(--white, #fff);
+  color: var(--base-black-color);
+  font-size: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   Left panel
+   -------------------------------------------------------------------------- */
 .StoryMapPanel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
   box-sizing: border-box;
   min-height: 100%;
   max-height: 100%;
   overflow-y: auto;
-  // Opaque: on phones the panel is a full-screen layer over the map.
+  // Opaque: on phones the panel is a full screen layer over the map.
   background-color: var(--white, #fff);
 
-  &.Empty {
-    color: #666;
+  .StoryMapEmpty {
+    padding: 16px;
+    color: #5F6B73;
   }
 
   .StoryMapControls {
+    position: sticky;
+    top: 0;
+    z-index: 2;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 6px;
+    padding: 12px 16px;
+    background-color: var(--white, #fff);
+    border-bottom: 1px solid var(--border-gray);
 
     .StoryMapCounter {
       margin-left: auto;
-    }
-
-    button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid #d7d7d7;
-      border-radius: 8px;
-      background: #fff;
-      color: #111;
-      cursor: pointer;
-
-      svg {
-        color: currentColor;
-        font-size: 1.35rem;
-      }
-
-      &:hover {
-        background: #f3f6fb;
-      }
+      margin-right: 4px;
     }
   }
 
-  .StoryMapStatus,
-  .StoryMapCounter {
-    color: #666;
-    font-size: 0.9rem;
+  .StoryMapStatus {
+    padding: 8px 16px;
+    color: #5F6B73;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-gray);
   }
 
+  // One full-width rectangle per page.
   .StoryMapList {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
   }
 
   .StoryMapItem {
     display: flex;
-    gap: 0.75rem;
+    flex-direction: column;
     width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border-gray);
+    border-radius: 0;
+    background-color: var(--white, #fff);
+    color: var(--base-black-color);
     text-align: left;
-    border: 1px solid #dcdcdc;
-    border-radius: 12px;
-    padding: 0.75rem;
-    background: #fff;
     cursor: pointer;
-    color: #111;
 
-    &.Active {
-      border-color: var(--primary-color, #2f80ed);
-      box-shadow: 0 0 0 1px var(--primary-color, #2f80ed);
+    &.Active .StoryMapItemHeader {
+      // Current page: primary bar on the left and a light tint.
+      box-shadow: inset 3px 0 0 var(--primary-color);
+      background-color: color-mix(in srgb, var(--primary-color) 10%, #fff);
+    }
+
+    &.Expanded {
+      padding-bottom: 14px;
+    }
+  }
+
+  .StoryMapItemHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 12px 12px 16px;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--primary-color) 6%, #fff);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--primary-color, #2f80ed);
-      outline-offset: 2px;
+      outline: 2px solid var(--primary-color);
+      outline-offset: -2px;
     }
   }
 
-  .StoryMapItemImage {
-    width: 88px;
-    height: 88px;
-    object-fit: cover;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-
-  .StoryMapItemContent {
-    min-width: 0;
-    flex: 1;
-  }
-
   .StoryMapItemTitle {
-    display: block;
-    color: #111;
-    font-weight: 600;
-    font-size: 1rem;
+    flex: 1;
+    min-width: 0;
+    font-weight: 700;
+    font-size: 16px;
     line-height: 1.35;
-    margin-bottom: 0.35rem;
-    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .StoryMapItemToggle {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin: -2px 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    background-color: transparent;
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 1px;
+    }
+  }
+
+  // Thumbnail: the full width of the panel.
+  .StoryMapItemImage {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 0;
+    margin: 0 0 12px;
   }
 
   .StoryMapItemDescription {
-    color: #555;
-    font-size: 0.9rem;
+    padding: 0 16px;
+    color: #4A555C;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+
+    p {
+      margin: 0 0 8px;
+    }
+
+    *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Cinematic mode
+   -------------------------------------------------------------------------- */
+html.StoryCinematic {
+  // Header, map toolbar, left panel and the bottom bar are hidden; the map
+  // panel covers the screen.
+  header,
+  .dashboard__left_side,
+  .DashboardMap .Toolbar,
+  .DashboardMiddlePanel .BottomContent,
+  .MobileBottomNav {
+    display: none !important;
+  }
+
+  .DashboardMiddlePanel {
+    position: fixed !important;
+    inset: 0;
+    z-index: 1000;
+    padding-top: 0 !important;
+    background-color: var(--white, #fff);
+  }
+
+  &:not(.StoryCinematicWidgets) .DashboardMiddlePanel .RightContent {
+    display: none !important;
+  }
+
+  &.StoryCinematicWidgets .DashboardMiddlePanel .RightContent {
+    margin-right: 0 !important;
+  }
+}
+
+.StoryCinematicOverlay {
+  // Only the title, card and bar take clicks; the map stays usable.
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  pointer-events: none;
+  --story-right: 16px;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+html.StoryCinematicWidgets .StoryCinematicOverlay {
+  // Leave room for the widget panel on the right.
+  --story-right: calc(320px + 2rem);
+}
+
+.StoryCinematicTitle {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(60vw, 900px);
+  margin: 0;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--box-shadow);
+  color: var(--base-black-color);
+  font-size: clamp(22px, 3vw, 40px);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.StoryCinematicCard {
+  position: absolute;
+  top: 96px;
+  right: var(--story-right);
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 96px - 110px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  background-color: var(--white, #fff);
+  border: 1px solid var(--border-gray);
+  box-shadow: var(--box-shadow);
+
+  .StoryCinematicImage {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  .StoryCinematicDescription {
+    padding: 16px 20px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--base-black-color);
+    overflow-wrap: anywhere;
+
+    p {
+      margin: 0 0 8px;
+    }
+
+    *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.StoryCinematicBar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background-color: var(--white, #fff);
+  border: 1px solid var(--border-gray);
+  box-shadow: 0 8px 24px rgba(16, 40, 56, 0.16);
+
+  .StoryTransport {
+    gap: 8px;
+  }
+
+  .StoryPageSelect {
+    max-width: 260px;
+  }
+
+  .StoryCinematicRule {
+    width: 1px;
+    height: 34px;
+    background-color: var(--border-gray);
+  }
+}
+
+.StoryCinematicStatus {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: #5F6B73;
+  font-size: 13px;
+}
+
+// Phones: title on top, description as a card above the bar, no widgets.
+@media (max-width: 1000px) {
+  html.StoryCinematic .DashboardMiddlePanel .RightContent {
+    display: none !important;
+  }
+
+  .StoryCinematicTitle {
+    top: 8px;
+    max-width: calc(100vw - 16px);
+    width: calc(100vw - 16px);
+    padding: 8px 12px;
+  }
+
+  .StoryCinematicCard {
+    top: auto;
+    right: 8px;
+    left: 8px;
+    bottom: 150px;
+    width: auto;
+    max-width: none;
+    max-height: 35vh;
+
+    .StoryCinematicImage {
+      max-height: 120px;
+    }
+  }
+
+  .StoryCinematicBar {
+    bottom: 8px;
+    width: calc(100vw - 16px);
+    max-width: none;
+    gap: 8px;
+    padding: 8px;
+
+    .StoryCinematicRule {
+      display: none;
+    }
+
+    .StoryPageSelect {
+      flex: 1 1 100%;
+      max-width: none;
+      order: 10;
+    }
+  }
+
+  .StoryCinematicStatus {
+    bottom: 150px;
   }
 }

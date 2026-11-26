@@ -152,6 +152,12 @@ class Dashboard(
         help_text=_('Show map toolbars on the map.')
     )
     story_map_enabled = models.BooleanField(default=False)
+    story_map_cinematic = models.BooleanField(
+        default=False,
+        help_text=_(
+            'Show the Story Map cinematic (full screen) mode button.'
+        )
+    )
 
     # TransparencySlider
     transparency_config = models.JSONField(
@@ -304,6 +310,8 @@ class Dashboard(
             )
         if 'story_map_enabled' in data:
             self.story_map_enabled = bool(data['story_map_enabled'])
+        if 'story_map_cinematic' in data:
+            self.story_map_cinematic = bool(data['story_map_cinematic'])
 
         # INDICATORS
         self.save_relation(

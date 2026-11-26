@@ -111,7 +111,9 @@
         "visibleInStory": "Visível na história",
         "apply": "Aplicar",
         "bookmarkName": "Marcador: {{name}}",
-        "noBookmark": "Sem marcador"
+        "noBookmark": "Sem marcador",
+        "cinematic": "Modo cinema (apresentação em ecrã inteiro)",
+        "cinematicHelp": "Adiciona um botão na barra de ferramentas do mapa e no painel da história que reproduz a história em ecrã inteiro, sem o cabeçalho, a barra de ferramentas e o painel lateral."
       }
     },
     "data": "DADOS",
@@ -263,7 +265,6 @@
     "searchGeographyEntityLoading": "A carregar...",
     "storyMap": {
       "tab": "História",
-      "toolbarTitle": "Mapa narrativo",
       "empty": "Esta história ainda não tem páginas.",
       "waitingForData": "A aguardar o carregamento dos dados do mapa…",
       "pageFallbackTitle": "Página {{number}}",
@@ -271,7 +272,17 @@
       "next": "Página seguinte",
       "play": "Reproduzir a história",
       "pause": "Pausar a história",
-      "counter": "{{current}} / {{total}}"
+      "counter": "{{current}} / {{total}}",
+      "playback": "Reprodução da história",
+      "settings": "Definições da história",
+      "timePerPage": "Tempo por página",
+      "seconds": "{{count}} s",
+      "showWidgets": "Mostrar widgets no modo cinema",
+      "cinematic": "Modo cinema (ecrã inteiro)",
+      "exitCinematic": "Sair do modo cinema",
+      "goToPage": "Ir para a página",
+      "expand": "Mostrar página",
+      "collapse": "Ocultar página"
     }
   },
   "featured": "Em destaque",

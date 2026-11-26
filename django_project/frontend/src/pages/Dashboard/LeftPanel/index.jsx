@@ -111,7 +111,7 @@ export const LEFT_PANEL_TAB = {
 /**
  * Left panel.
  */
-export default function LeftPanel({ leftExpanded, selectedTab, setSelectedTab }) {
+export default function LeftPanel({ leftExpanded }) {
   const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible);
   const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
   const filterVisible = useSelector(isFilterContentVisible);
@@ -121,6 +121,7 @@ export default function LeftPanel({ leftExpanded, selectedTab, setSelectedTab })
     !!EmbedConfig().layer_tab &&
     (indicatorLayerVisible || contextLayerContentVisible);
   const showFilterTab = !!EmbedConfig().filter_tab && filterVisible;
+  const [selectedTab, setSelectedTab] = React.useState(LEFT_PANEL_TAB.LAYERS);
   const [tab2Value, setTab2Value] = React.useState(
     indicatorLayerVisible ? 1 : 0,
   );
@@ -269,7 +270,7 @@ export default function LeftPanel({ leftExpanded, selectedTab, setSelectedTab })
               index={LEFT_PANEL_TAB.STORY}
               className={"sidepanel-tab story-tab-content"}
             >
-              <StoryMap isActive={selectedTab === LEFT_PANEL_TAB.STORY} />
+              <StoryMap />
             </TabPanel>
           )}
         </Box>
