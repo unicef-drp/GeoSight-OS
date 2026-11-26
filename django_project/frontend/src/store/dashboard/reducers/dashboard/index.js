@@ -217,6 +217,8 @@ export default function dashboardReducer(
         newState.data = {
           ...newState.data,
           stories: data,
+          // The structure is changed in place: new reference to re-render.
+          storiesStructure: { ...newState.data.storiesStructure },
         };
         return newState;
       }

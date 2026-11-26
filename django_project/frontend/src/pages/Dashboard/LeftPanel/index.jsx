@@ -147,7 +147,7 @@ export default function LeftPanel({ leftExpanded, selectedTab, setSelectedTab })
     tabs.push({
       key: LEFT_PANEL_TAB.STORY,
       className: "story-tab",
-      label: "Story",
+      label: t("dashboardPage.storyMap.tab"),
       icon: <MenuBookIcon />,
     });
   }
@@ -181,6 +181,9 @@ export default function LeftPanel({ leftExpanded, selectedTab, setSelectedTab })
                 value={selectedTab}
                 onChange={(event, newValue) => setSelectedTab(newValue)}
                 aria-label="basic tabs example"
+                // Three tabs share the narrow panel instead of scrolling.
+                variant={tabs.length > 2 ? "fullWidth" : "standard"}
+                className={tabs.length > 2 ? "ThreeTabs" : ""}
               >
                 {tabs.map((tab) => (
                   <Tab

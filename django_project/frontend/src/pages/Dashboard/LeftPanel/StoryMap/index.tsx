@@ -15,12 +15,12 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import Markdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 import { fetchingData } from "../../../../Requests";
@@ -40,40 +40,56 @@ interface Props {
   isActive: boolean;
 }
 
-const AUTO_PLAY_DELAY = 4000;
+/** Time a page stays on screen in autoplay, after its data has loaded. */
+export const AUTO_PLAY_DELAY = 4000;
 
-const getStoryTitle = (story: DashboardStory, index: number) => {
-  return (
-    story.name?.trim() ||
-    story.title?.trim() ||
-    story.label?.trim() ||
-    `Story ${index + 1}`
-  );
-};
+/**
+ * Story pages in the order of the structure, visible ones only.
+ * Pages missing from the structure are added at the end, by their order.
+ */
+export function orderStories(
+  stories: DashboardStory[],
+  storiesStructure: any,
+): DashboardStory[] {
+  const ordered: DashboardStory[] = dataStructureToListData(
+    stories || [],
+    storiesStructure || { children: [] },
+  )
+    .filter((item: any) => !item.isGroup && item.data)
+    .map((item: any) => item.data as DashboardStory);
+  const orderedIds = ordered.map((story) => story.id);
+  const missing = (stories || [])
+    .filter((story) => !orderedIds.includes(story.id))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  return ordered
+    .concat(missing)
+    .filter((story) => story.visible_by_default !== false);
+}
 
+/** Story Map panel in the left panel. */
 export default function StoryMap({ isActive }: Props) {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const selectedBookmark = useSelector((state: any) => state.selectedBookmark);
-  const {
-    slug,
-    stories,
-    storiesStructure,
-    indicatorLayers,
-    relatedTables,
-  } = useSelector((state: any) => state.dashboard.data);
-  const indicatorsMetadata = useSelector((state: any) => state.indicatorsMetadata);
+  const { slug, stories, storiesStructure, indicatorLayers, relatedTables } =
+    useSelector((state: any) => state.dashboard.data);
+  const indicatorsMetadata = useSelector(
+    (state: any) => state.indicatorsMetadata,
+  );
   const relatedTableData = useSelector((state: any) => state.relatedTableData);
 
-  const [bookmarks, setBookmarks] = useState<BookmarkOption[]>([]);
+  const [bookmarks, setBookmarks] = useState<BookmarkOption[] | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [autoPlay, setAutoPlay] = useState(false);
+  // Page whose bookmark still has to be applied (bookmarks may load later).
+  const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
-  const orderedStories = useMemo(() => {
-    return dataStructureToListData(stories || [], storiesStructure || { children: [] })
-      .filter((item: any) => !item.isGroup && item.data?.visible_by_default !== false)
-      .map((item: any) => item.data as DashboardStory);
-  }, [stories, storiesStructure]);
+  const orderedStories = useMemo(
+    () => orderStories(stories, storiesStructure),
+    [stories, storiesStructure],
+  );
 
+  // Same check as the data loading progress bar.
   const isDataLoaded = useMemo(() => {
     let total = 0;
     let currentProgress = 0;
@@ -94,170 +110,215 @@ export default function StoryMap({ isActive }: Props) {
       }
     });
 
-    Object.entries(indicatorsMetadata || {}).forEach(([key, value]: [string, any]) => {
-      if (!key.includes("layer") && value.progress?.total_page) {
-        total += value.progress.total_page;
-        currentProgress += value.progress.page;
-      }
-    });
-
-    if (total === 0) {
-      return true;
-    }
-    return currentProgress * 100 >= total * 100;
+    Object.entries(indicatorsMetadata || {}).forEach(
+      ([key, value]: [string, any]) => {
+        if (!key.includes("layer") && value.progress?.total_page) {
+          total += value.progress.total_page;
+          currentProgress += value.progress.page;
+        }
+      },
+    );
+    return total === 0 || currentProgress >= total;
   }, [indicatorLayers, indicatorsMetadata, relatedTableData, relatedTables]);
 
-  const activateBookmark = (story: DashboardStory | undefined) => {
-    if (!story?.bookmark_id) {
-      return;
-    }
-    const bookmark = bookmarks.find((row) => row.id === story.bookmark_id);
-    if (bookmark && bookmark.id !== selectedBookmark?.id) {
-      dispatch(Actions.SelectedBookmark.change(bookmark));
-    }
-  };
-
+  /** Show a page and apply its bookmark, also when it is already selected. */
   const applyStory = (index: number) => {
-    const story = orderedStories[index];
-    if (!story) {
+    if (!orderedStories[index]) {
       return;
     }
     setActiveIndex(index);
-    activateBookmark(story);
+    setPendingIndex(index);
   };
 
+  // Fetch the bookmarks of the dashboard.
   useEffect(() => {
     if (!slug || slug.startsWith(":")) {
       setBookmarks([]);
       return;
     }
-    fetchingData(`/api/dashboard/${slug}/bookmarks`, {}, {}, (data: BookmarkOption[]) => {
-      setBookmarks(data);
-    });
+    fetchingData(
+      `/api/dashboard/${slug}/bookmarks`,
+      {},
+      {},
+      (data: BookmarkOption[]) => {
+        setBookmarks(data || []);
+      },
+    );
   }, [slug]);
 
+  // Apply the bookmark of the requested page once the bookmarks are there.
   useEffect(() => {
-    if (autoPlay) {
+    if (pendingIndex === null || bookmarks === null) {
+      return;
+    }
+    const story = orderedStories[pendingIndex];
+    const bookmark = bookmarks.find((row) => row.id === story?.bookmark_id);
+    if (bookmark) {
+      // A new object, so the map state is applied again on re-select.
+      dispatch(Actions.SelectedBookmark.change({ ...bookmark }));
+    }
+    setPendingIndex(null);
+  }, [pendingIndex, bookmarks]);
+
+  // Follow a story bookmark that was selected outside the story panel.
+  useEffect(() => {
+    if (autoPlay || !selectedBookmark?.id) {
       return;
     }
     const foundIndex = orderedStories.findIndex(
-      (story) => story.bookmark_id && story.bookmark_id === selectedBookmark?.id,
+      (story) => story.bookmark_id === selectedBookmark.id,
     );
     if (foundIndex >= 0) {
       setActiveIndex(foundIndex);
     }
-  }, [autoPlay, selectedBookmark?.id, orderedStories]);
+  }, [selectedBookmark?.id]);
 
+  // Open the first page the first time the panel is shown.
   useEffect(() => {
     if (isActive && activeIndex === null && orderedStories.length) {
       applyStory(0);
     }
   }, [isActive, orderedStories.length]);
 
+  // Stop autoplay when the panel is closed.
   useEffect(() => {
-    if (activeIndex !== null) {
-      activateBookmark(orderedStories[activeIndex]);
+    if (!isActive) {
+      setAutoPlay(false);
     }
-  }, [activeIndex, bookmarks, orderedStories, selectedBookmark?.id]);
+  }, [isActive]);
 
+  // Autoplay: go to the next page when the data of this one has loaded.
   useEffect(() => {
-    if (!autoPlay || activeIndex === null || orderedStories.length < 2) {
+    if (
+      !autoPlay ||
+      activeIndex === null ||
+      pendingIndex !== null ||
+      !isDataLoaded ||
+      orderedStories.length < 2
+    ) {
       return;
     }
     const timer = window.setTimeout(() => {
-      setActiveIndex((currentIndex) => {
-        if (currentIndex === null) {
-          return 0;
-        }
-        return (currentIndex + 1) % orderedStories.length;
-      });
+      applyStory((activeIndex + 1) % orderedStories.length);
     }, AUTO_PLAY_DELAY);
     return () => window.clearTimeout(timer);
-  }, [autoPlay, activeIndex, orderedStories.length]);
+  }, [
+    autoPlay,
+    activeIndex,
+    pendingIndex,
+    isDataLoaded,
+    orderedStories.length,
+  ]);
 
   if (!orderedStories.length) {
-    return <div className="StoryMapPanel Empty">No Story Map pages configured yet.</div>;
+    return (
+      <div className="StoryMapPanel Empty">
+        {t("dashboardPage.storyMap.empty")}
+      </div>
+    );
   }
 
+  const pageTitle = (story: DashboardStory, index: number) =>
+    story.name?.trim() ||
+    t("dashboardPage.storyMap.pageFallbackTitle", { number: index + 1 });
+  const current = activeIndex !== null ? activeIndex : 0;
+  const total = orderedStories.length;
+  const playLabel = autoPlay
+    ? t("dashboardPage.storyMap.pause")
+    : t("dashboardPage.storyMap.play");
+
   return (
-    <div className="StoryMapPanel">
+    <div className="StoryMapPanel" data-testid="story-map-panel">
       <div className="StoryMapControls">
         <button
           type="button"
+          data-testid="story-map-previous"
+          aria-label={t("dashboardPage.storyMap.previous")}
+          title={t("dashboardPage.storyMap.previous")}
           onClick={() => {
-            if (activeIndex === null) {
-              applyStory(0);
-            } else {
-              applyStory(
-                activeIndex === 0 ? orderedStories.length - 1 : activeIndex - 1,
-              );
-            }
+            setAutoPlay(false);
+            applyStory(
+              activeIndex === null ? 0 : (current - 1 + total) % total,
+            );
           }}
         >
           <SkipPreviousIcon />
         </button>
         <button
           type="button"
+          data-testid="story-map-play"
+          aria-label={playLabel}
+          title={playLabel}
+          aria-pressed={autoPlay}
           onClick={() => {
             if (activeIndex === null) {
               applyStory(0);
-              setAutoPlay(true);
-            } else {
-              setAutoPlay(!autoPlay);
             }
+            setAutoPlay(!autoPlay);
           }}
         >
           {autoPlay ? <PauseIcon /> : <PlayArrowIcon />}
         </button>
         <button
           type="button"
+          data-testid="story-map-next"
+          aria-label={t("dashboardPage.storyMap.next")}
+          title={t("dashboardPage.storyMap.next")}
           onClick={() => {
-            if (activeIndex === null) {
-              applyStory(0);
-            } else {
-              applyStory((activeIndex + 1) % orderedStories.length);
-            }
+            setAutoPlay(false);
+            applyStory(activeIndex === null ? 0 : (current + 1) % total);
           }}
         >
           <SkipNextIcon />
         </button>
+        <div className="StoryMapCounter" data-testid="story-map-counter">
+          {t("dashboardPage.storyMap.counter", {
+            current: current + 1,
+            total: total,
+          })}
+        </div>
       </div>
-      {!isDataLoaded ? (
-        <div className="StoryMapStatus">Waiting for map data to finish loading...</div>
+      {autoPlay && !isDataLoaded ? (
+        <div className="StoryMapStatus">
+          {t("dashboardPage.storyMap.waitingForData")}
+        </div>
       ) : null}
       <div className="StoryMapList">
         {orderedStories.map((story, index) => (
-          <button
+          <div
             key={story.id}
-            type="button"
+            role="button"
+            tabIndex={0}
+            data-testid="story-map-page"
+            aria-current={index === activeIndex ? "step" : undefined}
             className={`StoryMapItem ${index === activeIndex ? "Active" : ""}`}
             onClick={() => {
               setAutoPlay(false);
               applyStory(index);
             }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setAutoPlay(false);
+                applyStory(index);
+              }
+            }}
           >
             {story.icon ? (
-              <img
-                src={story.icon}
-                alt={getStoryTitle(story, index)}
-                className="StoryMapItemImage"
-              />
+              <img src={story.icon} alt="" className="StoryMapItemImage" />
             ) : null}
             <div className="StoryMapItemContent">
-              <div className="StoryMapItemTitle">{getStoryTitle(story, index)}</div>
+              <div className="StoryMapItemTitle">{pageTitle(story, index)}</div>
               {story.description ? (
                 <div className="StoryMapItemDescription">
-                  <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                  <Markdown remarkPlugins={[remarkGfm]}>
                     {story.description}
                   </Markdown>
                 </div>
               ) : null}
             </div>
-          </button>
+          </div>
         ))}
-      </div>
-      <div className="StoryMapCounter">
-        {(activeIndex !== null ? activeIndex : 0) + 1} / {orderedStories.length}
       </div>
     </div>
   );

@@ -3,6 +3,12 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
+  box-sizing: border-box;
+  min-height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  // Opaque: on phones the panel is a full-screen layer over the map.
+  background-color: var(--white, #fff);
 
   &.Empty {
     color: #666;
@@ -10,7 +16,12 @@
 
   .StoryMapControls {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
+
+    .StoryMapCounter {
+      margin-left: auto;
+    }
 
     button {
       display: inline-flex;
@@ -60,8 +71,13 @@
     color: #111;
 
     &.Active {
-      border-color: #2f80ed;
-      box-shadow: 0 0 0 1px #2f80ed;
+      border-color: var(--primary-color, #2f80ed);
+      box-shadow: 0 0 0 1px var(--primary-color, #2f80ed);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-color, #2f80ed);
+      outline-offset: 2px;
     }
   }
 

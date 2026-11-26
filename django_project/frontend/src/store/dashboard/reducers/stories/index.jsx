@@ -34,11 +34,17 @@ export default function storiesReducer(
     case STORY_ACTION_TYPE_ADD: {
       action.payload.id =
         state.length === 0 ? 1 : Math.max(...state.map((story) => story.id)) + 1;
-      addChildToGroupInStructure(
-        action.payload.group,
-        action.payload.id,
-        dashboardState.storiesStructure,
-      );
+      const structure = dashboardState.storiesStructure;
+      if (action.payload.group) {
+        addChildToGroupInStructure(
+          action.payload.group,
+          action.payload.id,
+          structure,
+        );
+      } else if (!structure.children.includes(action.payload.id)) {
+        // Story pages have no groups: add the page to the root.
+        structure.children.push(action.payload.id);
+      }
       return [...state, action.payload];
     }
     case STORY_ACTION_TYPE_REMOVE: {

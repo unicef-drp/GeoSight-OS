@@ -68,9 +68,16 @@
 
       // Tab icons at the same 16px as the map toolbar icons
       .layers-tab > svg,
-      .filters-tab > svg {
+      .filters-tab > svg,
+      .story-tab > svg {
         width: 16px;
         height: 16px;
+      }
+
+      &.ThreeTabs .MuiTab-root {
+        min-width: 0;
+        padding-left: 4px;
+        padding-right: 4px;
       }
 
       // Unselected tab icon in a lighter gray than its label
