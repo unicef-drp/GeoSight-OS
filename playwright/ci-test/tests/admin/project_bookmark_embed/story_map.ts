@@ -49,6 +49,7 @@ test.describe.serial('Story Map', () => {
     await editProject(page, PROJECT);
     await openStoryMapTab(page);
     await page.getByLabel('Show the Story Map in the project').check();
+    await page.getByLabel('Cinematic mode (full-screen presentation)').check();
     await addStoryPage(page, 'Page one', BOOKMARK_A);
     await addStoryPage(page, 'Page two', BOOKMARK_B);
     const rows = page.locator('.StoryMap .OtherActionIndicator');
@@ -66,7 +67,27 @@ test.describe.serial('Story Map', () => {
     await expect(
       page.getByLabel('Show the Story Map in the project')
     ).toBeChecked();
-    await expect(page.locator('.StoryMap .OtherActionIndicator')).toHaveCount(2);
+    await expect(
+      page.getByLabel('Cinematic mode (full-screen presentation)')
+    ).toBeChecked();
+    const savedRows = page.locator('.StoryMap .OtherActionIndicator');
+    await expect(savedRows).toHaveCount(2);
+    await expect(savedRows.nth(0)).toHaveText(`Bookmark: ${BOOKMARK_A}`);
+    await expect(savedRows.nth(1)).toHaveText(`Bookmark: ${BOOKMARK_B}`);
+
+    // Editing a page keeps its bookmark (also after typing a description).
+    await page.locator('.StoryMap [data-testid="EditIcon"]').nth(0).click();
+    const modal = page.locator('.StoryMapModal');
+    await expect(modal.locator('select')).toHaveValue(/\d+/);
+    await modal.locator('[contenteditable="true"]').click();
+    await page.keyboard.type('First page of the story.');
+    await modal.getByRole('button', { name: 'Apply' }).click();
+    await expect(savedRows.nth(0)).toHaveText(`Bookmark: ${BOOKMARK_A}`);
+    await saveProject(page);
+    await editProject(page, PROJECT);
+    await openStoryMapTab(page);
+    await expect(savedRows.nth(0)).toHaveText(`Bookmark: ${BOOKMARK_A}`);
+    await expect(savedRows.nth(1)).toHaveText(`Bookmark: ${BOOKMARK_B}`);
   });
 
   test('Play the story', async ({ page }) => {
@@ -75,8 +96,8 @@ test.describe.serial('Story Map', () => {
     await expect(page.getByRole('tab', { name: 'Filters', exact: true })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Story', exact: true })).toBeVisible();
 
-    // The toolbar button opens the Story tab on the first page.
-    await page.getByTestId('story-map-toolbar').getByTitle('Story Map').click();
+    // The Story tab opens on the first page.
+    await page.getByRole('tab', { name: 'Story', exact: true }).click();
     const pages = page.getByTestId('story-map-page');
     await expect(pages).toHaveCount(2);
     await expect(pages.nth(0)).toContainText('Page one');
@@ -101,11 +122,71 @@ test.describe.serial('Story Map', () => {
     await expect(page.getByTestId('story-map-counter')).toHaveText('2 / 2');
     await expect(page.getByLabel(layer2)).toBeChecked();
 
-    // The toolbar button again: back to the Layers tab.
-    await page.getByTestId('story-map-toolbar').getByTitle('Story Map').click();
-    await expect(
-      page.getByRole('tab', { name: 'Layers', exact: true })
-    ).toHaveAttribute('aria-selected', 'true');
+    // Only the current page is open; a page can be opened by hand, and the
+    // next page change closes it again.
+    const descriptions = page.getByTestId('story-map-page-description');
+    await expect(descriptions).toHaveCount(0);
+    await pages.nth(0).getByTestId('story-map-page-toggle').click();
+    await expect(descriptions).toHaveCount(1);
+    await expect(descriptions.first()).toContainText('First page of the story.');
+    await expect(page.getByTestId('story-map-counter')).toHaveText('2 / 2');
+    await page.getByTestId('story-map-next').click();
+    await expect(page.getByTestId('story-map-counter')).toHaveText('1 / 2');
+    await expect(descriptions).toHaveCount(1);
+    await expect(pages.nth(0)).toHaveClass(/Expanded/);
+    await expect(pages.nth(1)).not.toHaveClass(/Expanded/);
+
+    // Settings: time per page.
+    await page.getByTestId('story-map-settings-button').click();
+    await page.getByTestId('story-map-speed').selectOption('3');
+    await expect(page.getByTestId('story-map-speed')).toHaveValue('3');
+  });
+
+  test('Cinematic mode', async ({ page }) => {
+    await viewProject(page, PROJECT, true);
+    // The map toolbar button starts the cinematic mode.
+    await page.getByTestId('story-map-cinematic-toolbar')
+      .getByTitle('Cinematic mode (full screen)').click();
+
+    // Only the map, the title, the description card and the bar.
+    const view = page.getByTestId('story-map-cinematic-view');
+    await expect(view).toBeVisible();
+    await expect(page.locator('header')).toBeHidden();
+    await expect(page.locator('.DashboardMap .Toolbar')).toBeHidden();
+    await expect(page.locator('.dashboard__left_side')).toBeHidden();
+    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+      'Page one'
+    );
+    await expect(page.getByTestId('story-map-cinematic-card')).toContainText(
+      'First page of the story.'
+    );
+    await expect(page.getByLabel(layer1)).toBeChecked();
+
+    // Next, and the page picker.
+    await view.getByTestId('story-map-next').click();
+    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+      'Page two'
+    );
+    await expect(page.getByLabel(layer2)).toBeChecked();
+    await view.getByTestId('story-map-page-select').selectOption({
+      label: '1. Page one'
+    });
+    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+      'Page one'
+    );
+
+    // Widgets can be hidden.
+    await expect(page.locator('.DashboardMiddlePanel .RightContent')).toBeVisible();
+    await view.getByTestId('story-map-settings-button').click();
+    await view.getByLabel('Show widgets in cinematic mode').uncheck();
+    await expect(page.locator('.DashboardMiddlePanel .RightContent')).toBeHidden();
+    await view.getByLabel('Show widgets in cinematic mode').check();
+
+    // Exit: everything is back.
+    await view.getByTestId('story-map-cinematic-exit').click();
+    await expect(view).toBeHidden();
+    await expect(page.locator('header')).toBeVisible();
+    await expect(page.locator('.DashboardMap .Toolbar')).toBeVisible();
   });
 
   test('Hidden pages are not played', async ({ page }) => {
@@ -120,7 +201,7 @@ test.describe.serial('Story Map', () => {
     await saveProject(page);
 
     await viewProject(page, PROJECT, true);
-    await page.getByTestId('story-map-toolbar').getByTitle('Story Map').click();
+    await page.getByRole('tab', { name: 'Story', exact: true }).click();
     await expect(page.getByTestId('story-map-page')).toHaveCount(1);
     await expect(page.getByTestId('story-map-counter')).toHaveText('1 / 1');
   });
@@ -135,5 +216,17 @@ test.describe.serial('Story Map', () => {
     await expect(page.getByTestId('story-map-page').first()).toContainText(
       'Page one'
     );
+    await expect(page.getByTestId('story-map-counter')).toHaveText('1 / 1');
+
+    // Cinematic mode on the phone.
+    await page.getByTestId('story-map-cinematic').click();
+    const view = page.getByTestId('story-map-cinematic-view');
+    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+      'Page one'
+    );
+    await expect(view.getByTestId('story-map-play')).toBeVisible();
+    await expect(page.locator('.MobileBottomNav')).toBeHidden();
+    await view.getByTestId('story-map-cinematic-exit').click();
+    await expect(page.locator('.MobileBottomNav')).toBeVisible();
   });
 });
