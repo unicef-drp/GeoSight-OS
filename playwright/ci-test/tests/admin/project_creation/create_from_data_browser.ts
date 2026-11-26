@@ -98,7 +98,7 @@ test.describe('Create project from dataset', () => {
     await page.locator('span').getByText('Geographical units', { exact: true }).click();
     await page.locator('span').filter({ hasText: /^Name$/ }).click();
     await page.locator('label').filter({ hasText: 'Top N' }).getByTestId('CheckBoxOutlineBlankIcon').click();
-    await page.locator('div').filter({ hasText: /^ValueNameCodeAscendingDescendingTop N$/ }).getByRole('spinbutton').fill('2');
+    await page.getByTestId('sort-topn').fill('2');
     await page.getByText('Sync with the current map').nth(1).click();
     await page.getByText('Sync with the current map').first().click();
     await page.getByRole('button', { name: 'Apply' }).click();
