@@ -27,7 +27,9 @@ import remarkGfm from "remark-gfm";
 import { useStoryPlayback } from "./StoryPlayback";
 import {
   StoryCinematicButton,
+  StoryLegendButton,
   StoryPageSelect,
+  StoryProgress,
   StorySettings,
   StoryTransport,
 } from "./Controls";
@@ -41,7 +43,8 @@ export default function StoryCinematic() {
   const playback = useStoryPlayback();
   const pageTitle = useStoryTitle();
 
-  // Keyboard: arrows for pages, space for play/pause.
+  // Keyboard: arrows for pages, space for play/pause, Esc to leave. Caught
+  // before the map sees them (capture phase), so the arrows don't pan it.
   useEffect(() => {
     if (!playback.cinematic) {
       return;
@@ -51,19 +54,27 @@ export default function StoryCinematic() {
       if (["INPUT", "SELECT", "TEXTAREA"].includes(target?.tagName)) {
         return;
       }
+      let handled = true;
       if (event.key === "ArrowRight") {
         playback.next();
       } else if (event.key === "ArrowLeft") {
         playback.previous();
+      } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        // No map panning in the cinematic mode.
       } else if (event.key === " " && target?.tagName !== "BUTTON") {
-        event.preventDefault();
         playback.togglePlay();
       } else if (event.key === "Escape") {
         playback.setCinematic(false);
+      } else {
+        handled = false;
+      }
+      if (handled) {
+        event.preventDefault();
+        event.stopPropagation();
       }
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
   }, [playback]);
 
   if (!playback.cinematic || !playback.total) {
@@ -98,6 +109,7 @@ export default function StoryCinematic() {
         role="toolbar"
         aria-label={t("dashboardPage.storyMap.playback")}
       >
+        <StoryProgress />
         <StoryTransport big />
         <div className="StoryCinematicRule" />
         <StoryPageSelect />
@@ -108,6 +120,7 @@ export default function StoryCinematic() {
           })}
         </div>
         <div className="StoryCinematicRule" />
+        <StoryLegendButton />
         <StorySettings placement="above" />
         <StoryCinematicButton />
       </div>

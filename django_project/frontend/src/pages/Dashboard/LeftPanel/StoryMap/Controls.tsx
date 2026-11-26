@@ -23,6 +23,7 @@ import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 import {
+  LayerIcon,
   ShrinkIcon,
   StoryPlayIcon,
   TimeNextIcon,
@@ -30,6 +31,7 @@ import {
   TimePlayIcon,
   TimePreviousIcon,
   TimeSettingsIcon,
+  TimeStopIcon,
 } from "../../../../components/Icons";
 import { SPEED_OPTIONS, useStoryPlayback } from "./StoryPlayback";
 
@@ -102,6 +104,13 @@ export function StoryTransport({ big = false }: { big?: boolean }) {
         className={big ? "Big" : ""}
       >
         {playback.autoPlay ? <TimePauseIcon /> : <TimePlayIcon />}
+      </StoryButton>
+      <StoryButton
+        testId="story-map-stop"
+        title={t("dashboardPage.storyMap.stop")}
+        onClick={playback.stop}
+      >
+        <TimeStopIcon />
       </StoryButton>
       <StoryButton
         testId="story-map-next"
@@ -210,6 +219,54 @@ export function StoryCinematicButton() {
       onClick={() => playback.setCinematic(!playback.cinematic)}
     >
       {playback.cinematic ? <ShrinkIcon /> : <StoryPlayIcon />}
+    </StoryButton>
+  );
+}
+
+/** Time left on this page in autoplay: a bar from full to empty. */
+export function StoryProgress() {
+  const { t } = useTranslation();
+  const playback = useStoryPlayback();
+  if (!playback.autoPlay) {
+    return null;
+  }
+  return (
+    <div
+      className="StoryProgress"
+      role="progressbar"
+      aria-label={t("dashboardPage.storyMap.timeLeft")}
+      data-testid="story-map-progress"
+    >
+      {playback.countdownActive ? (
+        <div
+          key={playback.countdownKey}
+          className="StoryProgressBar"
+          style={{ animationDuration: `${playback.speed}s` }}
+        />
+      ) : (
+        // Waiting for the map data: the bar stays full.
+        <div className="StoryProgressBar Waiting" />
+      )}
+    </div>
+  );
+}
+
+/** Show or hide the map legend (cinematic mode). */
+export function StoryLegendButton() {
+  const { t } = useTranslation();
+  const playback = useStoryPlayback();
+  const title = playback.legendVisible
+    ? t("dashboardPage.storyMap.hideLegend")
+    : t("dashboardPage.storyMap.showLegend");
+  return (
+    <StoryButton
+      testId="story-map-legend"
+      title={title}
+      onClick={playback.toggleLegend}
+      active={playback.legendVisible}
+      pressed={playback.legendVisible}
+    >
+      <LayerIcon />
     </StoryButton>
   );
 }

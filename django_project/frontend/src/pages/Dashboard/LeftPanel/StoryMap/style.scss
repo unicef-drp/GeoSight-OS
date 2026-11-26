@@ -73,6 +73,46 @@
   transform: scaleX(-1);
 }
 
+// Time left on the page in autoplay: full to empty.
+.StoryProgress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
+  pointer-events: none;
+
+  .StoryProgressBar {
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    transform-origin: left center;
+    animation-name: StoryCountdown;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+
+    &.Waiting {
+      animation: none;
+      opacity: 0.35;
+    }
+  }
+}
+
+[dir="rtl"] .StoryProgress .StoryProgressBar {
+  transform-origin: right center;
+}
+
+@keyframes StoryCountdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
 .StoryMapCounter {
   color: #5F6B73;
   font-size: 13px;
@@ -176,11 +216,27 @@
     top: 0;
     z-index: 2;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
-    padding: 12px 16px;
+    gap: 6px 4px;
+    padding: 10px 12px;
     background-color: var(--white, #fff);
     border-bottom: 1px solid var(--border-gray);
+
+    // Compact buttons: the panel can be narrow.
+    .StoryTransport {
+      gap: 4px;
+    }
+
+    .StoryButton {
+      width: 30px;
+      height: 30px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
 
     .StoryMapCounter {
       margin-left: auto;
@@ -242,12 +298,13 @@
     }
   }
 
+  // Same size as the widget titles.
   .StoryMapItemTitle {
     flex: 1;
     min-width: 0;
     font-weight: 700;
-    font-size: 16px;
-    line-height: 1.35;
+    font-size: 12px;
+    line-height: 18px;
     overflow-wrap: anywhere;
   }
 
@@ -282,11 +339,11 @@
   }
 
   // Thumbnail: the full width of the panel.
+  // Thumbnail: the full width of the panel, the whole image (not cropped).
   .StoryMapItemImage {
     display: block;
     width: 100%;
-    max-height: 200px;
-    object-fit: cover;
+    height: auto;
     border-radius: 0;
     margin: 0 0 12px;
   }
@@ -294,7 +351,7 @@
   .StoryMapItemDescription {
     padding: 0 16px;
     color: #4A555C;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
     overflow-wrap: anywhere;
 
@@ -328,6 +385,19 @@ html.StoryCinematic {
     z-index: 1000;
     padding-top: 0 !important;
     background-color: var(--white, #fff);
+  }
+
+  // Legend: the cinematic bar has its own button.
+  .LegendToggler {
+    display: none !important;
+  }
+
+  &.StoryLegendOff .MapLegendContent {
+    display: none !important;
+  }
+
+  &.StoryLegendOn .MapLegendContent {
+    display: block !important;
   }
 
   &:not(.StoryCinematicWidgets) .DashboardMiddlePanel .RightContent {
@@ -389,11 +459,14 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
   border: 1px solid var(--border-gray);
   box-shadow: var(--box-shadow);
 
+  // The whole image, scaled down to fit (not cropped).
   .StoryCinematicImage {
     display: block;
     width: 100%;
-    max-height: 200px;
-    object-fit: cover;
+    height: auto;
+    max-height: 40vh;
+    object-fit: contain;
+    background-color: #F4F5F5;
   }
 
   .StoryCinematicDescription {
@@ -443,6 +516,11 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     height: 34px;
     background-color: var(--border-gray);
   }
+
+  .StoryProgress {
+    top: -1px;
+    bottom: auto;
+  }
 }
 
 .StoryCinematicStatus {
@@ -458,6 +536,12 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
 
 // Phones: title on top, description as a card above the bar, no widgets.
 @media (max-width: 1000px) {
+  html.StoryCinematic .MapLegend {
+    top: 64px !important;
+    height: calc(100% - 64px) !important;
+    padding-bottom: 220px !important;
+  }
+
   html.StoryCinematic .DashboardMiddlePanel .RightContent {
     display: none !important;
   }
@@ -479,7 +563,7 @@ html.StoryCinematicWidgets .StoryCinematicOverlay {
     max-height: 35vh;
 
     .StoryCinematicImage {
-      max-height: 120px;
+      max-height: 20vh;
     }
   }
 

@@ -23,6 +23,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "../../../../components/Icons";
 import { useStoryPlayback } from "./StoryPlayback";
 import {
   StoryCinematicButton,
+  StoryProgress,
   StorySettings,
   StoryTransport,
 } from "./Controls";
@@ -98,6 +99,7 @@ export default function StoryMap() {
           })}
         </div>
         <StorySettings placement="below" />
+        <StoryProgress />
       </div>
       {playback.autoPlay && !playback.isDataLoaded ? (
         <div className="StoryMapStatus">

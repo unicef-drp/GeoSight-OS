@@ -282,7 +282,11 @@
       "exitCinematic": "Exit cinematic mode",
       "goToPage": "Go to page",
       "expand": "Show page",
-      "collapse": "Hide page"
+      "collapse": "Hide page",
+      "stop": "Stop and go to the first page",
+      "timeLeft": "Time left on this page",
+      "showLegend": "Show legend",
+      "hideLegend": "Hide legend"
     }
   },
   "featured": "Featured",

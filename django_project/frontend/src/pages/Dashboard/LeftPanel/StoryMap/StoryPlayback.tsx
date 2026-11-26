@@ -58,11 +58,19 @@ export interface StoryPlayback {
   speed: number;
   showWidgets: boolean;
   cinematic: boolean;
+  /** Autoplay timer of the current page is running (data loaded). */
+  countdownActive: boolean;
+  /** Changes when a new countdown starts (restarts the progress bar). */
+  countdownKey: string;
+  /** Legend shown in the cinematic mode. */
+  legendVisible: boolean;
   applyStory: (index: number) => void;
   start: () => void;
   next: () => void;
   previous: () => void;
+  stop: () => void;
   togglePlay: () => void;
+  toggleLegend: () => void;
   setSpeed: (speed: number) => void;
   setShowWidgets: (show: boolean) => void;
   setCinematic: (on: boolean) => void;
@@ -152,11 +160,16 @@ const NO_STORY: StoryPlayback = {
   speed: DEFAULT_SPEED,
   showWidgets: true,
   cinematic: false,
+  countdownActive: false,
+  countdownKey: "",
+  legendVisible: true,
   applyStory: noop,
   start: noop,
   next: noop,
   previous: noop,
+  stop: noop,
   togglePlay: noop,
+  toggleLegend: noop,
   setSpeed: noop,
   setShowWidgets: noop,
   setCinematic: noop,
@@ -193,6 +206,15 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState(readSettings);
   const [cinematic, setCinematicState] = useState(false);
   const [navigation, setNavigation] = useState(0);
+  // Legend in the cinematic mode: on for desktop, off on phones (small map).
+  const [legendVisible, setLegendVisible] = useState(
+    () =>
+      !(
+        typeof window !== "undefined" &&
+        window.matchMedia &&
+        window.matchMedia("(max-width: 1000px)").matches
+      ),
+  );
 
   const enabled = !!story_map_enabled;
   const orderedStories = useMemo(
@@ -286,21 +308,21 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
   }, [selectedBookmark?.id]);
 
   // Autoplay: next page when the data of this one has loaded.
+  const countdownActive =
+    autoPlay &&
+    activeIndex !== null &&
+    pendingIndex === null &&
+    isDataLoaded &&
+    total >= 2;
   useEffect(() => {
-    if (
-      !autoPlay ||
-      activeIndex === null ||
-      pendingIndex !== null ||
-      !isDataLoaded ||
-      total < 2
-    ) {
+    if (!countdownActive || activeIndex === null) {
       return;
     }
     const timer = window.setTimeout(() => {
       applyStory((activeIndex + 1) % total);
     }, settings.speed * 1000);
     return () => window.clearTimeout(timer);
-  }, [autoPlay, activeIndex, pendingIndex, isDataLoaded, total, settings]);
+  }, [countdownActive, activeIndex, navigation, total, settings]);
 
   // Cinematic mode: page class, full screen, and the map size.
   useEffect(() => {
@@ -310,9 +332,11 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
       "StoryCinematicWidgets",
       cinematic && settings.showWidgets,
     );
+    html.classList.toggle("StoryLegendOn", cinematic && legendVisible);
+    html.classList.toggle("StoryLegendOff", cinematic && !legendVisible);
     // The map container changed size.
     window.setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
-  }, [cinematic, settings.showWidgets]);
+  }, [cinematic, settings.showWidgets, legendVisible]);
 
   // Leaving browser full screen (Esc) also leaves the cinematic mode.
   useEffect(() => {
@@ -327,6 +351,8 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
       document.documentElement.classList.remove(
         "StoryCinematic",
         "StoryCinematicWidgets",
+        "StoryLegendOn",
+        "StoryLegendOff",
       );
     };
   }, []);
@@ -352,6 +378,9 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
     speed: settings.speed,
     showWidgets: settings.showWidgets,
     cinematic,
+    countdownActive,
+    countdownKey: `${navigation}-${settings.speed}`,
+    legendVisible,
     applyStory,
     start: () => {
       if (activeIndex === null && total) {
@@ -366,6 +395,11 @@ export function StoryPlaybackProvider({ children }: { children: ReactNode }) {
       setAutoPlay(false);
       applyStory(activeIndex === null ? 0 : (current - 1 + total) % total);
     },
+    stop: () => {
+      setAutoPlay(false);
+      applyStory(0);
+    },
+    toggleLegend: () => setLegendVisible(!legendVisible),
     togglePlay: () => {
       if (activeIndex === null) {
         applyStory(0);

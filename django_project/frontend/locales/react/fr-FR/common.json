@@ -282,7 +282,11 @@
       "exitCinematic": "Quitter le mode cinéma",
       "goToPage": "Aller à la page",
       "expand": "Afficher la page",
-      "collapse": "Masquer la page"
+      "collapse": "Masquer la page",
+      "stop": "Arrêter et revenir à la première page",
+      "timeLeft": "Temps restant sur cette page",
+      "showLegend": "Afficher la légende",
+      "hideLegend": "Masquer la légende"
     }
   },
   "featured": "Mis en avant",
