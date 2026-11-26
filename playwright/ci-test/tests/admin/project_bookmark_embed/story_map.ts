@@ -140,6 +140,18 @@ test.describe.serial('Story Map', () => {
     await page.getByTestId('story-map-settings-button').click();
     await page.getByTestId('story-map-speed').selectOption('3');
     await expect(page.getByTestId('story-map-speed')).toHaveValue('3');
+    await page.getByTestId('story-map-settings-button').click();
+
+    // Playing shows the time left; stop goes back to the first page.
+    await page.getByTestId('story-map-next').click();
+    await expect(page.getByTestId('story-map-counter')).toHaveText('2 / 2');
+    await expect(page.getByTestId('story-map-progress')).toHaveCount(0);
+    await page.getByTestId('story-map-play').click();
+    await expect(page.getByTestId('story-map-progress')).toBeVisible();
+    await page.getByTestId('story-map-stop').click();
+    await expect(page.getByTestId('story-map-progress')).toHaveCount(0);
+    await expect(page.getByTestId('story-map-counter')).toHaveText('1 / 2');
+    await expect(page.getByLabel(layer1)).toBeChecked();
   });
 
   test('Cinematic mode', async ({ page }) => {
@@ -171,6 +183,24 @@ test.describe.serial('Story Map', () => {
     await view.getByTestId('story-map-page-select').selectOption({
       label: '1. Page one'
     });
+    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+      'Page one'
+    );
+
+    // Legend on and off.
+    const legend = page.locator('.MapLegendContent').first();
+    await expect(legend).toBeVisible();
+    await view.getByTestId('story-map-legend').click();
+    await expect(legend).toBeHidden();
+    await view.getByTestId('story-map-legend').click();
+    await expect(legend).toBeVisible();
+
+    // Arrow keys change the page.
+    await page.keyboard.press('ArrowRight');
+    await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
+      'Page two'
+    );
+    await page.keyboard.press('ArrowLeft');
     await expect(page.getByTestId('story-map-cinematic-title')).toHaveText(
       'Page one'
     );
