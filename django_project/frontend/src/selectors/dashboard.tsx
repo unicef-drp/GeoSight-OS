@@ -51,3 +51,7 @@ export const getIndicatorLayersOptions = createSelector(
   (layers: { id: number; name: string }[] = []) =>
     layers.map(({ id, name }) => ({ id, label: name })),
 );
+
+/** Whether the Story Map is enabled for the dashboard. */
+export const isStoryMapEnabled = (state: any): boolean =>
+  !!state?.dashboard?.data?.story_map_enabled;

@@ -32,6 +32,7 @@ import {
   PopupToolbars,
   ProjectOverview,
   SearchGeometryInput,
+  StoryMapToolbar,
   TiltControl,
   ToggleSidePanel,
 } from "../Toolbars";
@@ -56,7 +57,13 @@ import "./style.scss";
 /**
  * MapLibre component.
  */
-export default function Map({ leftPanelProps, rightPanelProps }) {
+export default function Map({
+  leftPanelProps,
+  rightPanelProps,
+  storyMapEnabled,
+  storyMapActive,
+  onToggleStoryPanel,
+}) {
   const drawingRef = useRef(null);
 
   // This is for mainMap, which is the first map
@@ -122,6 +129,11 @@ export default function Map({ leftPanelProps, rightPanelProps }) {
           <Plugin className="BookmarkControl">
             <Bookmark map={mainMap} />
           </Plugin>
+          <StoryMapToolbar
+            enabled={storyMapEnabled}
+            active={storyMapActive}
+            onToggle={onToggleStoryPanel}
+          />
           {rightPanelProps ? (
             <ToggleSidePanel
               className={rightPanelProps.className}
