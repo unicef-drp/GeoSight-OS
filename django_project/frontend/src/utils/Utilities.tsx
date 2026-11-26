@@ -5,6 +5,7 @@ export function formatNumber(
   number: number | null | undefined,
   decimals: number = 2,
   autoUnit: boolean = false,
+  keepZeros: boolean = false,
 ): string {
   if ([null, undefined].includes(number)) {
     return "";
@@ -39,9 +40,33 @@ export function formatNumber(
     let num = text.split(".")[0];
     let decimal = text.split(".")[1];
     let string = num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    if (decimal && parseInt(decimal)) {
+    if (decimal && keepZeros) {
+      string += "." + decimal;
+    } else if (decimal && parseInt(decimal)) {
       string += "." + decimal.replace(/[0]+$/, "");
     }
     return string + unit;
   }
+}
+
+/** Number format of a widget (its aggregation settings). */
+export interface WidgetNumberFormat {
+  useDecimalPlace?: boolean;
+  decimalPlace?: number;
+  useAutoUnits?: boolean;
+}
+
+/**
+ * Format a value with the widget's number format.
+ * Decimal places on: exactly that many digits (44.00). Off: up to
+ * `fallbackDecimals`, without trailing zeros.
+ */
+export function formatWidgetNumber(
+  value: number | null | undefined,
+  format: WidgetNumberFormat | null | undefined,
+  fallbackDecimals: number = 0,
+): string {
+  return format?.useDecimalPlace
+    ? formatNumber(value, format.decimalPlace || 0, format.useAutoUnits, true)
+    : formatNumber(value, fallbackDecimals, format?.useAutoUnits);
 }

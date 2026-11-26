@@ -97,12 +97,46 @@ export function usesPalette(chart: ChartConfig): boolean {
   }
 }
 
+/**
+ * Can the chart have a colour per item (custom colours)? Not a heatmap: its
+ * cells are coloured by value.
+ */
+export function allowsCustomColors(chart: ChartConfig): boolean {
+  return ![ChartTypes.GAUGE, ChartTypes.KPI, ChartTypes.HEATMAP].includes(
+    chart.type,
+  );
+}
+
 /** Does the chart use a colour per item, set in the predefined lists? */
 export function usesCustomColors(chart: ChartConfig): boolean {
-  return (
-    chart.colors === ChartColorModes.CUSTOM &&
-    ![ChartTypes.GAUGE, ChartTypes.KPI].includes(chart.type)
-  );
+  return chart.colors === ChartColorModes.CUSTOM && allowsCustomColors(chart);
+}
+
+/** The predefined list whose items get a custom colour. */
+export const CustomColorLists = {
+  INDICATORS: "indicators",
+  UNITS: "units",
+};
+
+/**
+ * Which list holds the custom colours: the items the chart draws in their own
+ * colour (lines, bars, slices, points: the legend entries).
+ * Usually the Series list. Stacked or grouped bars have the Series along the
+ * axis and the other list as the coloured segments. Scatter points are areas.
+ */
+export function customColorList(
+  chart: ChartConfig,
+  seriesType: string,
+): string | null {
+  if (!allowsCustomColors(chart)) {
+    return null;
+  }
+  if (chart.type === ChartTypes.SCATTER) {
+    return CustomColorLists.UNITS;
+  }
+  const byIndicator = seriesType === SeriesType.INDICATORS;
+  const indicators = isMultiBar(chart) ? !byIndicator : byIndicator;
+  return indicators ? CustomColorLists.INDICATORS : CustomColorLists.UNITS;
 }
 
 /** Does the chart have a colour setting at all? */

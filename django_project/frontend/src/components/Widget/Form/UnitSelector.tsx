@@ -25,6 +25,13 @@ import { UnitConfig } from "../../../types/Widget";
 import { SeriesDataType, SeriesType } from "../Definition";
 import { Indicator } from "../../../types/Indicator";
 
+/** An indicator in a selection list: "Name (SHORTCODE)", or just the name. */
+export function indicatorLabel(indicator: Indicator): string {
+  return indicator.shortcode
+    ? `${indicator.name} (${indicator.shortcode})`
+    : indicator.name;
+}
+
 export interface Props {
   type: string;
   setType: (type: string) => void;
@@ -134,6 +141,9 @@ export function IndicatorDataSeriesConfig({
     indicatorListConfig.push({
       id: indicator.id,
       name: indicator.name,
+      // Shown in the lists and found by the filter: "Name (CODE)".
+      code: indicator.shortcode,
+      label: indicatorLabel(indicator),
     });
   });
   // TODO:
@@ -191,6 +201,7 @@ export function GeographyUnitSeriesConfig({
       geometryList.push({
         id: geom.ucode,
         name: geom.name + ` (${geom.ucode})`,
+        code: geom.ucode,
       });
     }),
   );

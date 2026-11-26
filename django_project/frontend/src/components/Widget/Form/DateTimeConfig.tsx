@@ -92,6 +92,7 @@ export function DateTimeConfigForm({
             <DatePicker
               /* @ts-ignore */
               showTimeSelect
+              popperProps={{ strategy: "fixed" }}
               dateFormat="dd-MM-yyyy hh:mm:ss"
               selected={
                 dateTimeConfig.minDateFilter
@@ -118,6 +119,7 @@ export function DateTimeConfigForm({
               <DatePicker
                 /* @ts-ignore */
                 showTimeSelect
+                popperProps={{ strategy: "fixed" }}
                 dateFormat="dd-MM-yyyy hh:mm:ss"
                 selected={
                   dateTimeConfig.maxDateFilter

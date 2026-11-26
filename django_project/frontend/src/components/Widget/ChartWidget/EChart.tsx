@@ -36,7 +36,19 @@ function withFont(option: any, element: HTMLElement | null): any {
     return option;
   }
   const fontFamily = window.getComputedStyle(element).fontFamily;
-  return { ...option, textStyle: { ...option.textStyle, fontFamily } };
+  const tooltip = option.tooltip;
+  return {
+    ...option,
+    textStyle: { ...option.textStyle, fontFamily },
+    // The tooltip is HTML with its own font: use the chart's.
+    tooltip:
+      tooltip && !Array.isArray(tooltip)
+        ? {
+            ...tooltip,
+            textStyle: { ...tooltip.textStyle, fontFamily },
+          }
+        : tooltip,
+  };
 }
 
 export interface Props {

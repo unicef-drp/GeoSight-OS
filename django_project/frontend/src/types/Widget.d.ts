@@ -70,6 +70,8 @@ export interface ChartConfig {
   palette?: number | null;
   /** Clicking an area in the chart selects and zooms to it on the map. */
   linkAreas?: boolean;
+  /** name | code: what the chart shows for an area (default name). */
+  areaLabels?: string;
   /** Advanced: ECharts option overrides (JSON only, merged last). */
   overrides?: object | null;
 }

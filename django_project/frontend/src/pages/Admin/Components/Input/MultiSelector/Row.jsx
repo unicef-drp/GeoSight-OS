@@ -14,7 +14,6 @@
  */
 
 import React, { Fragment, useEffect, useState } from "react";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import {
   DndContext,
   KeyboardSensor,
@@ -31,10 +30,10 @@ import {
 
 import { CSS } from "@dnd-kit/utilities";
 import { arrayMove } from "../../../../../utils/Array";
-import SortableItem
-  from "../../../../Admin/Dashboard/Form/ListForm/SortableItem";
+import SortableItem from "../../../../Admin/Dashboard/Form/ListForm/SortableItem";
 import { capitalize } from "../../../../../utils/main";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
+import { DeleteIcon } from "../../../../../components/Icons";
 
 /**
  * Multi selected row config
@@ -132,8 +131,10 @@ export default function MultiSelectorConfigRows({
               return (
                 <SortableItem key={selectedItem.id} id={item}>
                   <td>
-                    <RemoveCircleIcon
+                    <DeleteIcon
                       className="MuiButtonLike RemoveButton"
+                      role="button"
+                      aria-label="Remove"
                       onClick={(evt) => {
                         deleteStyleRow(item);
                       }}
@@ -142,7 +143,9 @@ export default function MultiSelectorConfigRows({
                   <td>
                     {selectedItem.indicator
                       ? selectedItem.indicator
-                      : selectedItem.name}
+                      : props.labelOf
+                        ? props.labelOf(selectedItem)
+                        : selectedItem.name}
                   </td>
                   {additionalFields.map((field) => {
                     return (

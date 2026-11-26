@@ -138,25 +138,6 @@ __copyright__ = ('Copyright 2026, Unicef')
       white-space: nowrap;
     }
 
-    // Number and indicator fields: label on the left.
-    .ChartConfig .ChartConfig-Field {
-      flex-direction: row;
-      align-items: center;
-      gap: 0.5rem;
-
-      .form-label {
-        margin: 0;
-        white-space: nowrap;
-      }
-
-      input,
-      select {
-        flex: 1 1 auto;
-        width: auto;
-        min-width: 0;
-      }
-    }
-
     // Sections: 0.75rem inside and between sections, so the busiest chart
     // settings still fit one column on a 900px tall screen.
     .TypeSelector {
@@ -186,6 +167,12 @@ __copyright__ = ('Copyright 2026, Unicef')
       gap: 0;
       margin-bottom: 0;
 
+      // Flex items keep both margins (no collapsing): half the top margin,
+      // so the gap between sections matches the data column.
+      .MuiFormControl-root.MuiForm-RadioGroup {
+        margin-top: 0.75rem !important;
+      }
+
       // Two even rows of four types, inset from the section border; the
       // icon left of the name keeps each row one control high.
       .ChartConfig-Types {
@@ -206,8 +193,66 @@ __copyright__ = ('Copyright 2026, Unicef')
         gap: 0;
       }
 
-      .ChartConfig-Row {
-        margin-bottom: 0.5rem;
+      // Chart options: compact, one control high.
+      .ChartConfig-Section {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-bottom: 0.5rem !important;
+
+        .ChartConfig-Help {
+          margin: 0.25rem 0 0.375rem 0;
+        }
+
+        .ChartConfig-Fields {
+          margin: 0.375rem 0 0.25rem 0;
+        }
+
+        .ChartConfig-Fields input,
+        .ReactSelect__control {
+          height: 30px;
+          min-height: 30px !important;
+        }
+
+        .ChartConfig-Inline input {
+          height: 30px;
+          min-height: 30px !important;
+          padding: 0 6px;
+        }
+
+        .ReactSelect__value-container {
+          height: 28px;
+          padding: 0 6px;
+        }
+
+        .ReactSelect__placeholder,
+        .ReactSelect__single-value,
+        .ReactSelect__input-container {
+          margin: 0;
+          padding: 0;
+        }
+
+        // The search input is not a one-line field: no fixed height, or it
+        // pushes the text down.
+        .ReactSelect__input-container {
+          height: 18px;
+          overflow: hidden;
+        }
+
+        .ReactSelect__input {
+          height: 18px !important;
+          min-height: 0 !important;
+        }
+
+        .ChartConfig-Checks .MuiFormControlLabel-root {
+          margin: 0 1rem 0 -9px !important;
+        }
+
+        // Checkboxes line up with the labels above (negative margin, so the
+        // whole box stays clickable).
+        .ChartConfig-Checks .MuiCheckbox-root {
+          padding-top: 5px !important;
+          padding-bottom: 5px !important;
+        }
       }
 
       .ChartConfig-Help {
@@ -241,6 +286,82 @@ __copyright__ = ('Copyright 2026, Unicef')
 
     .ChartConfig .ChartConfig-Advanced summary {
       min-height: var(--widget-control-height);
+    }
+
+    // Value(s): its options section sits alone in a .ChartConfig, so it
+    // keeps the usual gap to the next section.
+    .WidgetLayout-Main > .ChartConfig > .ChartConfig-Section {
+      margin-bottom: 0;
+    }
+
+    // Sort by on one line: field, order buttons, top N.
+    .SortConfig-Line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      padding: 0.25rem 0 0.25rem 1rem;
+
+      .MuiFormGroup-row {
+        flex-wrap: nowrap;
+        column-gap: 0.25rem;
+
+        .MuiFormControlLabel-root {
+          margin: 0 0.25rem 0 -9px;
+        }
+      }
+
+      > input {
+        margin: 0 !important;
+        width: 4.5rem !important;
+      }
+
+      .MuiFormControlLabel-root {
+        margin: 0 -0.25rem 0 -9px;
+      }
+    }
+
+    .SortConfig-Order {
+      display: inline-flex;
+      border: 1px solid #c4c4c4;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .SortConfig-OrderButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: #ffffff;
+      color: #555555;
+      cursor: pointer;
+
+      & + & {
+        border-left: 1px solid #c4c4c4;
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        background: #f2f2f2;
+      }
+
+      &.Selected {
+        background: #eef5fd;
+        color: #0f4c94;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #1a6ccc;
+        outline-offset: -2px;
+      }
     }
 
     // A number inside a section of radios (decimal places, top N): as high
@@ -279,6 +400,7 @@ __copyright__ = ('Copyright 2026, Unicef')
       }
 
       .ItemRows {
+        box-sizing: border-box;
         min-width: 0;
         min-height: 0;
         height: 180px;
@@ -334,6 +456,15 @@ __copyright__ = ('Copyright 2026, Unicef')
       padding: 0;
     }
 
+    // The open calendar is added next to the date field: keep it out of the
+    // grid, so the fields don't move. The calendar floats (fixed strategy,
+    // see DateTimeConfig), so the scrolling column never cuts it.
+    .react-datepicker__tab-loop {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+
     // The end date's wrapper also holds the help text: its children take
     // part in the grid, so the help text can use a whole row.
     > div:last-child {
@@ -351,16 +482,17 @@ __copyright__ = ('Copyright 2026, Unicef')
     }
   }
 
-  // Colours: the mode and the palette in one section, on one line.
+  // Colours: the modes and the palette on one line, the palette last,
+  // next to its radio, as high as a radio row.
   .ChartConfig-Colors {
     .MuiFormGroup-row {
       align-items: center;
     }
 
     .ChartConfig-Palette {
-      flex: 1 1 150px;
-      max-width: 280px;
-      margin: 0 0.5rem 0.5rem 1rem;
+      flex: 1 1 110px;
+      max-width: 200px;
+      margin: 0 0.5rem 0 0.25rem;
 
       .BasicFormSection {
         margin: 0;
@@ -392,6 +524,53 @@ __copyright__ = ('Copyright 2026, Unicef')
 
       .Color-Palette-Input {
         width: 100%;
+      }
+
+      .ReactSelect__control {
+        height: 30px;
+        min-height: 30px !important;
+      }
+
+      .ReactSelect__value-container {
+        height: 28px;
+        padding: 0 0 0 6px;
+      }
+
+      .ReactSelect__single-value {
+        display: flex;
+        width: calc(100% - 6px);
+        margin: 0;
+      }
+
+      // A narrow chevron, centred, so the colour well gets the room.
+      .DropdownIndicator {
+        width: 22px;
+        padding: 0 !important;
+        justify-content: center;
+
+        svg {
+          flex: 0 0 auto;
+          width: 10px;
+          margin: 0;
+        }
+      }
+
+      .ReactSelect__indicator-separator {
+        display: none;
+      }
+
+      // The colour well fills the field: even swatches, inset and rounded.
+      .ReactSelect__single-value .Color-Palette-Option {
+        width: 100%;
+        height: 18px;
+        border-radius: 3px;
+        overflow: hidden;
+
+        div {
+          flex: 1 1 0;
+          width: auto;
+          height: 100%;
+        }
       }
     }
   }
@@ -477,12 +656,6 @@ __copyright__ = ('Copyright 2026, Unicef')
         .WidgetEditor-apply {
           width: 100%;
         }
-      }
-
-      .ChartConfig .ChartConfig-Field {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
       }
 
       .WidgetLayout-Main > .BasicFormSection {

@@ -52,9 +52,20 @@ export default function MultiSelectorConfig(
       color: '#000000'
     }
   }
+  /** Text shown for an item: its label (e.g. "Name (CODE)") or its name. **/
+  const labelOf = (item) => {
+    const found = items?.find(other => other.id === item.id)
+    return found?.label || item.label || item.name
+  }
+  // Filter by name or code, ignoring case.
   let filteredItems = itemList
   if (filter) {
-    filteredItems = itemList.filter(item => item.name.includes(filter))
+    const query = filter.trim().toLowerCase()
+    filteredItems = itemList.filter(
+      item => [item.label, item.name, item.code].some(
+        text => text && ('' + text).toLowerCase().includes(query)
+      )
+    )
   }
 
   return (
@@ -91,7 +102,19 @@ export default function MultiSelectorConfig(
         >
           {
             filteredItems.map((item) => (
-              <option key={item.id} value={item.id}>{item.name}</option>
+              <option
+                key={item.id} value={item.id}
+                title={labelOf(item)}
+                onDoubleClick={() => {
+                  // Double click: add this item to the selected list.
+                  if (!ids.includes(item.id)) {
+                    setSelectedItems([...selectedItems, defaultRowData(item)])
+                  }
+                  setTemporarySelectedItems([])
+                }}
+              >
+                {labelOf(item)}
+              </option>
             ))
           }
         </Select>
@@ -136,6 +159,7 @@ export default function MultiSelectorConfig(
         <MultiSelectorConfigRows
           selectedItems={selectedItems} setSelectedItems={setSelectedItems}
           configEnabled={configEnabled}
+          labelOf={labelOf}
           additionalFields={props.additionalFields ? props.additionalFields : []}
           {...props}
         />

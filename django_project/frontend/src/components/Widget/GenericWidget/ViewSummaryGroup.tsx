@@ -20,7 +20,7 @@ import { Session } from "../../../utils/Sessions";
 import { useSelector } from "react-redux";
 import { Indicator } from "../../../types/Indicator";
 import { SortMethodTypes, SortTypes } from "../Definition";
-import { formatNumber } from "../../../utils/Utilities";
+import { formatWidgetNumber } from "../../../utils/Utilities";
 import { capitalize } from "../../../utils/main";
 import { useAreaLink } from "../areaLink";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -213,13 +213,7 @@ function SummaryGroup({ widget, groupBy, sortBy, fields, linkAreas }: Props) {
                   if (field.toLowerCase() === "value") {
                     return (
                       <td key={field}>
-                        {formatNumber(
-                          value[1][field],
-                          aggregation?.useDecimalPlace
-                            ? aggregation?.decimalPlace
-                            : 0,
-                          aggregation?.useAutoUnits,
-                        )}
+                        {formatWidgetNumber(value[1][field], aggregation)}
                       </td>
                     );
                   }

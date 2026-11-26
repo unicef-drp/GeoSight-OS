@@ -359,6 +359,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
                     <div className="CustomDateFilterValues BasicFormSection">
                       <DatePicker
                         showTimeSelect
+                        popperProps={{ strategy: "fixed" }}
                         dateFormat="dd-MM-yyyy hh:mm:ss"
                         selected={
                           minDateFilter ? new Date(minDateFilter) : null
@@ -373,6 +374,7 @@ export default function WidgetEditor({ open, setData, data, title, children }) {
                       </div>
                       <DatePicker
                         showTimeSelect
+                        popperProps={{ strategy: "fixed" }}
                         dateFormat="dd-MM-yyyy hh:mm:ss"
                         selected={
                           maxDateFilter ? new Date(maxDateFilter) : null

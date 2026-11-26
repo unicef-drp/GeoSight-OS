@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ColorResult, SketchPicker } from "react-color";
 import { debounce } from "@mui/material/utils";
 import CustomPopover from "../../CustomPopover";
@@ -64,9 +64,15 @@ export default function ColorSelector({
     a: number;
   };
 
+  // The latest props: the debounced call must not use the ones of the first
+  // render, or it writes back stale parent state.
+  const latest = useRef({ color, onChange });
+  latest.current = { color, onChange };
+
   const update = useMemo(
     () =>
       debounce((newValue) => {
+        const { color, onChange } = latest.current;
         if (newValue !== color) {
           // @ts-ignore
           onChange({

@@ -20,7 +20,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Widget } from "../../../types/Widget";
-import { formatNumber } from "../../../utils/Utilities";
+import { formatWidgetNumber } from "../../../utils/Utilities";
 import { IndicatorData, ParameterProps } from "../../../class/IndicatorData";
 import RequestParameter from "./RequestParameter";
 import { Session } from "../../../utils/Sessions";
@@ -96,12 +96,7 @@ export default function Summary({ widget }: Props) {
       try {
         return (
           <span>
-            {formatNumber(
-              value.value,
-              aggregation?.useDecimalPlace ? aggregation?.decimalPlace : 0,
-              aggregation?.useAutoUnits,
-            )}{" "}
-            {unit}
+            {formatWidgetNumber(value.value, aggregation)} {unit}
           </span>
         );
       } catch (err) {

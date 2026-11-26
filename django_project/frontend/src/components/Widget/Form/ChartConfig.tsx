@@ -29,18 +29,25 @@ import Checkbox from "@mui/material/Checkbox";
 import { ChartConfig } from "../../../types/Widget";
 import { Indicator } from "../../../types/Indicator";
 import {
+  ChartAreaLabels,
   ChartBarLayouts,
   ChartColorModes,
   ChartPeriods,
   ChartTypes,
 } from "../Definition";
 import {
+  allowsCustomColors,
+  customColorList,
+  CustomColorLists,
   hasColorSetting,
   showsAreas,
   usesPalette,
 } from "../ChartWidget/capabilities";
+import { indicatorLabel } from "./UnitSelector";
 // @ts-ignore
 import ColorPaletteSelector from "../../Input/ColorPaletteSelector";
+// @ts-ignore
+import Select from "../../Input/Select";
 
 import "./chart-config.scss";
 
@@ -112,7 +119,7 @@ export function ChartConfigForm({
   const type = data.type;
   // Lines have no map style: their default is the palette.
   const colorMode =
-    data.colors === ChartColorModes.CUSTOM
+    data.colors === ChartColorModes.CUSTOM && allowsCustomColors(data)
       ? ChartColorModes.CUSTOM
       : MAP_COLOR_TYPES.includes(data.type)
         ? data.colors || ChartColorModes.MAP_STYLE
@@ -120,13 +127,13 @@ export function ChartConfigForm({
   const isBar = type === ChartTypes.BAR;
   const layout = data.layout || ChartBarLayouts.SIMPLE;
 
-  /** A labelled number input (target, min, max). */
+  /** A number input with its label on the left (target, min, max). */
   const numberInput = (
     key: "target" | "min" | "max",
     label: string,
     placeholder: string,
   ) => (
-    <div className="ChartConfig-Field">
+    <div className="ChartConfig-Inline" key={key}>
       <label className="form-label" htmlFor={`chart-config-${key}`}>
         {label}
       </label>
@@ -144,37 +151,44 @@ export function ChartConfigForm({
     </div>
   );
 
-  /** A select of the dashboard indicators (scatter axes). */
+  /** A searchable select of the dashboard indicators (scatter axes). */
   const indicatorSelect = (
     key: "x" | "y" | "size",
     label: string,
     optional: boolean,
-  ) => (
-    <div className="ChartConfig-Field">
-      <label className="form-label" htmlFor={`chart-config-${key}`}>
-        {label}
-      </label>
-      <select
-        id={`chart-config-${key}`}
-        data-testid={`chart-config-${key}`}
-        value={data[key] ? "" + data[key] : ""}
-        onChange={(evt) =>
-          update({ [key]: evt.target.value ? Number(evt.target.value) : null })
-        }
-      >
-        <option value="">
-          {optional
-            ? t("admin.widget.chartNone")
-            : t("admin.widget.chartSelectIndicator")}
-        </option>
-        {(indicators || []).map((indicator) => (
-          <option key={indicator.id} value={"" + indicator.id}>
-            {indicator.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
+  ) => {
+    const options = [
+      ...(optional
+        ? [{ value: null, label: t("admin.widget.chartNone") }]
+        : []),
+      ...(indicators || []).map((indicator) => ({
+        value: indicator.id,
+        label: indicatorLabel(indicator),
+      })),
+    ];
+    return (
+      <div className="ChartConfig-Inline" key={key}>
+        <label className="form-label" htmlFor={`chart-config-${key}`}>
+          {label}
+        </label>
+        <div className="ChartConfig-Select" data-testid={`chart-config-${key}`}>
+          <Select
+            inputId={`chart-config-${key}`}
+            options={options}
+            value={
+              options.find((option) => option.value === (data[key] || null)) ||
+              null
+            }
+            placeholder={t("admin.widget.chartSelectIndicator")}
+            menuPlacement="auto"
+            onChange={(option: { value: number | null }) =>
+              update({ [key]: option?.value || null })
+            }
+          />
+        </div>
+      </div>
+    );
+  };
 
   /** A labelled radio group. */
   const radios = (
@@ -213,6 +227,7 @@ export function ChartConfigForm({
     label: string,
   ) => (
     <FormControlLabel
+      key={key}
       control={
         <Checkbox
           data-testid={`chart-config-${key}`}
@@ -224,40 +239,113 @@ export function ChartConfigForm({
     />
   );
 
+  // Options of the chart type: fields (numbers, axes) and checkboxes.
+  const fields: React.ReactNode[] = [];
+  const checks: React.ReactNode[] = [];
+  if (type === ChartTypes.SCATTER) {
+    fields.push(
+      indicatorSelect("x", t("admin.widget.chartScatterX"), false),
+      indicatorSelect("y", t("admin.widget.chartScatterY"), false),
+      indicatorSelect("size", t("admin.widget.chartScatterSize"), true),
+    );
+  }
+  if (type === ChartTypes.GAUGE) {
+    fields.push(
+      numberInput("min", t("admin.widget.chartMin"), "0"),
+      numberInput(
+        "max",
+        t("admin.widget.chartMax"),
+        t("admin.widget.chartAutoShort"),
+      ),
+    );
+  }
+  if (
+    type === ChartTypes.GAUGE ||
+    (isBar && layout !== ChartBarLayouts.PERCENT)
+  ) {
+    fields.push(
+      numberInput(
+        "target",
+        t("admin.widget.chartTarget"),
+        // Bar: a short field next to the checkboxes, no room for a hint.
+        isBar ? "" : t("admin.widget.chartOptional"),
+      ),
+    );
+  }
+  if (isBar) {
+    checks.push(checkbox("horizontal", t("admin.widget.chartHorizontal")));
+  }
+  if (type === ChartTypes.LINE) {
+    checks.push(checkbox("area", t("admin.widget.chartArea")));
+  }
+  if (!NO_LABEL_TYPES.includes(type)) {
+    checks.push(checkbox("labels", t("admin.widget.chartLabels")));
+  }
+  if (showsAreas(data, seriesType)) {
+    checks.push(checkbox("linkAreas", t("admin.widget.chartLinkAreas")));
+  }
+  // With value labels: areas by name or by code.
+  if (showsAreas(data, seriesType) && data.labels) {
+    checks.push(
+      <div key="areaLabels" className="ChartConfig-AreaLabels">
+        <span id="chart-config-areaLabels">
+          {t("admin.widget.chartAreaLabels")}
+        </span>
+        <RadioGroup
+          row
+          aria-labelledby="chart-config-areaLabels"
+          data-testid="chart-config-areaLabels"
+          value={data.areaLabels || ChartAreaLabels.NAME}
+          onChange={(evt) => update({ areaLabels: evt.target.value })}
+        >
+          <FormControlLabel
+            control={<Radio />}
+            value={ChartAreaLabels.NAME}
+            label={t("admin.widget.sortName")}
+          />
+          <FormControlLabel
+            control={<Radio />}
+            value={ChartAreaLabels.CODE}
+            label={t("admin.widget.sortCode")}
+          />
+        </RadioGroup>
+      </div>,
+    );
+  }
+  if (type === ChartTypes.SCATTER) {
+    checks.push(
+      <FormControlLabel
+        key="pulse"
+        control={
+          <Checkbox
+            data-testid="chart-config-pulse"
+            checked={!!data.pulse}
+            onChange={(evt) =>
+              update({ pulse: evt.target.checked ? PULSE_ON : 0 })
+            }
+          />
+        }
+        label={t("admin.widget.chartPulse")}
+      />,
+    );
+  }
+
+  // Bar target: one short field, next to the checkboxes.
+  const inlineFields = isBar;
+
   return (
     <div className="ChartConfig" data-testid="chart-config">
       {afterType}
 
       <div className="ChartConfig-Options">
         {/* Bar */}
-        {isBar && (
-          <>
-            {radios(
-              "layout",
-              t("admin.widget.chartLayout"),
-              layout,
-              layoutLabels,
-            )}
-            {layout !== ChartBarLayouts.SIMPLE && (
-              <div className="ChartConfig-Help">
-                {t("admin.widget.chartLayoutHelp")}
-              </div>
-            )}
-            <div className="ChartConfig-Row">
-              {checkbox("horizontal", t("admin.widget.chartHorizontal"))}
-              {layout !== ChartBarLayouts.PERCENT &&
-                numberInput(
-                  "target",
-                  t("admin.widget.chartTarget"),
-                  t("admin.widget.chartOptional"),
-                )}
-            </div>
-          </>
+        {isBar &&
+          radios("layout", t("admin.widget.chartLayout"), layout, layoutLabels)}
+        {isBar && layout !== ChartBarLayouts.SIMPLE && (
+          <div className="ChartConfig-Help">
+            {t("admin.widget.chartLayoutHelp")}
+          </div>
         )}
-
-        {/* Line */}
-        {type === ChartTypes.LINE &&
-          checkbox("area", t("admin.widget.chartArea"))}
 
         {/* Line, heatmap, KPI */}
         {PERIOD_TYPES.includes(type) &&
@@ -268,54 +356,7 @@ export function ChartConfigForm({
             periodLabels,
           )}
 
-        {/* Scatter */}
-        {type === ChartTypes.SCATTER && (
-          <>
-            <div className="ChartConfig-Help">
-              {t("admin.widget.chartScatterHelp")}
-            </div>
-            <div className="ChartConfig-Row">
-              {indicatorSelect("x", t("admin.widget.chartScatterX"), false)}
-              {indicatorSelect("y", t("admin.widget.chartScatterY"), false)}
-              {indicatorSelect(
-                "size",
-                t("admin.widget.chartScatterSize"),
-                true,
-              )}
-            </div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  data-testid="chart-config-pulse"
-                  checked={!!data.pulse}
-                  onChange={(evt) =>
-                    update({ pulse: evt.target.checked ? PULSE_ON : 0 })
-                  }
-                />
-              }
-              label={t("admin.widget.chartPulse")}
-            />
-          </>
-        )}
-
-        {/* Gauge */}
-        {type === ChartTypes.GAUGE && (
-          <div className="ChartConfig-Row">
-            {numberInput("min", t("admin.widget.chartMin"), "0")}
-            {numberInput(
-              "max",
-              t("admin.widget.chartMax"),
-              t("admin.widget.chartAuto"),
-            )}
-            {numberInput(
-              "target",
-              t("admin.widget.chartTarget"),
-              t("admin.widget.chartOptional"),
-            )}
-          </div>
-        )}
-
-        {/* Common: colours, and the palette in the same box */}
+        {/* Common: colours on one line; the palette follows its radio */}
         {hasColorSetting(data) && (
           <div className="ChartConfig-Colors">
             {radios(
@@ -330,8 +371,10 @@ export function ChartConfigForm({
                       ),
                     }
                   : {}),
+                ...(allowsCustomColors(data)
+                  ? { [ChartColorModes.CUSTOM]: t("admin.widget.colorsCustom") }
+                  : {}),
                 [ChartColorModes.PALETTE]: t("admin.widget.colorsPalette"),
-                [ChartColorModes.CUSTOM]: t("admin.widget.colorsCustom"),
               },
               usesPalette(data) && (
                 <div
@@ -350,17 +393,53 @@ export function ChartConfigForm({
             )}
             {colorMode === ChartColorModes.CUSTOM && (
               <div className="ChartConfig-Help">
-                {t("admin.widget.colorsCustomHelp")}
+                {customColorList(data, seriesType) ===
+                CustomColorLists.INDICATORS
+                  ? t("admin.widget.colorsCustomHelpIndicators")
+                  : t("admin.widget.colorsCustomHelpUnits")}
               </div>
             )}
           </div>
         )}
-        <div className="ChartConfig-Row">
-          {!NO_LABEL_TYPES.includes(type) &&
-            checkbox("labels", t("admin.widget.chartLabels"))}
-          {showsAreas(data, seriesType) &&
-            checkbox("linkAreas", t("admin.widget.chartLinkAreas"))}
-        </div>
+        {/* The options of the chart type, in one section */}
+        {(fields.length > 0 || checks.length > 0) && (
+          <FormControl
+            className="MuiForm-RadioGroup ChartConfig-Section"
+            data-testid="chart-config-options"
+          >
+            <FormLabel className="MuiInputLabel-root">
+              {t("admin.widget.chartOptions")}
+            </FormLabel>
+            {type === ChartTypes.SCATTER && (
+              <div className="ChartConfig-Help">
+                {t("admin.widget.chartScatterHelp")}
+              </div>
+            )}
+            {inlineFields ? (
+              // A few short fields: on the line of the checkboxes.
+              <div className="ChartConfig-Checks">
+                {fields}
+                {checks}
+              </div>
+            ) : (
+              <>
+                {fields.length > 0 && (
+                  <div
+                    className={
+                      "ChartConfig-Fields" +
+                      (type === ChartTypes.SCATTER ? " Stacked" : "")
+                    }
+                  >
+                    {fields}
+                  </div>
+                )}
+                {checks.length > 0 && (
+                  <div className="ChartConfig-Checks">{checks}</div>
+                )}
+              </>
+            )}
+          </FormControl>
+        )}
 
         {children}
       </div>

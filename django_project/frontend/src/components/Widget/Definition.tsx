@@ -120,6 +120,12 @@ export const ChartColorModes = {
   CUSTOM: "custom",
 };
 
+/** What the chart shows for an area: its name or its code. **/
+export const ChartAreaLabels = {
+  NAME: "name",
+  CODE: "code",
+};
+
 /** Version of the chart config format. **/
 export const CHART_CONFIG_VERSION = 1;
 

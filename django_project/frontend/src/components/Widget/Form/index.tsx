@@ -55,6 +55,8 @@ import { TextConfigForm } from "./TextConfig";
 import {
   usesAggregation,
   usesCustomColors,
+  customColorList,
+  CustomColorLists,
   usesIndicatorList,
   usesSeries,
   usesSort,
@@ -210,7 +212,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
         ? aggregation
         : {
             method: AGGREGATION_TYPES.SUM,
-            decimalPlace: 0,
+            decimalPlace: 2,
             useDecimalPlace: false,
             useAutoUnits: false,
           };
@@ -411,7 +413,12 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
             });
           }}
           useColorPalette={
-            isChart ? !!chart && usesCustomColors(chart) : !isSummary
+            isChart
+              ? !!chart &&
+                usesCustomColors(chart) &&
+                customColorList(chart, widgetData.config.seriesType) ===
+                  CustomColorLists.INDICATORS
+              : !isSummary
           }
           showPalette={!isChart}
         />
@@ -455,7 +462,12 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
           });
         }}
         useColorPalette={
-          isChart ? !!chart && usesCustomColors(chart) : !isSummary
+          isChart
+            ? !!chart &&
+              usesCustomColors(chart) &&
+              customColorList(chart, widgetData.config.seriesType) ===
+                CustomColorLists.UNITS
+            : !isSummary
         }
         showPalette={!isChart}
       />
@@ -581,36 +593,55 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
                   />
                 </div>
               </div>
+              {/* Value(s): number format, options, then aggregation, in the
+                  same order as the charts. */}
               {isSummary && widgetData.config.aggregation && (
                 <AggregationConfigForm
                   data={widgetData.config.aggregation}
                   setData={setAggregation}
+                  showMethod={false}
+                  label={t("admin.widget.chartNumberFormat")}
                 />
               )}
               {/* Summary by area: the names select the area on the map. */}
               {isSummary &&
                 widgetData.config.seriesType ===
                   SeriesType.GEOGRAPHICAL_UNITS && (
-                  <FormControlLabel
-                    className="WidgetEditor-Option"
-                    control={
-                      <Checkbox
-                        data-testid="summary-link-areas"
-                        checked={widgetData.config.linkAreas !== false}
-                        onChange={(evt) =>
-                          setWidgetData({
-                            ...widgetData,
-                            config: {
-                              ...widgetData.config,
-                              linkAreas: evt.target.checked,
-                            },
-                          })
-                        }
-                      />
-                    }
-                    label={t("admin.widget.chartLinkAreas")}
-                  />
+                  <div className="ChartConfig">
+                    <FormControl className="MuiForm-RadioGroup ChartConfig-Section">
+                      <FormLabel className="MuiInputLabel-root">
+                        {t("admin.widget.chartOptions")}
+                      </FormLabel>
+                      <div className="ChartConfig-Checks">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              data-testid="summary-link-areas"
+                              checked={widgetData.config.linkAreas !== false}
+                              onChange={(evt) =>
+                                setWidgetData({
+                                  ...widgetData,
+                                  config: {
+                                    ...widgetData.config,
+                                    linkAreas: evt.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                          }
+                          label={t("admin.widget.chartLinkAreas")}
+                        />
+                      </div>
+                    </FormControl>
+                  </div>
                 )}
+              {isSummary && widgetData.config.aggregation && (
+                <AggregationConfigForm
+                  data={widgetData.config.aggregation}
+                  setData={setAggregation}
+                  showFormat={false}
+                />
+              )}
               {/* ------------------------------------- */}
               {/* --------------- GLOBAL -------------- */}
               {/* ------------------------------------- */}

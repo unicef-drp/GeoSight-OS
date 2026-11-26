@@ -77,7 +77,16 @@ export function AggregationConfigForm({
                 <Checkbox
                   checked={data.useDecimalPlace}
                   onChange={(evt) => {
-                    setData({ ...data, useDecimalPlace: evt.target.checked });
+                    // Turning it on starts at 2 decimals, not 0.
+                    const decimalPlace =
+                      evt.target.checked && !data.decimalPlace
+                        ? 2
+                        : data.decimalPlace;
+                    setData({
+                      ...data,
+                      useDecimalPlace: evt.target.checked,
+                      decimalPlace: decimalPlace,
+                    });
                   }}
                 />
               }

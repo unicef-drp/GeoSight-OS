@@ -27,13 +27,14 @@ import { ChartConfig, UnitConfig, Widget } from "../../../types/Widget";
 import { Indicator } from "../../../types/Indicator";
 import { IndicatorData, ParameterProps } from "../../../class/IndicatorData";
 import { Session } from "../../../utils/Sessions";
-import { formatNumber } from "../../../utils/Utilities";
+import { formatNumber, formatWidgetNumber } from "../../../utils/Utilities";
 import { UpdateStyleData } from "../../../utils/indicatorData";
 // @ts-ignore
 import { updateColorPaletteData } from "../../../utils/Style";
 import RequestParameter from "../GenericWidget/RequestParameter";
 import { useAreaLink } from "../areaLink";
 import {
+  ChartAreaLabels,
   ChartColorModes,
   ChartPeriods,
   ChartTypes,
@@ -58,6 +59,8 @@ import {
   needsOneIndicator,
   showsAreas,
   usesCustomColors,
+  customColorList,
+  CustomColorLists,
   usesAggregation,
   usesPalette,
 } from "./capabilities";
@@ -160,22 +163,28 @@ function ChartWidgetView({ data: widget }: Props) {
   const indicatorOf = (id: number): any =>
     indicators?.find((indicator: Indicator) => indicator.id === id);
 
+  // Code of each name the chart shows, to sort by code (Sort by: Code).
+  const codeByName: Record<string, string> = {};
+
   /** Display name of an indicator. */
   const indicatorName = (id: number): string => {
     const indicator = indicatorOf(id);
     if (!indicator) {
       return "" + id;
     }
-    return sort?.field === SortTypes.CODE
-      ? indicator.shortcode
-      : indicator.name;
+    codeByName[indicator.name] = indicator.shortcode || indicator.name;
+    return indicator.name;
   };
 
-  /** Display name of an area. */
-  const unitName = (row: any): string =>
-    sort?.field === SortTypes.CODE
-      ? row.geom_id
-      : row.entity_name || row.geom_id;
+  /** Display name of an area: its name, or its code (Area labels option). */
+  const unitName = (row: any): string => {
+    const name =
+      chart.labels && chart.areaLabels === ChartAreaLabels.CODE
+        ? row.geom_id
+        : row.entity_name || row.geom_id;
+    codeByName[name] = row.geom_id || name;
+    return name;
+  };
 
   /** Name of the main dimension (Series / Group by) of a row. */
   const primaryName = (row: any): string =>
@@ -195,10 +204,7 @@ function ChartWidgetView({ data: widget }: Props) {
     indicatorId: number,
   ): (string | null)[] => {
     // Map style is the default; palette and custom colours ignore it.
-    if (
-      chart.colors === ChartColorModes.PALETTE ||
-      chart.colors === ChartColorModes.CUSTOM
-    ) {
+    if (chart.colors === ChartColorModes.PALETTE || usesCustomColors(chart)) {
       return rows.map((): null => null);
     }
     const indicator = indicatorOf(indicatorId);
@@ -220,15 +226,49 @@ function ChartWidgetView({ data: widget }: Props) {
     }
   };
 
+  /**
+   * Map style colours of rows of several indicators: each row gets the
+   * colour of its value in the style of its own indicator. Rows without an
+   * indicator id (grouped by area only) use `fallbackId`.
+   */
+  const mapColorsByIndicator = (
+    rows: any[],
+    valueKey: string,
+    fallbackId: number | null,
+  ): (string | null)[] => {
+    const result: (string | null)[] = rows.map((): null => null);
+    const groups: Record<string, number[]> = {};
+    rows.forEach((row, index) => {
+      const id = row.indicator_id ?? fallbackId;
+      if (id === null || id === undefined) {
+        return;
+      }
+      (groups[id] = groups[id] || []).push(index);
+    });
+    Object.entries(groups).forEach(([id, indexes]) => {
+      const colors = mapColors(
+        indexes.map((index) => rows[index]),
+        valueKey,
+        Number(id),
+      );
+      indexes.forEach((index, i) => (result[index] = colors[i]));
+    });
+    return result;
+  };
+
   /** Sort and cut rows with the widget sort config. */
   const sortRows = <T extends { category: string; value: number | null }>(
     rows: T[],
   ): T[] => {
     const byValue = !sort || sort.field === SortTypes.VALUE;
+    const key = (category: string) =>
+      sort?.field === SortTypes.CODE
+        ? codeByName[category] || category
+        : category;
     let sorted = [...rows].sort((a, b) =>
       byValue
         ? (a.value || 0) - (b.value || 0)
-        : a.category.localeCompare(b.category),
+        : key(a.category).localeCompare(key(b.category)),
     );
     if (sort?.method === SortMethodTypes.DESC) {
       sorted = sorted.reverse();
@@ -349,10 +389,9 @@ function ChartWidgetView({ data: widget }: Props) {
       case ChartTypes.LINE:
       case ChartTypes.HEATMAP: {
         const heatmap = chart.type === ChartTypes.HEATMAP;
-        const colors =
-          heatmap && !byIndicator && indicatorId
-            ? mapColors(output, key, indicatorId)
-            : [];
+        const colors = heatmap
+          ? mapColorsByIndicator(output, key, indicatorId)
+          : [];
         let rows: ChartRow[] = output.map((row: any, index: number) => ({
           category: heatmap
             ? periodLabel(row[timeField], chart.period)
@@ -370,10 +409,13 @@ function ChartWidgetView({ data: widget }: Props) {
 
       default: {
         if (isMultiBar(chart)) {
-          let rows: ChartRow[] = output.map((row: any) => ({
+          // Map style: each segment in the style of its own indicator.
+          const segmentColors = mapColorsByIndicator(output, key, indicatorId);
+          let rows: ChartRow[] = output.map((row: any, index: number) => ({
             category: primaryName(row),
             series: secondaryName(row),
             value: valueOf(row),
+            color: segmentColors[index] || null,
           }));
           // Order and cut the categories by their total.
           const totals: Record<string, number> = {};
@@ -407,10 +449,9 @@ function ChartWidgetView({ data: widget }: Props) {
             dropped: Math.max(0, names.length - MAX_SERIES),
           };
         }
-        const colors =
-          !byIndicator && indicatorId
-            ? mapColors(output, key, indicatorId)
-            : [];
+        // Map style: by area, the style of the indicator; by indicator,
+        // each bar in the style of its own indicator.
+        const colors = mapColorsByIndicator(output, key, indicatorId);
         const rows: ChartRow[] = output.map((row: any, index: number) => ({
           category: primaryName(row),
           series: null as string | null,
@@ -434,6 +475,7 @@ function ChartWidgetView({ data: widget }: Props) {
     seriesType: config.seriesType,
     method,
     sort,
+    areaLabels: chart.labels && chart.areaLabels,
   });
 
   // Several active indicators on a chart that shows one: the viewer picks.
@@ -514,38 +556,45 @@ function ChartWidgetView({ data: widget }: Props) {
     })();
   }, [requestParameters, indicators, requestKey]);
 
-  // Custom colours: the colour of each item of the predefined indicator or
-  // area list (the series dimension), by the name the chart shows.
+  // Custom colours: the colour of each item of the coloured list (see
+  // customColorList), by the name the chart shows.
   const colors = useMemo(() => {
     const result: Record<string, string> = {};
     if (!usesCustomColors(chart)) {
       return result;
     }
-    const units: UnitConfig[] = byIndicator
-      ? config.indicators
-      : config.geographicalUnit;
+    if (
+      customColorList(chart, config.seriesType) === CustomColorLists.INDICATORS
+    ) {
+      config.indicators?.forEach((unit: UnitConfig) => {
+        if (unit.color) {
+          result[indicatorName(unit.id)] = unit.color;
+        }
+      });
+      return result;
+    }
     // Areas: the list names carry the code ("Bay (SOM_0005_V1)"); the chart
     // shows the area name, so match by code.
     const areaNames: Record<string, string> = {};
     Object.entries(state.areas || {}).forEach(([name, area]) => {
       areaNames[area.geom_id] = name;
     });
-    units?.forEach((unit: UnitConfig) => {
-      if (!unit.color) {
-        return;
+    config.geographicalUnit?.forEach((unit: UnitConfig) => {
+      if (unit.color) {
+        result[areaNames["" + unit.id] || unit.name] = unit.color;
       }
-      const name = byIndicator
-        ? indicatorName(unit.id)
-        : areaNames["" + unit.id] || unit.name;
-      result[name] = unit.color;
     });
     return result;
-  }, [config, indicators, chart.colors, chart.type, state.areas]);
+  }, [config, indicators, chart.colors, chart.type, chart.layout, state.areas]);
 
-  // Decimal places off: the value as it is, up to 2 decimals (0.45 stays
-  // 0.45, not 0); trailing zeros are dropped by formatNumber.
+  // Every value the chart shows uses the widget's number format.
+  // Decimal places on: exactly that many (44.00). Off: the value as it is, up
+  // to 2 decimals (0.45 stays 0.45, 44 stays 44).
   const decimals = aggregation?.useDecimalPlace ? aggregation.decimalPlace : 2;
   const formatExact = (value: number) =>
+    formatWidgetNumber(value, aggregation, 2);
+  // Axis ticks: the same decimals and units, without trailing zeros (20, 40).
+  const formatAxis = (value: number) =>
     formatNumber(value, decimals, aggregation?.useAutoUnits);
 
   const linked =
@@ -580,8 +629,7 @@ function ChartWidgetView({ data: widget }: Props) {
       return null;
     }
     return buildChartOption(chart, state.input, {
-      // Axis: compact (1.5M); tooltip: the widget's own number format.
-      format: (value: number) => formatNumber(value, 1, true),
+      format: formatAxis,
       formatExact: formatExact,
       colors: colors,
       description: widget.name,
@@ -602,6 +650,7 @@ function ChartWidgetView({ data: widget }: Props) {
     linked,
     selectedName,
     hidden,
+    JSON.stringify(aggregation),
   ]);
 
   // New data with other entries: show them all again.

@@ -61,9 +61,9 @@ export interface ChartTexts {
 }
 
 export interface BuildOptions {
-  /** Formats a value for axis labels (compact, e.g. 4M). */
+  /** Formats an axis tick (the widget's format, without trailing zeros). */
   format: (value: number) => string;
-  /** Formats a value for tooltips (exact). Defaults to `format`. */
+  /** Formats a value: labels, tooltips, targets. Defaults to `format`. */
   formatExact?: (value: number) => string;
   /** Colour per category or series name, from the widget config. */
   colors: Record<string, string>;
@@ -128,7 +128,6 @@ const HEAT_LOW = [232, 241, 251];
 const HEAT_HIGH = [42, 120, 214];
 const LINE_HEIGHT = 240;
 const BAR_ROW_HEIGHT = 28;
-const ROUND = 4;
 
 /**
  * Keep every axis label inside the chart. ECharts 6 deprecates
@@ -212,6 +211,9 @@ function base(opts: BuildOptions) {
     aria: { enabled: true, label: { description: opts.description } },
     tooltip: {
       confine: true,
+      // Square corners and the size of the chart labels.
+      borderRadius: 0,
+      textStyle: { color: TEXT_COLOR, fontSize: 12 },
       valueFormatter: (value: number) =>
         value === null || value === undefined || isNaN(value)
           ? "-"
@@ -274,7 +276,7 @@ function targetLine(chart: ChartConfig, opts: BuildOptions) {
     symbol: "none",
     lineStyle: { type: "dashed", color: TARGET_COLOR, width: 1.5 },
     label: {
-      formatter: `${opts.texts.target}: ${opts.format(target)}`,
+      formatter: `${opts.texts.target}: ${exact(opts)(target)}`,
       // A vertical line (horizontal bars) gets its label above the line:
       // the category axis is inverted there, so the top is the "start".
       position: horizontal ? "start" : "insideEndTop",
@@ -297,7 +299,6 @@ function buildBarSimple(
 ): BuiltChart {
   const horizontal = !!chart.horizontal;
   const categories = rows.map((row) => row.category);
-  const radius = horizontal ? [0, ROUND, ROUND, 0] : [ROUND, ROUND, 0, 0];
   const option = {
     ...base(opts),
     grid: {
@@ -321,7 +322,7 @@ function buildBarSimple(
         label: {
           show: !!chart.labels,
           position: horizontal ? "right" : "top",
-          formatter: (params: any) => opts.format(params.value),
+          formatter: (params: any) => exact(opts)(params.value),
         },
         markLine: targetLine(chart, opts),
         // Palette: one colour per bar, so the chosen palette shows.
@@ -329,7 +330,6 @@ function buildBarSimple(
           value: row.value,
           itemStyle: {
             color: colorOf(opts, row.category, index, row.color),
-            borderRadius: radius,
           },
         })),
       },
@@ -358,32 +358,35 @@ function buildBarMulti(
   const names = unique(rows.map((row) => row.series || ""));
 
   const values: Record<string, Record<string, number>> = {};
+  // Map style: a colour per segment, from the value in its indicator style.
+  const segmentColors: Record<string, Record<string, string>> = {};
   const totals: Record<string, number> = {};
   rows.forEach((row) => {
     const name = row.series || "";
     if (!values[name]) {
       values[name] = {};
+      segmentColors[name] = {};
     }
     values[name][row.category] = Number(row.value);
+    if (row.color) {
+      segmentColors[name][row.category] = row.color;
+    }
     totals[row.category] = (totals[row.category] || 0) + Number(row.value);
   });
 
-  const radius = horizontal ? [0, ROUND, ROUND, 0] : [ROUND, ROUND, 0, 0];
   const series = names.map((name, index) => ({
     type: "bar",
     name: name,
     stack: stacked ? "total" : undefined,
     barMaxWidth: 24,
     color: colorOf(opts, name, index),
-    itemStyle: stacked
-      ? { borderColor: "#ffffff", borderWidth: 1 }
-      : { borderRadius: radius },
+    itemStyle: stacked ? { borderColor: "#ffffff", borderWidth: 1 } : {},
     label: {
       show: !!chart.labels,
       position: stacked ? "inside" : horizontal ? "right" : "top",
       fontSize: 10,
       formatter: (params: any) =>
-        percent ? `${Math.round(params.value)}%` : opts.format(params.value),
+        percent ? `${Math.round(params.value)}%` : exact(opts)(params.value),
     },
     markLine: index === 0 && !percent ? targetLine(chart, opts) : undefined,
     data: categories.map((category) => {
@@ -391,10 +394,13 @@ function buildBarMulti(
       if (value === undefined || isNaN(value)) {
         return null;
       }
-      if (percent) {
-        return totals[category] ? (value / totals[category]) * 100 : 0;
-      }
-      return value;
+      const shown = percent
+        ? totals[category]
+          ? (value / totals[category]) * 100
+          : 0
+        : value;
+      const color = segmentColors[name][category];
+      return color ? { value: shown, itemStyle: { color } } : shown;
     }),
   }));
 
@@ -435,12 +441,15 @@ function buildBarMulti(
   const height = horizontal
     ? Math.max(160, categories.length * rowHeight + 40)
     : LINE_HEIGHT;
-  const items = multi
-    ? names.map((name, index) => ({
-        name,
-        color: colorOf(opts, name, index),
-      }))
-    : undefined;
+  // Map style colours vary within a series: no series legend then.
+  const bySegment = rows.some((row) => row.color);
+  const items =
+    multi && !bySegment
+      ? names.map((name, index) => ({
+          name,
+          color: colorOf(opts, name, index),
+        }))
+      : undefined;
   return { option, height, legend: items };
 }
 
@@ -474,7 +483,7 @@ function buildLine(
       areaStyle: chart.area ? { opacity: 0.15 } : undefined,
       label: {
         show: !!chart.labels,
-        formatter: (params: any) => opts.format(params.value[1]),
+        formatter: (params: any) => exact(opts)(params.value[1]),
       },
     };
   });
@@ -603,7 +612,7 @@ function buildTreemap(
           overflow: "truncate",
           formatter: (params: any) =>
             chart.labels
-              ? `${params.name}\n${opts.format(params.value)}`
+              ? `${params.name}\n${exact(opts)(params.value)}`
               : params.name,
         },
         data: positive.map((row, index) => {
@@ -629,6 +638,25 @@ export function heatColor(ratio: number): string {
   return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
 }
 
+/** Colour at `ratio` (0–1) along the stops of a palette (hex colours). */
+export function paletteColor(ratio: number, stops: string[]): string {
+  const safe = Math.max(0, Math.min(1, isNaN(ratio) ? 0 : ratio));
+  const rgb = (hex: string) => {
+    const value = hex.replace("#", "");
+    return [0, 2, 4].map((i) => parseInt(value.substring(i, i + 2), 16));
+  };
+  if (stops.length === 1) {
+    return stops[0];
+  }
+  const position = safe * (stops.length - 1);
+  const index = Math.min(Math.floor(position), stops.length - 2);
+  const [low, high] = [rgb(stops[index]), rgb(stops[index + 1])];
+  const local = position - index;
+  const channel = (i: number) =>
+    Math.round(low[i] + (high[i] - low[i]) * local);
+  return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
+}
+
 /** Heatmap: rows = series (areas or indicators), columns = dates. */
 function buildHeatmap(
   chart: ChartConfig,
@@ -644,9 +672,13 @@ function buildHeatmap(
   // 4th value (an index into `colors`) to the colour of each cell.
   const colors: string[] = [];
   const data = rows.map((row) => {
+    const ratio = max === min ? 1 : (Number(row.value) - min) / (max - min);
+    // Map style colour, else the palette as a scale, else blue.
     const color =
       row.color ||
-      heatColor(max === min ? 1 : (Number(row.value) - min) / (max - min));
+      (opts.palette?.length
+        ? paletteColor(ratio, opts.palette)
+        : heatColor(ratio));
     if (colors.indexOf(color) === -1) {
       colors.push(color);
     }
@@ -705,7 +737,7 @@ function buildHeatmap(
         label: {
           show: !!chart.labels,
           fontSize: 10,
-          formatter: (params: any) => opts.format(params.value[2]),
+          formatter: (params: any) => exact(opts)(params.value[2]),
         },
       },
     ],
@@ -733,7 +765,11 @@ function buildScatter(
     name: point.name,
     value: [point.x, point.y, point.size],
     symbolSize: pointSize(point.size, maxSize),
-    itemStyle: { color: point.color || FALLBACK_COLORS[0], opacity: 0.85 },
+    // Map style colour, else the area's custom colour, else the palette.
+    itemStyle: {
+      color: colorOf(opts, point.name, points.indexOf(point), point.color),
+      opacity: 0.85,
+    },
   });
   // Pulse: the area selected on the map (nothing when none is selected).
   const top =
@@ -877,7 +913,7 @@ function buildGauge(
           {
             value: value,
             name: hasTarget
-              ? `${opts.texts.target}: ${opts.format(target)}`
+              ? `${opts.texts.target}: ${exact(opts)(target)}`
               : "",
           },
         ],

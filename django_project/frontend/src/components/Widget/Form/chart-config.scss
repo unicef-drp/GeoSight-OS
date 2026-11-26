@@ -67,24 +67,69 @@ __copyright__ = ('Copyright 2026, Unicef')
     gap: 0.5rem;
   }
 
-  .ChartConfig-Row {
+  // Chart options: fields with their label on the left, side by side
+  // (gauge: min, max and target on one line), then the checkboxes.
+  .ChartConfig-Fields {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     gap: 0.5rem 1rem;
+
+    // Scatter: one axis per line, labels in one column.
+    &.Stacked {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.375rem 0.75rem;
+
+      .ChartConfig-Inline {
+        display: contents;
+      }
+    }
   }
 
-  .ChartConfig-Field {
+  .ChartConfig-Inline {
     display: flex;
-    flex-direction: column;
-    flex: 1 1 140px;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 0;
     min-width: 0;
 
-    input,
-    select {
-      min-height: 44px;
+    .form-label {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    input {
+      flex: 1 1 4rem;
+      min-width: 3.5rem;
       width: 100%;
       box-sizing: border-box;
+    }
+  }
+
+  .ChartConfig-Select {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .ChartConfig-Checks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1rem;
+
+    // A short field among the checkboxes (bar target).
+    .ChartConfig-Inline {
+      flex: 0 0 auto;
+
+      input {
+        flex: 0 0 4.5rem;
+        width: 4.5rem;
+      }
+    }
+
+    .MuiFormControlLabel-root {
+      margin: 0;
     }
   }
 
@@ -124,5 +169,22 @@ __copyright__ = ('Copyright 2026, Unicef')
   .ChartConfig-Error {
     color: #b3261e;
     font-size: 0.8125rem;
+  }
+}
+
+/* Area labels: Name | Code, inline with the other chart options. */
+.ChartConfig-AreaLabels {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  > span {
+    /* The radios pull left by 9px (aligned checkboxes): keep a gap. */
+    margin-right: calc(0.5rem + 9px);
+    white-space: nowrap;
+  }
+
+  .MuiRadioGroup-root {
+    flex-wrap: nowrap;
   }
 }
