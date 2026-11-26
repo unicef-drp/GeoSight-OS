@@ -6,6 +6,13 @@
   "Back to home": "Retour à l'accueil",
   "Back to Home": "Retour à l'accueil",
   "Compare layers": "Comparer les couches",
+  "components": {
+    "contextLayerDownload": {
+      "downloadError": "Erreur lors du téléchargement, veuillez réessayer.",
+      "startError": "Erreur lors du lancement du téléchargement.",
+      "timeout": "Le téléchargement prend trop de temps. Veuillez réessayer plus tard."
+    }
+  },
   "Config": "Configuration",
   "Context Layers": "Couches de contexte",
   "Context and indicator layer tabs visibility": "Visibilité des onglets des couches de contexte et d'indicateurs",

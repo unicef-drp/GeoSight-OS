@@ -119,6 +119,10 @@ services:
       - DATABASE_HOST=${DATABASE_HOST:-db}
       - RABBITMQ_HOST=${RABBITMQ_HOST:-rabbitmq}
       - DJANGO_SETTINGS_MODULE=core.settings.dev
+
+      # Redis config (Celery broker), same as x-common-django
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
       - INITIAL_FIXTURES=${INITIAL_FIXTURES:-True}
       - SECRET_KEY=${SECRET_KEY:-''}
 
