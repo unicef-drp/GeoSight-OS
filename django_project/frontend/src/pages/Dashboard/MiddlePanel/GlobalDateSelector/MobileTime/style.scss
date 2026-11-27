@@ -1,0 +1,249 @@
+/**
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __date__ = '23/11/2026'
+ * __copyright__ = ('Copyright 2026, Unicef')
+ */
+
+/* ==========================================================================
+   Mobile time slider (rendered only at max-width 1000px)
+   Square corners, like the map toolbar.
+   ========================================================================== */
+
+.GlobalDateSelection {
+  // Touch-size buttons.
+  .TimeBarButton.Large {
+    width: 44px;
+    height: 44px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    &.Plain {
+      background-color: transparent;
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
+      }
+    }
+  }
+
+  &.Hide {
+    .TimeCard,
+    .TimeSheet {
+      display: none;
+    }
+  }
+}
+
+// Collapsed card, docked full width on top of the bottom navigation tabs.
+.TimeCard {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--mobile-bottom-nav-height);
+  // Above the map's fullscreen button (z-index 999).
+  z-index: 1000;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--white);
+  // Same shadow as the tab bar; a grey seam where the two meet.
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--base-black-color);
+
+  .TimeCardRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .TimeCardLabel {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    line-height: 1.2;
+
+    .TimeCardPeriod {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .TimeCardMeta {
+      font-size: 12px;
+      color: #5F6B73;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+// Expanded bottom sheet.
+.TimeSheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--mobile-bottom-nav-height);
+  // Above the map's fullscreen button (z-index 999).
+  z-index: 1000;
+  max-height: calc(100% - 120px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--white);
+  box-shadow: 0 -4px 20px rgba(16, 40, 56, 0.16);
+  color: var(--base-black-color);
+
+  .TimeSheetHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #5F6B73;
+    }
+  }
+
+  .TimeSheetPeriod {
+    margin-top: -8px;
+    text-align: center;
+
+    .TimeSheetPeriodLabel {
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .TimeSheetPeriodWindow {
+      margin-top: 2px;
+      font-size: 13px;
+      color: #5F6B73;
+    }
+  }
+
+  // Bigger thumb for touch.
+  .TimeTrack {
+    flex: none;
+
+    .MuiSlider-thumb {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .GlobalDatePlaysControl.Sheet {
+    justify-content: center;
+    gap: 8px;
+
+    .TimeBarButton {
+      width: 44px;
+      height: 44px;
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      &.Play {
+        width: 56px;
+        height: 56px;
+
+        svg {
+          width: 28px;
+          height: 28px;
+        }
+      }
+    }
+  }
+
+  .GlobalDatePlaysControl.Sheet {
+    align-items: center;
+  }
+
+  .TimeSheetIntervals {
+    display: flex;
+    border: 1px solid var(--primary-color);
+
+    button {
+      flex: 1;
+      height: 44px;
+      border: none;
+      border-radius: 0;
+      background-color: var(--white);
+      color: var(--primary-color);
+      font-size: 15px;
+      cursor: pointer;
+
+      & + button {
+        border-left: 1px solid var(--primary-color);
+      }
+
+      &.Active {
+        background-color: var(--primary-color);
+        color: var(--anti-primary-color);
+        font-weight: 500;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: -4px;
+      }
+    }
+  }
+
+  // Settings shown inline instead of as a popover.
+  .TimeSettings.Inline {
+    position: static;
+    width: auto;
+    max-width: none;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    z-index: auto;
+
+    .ReactSelect__control {
+      min-height: 44px;
+    }
+
+    .TimeSettingsSwitch {
+      min-height: 44px;
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  // The card floats, so the time slider takes no layout height.
+  .GlobalDateSelection.Open {
+    height: 0;
+  }
+
+  // Hide while a mobile panel (layers, filters, widgets) covers the map.
+  html.Mobile_Context_Layers,
+  html.Mobile_Indicators,
+  html.Mobile_Filter,
+  html.Mobile_Widget {
+    .TimeCard,
+    .TimeSheet {
+      display: none;
+    }
+  }
+}

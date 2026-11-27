@@ -14,170 +14,81 @@
  */
 
 /* ==========================================================================
-   DATE SELECTOR
+   Playback buttons: first, previous, play/pause, stop (reset), next, last.
+   State lives in usePlayback (one per time slider).
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import StopIcon from '@mui/icons-material/Stop';
-import { ThemeButton } from "../../../../../components/Elements/Button";
-import { allLayerDataIsReady } from "../../../../../utils/indicatorLayer";
-import { returnWhere } from "../../../../../utils/queryExtraction";
-import { NextEndIcon, PrevEndIcon } from "../../../../../components/Icons/svg";
-import { selectIndicatorLayers } from "../../../../../selectors/indicatorLayers";
+import React from 'react';
+import { useTranslation } from "react-i18next";
+import {
+  TimeFirstIcon,
+  TimeLastIcon,
+  TimeNextIcon,
+  TimePauseIcon,
+  TimePlayIcon,
+  TimePreviousIcon,
+  TimeStopIcon
+} from "../../../../../components/Icons";
 
 import './style.scss';
 
-let playControlTimeout = null
+export { usePlayback } from "./usePlayback";
 
 /***
  * Play control
+ * @param {object} playback From usePlayback.
+ * @param {function} onReset Stop also resets to the default time settings.
+ * @param {string} className Extra class (e.g. the mobile sheet layout).
  */
-export default function PlayControl(
-  { dates, selectedDatePoint, setSelectedDatePoint, children }
-) {
-  const {
-    filters,
-    referenceLayer,
-    indicatorLayers
-  } = useSelector(state => state.dashboard.data)
-  const indicatorsData = useSelector(state => state.indicatorsData)
-  const relatedTableData = useSelector(state => state.relatedTableData)
-  const selectedIndicatorLayers = useSelector(selectIndicatorLayers)
-  const indicatorLayersData = useSelector((state) => state.indicatorLayersData)
+export default function PlayControl({ playback, onReset, className = '' }) {
+  const { t } = useTranslation();
+  const { isPlay, disabled } = playback;
 
-  // Speed it 2 second for 0%
-  const minSpeed = 10; // second
-  const [speed, setSpeed] = useState(5);
-  const [nextIdx, setNextIdx] = useState(-1);
-
-  // Set play control
-  const [isPlay, setIsPlay] = useState(null);
-  const disabled = dates.length <= 1
-  const idx = dates.indexOf(selectedDatePoint)
-
-  /**
-   * Control functions
-   */
-  const play = () => {
-    setIsPlay(true)
-    next()
-  }
-  const stopTimeout = () => {
-    if (playControlTimeout) {
-      clearTimeout(playControlTimeout);
-    }
-    playControlTimeout = null
-  }
-  const stop = () => {
-    stopTimeout()
-    setIsPlay(null)
-  }
-  const next = () => {
-    const nextIdx = (idx + 1) < dates.length ? idx + 1 : 0
-    setNextIdx(nextIdx)
-  }
-
-  /**
-   * Change date if play
-   */
-  useEffect(() => {
-    if (isPlay) {
-      const speedTime = minSpeed * 1000 / speed;
-      const where = returnWhere(filters ? filters : [])
-      let layers = selectedIndicatorLayers
-      if (where) {
-        layers = indicatorLayers
+  /** One transport button. */
+  const button = (key, title, icon, onClick, extra = {}) => (
+    <button
+      type="button"
+      className={
+        'TimeBarButton' + (extra.active ? ' Active' : '') +
+        (extra.className ? ' ' + extra.className : '')
       }
-      const ready = allLayerDataIsReady(
-        indicatorsData, relatedTableData, layers, referenceLayer, indicatorLayersData
+      title={title}
+      aria-label={title}
+      aria-pressed={extra.pressed}
+      disabled={disabled && !extra.enabled}
+      onClick={onClick}
+      data-testid={'time-slider-' + key}
+    >
+      {icon}
+    </button>
+  )
+
+  return <div
+    className={'GlobalDatePlaysControl ' + className}
+    role="group"
+    aria-label={t('dashboardPage.timeSlider.playback')}
+  >
+    {button('first', t('dashboardPage.timeSlider.first'), <TimeFirstIcon/>, playback.first)}
+    {button('previous', t('dashboardPage.timeSlider.previous'), <TimePreviousIcon/>, playback.previous)}
+    {
+      button(
+        'play',
+        isPlay ? t('dashboardPage.timeSlider.pause') : t('dashboardPage.timeSlider.play'),
+        isPlay ? <TimePauseIcon/> : <TimePlayIcon/>,
+        playback.toggle,
+        { active: isPlay, pressed: isPlay, className: 'Play' }
       )
-      if (ready) {
-        stopTimeout()
-        const currentPlayControlTimeout = setTimeout(function () {
-          if (isPlay && currentPlayControlTimeout === playControlTimeout) {
-            next()
-          }
-        }, speedTime);
-        playControlTimeout = currentPlayControlTimeout
-      }
     }
-  }, [indicatorsData, relatedTableData, selectedDatePoint, isPlay, nextIdx]);
-
-  /**
-   * If is play and nextIDX changed
-   */
-  useEffect(() => {
-    if (dates[nextIdx]) {
-      setSelectedDatePoint(dates[nextIdx])
-    } else {
-      stop()
+    {
+      // Stop also resets the time slider to the project's default time settings.
+      button('stop', t('dashboardPage.timeSlider.stop'), <TimeStopIcon/>, () => {
+        playback.stop()
+        if (onReset) {
+          onReset()
+        }
+      }, { enabled: true })
     }
-  }, [nextIdx]);
-
-  return <div className='GlobalDatePlaysControl'>
-    <ThemeButton
-      tabIndex="-1"
-      title={'Start'}
-      variant={'secondary Basic Reverse'}
-      disabled={disabled}
-      onClick={() => {
-        stop()
-        setNextIdx(0)
-      }}>
-      <PrevEndIcon/>
-    </ThemeButton>
-    <ThemeButton
-      tabIndex="-1"
-      title={'Previous'}
-      variant={'secondary Basic Reverse'}
-      disabled={disabled}
-      onClick={() => {
-        stop()
-        const nextIdx = (idx - 1) >= 0 ? idx - 1 : (dates.length - 1)
-        setNextIdx(nextIdx)
-      }}>
-      <SkipPreviousIcon/>
-    </ThemeButton>
-    <ThemeButton
-      tabIndex="-1"
-      title={'Play'}
-      variant={'secondary Basic ' + (!isPlay ? 'Reverse' : '')}
-      disabled={disabled} onClick={play}>
-      <PlayArrowIcon/>
-    </ThemeButton>
-    <ThemeButton
-      tabIndex="-1"
-      title={'Stop'}
-      variant={'secondary Basic Reverse'}
-      disabled={disabled || !isPlay} onClick={stop}>
-      <StopIcon/>
-    </ThemeButton>
-    <ThemeButton
-      tabIndex="-1"
-      title={'Next'}
-      variant={'secondary Basic Reverse'}
-      disabled={disabled}
-      onClick={() => {
-        stop()
-        next()
-      }}>
-      <SkipNextIcon/>
-    </ThemeButton>
-    <ThemeButton
-      tabIndex="-1"
-      title={'End'}
-      variant={'secondary Basic Reverse'}
-      disabled={disabled}
-      onClick={() => {
-        stop()
-        setNextIdx(dates.length - 1)
-      }}>
-      <NextEndIcon/>
-    </ThemeButton>
-    {children}
+    {button('next', t('dashboardPage.timeSlider.next'), <TimeNextIcon/>, playback.next)}
+    {button('last', t('dashboardPage.timeSlider.last'), <TimeLastIcon/>, playback.last)}
   </div>
 }

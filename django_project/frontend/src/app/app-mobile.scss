@@ -13,7 +13,7 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 :root {
-  --mobile-bottom-nav-height: 24px;
+  --mobile-bottom-nav-height: 36px;
 }
 
 @media (min-width: 1300px) {
@@ -272,12 +272,9 @@
       }
     }
   }
+  // Lift the map's bottom controls above the docked time card.
   .DashboardMiddlePanel .BottomContent.DateOpen {
-    height: 140px !important;
-  }
-  .GlobalDateSelectionWrapper {
-    margin-left: 0 !important;
-    width: 100% !important;
+    height: 74px !important;
   }
   .Fullscreen {
     display: none !important;;

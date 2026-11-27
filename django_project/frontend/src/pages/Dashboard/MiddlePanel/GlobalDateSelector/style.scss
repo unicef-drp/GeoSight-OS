@@ -14,224 +14,153 @@
 */
 
 /* ==========================================================================
-   Date selection
+   Time slider: compact bar (64 px)
    ========================================================================== */
 
 .GlobalDateSelection {
   width: 100%;
+  height: 0;
   pointer-events: auto;
   padding: 0 !important;
-  height: 0;
   transition: height 0.3s;
-  font-size: 0.8rem;
-  z-index: 10;
+  // Above the map's fullscreen button (z-index 999): this flex item is the
+  // stacking context of the settings popover and the mobile card / sheet.
+  z-index: 1000;
 
-  .Separator {
-    flex-grow: 1;
+  &.Open {
+    height: 64px;
   }
 
-  .MuiSlider-markLabel {
-    font-size: 0.8rem;
+  &.Hide .TimeBar {
+    display: none;
   }
 
-  .MuiCircularProgress-root {
-    display: block;
-    margin: auto;
+  .TimeBar {
+    position: relative;
+    height: 64px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--white);
+    border-top: 1px solid var(--border-gray);
+    box-shadow: var(--box-shadow-sm);
+    color: var(--base-black-color);
+    font-size: 14px;
   }
 
-  .MuiFormControl-root {
+  // Icon buttons: same colours as the map toolbar.
+  .TimeBarButton {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--primary-color);
+    background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--primary-color) 22%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    &.Active {
+      color: var(--anti-primary-color);
+      background-color: var(--primary-color);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+  }
+
+  .TimeBarRule {
+    flex: none;
+    width: 1px;
+    height: 30px;
+    background-color: var(--border-gray);
+  }
+
+  // Current period chip and interval select.
+  .TimeBarDate,
+  .TimeBarInterval {
+    flex: none;
+
+    .MuiFormControl-root {
+      width: 100%;
+    }
+
     .ReactSelect__control {
-      min-height: 25px;
+      min-height: 34px;
+      height: 34px;
+      border: 1px solid var(--primary-color);
+      border-radius: 0;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    // Square, like the toolbar's Admin Level dropdown.
+    .ReactSelect__menu {
+      border-radius: 0;
     }
 
     .ReactSelect__indicator-separator {
-      margin: 0;
-    }
-  }
-
-  .GlobalDateSelectionOuterWrapper {
-    .GlobalDateSelectionWrapper {
-      padding: 1rem;
-      width: 98%;
-      height: 110px;
-      margin-left: 1%;
-      margin-bottom: 20px !important;
-
-      box-shadow: var(--box-shadow);
-      background-color: var(--white);
-      box-sizing: border-box;
-      color: var(--secondary-color);
-
-      &:hover {
-        background-color: var(--white);
-      }
-
-      .AccessFilterIcon {
-        margin-top: 7px;
-        cursor: pointer;
-      }
-
-      .GlobalDateSelectionSliderWrapper {
-        display: flex;
-
-        .TimeSelection {
-          div {
-            text-align: center;
-            border-radius: 0;
-          }
-
-          & > .MuiFormControl-root {
-            margin-top: 0.3rem;
-          }
-
-          .ReactSelect__indicators {
-            padding: 0 5px;
-          }
-        }
-
-        .Middle {
-          flex-grow: 1;
-          padding: 0 2rem;
-
-          .Options {
-            display: flex;
-            color: var(--base-black-color);
-            margin-bottom: 4px;
-
-            .MuiTypography-root {
-              font-size: 0.8rem;
-            }
-
-            .MuiSwitch-root {
-              margin-left: -10px;
-            }
-          }
-        }
-
-        .GlobalDateSelectionSlider {
-          width: 100%;
-          box-sizing: border-box;
-
-          &.Single {
-            .MuiSlider-thumb {
-              left: 50% !important;
-            }
-          }
-
-          .MuiSlider-thumb {
-            color: var(--secondary-color);
-          }
-
-          .MuiSlider-root {
-            color: var(--secondary-color);
-          }
-
-          .MuiSlider-mark {
-            height: 20px;
-            width: 20px;
-            border-radius: 20px;
-            color: var(--gray-500);
-            transform: translate(-50%, -50%);
-          }
-
-          .MuiSlider-markLabel {
-            display: none;
-          }
-
-          .Mui-disabled {
-            .MuiSlider-markLabel {
-              color: var(--gray-500);
-            }
-
-            .MuiSlider-thumb {
-              color: var(--gray-500);
-            }
-
-            .MuiSlider-track {
-              color: var(--gray-300);
-            }
-          }
-        }
-      }
-    }
-
-    .GlobalDateSelectionShowMinMax {
-      display: flex;
-      color: var(--base-black-color);
-      margin-top: 0.5rem;
-
-      .GlobalDateSelectionShowMinMaxText {
-        margin-top: 2px;
-        margin-right: 0.5rem;
-        width: 50px;
-      }
-
-      .Selection {
-        flex-grow: 1;
-      }
-    }
-
-    &.Disabled {
-      .GlobalDateSelectionShowLatestValue {
-        color: var(--gray-500);
-      }
-    }
-
-    .UpperSection {
-      display: flex;
-      padding-bottom: 0.5rem;
-      margin-top: -0.5rem;
-
-      .TimeSelection {
-        width: 140px;
-
-        b {
-          font-weight: var(--base-font-regular) !important;
-        }
-      }
-
-      .UpperSectionText {
-        margin-top: 0.5rem;
-      }
-
-      .Separator {
-        flex-grow: 1;
-      }
-
-      .GlobalDateSelectionIconDate {
-        font-weight: var(--base-font-weight);
-        margin: 0.5rem 0;
-        text-align: center;
-
-        .DateSeparator {
-          margin: 0 0.5rem;
-          display: inline-block;
-          font-weight: 500;
-        }
-      }
-
-      .UpperSectionMiddle {
-        flex-grow: 1;
-      }
-    }
-  }
-
-  .UpperFloating {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-}
-
-.GlobalDateSelection {
-  &.Open {
-    height: 140px;
-  }
-
-  &.Hide {
-    .UpperFloating,
-    .GlobalDateSelectionOuterWrapper {
       display: none;
+    }
+
+    .ReactSelect__indicator {
+      padding: 0 6px;
+      color: var(--primary-color);
+    }
+
+    .ReactSelect__single-value {
+      color: var(--base-black-color);
+    }
+  }
+
+  .TimeBarDate {
+    width: 150px;
+
+    .ReactSelect__single-value {
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+
+  .TimeBarInterval {
+    width: 124px;
+  }
+
+  .TimeBarSettings {
+    position: static;
+    flex: none;
+  }
+
+  .TimeBarMessage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #5F6B73;
+
+    &.Error {
+      color: var(--error);
     }
   }
 }

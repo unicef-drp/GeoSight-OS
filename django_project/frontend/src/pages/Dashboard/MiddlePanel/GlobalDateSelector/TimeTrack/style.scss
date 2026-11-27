@@ -1,0 +1,183 @@
+/**
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __date__ = '23/11/2026'
+ * __copyright__ = ('Copyright 2026, Unicef')
+ */
+
+/* ==========================================================================
+   Time track (scoped: never restyle the global .MuiSlider)
+   ========================================================================== */
+
+.TimeTrack {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  margin: 0 12px;
+
+  // Rail centre line is at 18px.
+  .TimeTrackRail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 36px;
+  }
+
+  .MuiSlider-root {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 4px;
+    padding: 14px 0;
+    margin-top: -14px;
+    color: var(--primary-color);
+    box-sizing: content-box;
+
+    &.Mui-disabled {
+      color: var(--primary-color);
+    }
+  }
+
+  .MuiSlider-rail {
+    height: 4px;
+    border-radius: 2px;
+    background-color: color-mix(in srgb, var(--primary-color) 18%, #fff);
+    opacity: 1;
+  }
+
+  .MuiSlider-track {
+    height: 4px;
+    border: none;
+  }
+
+  .MuiSlider-mark,
+  .MuiSlider-markActive {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+    box-sizing: border-box;
+    background-color: #6E8591;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .MuiSlider-markLabel {
+    display: none;
+  }
+
+  .MuiSlider-thumb {
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 1px var(--primary-color);
+    background-color: var(--primary-color);
+    z-index: 2;
+
+    &:hover,
+    &.Mui-focusVisible {
+      box-shadow: 0 0 0 1px var(--primary-color),
+      0 0 0 6px color-mix(in srgb, var(--primary-color) 20%, transparent);
+    }
+
+    &::before {
+      box-shadow: none;
+    }
+  }
+
+  .MuiSlider-valueLabel {
+    font-size: 12px;
+    background-color: var(--base-black-color);
+  }
+
+  // Data dates outside the range: shown, not selectable.
+  .TimeTrackOutside {
+    position: absolute;
+    top: 18px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #C5D3DA;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  // Range start / end.
+  .TimeTrackBracket {
+    position: absolute;
+    top: 10px;
+    width: 4px;
+    height: 16px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background-color: color-mix(in srgb, var(--primary-color) 65%, #000);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .TimeTrackYears {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 30px;
+    height: 16px;
+
+    span {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: 12px;
+      line-height: 16px;
+      color: #5F6B73;
+      white-space: nowrap;
+    }
+  }
+
+  &.Single {
+    .MuiSlider-thumb,
+    .MuiSlider-mark {
+      left: 50% !important;
+    }
+
+    .MuiSlider-track {
+      display: none;
+    }
+  }
+}
+
+// Mobile card: small read-only track.
+.TimeTrackMini {
+  position: relative;
+  height: 6px;
+  margin: 0 8px 2px;
+  border-radius: 3px;
+  background-color: color-mix(in srgb, var(--primary-color) 18%, #fff);
+
+  span {
+    position: absolute;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    border-radius: 50%;
+    background-color: #6E8591;
+
+    &.Selected {
+      width: 10px;
+      height: 10px;
+      margin: -2px 0 0 -5px;
+      background-color: var(--primary-color);
+      box-shadow: 0 0 0 2px var(--white);
+    }
+  }
+}

@@ -19,6 +19,7 @@
 
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Plugin, PluginChild } from "../../MapLibre/utils/Plugin";
 import { Actions } from '../../../../store/dashboard'
 import {
@@ -32,6 +33,7 @@ import './style.scss';
  * Global date selector toolbar component.
  */
 export default function GlobalDateSelector() {
+  const { t } = useTranslation();
   const dispatch = useDispatch()
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
@@ -64,7 +66,7 @@ export default function GlobalDateSelector() {
     <Plugin>
       <div className='GlobalDateSelector Active'>
         <PluginChild
-          title={'Show global time configuration'}
+          title={t('dashboardPage.timeSlider.show')}
           onClick={() => {
             dispatch(
               Actions.GlobalState.update({globalDateSelectorOpened: !globalDateSelectorOpened})
