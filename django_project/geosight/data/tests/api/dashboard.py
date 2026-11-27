@@ -284,7 +284,8 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         bookmark = DashboardBookmark.objects.create(
             dashboard=resource,
             creator=self.creator,
-            name='Story bookmark'
+            name='Story bookmark',
+            side_by_side_view_sync=False
         )
         story = DashboardStory.objects.create(
             dashboard=resource,
@@ -331,6 +332,9 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
         self.assertEqual(duplicated_story.description, 'Narrative step')
         self.assertEqual(duplicated_story.config, {'auto_play': False})
         self.assertEqual(duplicated_story.bookmark.name, 'Story bookmark')
+        self.assertEqual(
+            duplicated_story.bookmark.side_by_side_view_sync, False
+        )
 
     def _story_dashboard(self):
         """Return a dashboard with one bookmark and one story page."""

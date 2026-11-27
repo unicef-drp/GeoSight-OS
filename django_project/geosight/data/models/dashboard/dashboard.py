@@ -1008,6 +1008,7 @@ class Dashboard(
             is_3d_mode=bookmark.is_3d_mode,
             position=bookmark.position,
             map_mode=bookmark.map_mode,
+            side_by_side_view_sync=bookmark.side_by_side_view_sync,
             context_layer_show=bookmark.context_layer_show,
             context_layers_config=bookmark.context_layers_config,
             transparency_config=bookmark.transparency_config,

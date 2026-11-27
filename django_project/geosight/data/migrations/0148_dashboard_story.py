@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geosight_data', '0146_auto_20260611_0751'),
+        ('geosight_data', '0147_side_by_side_view_sync'),
     ]
 
     operations = [
