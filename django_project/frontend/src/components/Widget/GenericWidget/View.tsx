@@ -101,6 +101,10 @@ export default function GenericWidgetView({ data }: Props) {
             groupBy={groupBy}
             sortBy={sortBy}
             fields={fields}
+            // On by default; the editor preview never changes the map.
+            linkAreas={
+              data.config?.linkAreas !== false && String(data.id) !== "preview"
+            }
           />
         );
       }

@@ -1,0 +1,732 @@
+/**
+GeoSight is UNICEF's geospatial web-based business intelligence platform.
+
+Contact : geosight-no-reply@unicef.org
+
+.. note:: This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+__date__ = '24/11/2026'
+__copyright__ = ('Copyright 2026, Unicef')
+*/
+
+// Advanced chart options, above the preview.
+.ChartConfig-AdvancedBox {
+  margin-bottom: 0.5rem;
+}
+
+.WidgetPreview {
+  border: 1px solid #ececec;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+
+  .WidgetPreview-Title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  // The widget as on the dashboard, without its card.
+  .WidgetPreview-Widget {
+    padding: 0;
+    box-shadow: none;
+
+    .widget__content {
+      margin-top: 0;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Widget editor layout (Summary, Time Series, Chart; the legacy editors use
+// the same classes): general settings, data settings and the live preview
+// side by side in a dialog of fixed size (two columns on medium screens, one
+// on phones).
+// ---------------------------------------------------------------------------
+.WidgetEditor-Layout {
+  // One height for every one-line control (44px on phones, for touch).
+  --widget-control-height: 40px;
+
+  // A dialog of fixed height: the settings scroll, the Apply button stays
+  // in the lower right corner.
+  .modal--box {
+    width: 96%;
+    max-width: 1600px !important;
+    height: calc(100vh - 3.5rem);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal--content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2px 16px 0 16px;
+  }
+
+  // Three columns on wide screens: chart settings | data settings | preview.
+  // The preview column is about as wide as the widget panel of the dashboard,
+  // and stays in view while the settings scroll.
+  .BasicForm.WidgetLayout {
+    flex: 1 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "main data side"
+      "foot foot foot";
+    column-gap: 1.25rem;
+
+    .WidgetLayout-Main {
+      grid-area: main;
+      min-width: 0;
+    }
+
+    .WidgetLayout-Data {
+      grid-area: data;
+      align-self: start;
+      min-width: 0;
+    }
+
+    .WidgetLayout-Side {
+      grid-area: side;
+      align-self: start;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      min-width: 0;
+
+      .WidgetPreview {
+        margin: 0 0 0.5rem 0;
+        max-height: calc(100vh - 12rem);
+        overflow: auto;
+      }
+    }
+
+    .WidgetLayout-Footer {
+      grid-area: foot;
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0.75rem 0;
+      border-top: 1px solid #ececec;
+      background: #ffffff;
+
+      .WidgetEditor-apply {
+        width: auto;
+        min-width: 160px;
+        margin: 0;
+      }
+    }
+
+    // Narrower columns: option groups wrap instead of overflowing.
+    .WidgetConfigSection,
+    .MuiFormGroup-row {
+      flex-wrap: wrap;
+      row-gap: 0.25rem;
+    }
+
+    // One line per option, never a wrapped "Top / N".
+    .MuiFormControlLabel-label {
+      white-space: nowrap;
+    }
+
+    // Sections: 0.75rem inside and between sections, so the busiest chart
+    // settings still fit one column on a 900px tall screen.
+    .TypeSelector {
+      margin-bottom: 0.5rem;
+    }
+
+    // Name and description: label on the left.
+    .WidgetLayout-Main > .BasicFormSection {
+      display: grid;
+      grid-template-columns: 8.5rem minmax(0, 1fr);
+      align-items: center;
+      gap: 0.5rem;
+      margin-block-end: 0.75rem;
+
+      .form-label {
+        margin: 0;
+      }
+    }
+
+    .MuiForm-RadioGroup {
+      margin-bottom: 0.75rem;
+      padding-top: 0.75rem !important;
+      padding-bottom: 0.25rem !important;
+    }
+
+    .ChartConfig {
+      gap: 0;
+      margin-bottom: 0;
+
+      // Flex items keep both margins (no collapsing): half the top margin,
+      // so the gap between sections matches the data column.
+      .MuiFormControl-root.MuiForm-RadioGroup {
+        margin-top: 0.75rem !important;
+      }
+
+      // Two even rows of four types, inset from the section border; the
+      // icon left of the name keeps each row one control high.
+      .ChartConfig-Types {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.375rem;
+        margin: 0.25rem 1rem 0.5rem 1rem;
+      }
+
+      .ChartConfig-Type {
+        flex-direction: row;
+        gap: 0.375rem;
+        min-height: var(--widget-control-height);
+        padding: 0.25rem;
+        font-size: 0.8125rem;
+      }
+
+      .ChartConfig-Options {
+        gap: 0;
+      }
+
+      // Chart options: compact, one control high.
+      .ChartConfig-Section {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-bottom: 0.5rem !important;
+
+        .ChartConfig-Help {
+          margin: 0.25rem 0 0.375rem 0;
+        }
+
+        .ChartConfig-Fields {
+          margin: 0.375rem 0 0.25rem 0;
+        }
+
+        .ChartConfig-Fields input,
+        .ReactSelect__control {
+          height: 30px;
+          min-height: 30px !important;
+        }
+
+        .ChartConfig-Inline input {
+          height: 30px;
+          min-height: 30px !important;
+          padding: 0 6px;
+        }
+
+        .ReactSelect__value-container {
+          height: 28px;
+          padding: 0 6px;
+        }
+
+        .ReactSelect__placeholder,
+        .ReactSelect__single-value,
+        .ReactSelect__input-container {
+          margin: 0;
+          padding: 0;
+        }
+
+        // The search input is not a one-line field: no fixed height, or it
+        // pushes the text down.
+        .ReactSelect__input-container {
+          height: 18px;
+          overflow: hidden;
+        }
+
+        .ReactSelect__input {
+          height: 18px !important;
+          min-height: 0 !important;
+        }
+
+        .ChartConfig-Checks .MuiFormControlLabel-root {
+          margin: 0 1rem 0 -9px !important;
+        }
+
+        // Checkboxes line up with the labels above (negative margin, so the
+        // whole box stays clickable).
+        .ChartConfig-Checks .MuiCheckbox-root {
+          padding-top: 5px !important;
+          padding-bottom: 5px !important;
+        }
+      }
+
+      .ChartConfig-Help {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    // Sort by / Number format: a field that wraps to its own line keeps
+    // the section's inner margin.
+    .WidgetConfigSection {
+      align-items: center;
+      gap: 0.25rem 0;
+
+      > input {
+        width: 5rem !important;
+        margin: 0 0 0.5rem 1rem;
+      }
+    }
+
+    // One height for every one-line control: text and number fields,
+    // selects, dropdowns (palette) and date fields.
+    input[type="text"],
+    input[type="number"],
+    select:not([multiple]),
+    .react-datepicker-wrapper input,
+    .ReactSelect__control {
+      height: var(--widget-control-height);
+      min-height: var(--widget-control-height) !important;
+      box-sizing: border-box;
+    }
+
+    .ChartConfig .ChartConfig-Advanced summary {
+      min-height: var(--widget-control-height);
+    }
+
+    // Value(s): its options section sits alone in a .ChartConfig, so it
+    // keeps the usual gap to the next section.
+    .WidgetLayout-Main > .ChartConfig > .ChartConfig-Section {
+      margin-bottom: 0;
+    }
+
+    // Sort by on one line: field, order buttons, top N.
+    .SortConfig-Line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      padding: 0.25rem 0 0.25rem 1rem;
+
+      .MuiFormGroup-row {
+        flex-wrap: nowrap;
+        column-gap: 0.25rem;
+
+        .MuiFormControlLabel-root {
+          margin: 0 0.25rem 0 -9px;
+        }
+      }
+
+      > input {
+        margin: 0 !important;
+        width: 4.5rem !important;
+      }
+
+      .MuiFormControlLabel-root {
+        margin: 0 -0.25rem 0 -9px;
+      }
+    }
+
+    .SortConfig-Order {
+      display: inline-flex;
+      border: 1px solid #c4c4c4;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .SortConfig-OrderButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: #ffffff;
+      color: #555555;
+      cursor: pointer;
+
+      & + & {
+        border-left: 1px solid #c4c4c4;
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        background: #f2f2f2;
+      }
+
+      &.Selected {
+        background: #eef5fd;
+        color: #0f4c94;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #1a6ccc;
+        outline-offset: -2px;
+      }
+    }
+
+    // A number inside a section of radios (decimal places, top N): as high
+    // as a radio row, so the section is as high as the other sections.
+    .WidgetConfigSection > input {
+      height: 30px;
+      min-height: 30px !important;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    // An option below a section (e.g. "Link areas to the map").
+    .WidgetEditor-Option {
+      margin: -0.25rem 0 0.5rem 0;
+    }
+
+    // Predefined lists (indicators, areas): shorter, scrolling inside, so two
+    // lists and the date fit the data column.
+    .MuiForm-SubGroup {
+      padding: 0.5rem 1rem 0.75rem 1rem;
+    }
+
+    .MultiSelectorItem {
+      width: 100%;
+      box-sizing: border-box;
+
+      .MultiSelectorItemList {
+        min-height: 0;
+        min-width: 0;
+        flex: 0 0 36%;
+        height: 180px;
+      }
+
+      .MultiSelectorButtons {
+        padding: 0.5rem 0.375rem;
+      }
+
+      .ItemRows {
+        box-sizing: border-box;
+        min-width: 0;
+        min-height: 0;
+        height: 180px;
+        overflow: auto;
+
+        th,
+        td {
+          padding: 0.25rem 0.375rem;
+          vertical-align: middle;
+        }
+
+        // Names wrap between words only, never inside a word.
+        td {
+          overflow-wrap: normal;
+          word-break: normal;
+        }
+
+        // The colour picker: a short code field and a square swatch, one
+        // control high, so it fits the column.
+        .ColorConfig {
+          width: 7.25rem;
+          flex-wrap: nowrap;
+
+          input[type="text"] {
+            width: auto;
+            min-width: 0;
+            height: 30px;
+            min-height: 30px !important;
+            padding: 0 0.375rem;
+            font-size: 0.8125rem;
+          }
+
+          .ColorConfigPreview {
+            height: 30px;
+            min-height: 30px;
+            width: 30px;
+            min-width: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  // Date range: FROM | start | — | end on one line, the help text below.
+  .BasicForm.WidgetLayout .CustomDateFilterValues {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0 0;
+
+    .Separator {
+      padding: 0;
+    }
+
+    // The open calendar is added next to the date field: keep it out of the
+    // grid, so the fields don't move. The calendar floats (fixed strategy,
+    // see DateTimeConfig), so the scrolling column never cuts it.
+    .react-datepicker__tab-loop {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+
+    // The end date's wrapper also holds the help text: its children take
+    // part in the grid, so the help text can use a whole row.
+    > div:last-child {
+      display: contents;
+    }
+
+    .react-datepicker-wrapper input {
+      width: 100%;
+    }
+
+    .helptext {
+      grid-column: 1 / -1;
+      color: #666666;
+      font-size: 0.8125rem;
+    }
+  }
+
+  // Colours: the modes and the palette on one line, the palette last,
+  // next to its radio, as high as a radio row.
+  .ChartConfig-Colors {
+    .MuiFormGroup-row {
+      align-items: center;
+    }
+
+    .ChartConfig-Palette {
+      flex: 1 1 110px;
+      max-width: 200px;
+      margin: 0 0.5rem 0 0.25rem;
+
+      .BasicFormSection {
+        margin: 0;
+      }
+
+      .MuiGrid-container {
+        margin: 0;
+        width: 100%;
+      }
+
+      .MuiGrid-item {
+        padding: 0 !important;
+      }
+
+      // The "Colors" section already names it; kept for screen readers.
+      .BasicForm-Title {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      // No room for a floating label: the select lines up with the radios.
+      .InputControl {
+        margin-top: 0 !important;
+      }
+
+      .Color-Palette-Input {
+        width: 100%;
+      }
+
+      .ReactSelect__control {
+        height: 30px;
+        min-height: 30px !important;
+      }
+
+      .ReactSelect__value-container {
+        height: 28px;
+        padding: 0 0 0 6px;
+      }
+
+      .ReactSelect__single-value {
+        display: flex;
+        width: calc(100% - 6px);
+        margin: 0;
+      }
+
+      // A narrow chevron, centred, so the colour well gets the room.
+      .DropdownIndicator {
+        width: 22px;
+        padding: 0 !important;
+        justify-content: center;
+
+        svg {
+          flex: 0 0 auto;
+          width: 10px;
+          margin: 0;
+        }
+      }
+
+      .ReactSelect__indicator-separator {
+        display: none;
+      }
+
+      // The colour well fills the field: even swatches, inset and rounded.
+      .ReactSelect__single-value .Color-Palette-Option {
+        width: 100%;
+        height: 18px;
+        border-radius: 3px;
+        overflow: hidden;
+
+        div {
+          flex: 1 1 0;
+          width: auto;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  // Desktop: each column scrolls on its own, so changing a setting never
+  // moves the other columns or the preview.
+  @media (min-width: 901px) {
+    .modal--content {
+      overflow: hidden;
+    }
+
+    .BasicForm.WidgetLayout {
+      flex: 1 1 auto;
+      min-height: 0;
+
+      .WidgetLayout-Main,
+      .WidgetLayout-Data,
+      .WidgetLayout-Side {
+        align-self: stretch;
+        min-height: 0;
+        overflow-y: auto;
+        position: static;
+        // Room for the section titles drawn on the top border.
+        padding: 0.5rem 0.25rem 0 0;
+      }
+
+      .WidgetLayout-Side .WidgetPreview {
+        max-height: none;
+        overflow: visible;
+      }
+    }
+  }
+
+  // Medium screens: two columns, the data settings under the preview.
+  @media (min-width: 901px) and (max-width: 1280px) {
+    .BasicForm.WidgetLayout {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "main side"
+        "main data"
+        "foot foot";
+
+      // The preview takes at most 42% of the height; the data scrolls below.
+      .WidgetLayout-Side {
+        max-height: 42vh;
+      }
+    }
+  }
+
+  // Phones and narrow windows: one column, the preview first and kept in
+  // view while scrolling. Controls are 44px tall everywhere.
+  @media (max-width: 900px) {
+    --widget-control-height: 44px;
+
+    .modal--box {
+      width: 100%;
+      max-width: 100% !important;
+    }
+
+    // One list: the preview, the chart settings, the data settings; the
+    // Apply button stays at the bottom of the screen.
+    .BasicForm.WidgetLayout {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      grid-template-areas: none;
+
+      .WidgetLayout-Main,
+      .WidgetLayout-Data,
+      .WidgetLayout-Side {
+        display: contents;
+      }
+
+      .WidgetLayout-Side .WidgetPreview {
+        order: -1;
+        max-height: 40vh;
+      }
+
+      .WidgetLayout-Footer {
+        grid-area: auto;
+        order: 2;
+
+        .WidgetEditor-apply {
+          width: 100%;
+        }
+      }
+
+      .WidgetLayout-Main > .BasicFormSection {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.25rem;
+      }
+    }
+  }
+}
+
+// Legacy summary editors: the same dialog, the data fields in one section.
+.WidgetEditor-Legacy {
+  .WidgetLegacy-Source {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+
+    .MuiFormControl-root {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+
+    .MuiInputBase-root {
+      height: var(--widget-control-height);
+    }
+  }
+
+  // Start — end on one line (no "FROM" label here), the help text below.
+  .BasicForm.WidgetLayout .CustomDateFilterValues {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
+    > div:last-child {
+      display: block;
+    }
+  }
+}
+
+// Text widget: a tall field for the Markdown, the help below it.
+.WidgetEditor-Layout .TextConfig {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+
+  .TextConfig-Input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 50vh;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    font-family: monospace;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    resize: vertical;
+  }
+
+  .TextConfig-Help {
+    margin: 0.5rem 0;
+    color: #666666;
+    font-size: 0.8125rem;
+  }
+}
+
+// The widget type tiles: a section like the others, with space below.
+.WidgetEditor-Layout .BasicForm.WidgetLayout .ChartConfig.WidgetTypeTiles {
+  margin-bottom: 0.75rem;
+}
+
+// No empty band under the title: the first section of each column starts at
+// the top (its title sits on its border, inside the column's padding).
+.WidgetEditor-Layout .BasicForm.WidgetLayout {
+  .WidgetLayout-Main > :first-child,
+  .WidgetLayout-Data > :first-child,
+  .WidgetLayout-Side > :first-child {
+    margin-top: 0 !important;
+  }
+}

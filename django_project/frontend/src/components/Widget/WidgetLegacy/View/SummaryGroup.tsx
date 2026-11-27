@@ -19,7 +19,7 @@ import { capitalize } from "../../../../utils/main";
 import { WidgetConfig } from "../../../../types/Widget";
 import { analyzeData } from "../../../../utils/analysisData";
 import { SortMethodTypes } from "../../Definition";
-import { formatNumber } from "../../../../utils/Utilities";
+import { formatWidgetNumber } from "../../../../utils/Utilities";
 
 export interface Props {
   data: any[];
@@ -104,15 +104,7 @@ function SummaryGroup({ data, config, groupBy, sortBy, fields }: Props) {
               {fields.map((field) => {
                 if (field.toLowerCase() === "value") {
                   return (
-                    <td>
-                      {formatNumber(
-                        value[1][field],
-                        aggregation?.useDecimalPlace
-                          ? aggregation?.decimalPlace
-                          : 0,
-                        aggregation?.useAutoUnits,
-                      )}
-                    </td>
+                    <td>{formatWidgetNumber(value[1][field], aggregation)}</td>
                   );
                 }
                 return <td>{value[1][field]}</td>;

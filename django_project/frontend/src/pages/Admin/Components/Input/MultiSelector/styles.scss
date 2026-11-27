@@ -61,6 +61,20 @@
     }
   }
 
+  // Remove a row: the trash bin used for filters, grey until hovered.
+  .MultipleItemRowTable .RemoveButton {
+    width: 14px;
+    height: 15px;
+    padding: 4px;
+    color: #666666;
+    cursor: pointer;
+    vertical-align: middle;
+
+    &:hover {
+      color: var(--error);
+    }
+  }
+
   .MultipleItemRowTable td:first-child,
   .MultipleItemRowTable th:first-child,
   .MultipleItemRowTable td:nth-child(2),

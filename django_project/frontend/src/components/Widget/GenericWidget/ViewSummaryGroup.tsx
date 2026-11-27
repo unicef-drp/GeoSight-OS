@@ -20,8 +20,9 @@ import { Session } from "../../../utils/Sessions";
 import { useSelector } from "react-redux";
 import { Indicator } from "../../../types/Indicator";
 import { SortMethodTypes, SortTypes } from "../Definition";
-import { formatNumber } from "../../../utils/Utilities";
+import { formatWidgetNumber } from "../../../utils/Utilities";
 import { capitalize } from "../../../utils/main";
+import { useAreaLink } from "../areaLink";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export interface DataValueProps {
@@ -40,9 +41,16 @@ export interface Props {
   groupBy: string;
   sortBy: string;
   fields: string[];
+  /** Rows are areas: clicking a name selects the area on the map. */
+  linkAreas?: boolean;
 }
 
-function SummaryGroup({ widget, groupBy, sortBy, fields }: Props) {
+/** Fields that identify an area, so a row can be selected on the map. */
+const AREA_GROUP_BY = "geom_id,entity_name,admin_level";
+
+function SummaryGroup({ widget, groupBy, sortBy, fields, linkAreas }: Props) {
+  const byArea = groupBy !== "indicator_id";
+  const areaLink = useAreaLink(!!linkAreas && byArea);
   const { config } = widget;
   const { aggregation, operation, sort } = config;
   const { useTopN, topN } = sort;
@@ -86,7 +94,8 @@ function SummaryGroup({ widget, groupBy, sortBy, fields }: Props) {
           ...parameters,
           latest_value: true,
           aggregate_methods: [method],
-          group_by: groupBy,
+          // Areas: also the code and level, to select a row on the map.
+          group_by: byArea ? AREA_GROUP_BY : groupBy,
         });
         if (!session.isValid) {
           return;
@@ -149,7 +158,13 @@ function SummaryGroup({ widget, groupBy, sortBy, fields }: Props) {
 
       if (!isNaN(rowValue)) {
         if (!byGroup[groupName]) {
-          byGroup[groupName] = { value: null, name: rowData.name };
+          byGroup[groupName] = {
+            value: null,
+            name: rowData.name,
+            geom_id: rowData.geom_id,
+            admin_level: rowData.admin_level,
+            entity_name: rowData.entity_name,
+          };
         }
         byGroup[groupName].value = parseFloat(rowData.value);
       }
@@ -177,35 +192,57 @@ function SummaryGroup({ widget, groupBy, sortBy, fields }: Props) {
       sorted = sorted.slice(0, topN);
     }
     return (
-      <table>
+      <table className="widget__table">
         <thead>
           <tr>
             {fields.map((field) => (
-              <th>{capitalize(field)}</th>
+              <th key={field}>{capitalize(field)}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {sorted.map((value, index) => (
-            <tr key={index}>
-              {["name", "value"].map((field) => {
-                if (field.toLowerCase() === "value") {
+          {sorted.map((value, index) => {
+            const row = value[1];
+            const selected =
+              areaLink.active &&
+              !!row.geom_id &&
+              row.geom_id === areaLink.selectedUcode;
+            return (
+              <tr key={index} className={selected ? "Selected" : ""}>
+                {["name", "value"].map((field) => {
+                  if (field.toLowerCase() === "value") {
+                    return (
+                      <td key={field}>
+                        {formatWidgetNumber(value[1][field], aggregation)}
+                      </td>
+                    );
+                  }
                   return (
-                    <td>
-                      {formatNumber(
-                        value[1][field],
-                        aggregation?.useDecimalPlace
-                          ? aggregation?.decimalPlace
-                          : 0,
-                        aggregation?.useAutoUnits,
+                    <td key={field}>
+                      {areaLink.active && row.geom_id ? (
+                        <button
+                          type="button"
+                          className="widget__table__area"
+                          aria-pressed={selected}
+                          onClick={() =>
+                            areaLink.toggle({
+                              geom_id: row.geom_id,
+                              name: row.entity_name || row.name,
+                              admin_level: row.admin_level,
+                            })
+                          }
+                        >
+                          {row[field]}
+                        </button>
+                      ) : (
+                        row[field]
                       )}
                     </td>
                   );
-                }
-                return <td>{value[1][field]}</td>;
-              })}
-            </tr>
-          ))}
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     );

@@ -18,62 +18,79 @@ import { useTranslation } from "react-i18next";
 import { FormControl, Radio } from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import RadioGroup from "@mui/material/RadioGroup";
 import Checkbox from "@mui/material/Checkbox";
+import RadioGroup from "@mui/material/RadioGroup";
 import { SortConfig } from "../../../types/Widget";
 import { SortMethodTypes, SortTypes } from "../Definition";
+// @ts-ignore
+import { SortAscIcon, SortDescIcon } from "../../Icons";
 
 export interface Props {
   data: SortConfig;
   setData: (data: SortConfig) => void;
 }
 
+/** Sort by: field, order (two icon buttons) and top N, on one line. */
 export function SortConfigForm({ data, setData }: Props) {
   const { t } = useTranslation();
+  const fieldLabels: Record<string, string> = {
+    [SortTypes.VALUE]: t("admin.widget.sortValue"),
+    [SortTypes.NAME]: t("admin.widget.sortName"),
+    [SortTypes.CODE]: t("admin.widget.sortCode"),
+  };
+  const orders = [
+    {
+      value: SortMethodTypes.ASC,
+      label: t("admin.widget.sortAscending"),
+      Icon: SortAscIcon,
+    },
+    {
+      value: SortMethodTypes.DESC,
+      label: t("admin.widget.sortDescending"),
+      Icon: SortDescIcon,
+    },
+  ];
   return (
-    <FormControl className="MuiForm-RadioGroup">
-      <FormLabel className="MuiInputLabel-root">{t("Sort by")}</FormLabel>
-      <div className={"WidgetConfigSection"}>
+    <FormControl className="MuiForm-RadioGroup SortConfig">
+      <FormLabel className="MuiInputLabel-root" id="widget-sort-label">
+        {t("Sort by")}
+      </FormLabel>
+      <div className="WidgetConfigSection SortConfig-Line">
         <RadioGroup
           row
+          aria-labelledby="widget-sort-label"
+          data-testid="sort-field"
           value={data.field}
-          onChange={(evt) => {
-            setData({ ...data, field: evt.target.value });
-          }}
+          onChange={(evt) => setData({ ...data, field: evt.target.value })}
         >
-          {Object.keys(SortTypes).map((key) => {
-            return (
-              <FormControlLabel
-                key={key}
-                control={<Radio />}
-                /*@ts-ignore*/
-                value={SortTypes[key]}
-                /*@ts-ignore*/
-                label={SortTypes[key]}
-              />
-            );
-          })}
+          {Object.values(SortTypes).map((value) => (
+            <FormControlLabel
+              key={value}
+              control={<Radio />}
+              value={value}
+              label={fieldLabels[value]}
+            />
+          ))}
         </RadioGroup>
-        <RadioGroup
-          row
-          value={data.method}
-          onChange={(evt) => {
-            setData({ ...data, method: evt.target.value });
-          }}
-        >
-          {Object.keys(SortMethodTypes).map((key) => {
-            return (
-              <FormControlLabel
-                key={key}
-                control={<Radio />}
-                /*@ts-ignore*/
-                value={SortMethodTypes[key]}
-                /*@ts-ignore*/
-                label={SortMethodTypes[key]}
-              />
-            );
-          })}
-        </RadioGroup>
+        <div className="SortConfig-Order" role="group">
+          {orders.map(({ value, label, Icon }) => (
+            <button
+              key={value}
+              type="button"
+              className={
+                "SortConfig-OrderButton" +
+                (data.method === value ? " Selected" : "")
+              }
+              aria-label={label}
+              title={label}
+              aria-pressed={data.method === value}
+              data-testid={`sort-${value.toLowerCase()}`}
+              onClick={() => setData({ ...data, method: value })}
+            >
+              <Icon />
+            </button>
+          ))}
+        </div>
         <FormControlLabel
           control={
             <Checkbox
@@ -86,7 +103,8 @@ export function SortConfigForm({ data, setData }: Props) {
           label={t("Top N")}
         />
         <input
-          style={{ width: "100px" }}
+          data-testid="sort-topn"
+          aria-label={t("Top N")}
           disabled={!data.useTopN}
           type="number"
           onChange={(event) => {
