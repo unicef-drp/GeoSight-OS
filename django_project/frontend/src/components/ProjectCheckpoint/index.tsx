@@ -62,6 +62,10 @@ export const ProjectCheckpoint = memo(
       // @ts-ignore
       (state) => state.mapMode.compareMode,
     );
+    const sideBySideViewModeSync = useSelector(
+      // @ts-ignore
+      (state) => state.mapMode.sideBySideViewModeSync,
+    );
 
     // Extent
     const bounds = map?.getBounds();
@@ -105,6 +109,7 @@ export const ProjectCheckpoint = memo(
             : compareMode
               ? COMPARE_MODE
               : null,
+          side_by_side_view_sync: sideBySideViewModeSync,
           context_layers_config: context_layers_config,
           transparency_config: transparency,
         };
@@ -118,20 +123,26 @@ export const ProjectCheckpoint = memo(
           layer.visible_by_default = layer.id === data.selected_basemap;
         });
 
-        // Activate compare
+        // Map mode: restore the saved one, whatever the number of layers.
+        // Bookmarks saved before map_mode existed: 2+ layers means compare.
         changeIndicatorLayersForcedUpdate(data.selected_indicator_layers);
-        if (data.selected_indicator_layers?.length >= 2) {
-          if (data.map_mode === COMPARE_MODE) {
-            dispatch(Actions.MapMode.activateCompare());
-          } else if (data.map_mode === SIDE_BY_SIDE_VIEW_MODE) {
-            dispatch(Actions.MapMode.activateSideBySideView());
-          } else {
-            dispatch(Actions.MapMode.activateCompare());
-          }
+        const mapMode =
+          data.map_mode ??
+          (data.selected_indicator_layers?.length >= 2 ? COMPARE_MODE : null);
+        if (mapMode === COMPARE_MODE) {
+          dispatch(Actions.MapMode.activateCompare());
+        } else if (mapMode === SIDE_BY_SIDE_VIEW_MODE) {
+          dispatch(Actions.MapMode.activateSideBySideView());
         } else {
           dispatch(Actions.MapMode.deactivateCompare());
-          dispatch(Actions.MapMode.activateSideBySideView());
+          dispatch(Actions.MapMode.deactivateSideBySideView());
         }
+        // Side by side sync; empty (older bookmarks) means the default (on).
+        dispatch(
+          data.side_by_side_view_sync === false
+            ? Actions.MapMode.deactivateSideBySideViewSync()
+            : Actions.MapMode.activateSideBySideViewSync(),
+        );
 
         const { context_layers_config } = data;
         newDashboard.contextLayers.map((layer: ContextLayer) => {

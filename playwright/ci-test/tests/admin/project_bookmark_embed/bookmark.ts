@@ -153,4 +153,74 @@ test.describe('Bookmark', () => {
     await deleteBookmark(page, bookmarkName)
     await deleteProject(page, projectName)
   })
+
+  test('Test bookmark restores map mode off and side by side sync', async ({ page }) => {
+    const singleName = 'Bookmark Single Layer'
+    const syncOffName = 'Bookmark Sync Off'
+    const projectName = 'Demo GeoSight Project Bookmark Sync'
+    const syncOn = 'Turn off sync movement'
+    const syncOff = 'Turn on sync movement'
+    await deleteProject(page, projectName)
+    await saveAsProject(page, 'Demo GeoSight Project', projectName)
+    await page.locator('.TabPrimary').getByText('Tools').click();
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: sideBySideText })
+      .locator('.VisibilityIconOff')
+      .first().click();
+    await saveProject(page);
+    await viewProject(page, projectName, true);
+
+    // One layer, no map mode: saving re-applies it, both modes stay off
+    await page.getByLabel(TEXT.INDICATOR_LAYERS.sampleIndicatorA).click();
+    await ctx.checkMapStyle(page, 0, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
+    await createBookmark(page, singleName)
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.Off)).toBeVisible();
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.Off)).toBeVisible();
+    await expect(page.locator("#map-1")).toBeHidden();
+
+    // Side by side with sync off
+    await page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.Off).click();
+    await delay(500)
+    await page.getByLabel(TEXT.INDICATOR_LAYERS.sampleIndicatorB).click();
+    await delay(500)
+    await page.getByTitle(syncOn).click();
+    await expect(page.getByTitle(syncOff)).toBeVisible();
+    await createBookmark(page, syncOffName)
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.On)).toBeVisible();
+    await expect(page.getByTitle(syncOff)).toBeVisible();
+
+    // Single layer bookmark turns side by side off
+    await selectBookmark(page, singleName)
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.Off)).toBeVisible();
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.Off)).toBeVisible();
+    await expect(page.locator("#map-1")).toBeHidden();
+    await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
+    await ctx.checkIndicatorNotSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
+
+    // Side by side bookmark restores the mode and sync off
+    await selectBookmark(page, syncOffName)
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.On)).toBeVisible();
+    await expect(page.getByTitle(syncOff)).toBeVisible();
+    await expect(page.locator("#map-1")).toBeVisible();
+    await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorA);
+    await ctx.checkIndicatorSelected(page, TEXT.INDICATOR_LAYERS.sampleIndicatorB);
+
+    // Default bookmark turns side by side off
+    await page.getByTitle(syncOff).click();
+    await expect(page.getByTitle(syncOn)).toBeVisible();
+    await selectBookmark(page)
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.Off)).toBeVisible();
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.Off)).toBeVisible();
+    await expect(page.locator("#map-1")).toBeHidden();
+
+    // From a fresh page, sync off comes back
+    await viewProject(page, projectName, true);
+    await selectBookmark(page, syncOffName)
+    await expect(page.getByTitle(TEXT.TOOLS_TOGGLER.sideBySide.On)).toBeVisible();
+    await expect(page.getByTitle(syncOff)).toBeVisible();
+
+    // Bookmarks are deleted with the project
+    await deleteProject(page, projectName)
+  })
 });

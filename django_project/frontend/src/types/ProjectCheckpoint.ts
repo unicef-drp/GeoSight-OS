@@ -33,4 +33,5 @@ export interface ProjectCheckpoint {
   context_layers_config?: object;
   transparency_config?: TransparencyConfiguration;
   map_mode?: typeof SIDE_BY_SIDE_VIEW_MODE | typeof COMPARE_MODE | null;
+  side_by_side_view_sync?: boolean | null;
 }

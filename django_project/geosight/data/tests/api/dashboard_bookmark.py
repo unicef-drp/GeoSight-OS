@@ -14,7 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -69,21 +68,19 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
             'name': 'name AA',
             'extent': [0, 0, 0, 0],
             'filters': {},
-            'indicatorShow': 0,
-            'selectedIndicatorLayers': [self.layer.id],
-            'selectedContextLayers': [],
-            'contextLayersShow': False,
-            'selectedAdminLevel': 0,
-            'selectedBasemap': BasemapLayer.objects.create(name='name').id,
-            'is3dMode': True,
-            'position': '{}',
+            'indicator_layer_show': False,
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'context_layer_show': False,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name='name').id,
+            'is_3d_mode': True,
+            'position': {},
         }
-        self.assertRequestPostView(url, 403, data={
-            'data': json.dumps(data),
-        }, user=self.viewer)
-        self.assertRequestPostView(url, 200, data={
-            'data': json.dumps(data),
-        }, user=self.creator)
+        self.assertRequestPostView(url, 403, data=data,
+            content_type='application/json', user=self.viewer)
+        self.assertRequestPostView(url, 200, data=data,
+            content_type='application/json', user=self.creator)
         self.assertEqual(
             DashboardBookmark.objects.get(pk=resource.id).name, 'name AA'
         )
@@ -109,25 +106,25 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
             'name': 'name CCC',
             'extent': [0, 0, 0, 0],
             'filters': {},
-            'indicatorShow': 0,
-            'selectedIndicatorLayers': [self.layer.id],
-            'selectedContextLayers': [],
-            'contextLayersShow': False,
-            'selectedAdminLevel': 0,
-            'selectedBasemap': BasemapLayer.objects.create(name='name').id,
-            'is3dMode': True,
-            'position': '{}',
+            'indicator_layer_show': False,
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'context_layer_show': False,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name='name').id,
+            'is_3d_mode': True,
+            'position': {},
         }
         url = reverse(
             'dashboard-bookmarks-create', kwargs={'slug': self.dashboard.slug}
         )
         self.assertRequestPostView(
             url, 403,
-            data={'data': json.dumps(data)},
+            data=data, content_type='application/json',
             user=self.viewer
         )
         self.assertRequestPostView(
-            url, 403, data={'data': json.dumps(data)},
+            url, 403, data=data, content_type='application/json',
             user=self.contributor
         )
         self.dashboard.permission.update_user_permission(
@@ -135,7 +132,90 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
         )
         self.assertRequestPostView(
             url, 200,
-            data={'data': json.dumps(data)},
+            data=data, content_type='application/json',
             user=self.contributor
         )
         self.assertEqual(DashboardBookmark.objects.count(), 2)
+
+    def _bookmark_data(self, name, **kwargs):
+        """Return bookmark data like the dashboard page sends it."""
+        data = {
+            'name': name,
+            'extent': [0, 0, 1, 1],
+            'filters': {},
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'indicator_layer_show': True,
+            'context_layer_show': True,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name=name).id,
+            'is_3d_mode': False,
+            'position': {},
+            'transparency_config': {},
+        }
+        data.update(kwargs)
+        return data
+
+    def test_map_mode_and_sync(self):
+        """Test map mode and side by side sync are saved and returned."""
+        self.dashboard.permission.update_user_permission(
+            self.contributor, PERMISSIONS.WRITE
+        )
+        url = reverse(
+            'dashboard-bookmarks-create', kwargs={'slug': self.dashboard.slug}
+        )
+
+        # Side by side with sync off
+        response = self.assertRequestPostView(
+            url, 200,
+            data=self._bookmark_data(
+                'Side by side',
+                map_mode='SIDE_BY_SIDE_VIEW',
+                side_by_side_view_sync=False
+            ),
+            user=self.contributor, content_type='application/json'
+        )
+        self.assertEqual(response.json()['map_mode'], 'SIDE_BY_SIDE_VIEW')
+        self.assertFalse(response.json()['side_by_side_view_sync'])
+        bookmark = DashboardBookmark.objects.get(name='Side by side')
+        self.assertEqual(bookmark.map_mode, 'SIDE_BY_SIDE_VIEW')
+        self.assertIs(bookmark.side_by_side_view_sync, False)
+
+        # Update: compare mode, sync on
+        detail_url = reverse(
+            'dashboard-bookmarks-detail',
+            kwargs={'slug': self.dashboard.slug, 'pk': bookmark.id}
+        )
+        self.assertRequestPostView(
+            detail_url, 200,
+            data=self._bookmark_data(
+                'Side by side',
+                map_mode='COMPARE',
+                side_by_side_view_sync=True
+            ),
+            user=self.contributor, content_type='application/json'
+        )
+        bookmark.refresh_from_db()
+        self.assertEqual(bookmark.map_mode, 'COMPARE')
+        self.assertIs(bookmark.side_by_side_view_sync, True)
+
+        # A client that does not send the fields stores empty values
+        self.assertRequestPostView(
+            url, 200,
+            data=self._bookmark_data('No mode'),
+            user=self.contributor, content_type='application/json'
+        )
+        bookmark = DashboardBookmark.objects.get(name='No mode')
+        self.assertIsNone(bookmark.map_mode)
+        self.assertIsNone(bookmark.side_by_side_view_sync)
+
+        # The list returns the fields, the default bookmark has none
+        list_url = reverse(
+            'dashboard-bookmarks', kwargs={'slug': self.dashboard.slug}
+        )
+        response = self.assertRequestGetView(list_url, 200)
+        rows = {row['name']: row for row in response.json()}
+        self.assertIsNone(rows['Default']['map_mode'])
+        self.assertIsNone(rows['Default']['side_by_side_view_sync'])
+        self.assertEqual(rows['Side by side']['map_mode'], 'COMPARE')
+        self.assertIs(rows['Side by side']['side_by_side_view_sync'], True)

@@ -63,6 +63,13 @@ class DashboardBookmarkAbstract(models.Model):
             'is it compare_layers or side_by_side_view.'
         )
     )
+    side_by_side_view_sync = models.BooleanField(
+        null=True, blank=True,
+        help_text=_(
+            'Whether the maps of the side by side view move together. '
+            'Empty means the default (on).'
+        )
+    )
 
     # TransparencySlider
     transparency_config = models.JSONField(

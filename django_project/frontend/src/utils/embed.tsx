@@ -54,6 +54,7 @@ export function EmbedConfig(): EmbedConfigProps {
             context_layers_config: _embedConfig.context_layers_config,
             transparency_config: _embedConfig.transparency_config,
             map_mode: _embedConfig.map_mode,
+            side_by_side_view_sync: _embedConfig.side_by_side_view_sync,
           },
         };
       }
