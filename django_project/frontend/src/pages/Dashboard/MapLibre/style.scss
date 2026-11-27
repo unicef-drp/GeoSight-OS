@@ -215,6 +215,19 @@
       display: flex;
       flex-direction: row;
 
+      // Embed, download and bookmark moved here from the right side: keep
+      // their icons centred as they were there.
+      .EmbedControl,
+      .DownloadControl,
+      .BookmarkControl {
+        .ToolbarChild a {
+          display: flex;
+          text-align: center;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
       .CompareLayerComponent svg {
         margin-top: -1px;
         height: 18px;

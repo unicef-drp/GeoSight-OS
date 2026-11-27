@@ -25,7 +25,14 @@ import MiddlePanel from "./MiddlePanel";
 import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { useTranslation } from "react-i18next";
-import { isDashboardToolEnabled } from "../../selectors/dashboard";
+import {
+  isDashboardToolEnabled,
+  isStoryMapEnabled,
+} from "../../selectors/dashboard";
+import {
+  StoryPlaybackProvider,
+} from "./LeftPanel/StoryMap/StoryPlayback";
+import StoryPresentation from "./LeftPanel/StoryMap/Presentation";
 import { Variables } from "../../utils/Variables";
 
 import "./style.scss";
@@ -42,6 +49,7 @@ export default function Dashboard({ children }) {
   const entitySearchEnable = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
   );
+  const storyMapEnabled = useSelector(isStoryMapEnabled);
 
   const showLayerTab = !!EmbedConfig().layer_tab;
   const showFilterTab = !!EmbedConfig().filter_tab;
@@ -53,7 +61,7 @@ export default function Dashboard({ children }) {
   const { t } = useTranslation();
 
   const leftPanelProps =
-    showLayerTab || showFilterTab
+    showLayerTab || showFilterTab || storyMapEnabled
       ? {
           className: "LeftButton",
           initState: leftExpanded ? LEFT : RIGHT,
@@ -97,7 +105,7 @@ export default function Dashboard({ children }) {
       }
     >
       {user_permission ? (
-        <>
+        <StoryPlaybackProvider>
           {/* LEFT SIDE PANEL */}
           <LeftPanel leftExpanded={leftExpanded} />
 
@@ -121,7 +129,10 @@ export default function Dashboard({ children }) {
               rightContent={<RightPanel rightExpanded={rightExpanded} />}
             />
           </section>
-        </>
+
+          {/* STORY MAP PRESENTATION MODE (full screen) */}
+          <StoryPresentation />
+        </StoryPlaybackProvider>
       ) : (
         <div className="LoadingElement">
           <div className="Throbber">

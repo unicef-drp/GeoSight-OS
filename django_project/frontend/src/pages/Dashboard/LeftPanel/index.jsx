@@ -31,6 +31,8 @@ import Indicators from "./Indicators";
 import IndicatorLayersAccordion from "./IndicatorLayers";
 import RelatedTables from "./RelatedTable";
 import FiltersAccordion from "./Filters";
+import StoryMap from "./StoryMap";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import {
   FilterIcon,
   LayerIcon,
@@ -43,6 +45,7 @@ import {
   isContextLayerContentVisible,
   isFilterContentVisible,
   isIndicatorLayerContentVisible,
+  isStoryMapEnabled,
 } from "../../../selectors/dashboard";
 
 import "./style.scss";
@@ -98,26 +101,65 @@ export function IndicatorsVisibility() {
   );
 }
 
+/** Keys of the left panel tabs; also used for the tab ids. */
+export const LEFT_PANEL_TAB = {
+  LAYERS: "Layers",
+  FILTERS: "Filters",
+  STORY: "Story",
+};
+
 /**
  * Left panel.
  */
 export default function LeftPanel({ leftExpanded }) {
   const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible);
   const contextLayerContentVisible = useSelector(isContextLayerContentVisible);
-
   const filterVisible = useSelector(isFilterContentVisible);
+  const storyVisible = useSelector(isStoryMapEnabled);
   const state = leftExpanded ? LEFT : RIGHT;
-  const showLayerTab = !!EmbedConfig().layer_tab;
-  const showFilterTab = !!EmbedConfig().filter_tab;
-  const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
+  const showLayerTab =
+    !!EmbedConfig().layer_tab &&
+    (indicatorLayerVisible || contextLayerContentVisible);
+  const showFilterTab = !!EmbedConfig().filter_tab && filterVisible;
+  const [selectedTab, setSelectedTab] = React.useState(LEFT_PANEL_TAB.LAYERS);
   const [tab2Value, setTab2Value] = React.useState(
     indicatorLayerVisible ? 1 : 0,
   );
   const { t } = useTranslation();
 
-  const handleChangeTab = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  const tabs = [];
+  if (showLayerTab) {
+    tabs.push({
+      key: LEFT_PANEL_TAB.LAYERS,
+      className: "layers-tab",
+      label: t("dashboardPage.layers"),
+      icon: <LayerIcon />,
+    });
+  }
+  if (showFilterTab) {
+    tabs.push({
+      key: LEFT_PANEL_TAB.FILTERS,
+      className: "filters-tab",
+      label: t("dashboardPage.filters"),
+      icon: <FilterIcon />,
+    });
+  }
+  if (storyVisible) {
+    tabs.push({
+      key: LEFT_PANEL_TAB.STORY,
+      className: "story-tab",
+      label: t("dashboardPage.storyMap.tab"),
+      icon: <MenuBookIcon />,
+    });
+  }
+  const tabKeys = tabs.map((tab) => tab.key).join(",");
+
+  // Select the first available tab when the selected one is not available.
+  React.useEffect(() => {
+    if (tabs.length && !tabs.find((tab) => tab.key === selectedTab)) {
+      setSelectedTab(tabs[0].key);
+    }
+  }, [selectedTab, tabKeys]);
 
   const handleChangeTab2 = (event, newValue) => {
     setTab2Value(newValue);
@@ -134,33 +176,35 @@ export default function LeftPanel({ leftExpanded }) {
     >
       <div className={classNameWrapper}>
         <Box sx={{ width: "100%" }}>
-          {filterVisible && (
+          {/* As before: the tab bar shows when filters are on (also with one
+              tab left, e.g. in an embed), or when Story adds a second tab. */}
+          {tabs.length > 0 && (filterVisible || tabs.length > 1) && (
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
-                value={tabValue}
-                onChange={handleChangeTab}
+                value={selectedTab}
+                onChange={(event, newValue) => setSelectedTab(newValue)}
                 aria-label="basic tabs example"
+                // Three tabs share the narrow panel instead of scrolling.
+                variant={tabs.length > 2 ? "fullWidth" : "standard"}
+                className={tabs.length > 2 ? "ThreeTabs" : ""}
               >
-                <Tab
-                  className="layers-tab"
-                  label={t("dashboardPage.layers")}
-                  icon=<LayerIcon />
-                  iconPosition="start"
-                  {...tabProps("Layers")}
-                />
-                <Tab
-                  className="filters-tab"
-                  label={t("dashboardPage.filters")}
-                  icon=<FilterIcon />
-                  iconPosition="start"
-                  {...tabProps("Filters")}
-                />
+                {tabs.map((tab) => (
+                  <Tab
+                    key={tab.key}
+                    value={tab.key}
+                    className={tab.className}
+                    label={tab.label}
+                    icon={tab.icon}
+                    iconPosition="start"
+                    {...tabProps(tab.key)}
+                  />
+                ))}
               </Tabs>
             </Box>
           )}
           <TabPanel
-            value={tabValue}
-            index={0}
+            value={selectedTab}
+            index={LEFT_PANEL_TAB.LAYERS}
             className={"sidepanel-tab layers-tab"}
           >
             <Box sx={{ width: "100%" }}>
@@ -213,12 +257,22 @@ export default function LeftPanel({ leftExpanded }) {
           </TabPanel>
           <TabPanel
             id={"filter-tab-panel"}
-            value={tabValue}
-            index={1}
+            value={selectedTab}
+            index={LEFT_PANEL_TAB.FILTERS}
             className={"sidepanel-tab filters-tab-content"}
           >
             <FiltersAccordion />
           </TabPanel>
+          {storyVisible && (
+            <TabPanel
+              id={"story-tab-panel"}
+              value={selectedTab}
+              index={LEFT_PANEL_TAB.STORY}
+              className={"sidepanel-tab story-tab-content"}
+            >
+              <StoryMap />
+            </TabPanel>
+          )}
         </Box>
       </div>
     </section>

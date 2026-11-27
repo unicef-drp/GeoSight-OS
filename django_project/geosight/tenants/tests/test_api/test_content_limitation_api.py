@@ -32,7 +32,8 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
         response = self.assertRequestGetView(
             url, 200, self.admin_1
         )
-        self.assertEqual(response.json()['count'], 7)
+        # One limitation per limited model (incl. story pages).
+        self.assertEqual(response.json()['count'], 8)
 
         # Test tenant that is not public
         self.change_second_tenant()

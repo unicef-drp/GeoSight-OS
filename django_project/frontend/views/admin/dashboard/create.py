@@ -67,8 +67,10 @@ class DashboardCreateViewBase:
                         dashboard.icon = origin.icon
                         dashboard.save()
                     dashboard.save_relations(
-                        data, user=user, is_create=True
+                        data, user=user, files=files, is_create=True
                     )
+                    if origin:
+                        dashboard.clone_stories_from(origin)
                     dashboard.increase_version()
                     return redirect(
                         reverse(

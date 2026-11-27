@@ -152,6 +152,14 @@ function receive(data, error = null) {
       data.widgetsStructure = data.widgets_structure;
     }
     delete data.widgets_structure;
+    if (!data.stories) {
+      data.stories = [];
+    }
+    data.storiesStructure = dictDeepCopy(groupDefault);
+    if (data.stories_structure) {
+      data.storiesStructure = data.stories_structure;
+    }
+    delete data.stories_structure;
     if (!data.relatedTables) {
       data.relatedTables = data.related_tables;
       delete data.related_tables;

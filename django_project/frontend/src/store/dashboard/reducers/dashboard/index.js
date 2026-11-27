@@ -34,6 +34,7 @@ import contextLayersReducer, {
 import dashboardToolReducer, {
   DASHBOARD_TOOL_ACTION_NAME,
 } from "../dashboardTool";
+import storiesReducer, { STORY_ACTION_NAME } from "../stories";
 
 /**
  * DASHBOARD REQUEST reducer
@@ -198,6 +199,26 @@ export default function dashboardReducer(
         newState.data = {
           ...newState.data,
           filters: data,
+        };
+        return newState;
+      }
+      return state;
+    }
+
+    /** STORIES REDUCER **/
+    case STORY_ACTION_NAME: {
+      const data = storiesReducer(
+        state.data.stories,
+        action,
+        state.data,
+      );
+      if (data !== state.data.stories) {
+        const newState = { ...state };
+        newState.data = {
+          ...newState.data,
+          stories: data,
+          // The structure is changed in place: new reference to re-render.
+          storiesStructure: { ...newState.data.storiesStructure },
         };
         return newState;
       }

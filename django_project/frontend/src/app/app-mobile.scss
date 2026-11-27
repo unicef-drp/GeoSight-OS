@@ -294,6 +294,7 @@
   }
   .layers-tab .sidepanel-tab,
   .filters-tab-content,
+  .story-tab-content,
   .DashboardMiddlePanel .RightContent {
     display: block !important;;
     position: fixed !important;;
@@ -343,6 +344,12 @@
 
     &.Mobile_Filter {
       .filters-tab-content {
+        left: 0;
+      }
+    }
+
+    &.Mobile_Story {
+      .story-tab-content {
         left: 0;
       }
     }
