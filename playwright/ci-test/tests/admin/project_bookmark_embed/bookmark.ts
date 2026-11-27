@@ -13,6 +13,7 @@ import {
   defaultBookmark,
   defaultCheck,
   deleteBookmark,
+  deleteBookmarkIfExists,
   selectBookmark,
   selection
 } from '../../utils/bookmark'
@@ -31,6 +32,7 @@ test.describe('Bookmark', () => {
   test('Test bookmark project', async ({ page }) => {
     const name = 'Bookmark 1'
     await viewProject(page, 'Demo GeoSight Project', true);
+    await deleteBookmarkIfExists(page, name)
 
     // --------------------------------------------
     // Selection
@@ -80,11 +82,13 @@ test.describe('Bookmark', () => {
     // Turn on compare mode
     await page.getByTitle(TEXT.TOOLS_TOGGLER.compareLayer.Off).click();
     await page.getByLabel(TEXT.INDICATOR_LAYERS.sampleIndicatorB).click();
-    expect(ctx.lastLayers["map-0"]).toContain("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0");
+    // The map logs its layers and paint when it applies them; indicator B's
+    // style comes only after its data has loaded, so wait for those logs.
+    await expect.poll(() => ctx.lastLayers["map-0"]).toContain("reference-layer-fill-map-0-0,reference-layer-outline-map-0-0");
     await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').nth(0)).toHaveText(TEXT.INDICATOR_LAYERS.sampleIndicatorA + ' (Outline)')
     await expect(page.locator('.MapLegendSectionTitle .ReactSelect__single-value').nth(1)).toHaveText(TEXT.INDICATOR_LAYERS.sampleIndicatorB + ' (Inner)')
-    expect(ctx.lastLayerPaintFill["map-0"]).toBe(indicatorBFill + defaultFill);
-    expect(ctx.lastLayerPaintLine["map-0"]).toBe(indicatorAFill + defaultLine);
+    await expect.poll(() => ctx.lastLayerPaintFill["map-0"]).toBe(indicatorBFill + defaultFill);
+    await expect.poll(() => ctx.lastLayerPaintLine["map-0"]).toBe(indicatorAFill + defaultLine);
 
     await createBookmark(page, bookmarkName)
 

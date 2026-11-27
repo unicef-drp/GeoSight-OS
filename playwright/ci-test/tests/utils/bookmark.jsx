@@ -8,15 +8,27 @@ export const kenyaLayer = 'Kenya Indicator A'
 export const contextLayer = 'Somalia sample context layer'
 
 export const selection = async (page) => {
+  // Wait until the project has applied its default selection
+  await expect(page.getByLabel(layer1)).toBeChecked();
+  await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
+
   // Change the context layers
   await page.getByRole('tab', { name: 'Context Layers' }).click();
   await page.getByLabel(contextLayer).click();
+  await expect(page.getByLabel(contextLayer)).toBeChecked();
   await page.getByRole('tab', { name: 'Indicators' }).click();
 
   // Check the label
+  // Each step waits for the previous one to take effect; compare mode
+  // starts from the current layer, so it must be layer2 by then.
   await page.getByLabel(layer2).click();
+  await expect(page.getByLabel(layer2)).toBeChecked();
+  await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer2);
   await page.getByTitle('Turn on compare Layers').click();
+  await expect(page.getByTitle('Turn off compare Layers')).toBeVisible();
   await page.getByLabel(kenyaLayer).click();
+  await expect(page.getByLabel(kenyaLayer)).toBeChecked();
+  await expect(page.getByLabel(layer2)).toBeChecked();
   await page.getByRole('tab', { name: 'Filters' }).click();
   await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
   await page.getByRole('tab', { name: 'Layers' }).click();
@@ -155,6 +167,21 @@ export const createBookmark = async (page, name) => {
   await page.getByRole('button', { name: 'Save As...' }).click();
   await page.getByLabel('Bookmark Name').fill(name);
   await page.getByRole('button', { name: 'Submit' }).click();
+  await page.locator('.MuiBackdrop-root').first().click();
+}
+
+/** Delete bookmarks with this name left over from a failed earlier try. */
+export const deleteBookmarkIfExists = async (page, name) => {
+  await page.getByTitle('Bookmark').locator('a').click();
+  await expect(page.locator('.BookmarkComponent .Body')).not.toContainText('Loading');
+  const rows = page.locator('.Bookmark').filter({ has: page.getByText(name, { exact: true }) });
+  let count = await rows.count();
+  while (count > 0) {
+    page.once('dialog', dialog => dialog.accept());
+    await rows.first().locator('.DeleteIcon').click();
+    await expect(rows).toHaveCount(count - 1);
+    count = await rows.count();
+  }
   await page.locator('.MuiBackdrop-root').first().click();
 }
 
