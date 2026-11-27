@@ -510,3 +510,99 @@ msgid ""
 msgstr ""
 "Obligatoire. 150 caractères maximum. Uniquement des lettres, des chiffres et "
 "@/./+/-/_/#."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be valid JSON."
+msgstr "Doit être un JSON valide."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be an object."
+msgstr "Doit être un objet."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be a list."
+msgstr "Doit être une liste."
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "%(model)s %(id)s does not exist."
+msgstr "%(model)s %(id)s n'existe pas."
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "Reference layer %(identifier)s was not found."
+msgstr "La couche de référence %(identifier)s est introuvable."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be a list of 4 numbers: [min longitude, min latitude, max longitude, max latitude]."
+msgstr "Doit être une liste de 4 nombres : [longitude min., latitude min., longitude max., latitude max.]."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be the identifier as a string."
+msgstr "Doit être l'identifiant sous forme de texte."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must not be empty."
+msgstr "Ne doit pas être vide."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be an integer id."
+msgstr "Doit être un identifiant entier."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Indicator"
+msgstr "Indicateur"
+
+#: geosight/data/services/dashboard_service.py
+msgid "Basemap"
+msgstr "Fond de carte"
+
+#: geosight/data/services/dashboard_service.py
+msgid "Context layer"
+msgstr "Couche de contexte"
+
+#: geosight/data/services/dashboard_service.py
+msgid "Related table"
+msgstr "Table associée"
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be an integer id. Use the id from the config to keep a layer, or any unused number for a new layer."
+msgstr "Doit être un identifiant entier. Utilisez l'identifiant de la configuration pour conserver une couche, ou un nombre inutilisé pour une nouvelle couche."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Duplicate id."
+msgstr "Identifiant en double."
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "Dashboard with this url shortcode : %(slug)s is exist. Please choose other url shortcode."
+msgstr "Un projet avec le code d'URL %(slug)s existe déjà. Choisissez un autre code d'URL."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Origin project is not found."
+msgstr "Le projet d'origine est introuvable."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Unable to create dashboard due to an internal error."
+msgstr "Impossible de créer le projet en raison d'une erreur interne."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Unable to update dashboard due to an internal error."
+msgstr "Impossible de mettre à jour le projet en raison d'une erreur interne."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Must be the modified_at value from the config."
+msgstr "Doit être la valeur modified_at de la configuration."
+
+#: geosight/data/services/dashboard_service.py
+#, python-format
+msgid "The dashboard was changed after %(modified_at)s. Read the config again and reapply your change."
+msgstr "Le projet a été modifié après %(modified_at)s. Relisez la configuration et appliquez à nouveau votre modification."
+
+#: geosight/data/services/dashboard_service.py
+msgid "You need share permission to change who can access this dashboard."
+msgstr "Vous devez disposer de l'autorisation de partage pour modifier qui peut accéder à ce projet."
+
+#: geosight/data/services/dashboard_service.py
+msgid "Only admins can change the Featured status."
+msgstr "Seuls les administrateurs peuvent modifier le statut Mis en avant."
